@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b0b0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BE Cockpit">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://avsjxexvqgrgxeujkbei.supabase.co wss://avsjxexvqgrgxeujkbei.supabase.co; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<title>BLACK ELIXIR · Cockpit</title>
+<style>
+:root{--bg:#0b0b0c;--card:#141416;--card2:#1b1b1e;--line:#2a2a2e;--gold:#c9a75d;--gold2:#e6cf94;--txt:#ece9e2;--mut:#9a968c;--ok:#6fbf8a;--warn:#e0a34a;--bad:#e06a5a;
+--c1:#c9a75d;--c2:#8a6d3b;--c3:#e6cf94;--c4:#6b7b8c;--c5:#a58f6b;--c6:#5d6b5a;--c7:#b07a5a;--c8:#77706a}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--gold2)}
+.wrap{max-width:1180px;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 14px 40px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 14px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.brand{font-family:Didot,"Bodoni 72","Playfair Display",Georgia,serif;letter-spacing:.32em;font-size:20px;color:var(--gold)}
+.brand small{display:block;font-family:inherit;letter-spacing:.25em;font-size:10px;color:var(--mut);margin-top:2px}
+.hbtn{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,.btn{background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;cursor:pointer}
+button.primary{background:var(--gold);color:#111;font-weight:600}
+button:disabled{opacity:.5}
+.muted{color:var(--mut)}.small{font-size:12px}
+.grid{display:grid;gap:12px}
+@media(min-width:760px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
+.g4m{grid-template-columns:1fr 1fr}
+@media(min-width:760px){.g4m{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
+h2{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:22px 0 10px;font-weight:600}
+h3{font-size:13px;margin:0 0 10px;color:var(--txt);font-weight:600}
+.kpi .l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.kpi .v{font-size:24px;font-weight:600;color:var(--gold2);margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12px;color:var(--mut)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.seg button{padding:5px 12px;font-size:12px;border-color:var(--line);color:var(--mut)}
+.seg button.on{border-color:var(--gold);color:var(--gold)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{font-weight:500;color:var(--mut);text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:7px 6px;border-bottom:1px solid #1f1f22;vertical-align:top}
+.tbl .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.name{max-width:420px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.p-ok{color:var(--ok);border-color:#2d4a37}.p-warn{color:var(--warn);border-color:#5a4423}.p-bad{color:var(--bad);border-color:#5a2a24}.p-off{color:var(--mut)}
+.empty{color:var(--mut);font-size:13px;padding:10px 0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mut);margin:4px 0 8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+svg text{fill:var(--mut);font-size:10px}
+.bar{height:8px;border-radius:4px;background:var(--gold);opacity:.85}
+.barbg{background:#232326;border-radius:4px;overflow:hidden}
+/* Login */
+.login{max-width:380px;margin:12vh auto 0;text-align:center}
+.login .brand{font-size:26px}
+.login .card{text-align:left;margin-top:26px}
+label{display:block;font-size:12px;color:var(--mut);margin:10px 0 4px}
+input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:12px;font-size:16px}
+input:focus{outline:none;border-color:var(--gold)}
+.msg{font-size:13px;margin-top:10px;min-height:18px}
+.linkbtn{background:none;border:0;color:var(--mut);text-decoration:underline;padding:6px 0;font-size:12px}
+.hidden{display:none!important}
+.banner{border:1px solid #5a4423;color:var(--warn);background:#1c160c;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.foot{margin-top:28px;color:var(--mut);font-size:11px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- LOGIN -->
+<section id="loginView" class="login hidden">
+  <div class="brand">BLACK ELIXIR<small>COCKPIT</small></div>
+  <div class="card">
+    <div id="pwBox">
+      <label for="email">E-Mail</label>
+      <input id="email" type="email" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false">
+      <label for="pw">Passwort</label>
+      <input id="pw" type="password" autocomplete="current-password">
+      <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
+        <button id="btnLogin" class="primary" type="button">Anmelden</button>
+        <button id="btnMagic" type="button">Login-Link per E-Mail</button>
+      </div>
+    </div>
+    <div id="otpBox" class="hidden">
+      <p class="small muted">Wir haben eine E-Mail geschickt. Link antippen – oder, falls die E-Mail einen 6-stelligen Code enthält, hier eingeben:</p>
+      <label for="otp">Code</label>
+      <input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="10">
+      <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
+        <button id="btnOtp" class="primary" type="button">Code bestätigen</button>
+        <button id="btnBack" type="button">Zurück</button>
+      </div>
+    </div>
+    <div id="loginMsg" class="msg muted"></div>
+  </div>
+  <p class="small muted" style="margin-top:18px">Nur für freigegebene Konten. Daten werden erst nach Anmeldung geladen.</p>
+</section>
+
+<!-- DASHBOARD -->
+<section id="appView" class="hidden">
+  <header>
+    <div class="brand">BLACK ELIXIR<small>COCKPIT</small></div>
+    <div class="hbtn">
+      <span id="loadedAt" class="small muted"></span>
+      <button id="btnRefresh" type="button">Aktualisieren</button>
+      <button id="btnLogout" type="button">Abmelden</button>
+    </div>
+  </header>
+  <div id="banner" class="banner hidden"></div>
+
+  <h2>Umsatz netto</h2>
+  <div class="grid g4m" id="kpis"></div>
+
+  <h2>Umsatz je Kanal</h2>
+  <div class="grid g2">
+    <div class="card">
+      <div class="seg" id="segPeriod"></div>
+      <div class="scroll"><table class="tbl" id="tblChannels"></table></div>
+    </div>
+    <div class="card">
+      <h3>Tagesumsatz netto · 30 Tage</h3>
+      <div class="legend" id="chartLegend"></div>
+      <div id="chart"></div>
+    </div>
+  </div>
+
+  <h2>Produkte · 30 Tage</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Top 10 nach Nettoumsatz</h3><div class="scroll"><table class="tbl" id="tblTop"></table></div></div>
+    <div class="card"><h3>Flop 10 · Lagerwert ohne Verkauf (30 T)</h3><div class="scroll"><table class="tbl" id="tblFlop"></table></div></div>
+  </div>
+
+  <h2>Bestand &amp; Lagerwert</h2>
+  <div class="grid g4m" id="invKpis"></div>
+  <div class="grid g2" style="margin-top:12px">
+    <div class="card"><h3>Nachbestellen · Reichweite unter 14 Tagen</h3><div class="scroll"><table class="tbl" id="tblCover"></table></div></div>
+    <div class="card"><h3>Ausverkauft, aber verkauft (30 T)</h3><div class="scroll"><table class="tbl" id="tblOos"></table></div></div>
+  </div>
+
+  <h2>Offene Bestellungen</h2>
+  <div class="grid g2">
+    <div class="card"><div class="grid g4m" id="ooKpis" style="margin-bottom:12px"></div><div class="scroll"><table class="tbl" id="tblOo"></table></div></div>
+    <div class="card"><h3>Älteste offene Bestellungen</h3><div class="scroll"><table class="tbl" id="tblOoOld"></table></div></div>
+  </div>
+
+  <h2>Postfach</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Nach Kategorie · 7 Tage</h3><div id="inboxCats"></div></div>
+    <div class="card"><h3>Neueste E-Mails</h3><div class="scroll"><table class="tbl" id="tblInbox"></table></div></div>
+  </div>
+
+  <h2>Aufgaben</h2>
+  <div class="card"><div class="scroll"><table class="tbl" id="tblTasks"></table></div></div>
+
+  <h2>Social</h2>
+  <div class="card"><div class="scroll"><table class="tbl" id="tblSocial"></table></div></div>
+
+  <h2>Datenstand &amp; letzter Sync</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Synchronisierung je Quelle</h3><div class="scroll"><table class="tbl" id="tblSync"></table></div></div>
+    <div class="card"><h3>Verbindungen</h3><div class="scroll"><table class="tbl" id="tblConn"></table></div></div>
+  </div>
+  <div class="foot">Angemeldet als <span id="who"></span> · Live aus Supabase (black-elixir-cockpit) · Zeiten Europe/Berlin · Auto-Aktualisierung alle 5 Min.</div>
+</section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js" crossorigin="anonymous"></script>
+<script>
+"use strict";
+// Öffentliche Projektkonfiguration (publishable key = öffentlich, nur in Verbindung mit Login + RLS nutzbar). KEIN service_role-Key.
+const SUPABASE_URL = "https://avsjxexvqgrgxeujkbei.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_FU-6ETMXplk_GM_IqbxNuA_UBat5Jld";
+const TZ = "Europe/Berlin";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: "pkce" }
+});
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const eur = (v, d = 0) => (Number(v) || 0).toLocaleString("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: d, minimumFractionDigits: d });
+const num = (v) => (Number(v) || 0).toLocaleString("de-DE");
+const fmtDT = (s) => s ? new Intl.DateTimeFormat("de-DE", { timeZone: TZ, day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(s)) : "–";
+const fmtD = (s) => s ? new Date(s + "T12:00:00Z").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) : "–";
+const berlinDate = (d = new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+const addDays = (iso, n) => { const d = new Date(iso + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const ago = (s) => { if (!s) return Infinity; return (Date.now() - new Date(s).getTime()) / 60000; };
+const agoTxt = (m) => m === Infinity ? "nie" : m < 60 ? Math.round(m) + " Min." : m < 2880 ? Math.round(m / 60) + " Std." : Math.round(m / 1440) + " Tg.";
+const COLORS = ["#c9a75d", "#8a6d3b", "#e6cf94", "#6b7b8c", "#a58f6b", "#5d6b5a", "#b07a5a", "#77706a"];
+
+function table(el, head, rows, emptyText) {
+  if (!rows.length) { $(el).innerHTML = `<tr><td class="empty">${esc(emptyText || "Noch keine Daten.")}</td></tr>`; return; }
+  $(el).innerHTML = "<thead><tr>" + head.map(h => `<th class="${h.r ? "r" : ""}">${esc(h.t)}</th>`).join("") + "</tr></thead><tbody>" +
+    rows.map(r => "<tr>" + r.map((c, i) => `<td class="${head[i].r ? "r" : ""}">${c}</td>`).join("") + "</tr>").join("") + "</tbody>";
+}
+const pill = (txt, cls) => `<span class="pill ${cls}">${esc(txt)}</span>`;
+
+async function fetchAll(build, page = 1000, max = 20000) {
+  let out = [];
+  for (let from = 0; from < max; from += page) {
+    const { data, error } = await build().range(from, from + page - 1);
+    if (error) throw error;
+    out = out.concat(data || []);
+    if (!data || data.length < page) break;
+  }
+  return out;
+}
+
+// ---------- Auth ----------
+let emailForOtp = "";
+function showLogin(msg) { $("appView").classList.add("hidden"); $("loginView").classList.remove("hidden"); if (msg) $("loginMsg").textContent = msg; }
+function showApp() { $("loginView").classList.add("hidden"); $("appView").classList.remove("hidden"); }
+$("btnLogin").onclick = async () => {
+  const email = $("email").value.trim(), password = $("pw").value;
+  if (!email || !password) { $("loginMsg").textContent = "Bitte E-Mail und Passwort eingeben."; return; }
+  $("btnLogin").disabled = true; $("loginMsg").textContent = "Anmeldung …";
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  $("btnLogin").disabled = false; $("pw").value = "";
+  if (error) $("loginMsg").textContent = "Anmeldung fehlgeschlagen. Bitte Daten prüfen.";
+};
+$("pw").addEventListener("keydown", (e) => { if (e.key === "Enter") $("btnLogin").click(); });
+$("btnMagic").onclick = async () => {
+  const email = $("email").value.trim();
+  if (!email) { $("loginMsg").textContent = "Bitte zuerst die E-Mail eingeben."; return; }
+  $("btnMagic").disabled = true; $("loginMsg").textContent = "Sende E-Mail …";
+  const redirect = location.protocol.startsWith("http") ? location.origin + location.pathname : undefined;
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: redirect } });
+  $("btnMagic").disabled = false;
+  if (error) { $("loginMsg").textContent = "E-Mail konnte nicht gesendet werden (Konto nicht freigegeben oder Limit erreicht)."; return; }
+  emailForOtp = email; $("pwBox").classList.add("hidden"); $("otpBox").classList.remove("hidden"); $("loginMsg").textContent = "";
+};
+$("btnOtp").onclick = async () => {
+  const token = $("otp").value.trim(); if (!token) return;
+  const { error } = await sb.auth.verifyOtp({ email: emailForOtp, token, type: "email" });
+  if (error) $("loginMsg").textContent = "Code ungültig oder abgelaufen.";
+};
+$("btnBack").onclick = () => { $("otpBox").classList.add("hidden"); $("pwBox").classList.remove("hidden"); $("loginMsg").textContent = ""; };
+$("btnLogout").onclick = async () => { await sb.auth.signOut(); location.replace(location.pathname); };
+$("btnRefresh").onclick = () => load();
+
+let timer = null, loading = false;
+sb.auth.onAuthStateChange((_evt, session) => {
+  if (session) { $("who").textContent = session.user.email || ""; showApp(); load(); if (!timer) timer = setInterval(load, 5 * 60 * 1000); }
+  else { if (timer) { clearInterval(timer); timer = null; } showLogin(); }
+});
+document.addEventListener("visibilitychange", () => { if (!document.hidden && timer) load(); });
+
+// ---------- Daten ----------
+const state = { period: "30", sales: [], today: "" };
+async function load() {
+  if (loading) return; loading = true; $("btnRefresh").disabled = true; $("btnRefresh").textContent = "Lädt …";
+  try {
+    const { data: allowed, error: ae } = await sb.rpc("cockpit_is_allowed");
+    if (ae && (ae.code === "PGRST202" || ae.code === "42883")) {
+      $("banner").classList.add("hidden"); // Freigabe-Funktion noch nicht eingerichtet (vor Migration)
+    } else if (ae || allowed !== true) {
+      $("banner").textContent = "Dieses Konto ist für das Cockpit nicht freigegeben. Bitte mit der freigegebenen E-Mail anmelden.";
+      $("banner").classList.remove("hidden");
+    } else $("banner").classList.add("hidden");
+
+    const today = berlinDate(); state.today = today; const from30 = addDays(today, -29);
+    const [sales, prod, inv, oo, inbox, tasks, social, runs, conn] = await Promise.all([
+      fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from30).order("day")),
+      fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders")),
+      fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value").eq("source", "jtl")),
+      fetchAll(() => sb.from("open_orders").select("order_ref,channel,created_at,items,total,financial_status").eq("is_open", true).order("created_at")),
+      sb.from("inbox").select("mailbox,category,sender,subject,received_at,messages").order("received_at", { ascending: false }).limit(300).then(r => { if (r.error) throw r.error; return r.data || []; }),
+      fetchAll(() => sb.from("tasks").select("key,source,nr,platform,topic,priority,status,who,next_step,due").order("due", { ascending: true, nullsFirst: false })),
+      sb.from("social_daily").select("day,network,followers,reach,content,interactions,followers_gained").gte("day", addDays(today, -60)).order("day").then(r => { if (r.error) throw r.error; return r.data || []; }),
+      sb.from("sync_runs").select("source,started_at,finished_at,ok,rows_written,message").order("finished_at", { ascending: false, nullsFirst: false }).limit(300).then(r => { if (r.error) throw r.error; return r.data || []; }),
+      sb.from("channel_status").select("channel,kind,status,note,updated_at").then(r => { if (r.error) throw r.error; return r.data || []; }),
+    ]);
+    state.sales = sales;
+    renderSales(); renderProducts(prod, inv); renderInventory(inv); renderOpenOrders(oo); renderInbox(inbox, today);
+    renderTasks(tasks); renderSocial(social); renderSync(runs, conn);
+    $("loadedAt").textContent = "Stand " + fmtDT(new Date().toISOString());
+  } catch (e) {
+    $("banner").textContent = "Daten konnten nicht geladen werden: " + (e && e.message ? e.message : e);
+    $("banner").classList.remove("hidden");
+  } finally { loading = false; $("btnRefresh").disabled = false; $("btnRefresh").textContent = "Aktualisieren"; }
+}
+
+function renderSales() {
+  const t = state.today, d7 = addDays(t, -6), rows = state.sales;
+  const sum = (f) => rows.filter(f).reduce((a, r) => ({ n: a.n + Number(r.net_sales || 0), o: a.o + Number(r.orders || 0) }), { n: 0, o: 0 });
+  const s0 = sum(r => r.day === t), s7 = sum(r => r.day >= d7), s30 = sum(() => true);
+  const y = sum(r => r.day === addDays(t, -1));
+  $("kpis").innerHTML = [
+    ["Heute", s0, `${num(s0.o)} Best. · gestern ${eur(y.n)}`],
+    ["7 Tage", s7, `${num(s7.o)} Bestellungen`],
+    ["30 Tage", s30, `${num(s30.o)} Bestellungen`],
+    ["Ø Bestellwert 30 T", { n: s30.o ? s30.n / s30.o : 0 }, "netto je Bestellung"],
+  ].map(([l, s, sub]) => `<div class="card kpi"><div class="l">${esc(l)}</div><div class="v">${eur(s.n)}</div><div class="s">${esc(sub)}</div></div>`).join("");
+
+  const periods = [["0", "Heute"], ["7", "7 Tage"], ["30", "30 Tage"]];
+  $("segPeriod").innerHTML = periods.map(([k, l]) => `<button type="button" data-p="${k}" class="${state.period === k ? "on" : ""}">${l}</button>`).join("");
+  $("segPeriod").querySelectorAll("button").forEach(b => b.onclick = () => { state.period = b.dataset.p; renderSales(); });
+  const f = state.period === "0" ? (r => r.day === t) : state.period === "7" ? (r => r.day >= d7) : (() => true);
+  const by = {}; rows.filter(f).forEach(r => { const c = by[r.channel] ||= { n: 0, o: 0 }; c.n += Number(r.net_sales || 0); c.o += Number(r.orders || 0); });
+  const list = Object.entries(by).sort((a, b) => b[1].n - a[1].n); const tot = list.reduce((a, [, v]) => a + v.n, 0) || 1;
+  table("tblChannels", [{ t: "Kanal" }, { t: "Netto", r: 1 }, { t: "Best.", r: 1 }, { t: "Anteil", r: 1 }],
+    list.map(([c, v]) => [esc(c), eur(v.n), num(v.o), `${Math.round(v.n / tot * 100)} %`]), "Keine Umsätze im Zeitraum.");
+
+  // Chart: gestapelte Tagesbalken je Kanal
+  const allCh = {}; rows.forEach(r => allCh[r.channel] = (allCh[r.channel] || 0) + Number(r.net_sales || 0));
+  const chs = Object.entries(allCh).sort((a, b) => b[1] - a[1]).map(x => x[0]);
+  const main = chs.slice(0, 6), color = (c) => COLORS[Math.min(main.indexOf(c) === -1 ? 7 : main.indexOf(c), 7)];
+  const days = []; for (let i = 29; i >= 0; i--) days.push(addDays(t, -i));
+  const per = days.map(d => { const o = {}; rows.filter(r => r.day === d).forEach(r => { const k = main.includes(r.channel) ? r.channel : "Sonstige"; o[k] = (o[k] || 0) + Math.max(0, Number(r.net_sales || 0)); }); return o; });
+  const keys = [...main, ...(chs.length > 6 ? ["Sonstige"] : [])];
+  const maxV = Math.max(1, ...per.map(o => Object.values(o).reduce((a, b) => a + b, 0)));
+  const W = 600, H = 220, pl = 44, pb = 22, pt = 8, bw = (W - pl - 6) / days.length;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tagesumsatz">`;
+  for (let g = 0; g <= 4; g++) { const v = maxV * g / 4, yy = H - pb - (H - pb - pt) * g / 4; svg += `<line x1="${pl}" x2="${W}" y1="${yy}" y2="${yy}" stroke="#26262a"/><text x="${pl - 6}" y="${yy + 3}" text-anchor="end">${Math.round(v / 1000)}k</text>`; }
+  per.forEach((o, i) => { let acc = 0; keys.forEach(k => { const v = o[k] || 0; if (!v) return; const h = (H - pb - pt) * v / maxV; const yy = H - pb - acc - h; acc += h; svg += `<rect x="${pl + i * bw + 1}" y="${yy}" width="${Math.max(1, bw - 2)}" height="${h}" fill="${k === "Sonstige" ? COLORS[7] : color(k)}"><title>${esc(fmtD(days[i]) + " " + k + ": " + eur(v))}</title></rect>`; }); });
+  [0, 7, 14, 21, 29].forEach(i => svg += `<text x="${pl + i * bw + bw / 2}" y="${H - 6}" text-anchor="middle">${fmtD(days[i])}</text>`);
+  $("chart").innerHTML = svg + "</svg>";
+  $("chartLegend").innerHTML = keys.map(k => `<span><i style="background:${k === "Sonstige" ? COLORS[7] : color(k)}"></i>${esc(k)}</span>`).join("");
+}
+
+function renderProducts(prod, inv) {
+  const by = {}; prod.forEach(r => { const p = by[r.product] ||= { n: 0, o: 0, ch: new Set() }; p.n += Number(r.net_sales || 0); p.o += Number(r.orders || 0); if (Number(r.net_sales) > 0) p.ch.add(r.channel); });
+  const top = Object.entries(by).filter(([, v]) => v.n > 0).sort((a, b) => b[1].n - a[1].n).slice(0, 10);
+  table("tblTop", [{ t: "Produkt" }, { t: "Netto", r: 1 }, { t: "Best.", r: 1 }],
+    top.map(([p, v]) => [`<div class="name">${esc(p)}</div><div class="small muted">${esc([...v.ch].join(", "))}</div>`, eur(v.n), num(v.o)]), "Noch keine Produktumsätze.");
+  const flop = inv.filter(r => r.stock > 0 && Number(r.sold_30d) === 0).sort((a, b) => Number(b.stock_value || 0) - Number(a.stock_value || 0)).slice(0, 10);
+  table("tblFlop", [{ t: "Produkt" }, { t: "Bestand", r: 1 }, { t: "Lagerwert", r: 1 }],
+    flop.map(r => [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.stock), eur(r.stock_value)]), "Keine Ladenhüter.");
+}
+
+function renderInventory(inv) {
+  const inS = inv.filter(r => r.stock > 0), val = inS.reduce((a, r) => a + Number(r.stock_value || 0), 0), units = inS.reduce((a, r) => a + Number(r.stock), 0);
+  const dead = inS.filter(r => Number(r.sold_30d) === 0), deadVal = dead.reduce((a, r) => a + Number(r.stock_value || 0), 0);
+  const oos = inv.filter(r => r.stock <= 0 && Number(r.sold_30d) > 0);
+  const cover = inS.filter(r => Number(r.sold_30d) > 0).map(r => ({ ...r, days: r.stock / (r.sold_30d / 30) })).filter(r => r.days < 14).sort((a, b) => a.days - b.days);
+  $("invKpis").innerHTML = [
+    ["Lagerwert (EK, JTL)", eur(val), `${num(units)} Stück · ${num(inS.length)} Artikel`],
+    ["Ohne Verkauf 30 T", eur(deadVal), `${num(dead.length)} Artikel gebunden`],
+    ["Reichweite < 14 T", num(cover.length), "Artikel nachbestellen"],
+    ["Ausverkauft", num(oos.length), "mit Verkäufen in 30 T"],
+  ].map(([l, v, s]) => `<div class="card kpi"><div class="l">${esc(l)}</div><div class="v">${v}</div><div class="s">${esc(s)}</div></div>`).join("");
+  table("tblCover", [{ t: "Produkt" }, { t: "Bestand", r: 1 }, { t: "Verk. 30T", r: 1 }, { t: "Tage", r: 1 }],
+    cover.slice(0, 12).map(r => [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.stock), num(r.sold_30d), r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })]), "Alles ausreichend bevorratet.");
+  table("tblOos", [{ t: "Produkt" }, { t: "Verk. 30T", r: 1 }],
+    oos.sort((a, b) => b.sold_30d - a.sold_30d).slice(0, 12).map(r => [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.sold_30d)]), "Nichts ausverkauft.");
+}
+
+function renderOpenOrders(oo) {
+  const now = Date.now(), old3 = oo.filter(r => now - new Date(r.created_at) > 3 * 864e5);
+  const total = oo.reduce((a, r) => a + Number(r.total || 0), 0);
+  $("ooKpis").innerHTML = [["Offen", num(oo.length)], ["Wert brutto", eur(total)], ["Älter 3 Tage", num(old3.length)], ["Artikel", num(oo.reduce((a, r) => a + Number(r.items || 0), 0))]]
+    .map(([l, v]) => `<div class="kpi"><div class="l">${l}</div><div class="v" style="font-size:20px">${v}</div></div>`).join("");
+  const by = {}; oo.forEach(r => { const c = by[r.channel] ||= { n: 0, t: 0, old: 0 }; c.n++; c.t += Number(r.total || 0); if (now - new Date(r.created_at) > 3 * 864e5) c.old++; });
+  table("tblOo", [{ t: "Kanal" }, { t: "Offen", r: 1 }, { t: "Wert", r: 1 }, { t: "> 3 T", r: 1 }],
+    Object.entries(by).sort((a, b) => b[1].n - a[1].n).map(([c, v]) => [esc(c), num(v.n), eur(v.t), v.old ? pill(v.old, "p-warn") : "0"]), "Keine offenen Bestellungen.");
+  table("tblOoOld", [{ t: "Bestellung" }, { t: "Kanal" }, { t: "Seit" }, { t: "Wert", r: 1 }],
+    oo.slice(0, 10).map(r => [esc(r.order_ref), esc(r.channel), esc(fmtDT(r.created_at)), eur(r.total, 2)]), "Keine offenen Bestellungen.");
+}
+
+function renderInbox(inbox, today) {
+  const wk = inbox.filter(r => ago(r.received_at) < 7 * 1440);
+  const cats = {}; wk.forEach(r => cats[r.category || "Ohne Kategorie"] = (cats[r.category || "Ohne Kategorie"] || 0) + 1);
+  const list = Object.entries(cats).sort((a, b) => b[1] - a[1]), mx = Math.max(1, ...list.map(x => x[1]));
+  $("inboxCats").innerHTML = list.length ? list.map(([c, n]) => `<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${esc(c)}</span><span class="muted">${n}</span></div><div class="barbg"><div class="bar" style="width:${Math.round(n / mx * 100)}%"></div></div></div>`).join("") : `<div class="empty">Noch keine E-Mails im Cockpit.</div>`;
+  table("tblInbox", [{ t: "Eingang" }, { t: "Betreff" }, { t: "Kategorie" }],
+    inbox.slice(0, 15).map(r => [esc(fmtDT(r.received_at)), `<div class="name">${esc(r.subject)}</div><div class="small muted">${esc(r.sender)}</div>`, esc(r.category || "–")]), "Noch keine E-Mails im Cockpit.");
+}
+
+function renderTasks(tasks) {
+  const rank = (t) => (/ceo|freigabe/i.test(t.status || "") ? 0 : 2) + (/hoch|high|dringend/i.test(t.priority || "") ? 0 : 1);
+  const open = tasks.filter(t => !/^(erledigt|done|abgeschlossen|fertig)$/i.test(String(t.status || "").trim())).sort((a, b) => rank(a) - rank(b));
+  const prioCls = (p) => /hoch|high|dringend|urgent/i.test(p || "") ? "p-bad" : /mittel|medium/i.test(p || "") ? "p-warn" : "p-off";
+  table("tblTasks", [{ t: "Aufgabe" }, { t: "Prio" }, { t: "Status" }, { t: "Wer" }, { t: "Fällig" }],
+    open.slice(0, 40).map(t => [`<div class="name">${esc(t.topic || t.key)}</div><div class="small muted">${esc([t.platform, t.next_step].filter(Boolean).join(" · "))}</div>`, t.priority ? pill(t.priority, prioCls(t.priority)) : "–", esc(t.status || "–"), esc(t.who || "–"), t.due ? esc(fmtD(t.due)) : "–"]),
+    "Noch keine Aufgaben im Cockpit.");
+}
+
+function renderSocial(social) {
+  const nets = {}; social.forEach(r => (nets[r.network] ||= []).push(r));
+  const t = state.today, d7 = addDays(t, -6);
+  const rows = Object.entries(nets).map(([n, arr]) => {
+    const last = arr[arr.length - 1], w = arr.filter(r => r.day >= d7);
+    return [esc(n), num(last.followers), num(w.reduce((a, r) => a + Number(r.followers_gained || 0), 0)), num(w.reduce((a, r) => a + Number(r.reach || 0), 0)), num(w.reduce((a, r) => a + Number(r.interactions || 0), 0)), esc(fmtD(last.day))];
+  });
+  table("tblSocial", [{ t: "Netzwerk" }, { t: "Follower", r: 1 }, { t: "+7 T", r: 1 }, { t: "Reichweite 7 T", r: 1 }, { t: "Interakt. 7 T", r: 1 }, { t: "Stand" }], rows, "Noch keine Social-Daten im Cockpit.");
+}
+
+function renderSync(runs, conn) {
+  const SLA = { jtl: 75, shopify: 45, gmail: 1500, notion: 1500, metricool: 1500, social: 1500 };
+  const last = {}; runs.forEach(r => { if (!last[r.source]) last[r.source] = r; });
+  const okLast = {}; runs.forEach(r => { if (r.ok && !okLast[r.source]) okLast[r.source] = r; });
+  const rows = Object.values(last).sort((a, b) => ago(a.finished_at) - ago(b.finished_at)).map(r => {
+    const m = ago(r.finished_at), sla = SLA[String(r.source).toLowerCase()];
+    const st = !r.ok ? pill("Fehler", "p-bad") : sla && m > sla ? pill("verspätet", "p-warn") : pill("ok", "p-ok");
+    return [esc(r.source), esc(fmtDT(r.finished_at)) + `<div class="small muted">vor ${agoTxt(m)}</div>`, num(r.rows_written), st];
+  });
+  table("tblSync", [{ t: "Quelle" }, { t: "Letzter Lauf" }, { t: "Zeilen", r: 1 }, { t: "Status" }], rows, "Noch keine Sync-Läufe.");
+  const cls = (s) => s === "live" ? "p-ok" : s === "error" ? "p-bad" : "p-off";
+  const lbl = (s) => s === "live" ? "live" : s === "error" ? "Fehler" : s === "not_connected" ? "nicht verbunden" : (s || "–");
+  table("tblConn", [{ t: "Verbindung" }, { t: "Status" }, { t: "Aktualisiert" }],
+    conn.sort((a, b) => (a.status === "live" ? 0 : a.status === "error" ? 0 : 1) - (b.status === "live" ? 0 : b.status === "error" ? 0 : 1) || a.channel.localeCompare(b.channel))
+      .map(c => [`${esc(c.channel)}<div class="small muted">${esc(c.kind || "")}</div>`, pill(lbl(c.status), cls(c.status)), esc(fmtDT(c.updated_at))]), "Keine Verbindungen.");
+}
+
+// Start
+sb.auth.getSession().then(({ data }) => { if (!data.session) showLogin(); });
+</script>
+</body>
+</html>
