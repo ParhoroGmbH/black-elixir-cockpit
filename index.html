@@ -1,170 +1,255 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0b0b0c">
+<meta name="theme-color" content="#050506">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BE Cockpit">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://avsjxexvqgrgxeujkbei.supabase.co wss://avsjxexvqgrgxeujkbei.supabase.co; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://avsjxexvqgrgxeujkbei.supabase.co wss://avsjxexvqgrgxeujkbei.supabase.co; style-src 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>BLACK ELIXIR · Cockpit</title>
+<script>
+// Theme vor dem ersten Zeichnen setzen (kein Flackern). Gespeichert in localStorage "be-theme": "dark" | "light".
+(function () { try { var t = localStorage.getItem("be-theme"); if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch (e) {} })();
+</script>
 <style>
-:root{--bg:#0b0b0c;--card:#141416;--card2:#1b1b1e;--line:#2a2a2e;--gold:#c9a75d;--gold2:#e6cf94;--txt:#ece9e2;--mut:#9a968c;--ok:#6fbf8a;--warn:#e0a34a;--bad:#e06a5a;
---c1:#c9a75d;--c2:#8a6d3b;--c3:#e6cf94;--c4:#6b7b8c;--c5:#a58f6b;--c6:#5d6b5a;--c7:#b07a5a;--c8:#77706a}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
-a{color:var(--gold2)}
-.wrap{max-width:1180px;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 14px 40px}
-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 14px;border-bottom:1px solid var(--line);margin-bottom:16px}
-.brand{font-family:Didot,"Bodoni 72","Playfair Display",Georgia,serif;letter-spacing:.32em;font-size:20px;color:var(--gold)}
-.brand small{display:block;font-family:inherit;letter-spacing:.25em;font-size:10px;color:var(--mut);margin-top:2px}
-.hbtn{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-button,.btn{background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;cursor:pointer}
-button.primary{background:var(--gold);color:#111;font-weight:600}
-button:disabled{opacity:.5}
+/* ===== Themes ===== */
+:root,[data-theme=dark]{
+  --bg:#050506;--bg2:#0d0c0b;--card:rgba(24,22,19,.78);--card2:rgba(34,31,27,.9);--line:rgba(201,167,93,.16);--line2:rgba(255,255,255,.05);
+  --txt:#efe9dc;--mut:#9c958a;--gold:#c9a75d;--gold-a:#f3e2b0;--gold-b:#c9a75d;--gold-c:#7d5f2a;--gold-d:#e9d39b;
+  --ok:#5fc98a;--warn:#e8b04a;--bad:#ef5f50;--grid:rgba(255,255,255,.07);--shadow:0 1px 0 rgba(255,255,255,.04) inset,0 18px 40px -18px rgba(0,0,0,.9),0 2px 6px rgba(0,0,0,.5);
+  --glass:rgba(10,10,10,.62);--sheen:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,0) 42%);--reflect:rgba(255,255,255,.16);
+  --bgimg:radial-gradient(1200px 700px at 85% -10%,rgba(201,167,93,.13),transparent 60%),radial-gradient(900px 600px at -10% 110%,rgba(201,167,93,.08),transparent 60%),linear-gradient(180deg,#0a0908,#050506 40%);
+  color-scheme:dark}
+[data-theme=light]{
+  --bg:#f5efe3;--bg2:#ece4d3;--card:rgba(255,252,245,.82);--card2:rgba(255,255,255,.95);--line:rgba(138,106,44,.2);--line2:rgba(0,0,0,.05);
+  --txt:#1d1913;--mut:#7a7062;--gold:#9a7630;--gold-a:#d9b866;--gold-b:#a07a2e;--gold-c:#5e4416;--gold-d:#8a6a2c;
+  --ok:#1f8a4c;--warn:#b7791f;--bad:#c63b2d;--grid:rgba(0,0,0,.08);--shadow:0 1px 0 rgba(255,255,255,.9) inset,0 18px 36px -20px rgba(80,60,20,.45),0 2px 6px rgba(80,60,20,.12);
+  --glass:rgba(250,246,236,.72);--sheen:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0) 45%);--reflect:rgba(120,90,30,.14);
+  --bgimg:radial-gradient(1200px 700px at 85% -10%,rgba(201,167,93,.22),transparent 60%),radial-gradient(900px 600px at -10% 110%,rgba(201,167,93,.14),transparent 60%),linear-gradient(180deg,#faf6ee,#f1e9d9);
+  color-scheme:light}
+:root{--metal:linear-gradient(100deg,var(--gold-c) 0%,var(--gold-b) 22%,var(--gold-a) 42%,var(--gold-b) 58%,var(--gold-c) 78%,var(--gold-b) 100%);--r:18px;--pad:clamp(10px,1.4vw,22px);--gap:clamp(10px,1.1vw,18px)}
+
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+body{background:var(--bgimg) fixed,var(--bg);min-height:100vh;min-height:100dvh}
+a{color:var(--gold)}
+.hidden{display:none!important}
 .muted{color:var(--mut)}.small{font-size:12px}
-.grid{display:grid;gap:12px}
-@media(min-width:760px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
-.g4m{grid-template-columns:1fr 1fr}
-@media(min-width:760px){.g4m{grid-template-columns:repeat(4,1fr)}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
-h2{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:22px 0 10px;font-weight:600}
-h3{font-size:13px;margin:0 0 10px;color:var(--txt);font-weight:600}
-.kpi .l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-.kpi .v{font-size:24px;font-weight:600;color:var(--gold2);margin-top:4px;font-variant-numeric:tabular-nums}
-.kpi .s{font-size:12px;color:var(--mut)}
-.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.seg button{padding:5px 12px;font-size:12px;border-color:var(--line);color:var(--mut)}
-.seg button.on{border-color:var(--gold);color:var(--gold)}
+.serif{font-family:Didot,"Bodoni 72","Bodoni MT","Playfair Display",Georgia,"Times New Roman",serif}
+.metal{background:var(--metal);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.reflect{-webkit-box-reflect:below -2px linear-gradient(transparent 55%,var(--reflect))}
+
+/* ===== Buttons ===== */
+button,.btn{font:inherit;font-size:13px;cursor:pointer;border-radius:999px;padding:8px 14px;color:var(--gold);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0));border:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.06) inset;transition:transform .15s,border-color .15s,background .15s}
+button:hover{border-color:var(--gold)}
+button:active{transform:translateY(1px) scale(.98)}
+button.primary{background:var(--metal);background-size:200% 100%;color:#17130b;font-weight:650;border-color:transparent;box-shadow:0 8px 20px -10px rgba(201,167,93,.8),0 1px 0 rgba(255,255,255,.5) inset}
+button:disabled{opacity:.5}
+button.busy .tx::after{content:" …"}
+button.busy .ic{display:inline-block;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.icon{width:38px;height:38px;padding:0;display:inline-grid;place-items:center;font-size:16px}
+
+/* ===== Login ===== */
+.login{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px}
+.login-box{width:min(420px,100%);text-align:center}
+.login .brand{font-size:clamp(26px,7vw,40px)}
+.login .card{text-align:left;margin-top:34px}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 5px;letter-spacing:.04em}
+input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:13px;font-size:16px}
+input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,167,93,.18)}
+.msg{font-size:13px;margin-top:10px;min-height:18px}
+
+/* ===== Header ===== */
+.top{position:sticky;top:0;z-index:20;background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid var(--line);padding:max(8px,env(safe-area-inset-top)) var(--pad) 8px}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brand{font-family:Didot,"Bodoni 72","Bodoni MT","Playfair Display",Georgia,serif;letter-spacing:.34em;font-size:clamp(16px,2vw,22px);line-height:1.1}
+.brand small{display:block;font-family:-apple-system,"Segoe UI",Roboto,sans-serif;letter-spacing:.42em;font-size:9px;color:var(--mut);margin-top:3px;-webkit-text-fill-color:var(--mut)}
+.hbtn{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#loadedAt{margin-right:4px}
+.ic{display:none}#standM{display:none;margin-left:auto}
+@media(max-width:520px){.hbtn button.txt{width:38px;height:38px;padding:0}.hbtn button.txt .tx{display:none}.hbtn button.txt .ic{display:inline}#loadedAt{display:none}#standM{display:inline}.hrow{flex-wrap:nowrap}.brand{font-size:14px;letter-spacing:.24em;white-space:nowrap}.chip{min-height:48px;padding:8px 10px;gap:8px}.chip .n{font-size:19px;min-width:24px}.chip .l{font-size:12.5px}}
+
+/* ===== Urgent strip ===== */
+.urgent{padding:10px var(--pad) 4px}
+.usum{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:2px 0 8px}
+.usum .t{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--mut)}
+.usum b{font-weight:600}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:8px}
+@media(max-width:520px){.chips{grid-template-columns:1fr 1fr}}
+.chip{position:relative;display:flex;align-items:center;gap:10px;text-align:left;border-radius:14px;padding:10px 12px;min-height:54px;color:var(--txt);border:1px solid var(--line);background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,0) 50%),var(--card2);box-shadow:var(--shadow);overflow:hidden;transform-style:preserve-3d}
+.chip::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.chip::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 0% 0%,var(--cg),transparent 55%);pointer-events:none}
+.chip .n{font-size:22px;font-weight:700;min-width:30px;color:var(--c);font-variant-numeric:tabular-nums;text-shadow:0 0 18px var(--cg)}
+.chip .l{font-size:13px;line-height:1.2;padding-right:14px}
+.chip .h{display:block;font-size:11px;color:var(--mut);margin-top:2px}
+.chip{transition:transform .3s cubic-bezier(.2,.7,.2,1),border-color .2s;transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+.chip:active{transform:perspective(700px) scale(.97)}
+.chip.red{--c:var(--bad);--cg:rgba(239,95,80,.28);border-color:rgba(239,95,80,.45)}
+.chip.yellow{--c:var(--warn);--cg:rgba(232,176,74,.24);border-color:rgba(232,176,74,.4)}
+.chip.green{--c:var(--ok);--cg:rgba(95,201,138,.16);min-height:44px;padding:7px 12px}
+.chip.green .n{font-size:16px}
+.chip.red .dot{animation:pulse 1.6s infinite}
+.dot{position:absolute;right:10px;top:10px;width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 0 var(--cg)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--cg)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+/* ===== Dashboard grid (edge-to-edge) ===== */
+main{padding:6px var(--pad) calc(28px + env(safe-area-inset-bottom))}
+.dash{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap)}
+.s12{grid-column:span 12}.s8{grid-column:span 8}.s6{grid-column:span 6}.s4{grid-column:span 4}.s3{grid-column:span 3}
+@media(max-width:1199px){.s8,.s6,.s4{grid-column:span 6}.s3{grid-column:span 6}.m12{grid-column:span 12}}
+@media(max-width:759px){.s8,.s6,.s4,.s3{grid-column:span 12}.kp.s3{grid-column:span 6}}
+.sec-h{grid-column:span 12;display:flex;align-items:center;gap:12px;margin:14px 2px -4px}
+.sec-h h2{margin:0;font-size:12px;letter-spacing:.3em;text-transform:uppercase;font-weight:600}
+.sec-h .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.5}
+
+.card{position:relative;min-width:0;border-radius:var(--r);padding:14px 16px;background:var(--sheen),var(--card);border:1px solid var(--line);box-shadow:var(--shadow);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s;transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0)}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.06) 45%,transparent 60%);background-size:250% 100%;background-position:var(--shx,100%) 0;opacity:.9}
+.card:hover{border-color:rgba(201,167,93,.38)}
+.card h3{margin:0 0 10px;font-size:13px;font-weight:600;letter-spacing:.02em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kpi{padding:14px 16px 26px;overflow:hidden}
+.kpi .l{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.kpi .v{font-size:clamp(22px,2.4vw,32px);font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:-.01em;display:inline-block}
+.kpi .s{font-size:12px;color:var(--mut);margin-top:16px}
+.mini .v{font-size:20px}
+.kgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}
+@media(max-width:520px){.kgrid{grid-template-columns:1fr 1fr}}
+.kgrid .kpi{padding:10px 12px 16px;border-radius:12px;background:var(--card2);border:1px solid var(--line2)}
+.kgrid .kpi .s{margin-top:8px}
+
+/* Focus (aus Dringend-Leiste) */
+.focus{animation:glow 2.2s ease-out 1;border-color:var(--fc,var(--gold))!important}
+@keyframes glow{0%{box-shadow:0 0 0 0 var(--fcg,rgba(201,167,93,.5)),var(--shadow)}35%{box-shadow:0 0 0 6px var(--fcg,rgba(201,167,93,.35)),var(--shadow)}100%{box-shadow:0 0 0 0 transparent,var(--shadow)}}
+.fchip{font-size:11px;font-weight:500;padding:3px 10px;border-radius:999px;background:var(--fcg,rgba(201,167,93,.2));color:var(--txt);border:1px solid var(--fc,var(--gold));cursor:pointer}
+tr.hl td{background:linear-gradient(90deg,var(--fcg,rgba(201,167,93,.18)),transparent)}
+tr.hl td:first-child{box-shadow:inset 3px 0 0 var(--fc,var(--gold))}
+
+/* Tabellen */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tall{max-height:520px;overflow:auto}
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{font-weight:500;color:var(--mut);text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 6px;border-bottom:1px solid var(--line)}
-.tbl td{padding:7px 6px;border-bottom:1px solid #1f1f22;vertical-align:top}
+.tbl th{position:sticky;top:0;background:var(--card2);font-weight:500;color:var(--mut);text-align:left;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:7px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:8px 6px;border-bottom:1px solid var(--line2);vertical-align:top}
 .tbl .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tbl tr:last-child td{border-bottom:0}
-.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.name{max-width:420px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tbl tbody tr:hover td{background:rgba(201,167,93,.05)}
+.name{max-width:520px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
-.p-ok{color:var(--ok);border-color:#2d4a37}.p-warn{color:var(--warn);border-color:#5a4423}.p-bad{color:var(--bad);border-color:#5a2a24}.p-off{color:var(--mut)}
+.p-ok{color:var(--ok);border-color:rgba(95,201,138,.4)}.p-warn{color:var(--warn);border-color:rgba(232,176,74,.45)}.p-bad{color:var(--bad);border-color:rgba(239,95,80,.45)}.p-off{color:var(--mut)}
 .empty{color:var(--mut);font-size:13px;padding:10px 0}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.seg button{padding:5px 12px;font-size:12px;color:var(--mut)}
+.seg button.on{border-color:var(--gold);color:var(--gold);background:rgba(201,167,93,.1)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mut);margin:4px 0 8px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 svg text{fill:var(--mut);font-size:10px}
-.bar{height:8px;border-radius:4px;background:var(--gold);opacity:.85}
-.barbg{background:#232326;border-radius:4px;overflow:hidden}
-/* Login */
-.login{max-width:380px;margin:12vh auto 0;text-align:center}
-.login .brand{font-size:26px}
-.login .card{text-align:left;margin-top:26px}
-label{display:block;font-size:12px;color:var(--mut);margin:10px 0 4px}
-input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:12px;font-size:16px}
-input:focus{outline:none;border-color:var(--gold)}
-.msg{font-size:13px;margin-top:10px;min-height:18px}
-.linkbtn{background:none;border:0;color:var(--mut);text-decoration:underline;padding:6px 0;font-size:12px}
-.hidden{display:none!important}
-.banner{border:1px solid #5a4423;color:var(--warn);background:#1c160c;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
-.foot{margin-top:28px;color:var(--mut);font-size:11px;text-align:center}
+svg .gl{stroke:var(--grid)}
+.bar{height:8px;border-radius:4px;background:var(--metal);background-size:200% 100%}
+.barbg{background:var(--line2);border-radius:4px;overflow:hidden}
+.banner{border:1px solid rgba(232,176,74,.45);color:var(--warn);background:rgba(232,176,74,.08);border-radius:12px;padding:10px 12px;font-size:13px;margin:6px var(--pad) 0}
+.foot{margin-top:26px;color:var(--mut);font-size:11px;text-align:center}
+
+/* Bewegung reduzieren / Touch-Geräte */
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.card{transform:none!important}}
+@media (hover:none){.card::before{display:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
 
 <!-- LOGIN -->
 <section id="loginView" class="login hidden">
-  <div class="brand">BLACK ELIXIR<small>COCKPIT</small></div>
-  <div class="card">
-    <div id="pwBox">
-      <label for="email">E-Mail</label>
-      <input id="email" type="email" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false">
-      <label for="pw">Passwort</label>
-      <input id="pw" type="password" autocomplete="current-password">
-      <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
-        <button id="btnLogin" class="primary" type="button">Anmelden</button>
-        <button id="btnMagic" type="button">Login-Link per E-Mail</button>
+  <div class="login-box">
+    <div class="brand metal reflect">BLACK ELIXIR</div>
+    <div class="small muted" style="letter-spacing:.42em;margin-top:22px">COCKPIT</div>
+    <div class="card">
+      <div id="pwBox">
+        <label for="email">E-Mail</label>
+        <input id="email" type="email" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false">
+        <label for="pw">Passwort</label>
+        <input id="pw" type="password" autocomplete="current-password">
+        <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px">
+          <button id="btnLogin" class="primary" type="button">Anmelden</button>
+          <button id="btnMagic" type="button">Login-Link per E-Mail</button>
+        </div>
       </div>
-    </div>
-    <div id="otpBox" class="hidden">
-      <p class="small muted">Wir haben eine E-Mail geschickt. Link antippen – oder, falls die E-Mail einen 6-stelligen Code enthält, hier eingeben:</p>
-      <label for="otp">Code</label>
-      <input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="10">
-      <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
-        <button id="btnOtp" class="primary" type="button">Code bestätigen</button>
-        <button id="btnBack" type="button">Zurück</button>
+      <div id="otpBox" class="hidden">
+        <p class="small muted">Wir haben eine E-Mail geschickt. Link antippen – oder, falls die E-Mail einen 6-stelligen Code enthält, hier eingeben:</p>
+        <label for="otp">Code</label>
+        <input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="10">
+        <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px">
+          <button id="btnOtp" class="primary" type="button">Code bestätigen</button>
+          <button id="btnBack" type="button">Zurück</button>
+        </div>
       </div>
+      <div id="loginMsg" class="msg muted"></div>
     </div>
-    <div id="loginMsg" class="msg muted"></div>
+    <p class="small muted" style="margin-top:18px">Nur für freigegebene Konten. Daten werden erst nach Anmeldung geladen.</p>
+    <button class="themeBtn" type="button" style="margin-top:6px">◐ Hell / Dunkel</button>
   </div>
-  <p class="small muted" style="margin-top:18px">Nur für freigegebene Konten. Daten werden erst nach Anmeldung geladen.</p>
 </section>
 
 <!-- DASHBOARD -->
 <section id="appView" class="hidden">
-  <header>
-    <div class="brand">BLACK ELIXIR<small>COCKPIT</small></div>
-    <div class="hbtn">
-      <span id="loadedAt" class="small muted"></span>
-      <button id="btnRefresh" type="button">Aktualisieren</button>
-      <button id="btnLogout" type="button">Abmelden</button>
+  <div class="top">
+    <div class="hrow">
+      <div class="brand metal">BLACK ELIXIR<small>COCKPIT</small></div>
+      <div class="hbtn">
+        <span id="loadedAt" class="small muted"></span>
+        <button class="themeBtn icon" type="button" title="Schwarz / Weiß umschalten" aria-label="Theme umschalten">◐</button>
+        <button id="btnRefresh" class="txt" type="button" title="Aktualisieren"><span class="tx">Aktualisieren</span><span class="ic">↻</span></button>
+        <button id="btnLogout" class="txt" type="button" title="Abmelden"><span class="tx">Abmelden</span><span class="ic">⏻</span></button>
+      </div>
     </div>
-  </header>
+  </div>
+
+  <!-- DRINGEND: rot / gelb / grün -->
+  <div class="urgent" id="urgentWrap">
+    <div class="usum"><span class="t">Was ist dringend?</span><span id="usum" class="small"></span><span id="standM" class="small muted"></span></div>
+    <div class="chips" id="urgent"></div>
+  </div>
   <div id="banner" class="banner hidden"></div>
 
-  <h2>Umsatz netto</h2>
-  <div class="grid g4m" id="kpis"></div>
+  <main>
+  <div class="dash">
+    <div class="sec-h" id="sec-sales"><h2 class="metal">Umsatz netto</h2><span class="rule"></span></div>
+    <div id="kpis" style="display:contents"></div>
+    <div class="card s4 m12"><h3>Umsatz je Kanal</h3><div class="seg" id="segPeriod"></div><div class="scroll"><table class="tbl" id="tblChannels"></table></div></div>
+    <div class="card s8 m12"><h3>Tagesumsatz netto · 30 Tage</h3><div class="legend" id="chartLegend"></div><div id="chart"></div></div>
 
-  <h2>Umsatz je Kanal</h2>
-  <div class="grid g2">
-    <div class="card">
-      <div class="seg" id="segPeriod"></div>
-      <div class="scroll"><table class="tbl" id="tblChannels"></table></div>
-    </div>
-    <div class="card">
-      <h3>Tagesumsatz netto · 30 Tage</h3>
-      <div class="legend" id="chartLegend"></div>
-      <div id="chart"></div>
-    </div>
-  </div>
+    <div class="sec-h"><h2 class="metal">Offene Bestellungen</h2><span class="rule"></span></div>
+    <div class="card s6" id="sec-orders"><div class="kgrid" id="ooKpis"></div><div class="scroll"><table class="tbl" id="tblOo"></table></div></div>
+    <div class="card s6" id="card-ooOld"><h3>Älteste offene Bestellungen <span id="f-oo"></span></h3><div class="scroll tall"><table class="tbl" id="tblOoOld"></table></div></div>
 
-  <h2>Produkte · 30 Tage</h2>
-  <div class="grid g2">
-    <div class="card"><h3>Top 10 nach Nettoumsatz</h3><div class="scroll"><table class="tbl" id="tblTop"></table></div></div>
-    <div class="card"><h3>Flop 10 · Lagerwert ohne Verkauf (30 T)</h3><div class="scroll"><table class="tbl" id="tblFlop"></table></div></div>
-  </div>
+    <div class="sec-h" id="sec-stock"><h2 class="metal">Bestand &amp; Lagerwert</h2><span class="rule"></span></div>
+    <div id="invKpis" style="display:contents"></div>
+    <div class="card s6" id="card-cover"><h3>Nachbestellen · Reichweite unter 14 Tagen <span id="f-cover"></span></h3><div class="scroll tall"><table class="tbl" id="tblCover"></table></div></div>
+    <div class="card s6" id="card-oos"><h3>Ausverkauft, aber verkauft (30 T) <span id="f-oos"></span></h3><div class="scroll tall"><table class="tbl" id="tblOos"></table></div></div>
 
-  <h2>Bestand &amp; Lagerwert</h2>
-  <div class="grid g4m" id="invKpis"></div>
-  <div class="grid g2" style="margin-top:12px">
-    <div class="card"><h3>Nachbestellen · Reichweite unter 14 Tagen</h3><div class="scroll"><table class="tbl" id="tblCover"></table></div></div>
-    <div class="card"><h3>Ausverkauft, aber verkauft (30 T)</h3><div class="scroll"><table class="tbl" id="tblOos"></table></div></div>
-  </div>
+    <div class="sec-h"><h2 class="metal">Aufgaben &amp; Postfach</h2><span class="rule"></span></div>
+    <div class="card s8 m12" id="sec-tasks"><h3>Aufgaben <span id="f-tasks"></span></h3><div class="scroll tall"><table class="tbl" id="tblTasks"></table></div></div>
+    <div class="card s4 m12" id="sec-inbox"><h3>Postfach · Kategorien 7 Tage</h3><div id="inboxCats"></div></div>
+    <div class="card s12" id="card-inbox"><h3>Neueste E-Mails <span id="f-inbox"></span></h3><div class="scroll tall"><table class="tbl" id="tblInbox"></table></div></div>
 
-  <h2>Offene Bestellungen</h2>
-  <div class="grid g2">
-    <div class="card"><div class="grid g4m" id="ooKpis" style="margin-bottom:12px"></div><div class="scroll"><table class="tbl" id="tblOo"></table></div></div>
-    <div class="card"><h3>Älteste offene Bestellungen</h3><div class="scroll"><table class="tbl" id="tblOoOld"></table></div></div>
-  </div>
+    <div class="sec-h"><h2 class="metal">Produkte · 30 Tage</h2><span class="rule"></span></div>
+    <div class="card s6"><h3>Top 10 nach Nettoumsatz</h3><div class="scroll"><table class="tbl" id="tblTop"></table></div></div>
+    <div class="card s6"><h3>Flop 10 · Lagerwert ohne Verkauf (30 T)</h3><div class="scroll"><table class="tbl" id="tblFlop"></table></div></div>
 
-  <h2>Postfach</h2>
-  <div class="grid g2">
-    <div class="card"><h3>Nach Kategorie · 7 Tage</h3><div id="inboxCats"></div></div>
-    <div class="card"><h3>Neueste E-Mails</h3><div class="scroll"><table class="tbl" id="tblInbox"></table></div></div>
-  </div>
+    <div class="sec-h"><h2 class="metal">Social</h2><span class="rule"></span></div>
+    <div class="card s12"><div class="scroll"><table class="tbl" id="tblSocial"></table></div></div>
 
-  <h2>Aufgaben</h2>
-  <div class="card"><div class="scroll"><table class="tbl" id="tblTasks"></table></div></div>
-
-  <h2>Social</h2>
-  <div class="card"><div class="scroll"><table class="tbl" id="tblSocial"></table></div></div>
-
-  <h2>Datenstand &amp; letzter Sync</h2>
-  <div class="grid g2">
-    <div class="card"><h3>Synchronisierung je Quelle</h3><div class="scroll"><table class="tbl" id="tblSync"></table></div></div>
-    <div class="card"><h3>Verbindungen</h3><div class="scroll"><table class="tbl" id="tblConn"></table></div></div>
+    <div class="sec-h"><h2 class="metal">Datenstand &amp; Verbindungen</h2><span class="rule"></span></div>
+    <div class="card s6" id="sec-sync"><h3>Synchronisierung je Quelle <span id="f-sync"></span></h3><div class="scroll"><table class="tbl" id="tblSync"></table></div></div>
+    <div class="card s6"><h3>Verbindungen</h3><div class="scroll tall"><table class="tbl" id="tblConn"></table></div></div>
   </div>
   <div class="foot">Angemeldet als <span id="who"></span> · Live aus Supabase (black-elixir-cockpit) · Zeiten Europe/Berlin · Auto-Aktualisierung alle 5 Min.</div>
+  </main>
 </section>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js" crossorigin="anonymous"></script>
 <script>
@@ -188,11 +273,23 @@ const addDays = (iso, n) => { const d = new Date(iso + "T12:00:00Z"); d.setUTCDa
 const ago = (s) => { if (!s) return Infinity; return (Date.now() - new Date(s).getTime()) / 60000; };
 const agoTxt = (m) => m === Infinity ? "nie" : m < 60 ? Math.round(m) + " Min." : m < 2880 ? Math.round(m / 60) + " Std." : Math.round(m / 1440) + " Tg.";
 const COLORS = ["#c9a75d", "#8a6d3b", "#e6cf94", "#6b7b8c", "#a58f6b", "#5d6b5a", "#b07a5a", "#77706a"];
+const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// ---------- Theme (Schwarz/Gold ↔ Elfenbein/Gold) ----------
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  try { localStorage.setItem("be-theme", t); } catch (e) {}
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === "light" ? "#f5efe3" : "#050506";
+  if (state.sales.length) renderSales();
+}
+document.querySelectorAll(".themeBtn").forEach(b => b.onclick = () => setTheme(document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light"));
+
+// ---------- Tabellen-Helfer ----------
+// rows: Array von { c: [Zellen], hl: bool } oder einfache Arrays
 function table(el, head, rows, emptyText) {
   if (!rows.length) { $(el).innerHTML = `<tr><td class="empty">${esc(emptyText || "Noch keine Daten.")}</td></tr>`; return; }
   $(el).innerHTML = "<thead><tr>" + head.map(h => `<th class="${h.r ? "r" : ""}">${esc(h.t)}</th>`).join("") + "</tr></thead><tbody>" +
-    rows.map(r => "<tr>" + r.map((c, i) => `<td class="${head[i].r ? "r" : ""}">${c}</td>`).join("") + "</tr>").join("") + "</tbody>";
+    rows.map(r => { const c = Array.isArray(r) ? r : r.c; return `<tr class="${r.hl ? "hl" : ""}">` + c.map((x, i) => `<td class="${head[i].r ? "r" : ""}">${x}</td>`).join("") + "</tr>"; }).join("") + "</tbody>";
 }
 const pill = (txt, cls) => `<span class="pill ${cls}">${esc(txt)}</span>`;
 
@@ -247,13 +344,13 @@ sb.auth.onAuthStateChange((_evt, session) => {
 document.addEventListener("visibilitychange", () => { if (!document.hidden && timer) load(); });
 
 // ---------- Daten ----------
-const state = { period: "30", sales: [], today: "" };
+const state = { period: "30", sales: [], today: "", d: null, focus: null };
 async function load() {
-  if (loading) return; loading = true; $("btnRefresh").disabled = true; $("btnRefresh").textContent = "Lädt …";
+  if (loading) return; loading = true; $("btnRefresh").disabled = true; $("btnRefresh").classList.add("busy");
   try {
     const { data: allowed, error: ae } = await sb.rpc("cockpit_is_allowed");
     if (ae && (ae.code === "PGRST202" || ae.code === "42883")) {
-      $("banner").classList.add("hidden"); // Freigabe-Funktion noch nicht eingerichtet (vor Migration)
+      $("banner").classList.add("hidden");
     } else if (ae || allowed !== true) {
       $("banner").textContent = "Dieses Konto ist für das Cockpit nicht freigegeben. Bitte mit der freigegebenen E-Mail anmelden.";
       $("banner").classList.remove("hidden");
@@ -272,14 +369,145 @@ async function load() {
       sb.from("channel_status").select("channel,kind,status,note,updated_at").then(r => { if (r.error) throw r.error; return r.data || []; }),
     ]);
     state.sales = sales;
-    renderSales(); renderProducts(prod, inv); renderInventory(inv); renderOpenOrders(oo); renderInbox(inbox, today);
-    renderTasks(tasks); renderSocial(social); renderSync(runs, conn);
-    $("loadedAt").textContent = "Stand " + fmtDT(new Date().toISOString());
+    state.d = { prod, inv, oo, inbox, tasks, social, runs, conn };
+    renderAll();
+    $("loadedAt").textContent = $("standM").textContent = "Stand " + fmtDT(new Date().toISOString());
   } catch (e) {
     $("banner").textContent = "Daten konnten nicht geladen werden: " + (e && e.message ? e.message : e);
     $("banner").classList.remove("hidden");
-  } finally { loading = false; $("btnRefresh").disabled = false; $("btnRefresh").textContent = "Aktualisieren"; }
+  } finally { loading = false; $("btnRefresh").disabled = false; $("btnRefresh").classList.remove("busy"); }
 }
+
+function renderAll() {
+  const d = state.d; if (!d) return;
+  state.U = computeUrgent(d);
+  renderUrgent();
+  renderSales(); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderInbox(d.inbox);
+  renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn);
+  bindTilt();
+}
+
+// ============================================================
+// DRINGEND-REGELN (Doku: README.md, Abschnitt "Dringend-Leiste")
+// ============================================================
+const RULE = {
+  OO_RED_DAYS: 3,          // offene Bestellung älter als 3 Tage  → rot
+  OO_YELLOW_DAYS: 2,       // offene Bestellung 2–3 Tage alt     → gelb
+  BESTSELLER_SOLD30: 10,   // ausverkauft UND ≥10 Stück verkauft in 30 T → rot
+  COVER_DAYS: 14,          // Reichweite < 14 Tage (Bestand > 0, ≥3 verkauft in 30 T) → gelb
+  COVER_MIN_SOLD30: 3,
+  SYNC_FAST: { jtl: 30, shopify: 15, ionos: 30 }, // Takt in Min.; rot wenn letzter Lauf Fehler oder älter als 2 Std.
+  SYNC_FAST_STALE_MIN: 120,
+  SYNC_DAILY: ["gmail", "notion", "social"],      // gelb wenn älter als 26 Std.
+  SYNC_DAILY_STALE_MIN: 26 * 60,
+  MAIL_DAYS: 7,
+  MAIL_BIZ: /rechnung|zahlung|kunde|kontakt|marktplatz|bestellung|retoure|reklamation|shop\/merchant/i,
+};
+const isDone = (t) => /^(erledigt|done|abgeschlossen|fertig)$/i.test(String(t.status || "").trim());
+const isCeo = (t) => /ceo|freigabe/i.test(t.status || "");
+const isHigh = (t) => /hoch|high|dringend|urgent/i.test(t.priority || "");
+const ageDays = (iso) => (Date.now() - new Date(iso).getTime()) / 864e5;
+
+function syncHealth(runs, conn) {
+  const last = {}, out = [];
+  runs.forEach(r => { const k = String(r.source).toLowerCase(); if (!last[k]) last[k] = r; });
+  Object.entries(last).forEach(([k, r]) => {
+    const m = ago(r.finished_at);
+    let lvl = null;
+    if (k in RULE.SYNC_FAST) lvl = !r.ok || m > RULE.SYNC_FAST_STALE_MIN ? "red" : "green";
+    else if (RULE.SYNC_DAILY.includes(k)) lvl = !r.ok ? "red" : m > RULE.SYNC_DAILY_STALE_MIN ? "yellow" : "green";
+    if (lvl) out.push({ key: k, lvl, r, m });
+  });
+  conn.filter(c => c.status === "error").forEach(c => out.push({ key: "conn:" + c.channel, lvl: "red", conn: c }));
+  return out;
+}
+
+function computeUrgent(d) {
+  const oo = d.oo, inv = d.inv, tasks = d.tasks.filter(t => !isDone(t));
+  const ooRed = oo.filter(r => ageDays(r.created_at) > RULE.OO_RED_DAYS);
+  const ooYel = oo.filter(r => { const a = ageDays(r.created_at); return a > RULE.OO_YELLOW_DAYS && a <= RULE.OO_RED_DAYS; });
+  const oosBest = inv.filter(r => r.stock <= 0 && Number(r.sold_30d) >= RULE.BESTSELLER_SOLD30);
+  const lowCover = inv.filter(r => r.stock > 0 && Number(r.sold_30d) >= RULE.COVER_MIN_SOLD30 && r.stock / (r.sold_30d / 30) < RULE.COVER_DAYS);
+  const sh = syncHealth(d.runs, d.conn);
+  const taskRed = tasks.filter(t => isHigh(t) || (isCeo(t) && t.due && t.due < state.today));
+  const taskCeo = tasks.filter(t => isCeo(t) && !taskRed.includes(t));
+  const mailBiz = d.inbox.filter(r => ago(r.received_at) < RULE.MAIL_DAYS * 1440 && RULE.MAIL_BIZ.test(r.category || ""));
+  const syncRed = sh.filter(x => x.lvl === "red"), syncYel = sh.filter(x => x.lvl === "yellow"), syncOk = sh.filter(x => x.lvl === "green");
+  const L = [
+    { id: "oo_red", lvl: "red", n: ooRed.length, label: `Bestellungen > ${RULE.OO_RED_DAYS} Tage offen`, ok: "Keine alten Bestellungen", hint: "Versand prüfen", sec: "card-ooOld", rows: ooRed },
+    { id: "oos_best", lvl: "red", n: oosBest.length, label: "Bestseller ausverkauft", ok: "Bestseller lieferbar", hint: `≥ ${RULE.BESTSELLER_SOLD30} verkauft / 30 T`, sec: "card-oos", rows: oosBest },
+    { id: "sync_red", lvl: "red", n: syncRed.length, label: "Sync gestört", ok: "", hint: "Fehler oder > 2 Std. alt", sec: "sec-sync", rows: syncRed },
+    { id: "task_red", lvl: "red", n: taskRed.length, label: "Dringende Aufgaben", ok: "Keine dringenden Aufgaben", hint: "Prio hoch / CEO überfällig", sec: "sec-tasks", rows: taskRed },
+    { id: "oo_yel", lvl: "yellow", n: ooYel.length, label: `Bestellungen ${RULE.OO_YELLOW_DAYS}–${RULE.OO_RED_DAYS} Tage`, ok: "", hint: "bald verschicken", sec: "card-ooOld", rows: ooYel },
+    { id: "cover", lvl: "yellow", n: lowCover.length, label: "Reichweite < 14 Tage", ok: "Bestand reicht", hint: "nachbestellen", sec: "card-cover", rows: lowCover },
+    { id: "task_ceo", lvl: "yellow", n: taskCeo.length, label: "Wartet auf dich", ok: "Nichts wartet auf dich", hint: "Freigabe / Login", sec: "sec-tasks", rows: taskCeo },
+    { id: "mail_biz", lvl: "yellow", n: mailBiz.length, label: "Rechnung / Kunde · Mails", ok: "", hint: `letzte ${RULE.MAIL_DAYS} Tage`, sec: "card-inbox", rows: mailBiz },
+    { id: "sync_yel", lvl: "yellow", n: syncYel.length, label: "Daten veraltet", ok: "", hint: "Tagesquelle > 26 Std.", sec: "sec-sync", rows: syncYel },
+    { id: "sync_ok", lvl: "green", n: syncOk.length, label: "Syncs ok", ok: "", hint: syncOk.map(x => x.key).join(", "), sec: "sec-sync", rows: syncOk, always: true },
+  ];
+  // Regel ohne Treffer → grünes "alles gut"-Feld (wenn ein ok-Text definiert ist)
+  return L.map(x => x.always ? x : x.n > 0 ? x : x.ok ? { ...x, lvl: "green", label: x.ok, hint: "", empty: true } : null).filter(Boolean)
+    .sort((a, b) => ({ red: 0, yellow: 1, green: 2 })[a.lvl] - ({ red: 0, yellow: 1, green: 2 })[b.lvl]);
+}
+
+function renderUrgent() {
+  const U = state.U, c = { red: 0, yellow: 0, green: 0 };
+  U.forEach(x => c[x.lvl]++);
+  $("usum").innerHTML = `<b style="color:var(--bad)">${c.red} dringend</b> · <b style="color:var(--warn)">${c.yellow} beachten</b> · <b style="color:var(--ok)">${c.green} ok</b>`;
+  $("urgent").innerHTML = U.map(x => `<button type="button" class="chip ${x.lvl}" data-id="${x.id}" aria-label="${esc(x.label)}: ${x.n}">
+      <span class="n">${x.empty ? "✓" : num(x.n)}</span><span class="l">${esc(x.label)}${x.hint ? `<span class="h">${esc(x.hint)}</span>` : ""}</span>${x.lvl !== "green" ? '<span class="dot"></span>' : ""}</button>`).join("");
+  $("urgent").querySelectorAll(".chip").forEach(b => b.onclick = () => focusRule(b.dataset.id));
+}
+
+const LVLC = { red: ["var(--bad)", "rgba(239,95,80,.22)"], yellow: ["var(--warn)", "rgba(232,176,74,.22)"], green: ["var(--ok)", "rgba(95,201,138,.18)"] };
+function focusRule(id) {
+  const x = state.U.find(u => u.id === id); if (!x) return;
+  state.focus = x.empty ? null : { id, lvl: x.lvl, label: x.label };
+  renderAll();
+  const el = $(x.sec); if (!el) return;
+  const top = el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 10);
+  window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+  el.style.setProperty("--fc", LVLC[x.lvl][0]); el.style.setProperty("--fcg", LVLC[x.lvl][1]);
+  el.classList.remove("focus"); void el.offsetWidth; el.classList.add("focus");
+  const firstHl = el.querySelector("tr.hl"); const sc = el.querySelector(".tall");
+  if (firstHl && sc) sc.scrollTop = Math.max(0, firstHl.offsetTop - 40);
+}
+const F = (ids) => state.focus && ids.includes(state.focus.id) ? state.focus : null;
+function filterChip(slot, f) {
+  const el = $(slot); if (!el) return;
+  if (!f) { el.innerHTML = ""; return; }
+  const [c, g] = LVLC[f.lvl];
+  el.innerHTML = `<span class="fchip" style="--fc:${c};--fcg:${g}" title="Filter aufheben">Filter: ${esc(f.label)} ✕</span>`;
+  el.firstChild.onclick = () => { state.focus = null; renderAll(); };
+  const card = el.closest(".card"); if (card) { card.style.setProperty("--fc", c); card.style.setProperty("--fcg", g); }
+}
+
+// ---------- 3D-Neigung (Maus + Touch), aus bei prefers-reduced-motion ----------
+let tiltBound = false;
+function bindTilt() {
+  if (tiltBound || reduceMotion) return; tiltBound = true;
+  let raf = 0, cur = null;
+  const set = (el, x, y) => {
+    const r = el.getBoundingClientRect(), px = (x - r.left) / r.width - .5, py = (y - r.top) / r.height - .5;
+    const k = el.classList.contains("kpi") || el.classList.contains("chip") ? 7 : 2.2;
+    el.style.setProperty("--ry", (px * k).toFixed(2) + "deg"); el.style.setProperty("--rx", (-py * k).toFixed(2) + "deg");
+    el.style.setProperty("--shx", (100 - (px + .5) * 100).toFixed(0) + "%");
+  };
+  const reset = (el) => { if (!el) return; el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg"); el.style.removeProperty("--shx"); };
+  const target = (e) => e.target.closest && e.target.closest(".card,.chip");
+  document.addEventListener("pointermove", (e) => {
+    const el = target(e);
+    if (e.pointerType === "touch" && !e.isPrimary) return;
+    if (cur && cur !== el) reset(cur);
+    cur = el; if (!el) return;
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(() => set(el, e.clientX, e.clientY));
+  }, { passive: true });
+  document.addEventListener("pointerdown", (e) => { const el = target(e); if (el && e.pointerType === "touch") { cur = el; set(el, e.clientX, e.clientY); } }, { passive: true });
+  ["pointerup", "pointercancel", "pointerleave", "scroll"].forEach(ev => document.addEventListener(ev, () => { if (cur) { reset(cur); cur = null; } }, { passive: true }));
+}
+
+// ---------- Render ----------
+function kpiCard(l, v, s, extra = "") { return `<div class="card kpi s3 kp ${extra}"><div class="l">${esc(l)}</div><div class="v metal reflect">${v}</div><div class="s">${esc(s)}</div></div>`; }
 
 function renderSales() {
   const t = state.today, d7 = addDays(t, -6), rows = state.sales;
@@ -291,7 +519,7 @@ function renderSales() {
     ["7 Tage", s7, `${num(s7.o)} Bestellungen`],
     ["30 Tage", s30, `${num(s30.o)} Bestellungen`],
     ["Ø Bestellwert 30 T", { n: s30.o ? s30.n / s30.o : 0 }, "netto je Bestellung"],
-  ].map(([l, s, sub]) => `<div class="card kpi"><div class="l">${esc(l)}</div><div class="v">${eur(s.n)}</div><div class="s">${esc(sub)}</div></div>`).join("");
+  ].map(([l, s, sub]) => kpiCard(l, eur(s.n), sub)).join("");
 
   const periods = [["0", "Heute"], ["7", "7 Tage"], ["30", "30 Tage"]];
   $("segPeriod").innerHTML = periods.map(([k, l]) => `<button type="button" data-p="${k}" class="${state.period === k ? "on" : ""}">${l}</button>`).join("");
@@ -302,7 +530,6 @@ function renderSales() {
   table("tblChannels", [{ t: "Kanal" }, { t: "Netto", r: 1 }, { t: "Best.", r: 1 }, { t: "Anteil", r: 1 }],
     list.map(([c, v]) => [esc(c), eur(v.n), num(v.o), `${Math.round(v.n / tot * 100)} %`]), "Keine Umsätze im Zeitraum.");
 
-  // Chart: gestapelte Tagesbalken je Kanal
   const allCh = {}; rows.forEach(r => allCh[r.channel] = (allCh[r.channel] || 0) + Number(r.net_sales || 0));
   const chs = Object.entries(allCh).sort((a, b) => b[1] - a[1]).map(x => x[0]);
   const main = chs.slice(0, 6), color = (c) => COLORS[Math.min(main.indexOf(c) === -1 ? 7 : main.indexOf(c), 7)];
@@ -310,10 +537,10 @@ function renderSales() {
   const per = days.map(d => { const o = {}; rows.filter(r => r.day === d).forEach(r => { const k = main.includes(r.channel) ? r.channel : "Sonstige"; o[k] = (o[k] || 0) + Math.max(0, Number(r.net_sales || 0)); }); return o; });
   const keys = [...main, ...(chs.length > 6 ? ["Sonstige"] : [])];
   const maxV = Math.max(1, ...per.map(o => Object.values(o).reduce((a, b) => a + b, 0)));
-  const W = 600, H = 220, pl = 44, pb = 22, pt = 8, bw = (W - pl - 6) / days.length;
-  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tagesumsatz">`;
-  for (let g = 0; g <= 4; g++) { const v = maxV * g / 4, yy = H - pb - (H - pb - pt) * g / 4; svg += `<line x1="${pl}" x2="${W}" y1="${yy}" y2="${yy}" stroke="#26262a"/><text x="${pl - 6}" y="${yy + 3}" text-anchor="end">${Math.round(v / 1000)}k</text>`; }
-  per.forEach((o, i) => { let acc = 0; keys.forEach(k => { const v = o[k] || 0; if (!v) return; const h = (H - pb - pt) * v / maxV; const yy = H - pb - acc - h; acc += h; svg += `<rect x="${pl + i * bw + 1}" y="${yy}" width="${Math.max(1, bw - 2)}" height="${h}" fill="${k === "Sonstige" ? COLORS[7] : color(k)}"><title>${esc(fmtD(days[i]) + " " + k + ": " + eur(v))}</title></rect>`; }); });
+  const W = 900, H = 260, pl = 44, pb = 22, pt = 8, bw = (W - pl - 6) / days.length;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tagesumsatz"><defs>${keys.map((k, i) => `<linearGradient id="g${i}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${k === "Sonstige" ? COLORS[7] : color(k)}" stop-opacity="1"/><stop offset="1" stop-color="${k === "Sonstige" ? COLORS[7] : color(k)}" stop-opacity=".55"/></linearGradient>`).join("")}</defs>`;
+  for (let g = 0; g <= 4; g++) { const v = maxV * g / 4, yy = H - pb - (H - pb - pt) * g / 4; svg += `<line class="gl" x1="${pl}" x2="${W}" y1="${yy}" y2="${yy}"/><text x="${pl - 6}" y="${yy + 3}" text-anchor="end">${(v / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })}k</text>`; }
+  per.forEach((o, i) => { let acc = 0; keys.forEach((k, ki) => { const v = o[k] || 0; if (!v) return; const h = (H - pb - pt) * v / maxV; const yy = H - pb - acc - h; acc += h; svg += `<rect x="${pl + i * bw + 2}" y="${yy}" width="${Math.max(1, bw - 4)}" height="${h}" rx="2" fill="url(#g${ki})"><title>${esc(fmtD(days[i]) + " " + k + ": " + eur(v))}</title></rect>`; }); });
   [0, 7, 14, 21, 29].forEach(i => svg += `<text x="${pl + i * bw + bw / 2}" y="${H - 6}" text-anchor="middle">${fmtD(days[i])}</text>`);
   $("chart").innerHTML = svg + "</svg>";
   $("chartLegend").innerHTML = keys.map(k => `<span><i style="background:${k === "Sonstige" ? COLORS[7] : color(k)}"></i>${esc(k)}</span>`).join("");
@@ -339,41 +566,61 @@ function renderInventory(inv) {
     ["Ohne Verkauf 30 T", eur(deadVal), `${num(dead.length)} Artikel gebunden`],
     ["Reichweite < 14 T", num(cover.length), "Artikel nachbestellen"],
     ["Ausverkauft", num(oos.length), "mit Verkäufen in 30 T"],
-  ].map(([l, v, s]) => `<div class="card kpi"><div class="l">${esc(l)}</div><div class="v">${v}</div><div class="s">${esc(s)}</div></div>`).join("");
+  ].map(([l, v, s]) => kpiCard(l, v, s)).join("");
+  const fc = F(["cover"]);
+  const coverRows = fc ? cover.filter(r => Number(r.sold_30d) >= RULE.COVER_MIN_SOLD30) : cover.slice(0, 12);
   table("tblCover", [{ t: "Produkt" }, { t: "Bestand", r: 1 }, { t: "Verk. 30T", r: 1 }, { t: "Tage", r: 1 }],
-    cover.slice(0, 12).map(r => [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.stock), num(r.sold_30d), r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })]), "Alles ausreichend bevorratet.");
+    coverRows.map(r => ({ hl: !!fc, c: [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.stock), num(r.sold_30d), r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })] })), "Alles ausreichend bevorratet.");
+  filterChip("f-cover", fc);
+  const fo = F(["oos_best"]);
+  const oosS = oos.sort((a, b) => b.sold_30d - a.sold_30d);
+  const oosRows = fo ? oosS.filter(r => Number(r.sold_30d) >= RULE.BESTSELLER_SOLD30) : oosS.slice(0, 12);
   table("tblOos", [{ t: "Produkt" }, { t: "Verk. 30T", r: 1 }],
-    oos.sort((a, b) => b.sold_30d - a.sold_30d).slice(0, 12).map(r => [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.sold_30d)]), "Nichts ausverkauft.");
+    oosRows.map(r => ({ hl: Number(r.sold_30d) >= RULE.BESTSELLER_SOLD30 && !!fo, c: [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.sold_30d)] })), "Nichts ausverkauft.");
+  filterChip("f-oos", fo);
 }
 
 function renderOpenOrders(oo) {
-  const now = Date.now(), old3 = oo.filter(r => now - new Date(r.created_at) > 3 * 864e5);
+  const old3 = oo.filter(r => ageDays(r.created_at) > RULE.OO_RED_DAYS);
   const total = oo.reduce((a, r) => a + Number(r.total || 0), 0);
-  $("ooKpis").innerHTML = [["Offen", num(oo.length)], ["Wert brutto", eur(total)], ["Älter 3 Tage", num(old3.length)], ["Artikel", num(oo.reduce((a, r) => a + Number(r.items || 0), 0))]]
-    .map(([l, v]) => `<div class="kpi"><div class="l">${l}</div><div class="v" style="font-size:20px">${v}</div></div>`).join("");
-  const by = {}; oo.forEach(r => { const c = by[r.channel] ||= { n: 0, t: 0, old: 0 }; c.n++; c.t += Number(r.total || 0); if (now - new Date(r.created_at) > 3 * 864e5) c.old++; });
-  table("tblOo", [{ t: "Kanal" }, { t: "Offen", r: 1 }, { t: "Wert", r: 1 }, { t: "> 3 T", r: 1 }],
-    Object.entries(by).sort((a, b) => b[1].n - a[1].n).map(([c, v]) => [esc(c), num(v.n), eur(v.t), v.old ? pill(v.old, "p-warn") : "0"]), "Keine offenen Bestellungen.");
+  $("ooKpis").innerHTML = [["Offen", num(oo.length)], ["Wert brutto", eur(total)], [`Älter ${RULE.OO_RED_DAYS} Tage`, num(old3.length)], ["Artikel", num(oo.reduce((a, r) => a + Number(r.items || 0), 0))]]
+    .map(([l, v]) => `<div class="kpi mini"><div class="l">${l}</div><div class="v metal">${v}</div></div>`).join("");
+  const by = {}; oo.forEach(r => { const c = by[r.channel] ||= { n: 0, t: 0, old: 0 }; c.n++; c.t += Number(r.total || 0); if (ageDays(r.created_at) > RULE.OO_RED_DAYS) c.old++; });
+  table("tblOo", [{ t: "Kanal" }, { t: "Offen", r: 1 }, { t: "Wert", r: 1 }, { t: `> ${RULE.OO_RED_DAYS} T`, r: 1 }],
+    Object.entries(by).sort((a, b) => b[1].n - a[1].n).map(([c, v]) => [esc(c), num(v.n), eur(v.t), v.old ? pill(v.old, "p-bad") : "0"]), "Keine offenen Bestellungen.");
+  const f = F(["oo_red", "oo_yel"]);
+  const lvl = (r) => { const a = ageDays(r.created_at); return a > RULE.OO_RED_DAYS ? "oo_red" : a > RULE.OO_YELLOW_DAYS ? "oo_yel" : ""; };
+  const list = f ? oo.filter(r => lvl(r) === f.id) : oo.slice(0, 15);
   table("tblOoOld", [{ t: "Bestellung" }, { t: "Kanal" }, { t: "Seit" }, { t: "Wert", r: 1 }],
-    oo.slice(0, 10).map(r => [esc(r.order_ref), esc(r.channel), esc(fmtDT(r.created_at)), eur(r.total, 2)]), "Keine offenen Bestellungen.");
+    list.map(r => ({ hl: !!f, c: [esc(r.order_ref), esc(r.channel), esc(fmtDT(r.created_at)) + `<div class="small muted">${Math.floor(ageDays(r.created_at))} Tg.</div>`, eur(r.total, 2)] })), "Keine offenen Bestellungen.");
+  filterChip("f-oo", f);
 }
 
-function renderInbox(inbox, today) {
+function renderInbox(inbox) {
   const wk = inbox.filter(r => ago(r.received_at) < 7 * 1440);
   const cats = {}; wk.forEach(r => cats[r.category || "Ohne Kategorie"] = (cats[r.category || "Ohne Kategorie"] || 0) + 1);
   const list = Object.entries(cats).sort((a, b) => b[1] - a[1]), mx = Math.max(1, ...list.map(x => x[1]));
-  $("inboxCats").innerHTML = list.length ? list.map(([c, n]) => `<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${esc(c)}</span><span class="muted">${n}</span></div><div class="barbg"><div class="bar" style="width:${Math.round(n / mx * 100)}%"></div></div></div>`).join("") : `<div class="empty">Noch keine E-Mails im Cockpit.</div>`;
-  table("tblInbox", [{ t: "Eingang" }, { t: "Betreff" }, { t: "Kategorie" }],
-    inbox.slice(0, 15).map(r => [esc(fmtDT(r.received_at)), `<div class="name">${esc(r.subject)}</div><div class="small muted">${esc(r.sender)}</div>`, esc(r.category || "–")]), "Noch keine E-Mails im Cockpit.");
+  const mb = {}; wk.forEach(r => mb[r.mailbox || "?"] = (mb[r.mailbox || "?"] || 0) + 1);
+  $("inboxCats").innerHTML = (list.length ? list.map(([c, n]) => `<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${esc(c)}</span><span class="muted">${n}</span></div><div class="barbg"><div class="bar" style="width:${Math.round(n / mx * 100)}%"></div></div></div>`).join("") : `<div class="empty">Noch keine E-Mails im Cockpit.</div>`)
+    + (Object.keys(mb).length ? `<div class="small muted" style="margin-top:10px">Postfächer: ${Object.entries(mb).map(([m, n]) => esc(m) + " (" + n + ")").join(" · ")}</div>` : "");
+  const f = F(["mail_biz"]);
+  const rows = f ? inbox.filter(r => ago(r.received_at) < RULE.MAIL_DAYS * 1440 && RULE.MAIL_BIZ.test(r.category || "")) : inbox.slice(0, 15);
+  table("tblInbox", [{ t: "Eingang" }, { t: "Betreff" }, { t: "Kategorie" }, { t: "Postfach" }],
+    rows.map(r => ({ hl: !!f, c: [esc(fmtDT(r.received_at)), `<div class="name">${esc(r.subject)}</div><div class="small muted">${esc(r.sender)}</div>`, esc(r.category || "–"), `<span class="small muted">${esc(r.mailbox || "–")}</span>`] })), "Noch keine E-Mails im Cockpit.");
+  filterChip("f-inbox", f);
 }
 
 function renderTasks(tasks) {
-  const rank = (t) => (/ceo|freigabe/i.test(t.status || "") ? 0 : 2) + (/hoch|high|dringend/i.test(t.priority || "") ? 0 : 1);
-  const open = tasks.filter(t => !/^(erledigt|done|abgeschlossen|fertig)$/i.test(String(t.status || "").trim())).sort((a, b) => rank(a) - rank(b));
+  const rank = (t) => (isCeo(t) ? 0 : 2) + (isHigh(t) ? 0 : 1);
+  const open = tasks.filter(t => !isDone(t)).sort((a, b) => rank(a) - rank(b));
+  const f = F(["task_red", "task_ceo"]);
+  const fr = f ? (state.U.find(u => u.id === f.id) || { rows: [] }).rows : null;
+  const list = f ? open.filter(t => fr.includes(t)) : open.slice(0, 40);
   const prioCls = (p) => /hoch|high|dringend|urgent/i.test(p || "") ? "p-bad" : /mittel|medium/i.test(p || "") ? "p-warn" : "p-off";
   table("tblTasks", [{ t: "Aufgabe" }, { t: "Prio" }, { t: "Status" }, { t: "Wer" }, { t: "Fällig" }],
-    open.slice(0, 40).map(t => [`<div class="name">${esc(t.topic || t.key)}</div><div class="small muted">${esc([t.platform, t.next_step].filter(Boolean).join(" · "))}</div>`, t.priority ? pill(t.priority, prioCls(t.priority)) : "–", esc(t.status || "–"), esc(t.who || "–"), t.due ? esc(fmtD(t.due)) : "–"]),
+    list.map(t => ({ hl: !!f, c: [`<div class="name">${esc(t.topic || t.key)}</div><div class="small muted">${esc([t.platform, t.next_step].filter(Boolean).join(" · "))}</div>`, t.priority ? pill(t.priority, prioCls(t.priority)) : "–", esc(t.status || "–"), esc(t.who || "–"), t.due ? (t.due < state.today ? pill(fmtD(t.due), "p-bad") : esc(fmtD(t.due))) : "–"] })),
     "Noch keine Aufgaben im Cockpit.");
+  filterChip("f-tasks", f);
 }
 
 function renderSocial(social) {
@@ -381,26 +628,29 @@ function renderSocial(social) {
   const t = state.today, d7 = addDays(t, -6);
   const rows = Object.entries(nets).map(([n, arr]) => {
     const last = arr[arr.length - 1], w = arr.filter(r => r.day >= d7);
-    return [esc(n), num(last.followers), num(w.reduce((a, r) => a + Number(r.followers_gained || 0), 0)), num(w.reduce((a, r) => a + Number(r.reach || 0), 0)), num(w.reduce((a, r) => a + Number(r.interactions || 0), 0)), esc(fmtD(last.day))];
+    const fol = [...arr].reverse().find(r => r.followers != null);
+    return [esc(n), num(fol ? fol.followers : 0), num(w.reduce((a, r) => a + Number(r.followers_gained || 0), 0)), num(w.reduce((a, r) => a + Number(r.reach || 0), 0)), num(w.reduce((a, r) => a + Number(r.interactions || 0), 0)), esc(fmtD(last.day))];
   });
   table("tblSocial", [{ t: "Netzwerk" }, { t: "Follower", r: 1 }, { t: "+7 T", r: 1 }, { t: "Reichweite 7 T", r: 1 }, { t: "Interakt. 7 T", r: 1 }, { t: "Stand" }], rows, "Noch keine Social-Daten im Cockpit.");
 }
 
 function renderSync(runs, conn) {
-  const SLA = { jtl: 75, shopify: 45, gmail: 1500, notion: 1500, metricool: 1500, social: 1500 };
+  const health = {}; syncHealth(runs, conn).forEach(h => health[h.key] = h.lvl);
   const last = {}; runs.forEach(r => { if (!last[r.source]) last[r.source] = r; });
-  const okLast = {}; runs.forEach(r => { if (r.ok && !okLast[r.source]) okLast[r.source] = r; });
+  const f = F(["sync_red", "sync_yel", "sync_ok"]);
+  const want = f ? { sync_red: "red", sync_yel: "yellow", sync_ok: "green" }[f.id] : null;
   const rows = Object.values(last).sort((a, b) => ago(a.finished_at) - ago(b.finished_at)).map(r => {
-    const m = ago(r.finished_at), sla = SLA[String(r.source).toLowerCase()];
-    const st = !r.ok ? pill("Fehler", "p-bad") : sla && m > sla ? pill("verspätet", "p-warn") : pill("ok", "p-ok");
-    return [esc(r.source), esc(fmtDT(r.finished_at)) + `<div class="small muted">vor ${agoTxt(m)}</div>`, num(r.rows_written), st];
+    const m = ago(r.finished_at), lvl = health[String(r.source).toLowerCase()];
+    const st = lvl === "red" ? pill(r.ok ? "veraltet" : "Fehler", "p-bad") : lvl === "yellow" ? pill("veraltet", "p-warn") : lvl === "green" ? pill("ok", "p-ok") : pill(r.ok ? "einmalig" : "Fehler", r.ok ? "p-off" : "p-bad");
+    return { hl: !!want && lvl === want, c: [esc(r.source), esc(fmtDT(r.finished_at)) + `<div class="small muted">vor ${agoTxt(m)}</div>`, num(r.rows_written), st] };
   });
   table("tblSync", [{ t: "Quelle" }, { t: "Letzter Lauf" }, { t: "Zeilen", r: 1 }, { t: "Status" }], rows, "Noch keine Sync-Läufe.");
+  filterChip("f-sync", f);
   const cls = (s) => s === "live" ? "p-ok" : s === "error" ? "p-bad" : "p-off";
   const lbl = (s) => s === "live" ? "live" : s === "error" ? "Fehler" : s === "not_connected" ? "nicht verbunden" : (s || "–");
   table("tblConn", [{ t: "Verbindung" }, { t: "Status" }, { t: "Aktualisiert" }],
-    conn.sort((a, b) => (a.status === "live" ? 0 : a.status === "error" ? 0 : 1) - (b.status === "live" ? 0 : b.status === "error" ? 0 : 1) || a.channel.localeCompare(b.channel))
-      .map(c => [`${esc(c.channel)}<div class="small muted">${esc(c.kind || "")}</div>`, pill(lbl(c.status), cls(c.status)), esc(fmtDT(c.updated_at))]), "Keine Verbindungen.");
+    [...conn].sort((a, b) => (a.status === "error" ? -1 : a.status === "live" ? 0 : 1) - (b.status === "error" ? -1 : b.status === "live" ? 0 : 1) || a.channel.localeCompare(b.channel))
+      .map(c => ({ hl: !!want && want === "red" && c.status === "error", c: [`${esc(c.channel)}<div class="small muted">${esc(c.kind || "")}</div>`, pill(lbl(c.status), cls(c.status)), esc(fmtDT(c.updated_at))] })), "Keine Verbindungen.");
 }
 
 // Start
