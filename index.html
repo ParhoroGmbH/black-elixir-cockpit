@@ -296,6 +296,13 @@ svg .gl{stroke:var(--grid)}
     <div class="sec-h"><h2 class="metal">Social</h2><span class="rule"></span><span class="fresh" id="fr-social"></span></div>
     <div class="card s12"><div class="scroll"><table class="tbl" id="tblSocial"></table></div></div>
 
+    <div class="sec-h" id="sec-quellen"><h2 class="metal">Quellen &amp; Tools</h2><span class="rule"></span><span class="fresh" id="fr-quellen"></span></div>
+    <div class="card s6 m12" id="card-dhl"><h3>DHL-Fälle <span class="sub">Nachforschungen, Schäden, Ersatzleistungen</span></h3><div class="kgrid" id="dhlKpis"></div><div class="scroll tall"><table class="tbl" id="tblDhl"></table></div><div class="note">Quelle: DHL-/Deutsche-Post-Mails (IONOS/Gmail) und Fallliste des Accounting-Bots. Kein DHL-API: Zustellstatus je Sendung nicht live.</div></div>
+    <div class="card s6 m12" id="card-idealo"><h3>idealo <span class="sub">Klicks, Kosten, Budget</span></h3><div class="kgrid" id="idealoKpis"></div><div id="idealoSpark" class="sp"></div><div class="scroll"><table class="tbl" id="tblIdealo"></table></div><div class="note" id="idealoNote">Quelle: Berichte aus idealo Business (Browser-Login des Idealo-Bots) + Shopify-Bestellungen mit idealo-Attribution. Kein idealo-API.</div></div>
+    <div class="card s6 m12" id="card-traffic"><h3>Shop-Traffic <span class="sub">Shopify-Sitzungen · Ersatz für Google Analytics (GA4)</span></h3><div class="kgrid" id="trafficKpis"></div><div id="trafficSpark" class="sp"></div><div class="note">Quelle: Shopify-Analytics (vorhandener Connector). Echte GA4-Zahlen bräuchten ein neues Google-API – bewusst nicht angebunden.</div></div>
+    <div class="card s6 m12" id="card-tools"><h3>Tools &amp; Credits</h3><div class="kgrid" id="toolKpis"></div><div class="scroll"><table class="tbl" id="tblTools"></table></div></div>
+    <div class="card s12" id="card-signale"><h3>Signale aus Postfächern · 30 Tage <span class="sub">idealo, DHL, Qogita, eSagu, Metricool, Higgsfield, Grok</span> <span id="f-sig"></span></h3><div class="kgrid" id="sigKpis"></div><div class="scroll tall"><table class="tbl" id="tblSig"></table></div></div>
+
     <div class="sec-h"><h2 class="metal">Datenstand &amp; Verbindungen</h2><span class="rule"></span></div>
     <div class="card s6" id="sec-sync"><h3>Synchronisierung je Quelle <span id="f-sync"></span></h3><div class="scroll"><table class="tbl" id="tblSync"></table></div></div>
     <div class="card s6"><h3>Verbindungen</h3><div class="scroll tall"><table class="tbl" id="tblConn"></table></div></div>
@@ -426,7 +433,7 @@ async function load() {
 
     const today = berlinDate(); state.today = today; state.err = {};
     const from60 = addDays(today, -60), mailFrom = new Date(Date.now() - 30 * 864e5).toISOString();
-    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi] = await Promise.all([
+    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
       safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
       safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value").eq("source", "jtl"))),
@@ -440,9 +447,14 @@ async function load() {
       safe("runs", res(sb.from("sync_runs").select("source,started_at,finished_at,ok,rows_written,message").order("finished_at", { ascending: false, nullsFirst: false }).limit(300))),
       safe("conn", res(sb.from("channel_status").select("channel,kind,status,note,updated_at"))),
       safe("kpi", fetchAll(() => sb.from("channel_kpi_daily").select("day,channel,kpi,anzahl,order_refs,aeltester"))),
+      safe("dhl", res(sb.from("dhl_cases").select("case_key,sendung,anliegen,ticket,order_ref,kanal,problem,status,betrag_gefordert_eur,betrag_erstattet_eur,eroeffnet,letztes_ereignis_at,letztes_ereignis,naechster_schritt").order("letztes_ereignis_at", { ascending: false, nullsFirst: false }).limit(200))),
+      safe("traffic", res(sb.from("traffic_daily").select("day,source,sessions,visitors,cart_sessions,checkout_sessions,completed_sessions,conversion_rate").gte("day", from60).order("day"))),
+      safe("idealo", res(sb.from("idealo_daily").select("day,clicks,cost_eur,orders,revenue_eur,budget_used_mtd_eur,budget_cap_eur,fetched_at").gte("day", from60).order("day"))),
+      safe("tools", res(sb.from("tool_usage").select("vendor,item,amount,unit,action,at,fetched_at").order("at", { ascending: false }).limit(300))),
+      safe("sig", res(sb.from("bot_quellen_signale").select("quelle,signal,schwere,received_at,mailbox,absender_domain,betreff,thread_id").order("received_at", { ascending: false }).limit(500))),
     ]);
     state.sales = sales;
-    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi };
+    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig };
     renderAll();
     const failed = Object.keys(state.err);
     if (failed.length) warn = (warn ? warn + " " : "") + "Teilweise nicht geladen: " + failed.join(", ") + ". Übrige Bereiche sind aktuell.";
@@ -459,7 +471,7 @@ function renderAll() {
   state.U = computeUrgent(d);
   renderUrgent();
   renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
-  renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs);
+  renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d);
   bindTilt();
 }
 
@@ -476,7 +488,7 @@ const RULE = {
   COVER_MIN_SOLD30: 3,
   SYNC_FAST: { jtl: 30, shopify: 15, ionos: 30 }, // Takt in Min.; rot wenn letzter Lauf Fehler oder älter als 2 Std.
   SYNC_FAST_STALE_MIN: 120,
-  SYNC_DAILY: ["gmail", "notion", "social"],      // gelb wenn älter als 26 Std.
+  SYNC_DAILY: ["gmail", "notion", "social", "quellen"],      // gelb wenn älter als 26 Std.
   SYNC_DAILY_STALE_MIN: 26 * 60,
   MAIL_DAYS: 7,
   MAIL_BIZ: /kunde|kontakt|marktplatz|bestellung|retoure|reklamation|shop\/merchant/i, // Rechnung/Zahlung → eigener Bereich
@@ -488,7 +500,12 @@ const RULE = {
   TRK_EXCL_CH: /b2b|xml/i,  // B2B/XML-Import hat normal keine Sendungsnummer
   BILL_EXCL_SENDER: /uploadmail\.datev\.de|black-elixir\.|parhoro\.|jera-software|mails\.dpd|newsletter|news\./i,
   BILL_EXCL_SUBJ: /einlieferungsbeleg|paket nicht angekommen|umstellung auf e-rechnung|erinnerung an die e-rechnung/i,
-  BILL_CAT: /rechnung|invoice/i,   // "Zahlung" (z. B. Zahlungseingang) wird gezeigt, aber nicht als neue Rechnung gezählt
+  BILL_CAT: /rechnung|invoice/i,
+  IDEALO_CAP_EUR: 250,     // idealo-Klickbudget je Monat (CEO 04.11.2026), falls kein Wert in idealo_daily
+  IDEALO_RED_PCT: 90,      // Budget ≥ 90 % verbraucht → rot, ≥ 70 % → gelb
+  IDEALO_YELLOW_PCT: 70,
+  HIGGS_LOW_CREDITS: 20,   // Higgsfield-Credits unter 20 → gelb
+  GROK_YELLOW_PCT: 80,     // Grok-Wochenlimit ≥ 80 % → gelb   // "Zahlung" (z. B. Zahlungseingang) wird gezeigt, aber nicht als neue Rechnung gezählt
 };
 const isDone = (t) => /^(erledigt|done|abgeschlossen|fertig)$/i.test(String(t.status || "").trim());
 const isCeo = (t) => /ceo|freigabe/i.test(t.status || "");
@@ -542,7 +559,11 @@ function computeUrgent(d) {
   const billsErr = !!state.err.bills, kpiErr = !!state.err.kpi;
   const kq = (k, lvl) => (d.kpi || []).filter(r => r.kpi === k && kpiLvl(r) === lvl);
   const unpRed = kq("unbezahlt", "red"), unpYel = kq("unbezahlt", "yellow"), trkRed = kq("ohne_tracking", "red").filter(r => !RULE.TRK_EXCL_CH.test(r.channel || "")), trkYel = kq("ohne_tracking", "yellow");
+  const Q = quellenStats(d);
   const L = [
+    { id: "idealo_budget", lvl: Q.idealoPct >= RULE.IDEALO_RED_PCT ? "red" : "yellow", n: Q.idealoPct >= RULE.IDEALO_YELLOW_PCT ? Math.round(Q.idealoPct) : 0, label: "idealo-Budget % verbraucht", ok: "", hint: Q.idealoBudget ? `${eur(Q.idealoBudget.used)} von ${eur(Q.idealoBudget.cap)}` : "", sec: "card-idealo", rows: [] },
+    { id: "higgs_low", lvl: "yellow", n: Q.higgs && Q.higgs.amount < RULE.HIGGS_LOW_CREDITS ? 1 : 0, label: "Higgsfield-Credits niedrig", ok: "", hint: Q.higgs ? `${Number(Q.higgs.amount).toLocaleString("de-DE")} Credits übrig` : "", sec: "card-tools", rows: [] },
+    { id: "sig_high", lvl: "yellow", n: Q.sigHigh7.length, label: "Quellen-Signale (hoch)", ok: "", hint: "letzte 7 Tage · idealo/Qogita/eSagu/Metricool/DHL", sec: "card-signale", rows: Q.sigHigh7 },
     { id: "bill_mahn", lvl: "red", n: mahn.length, label: "Mahnung / Zahlungserinnerung", ok: billsErr ? "" : "Keine Mahnungen", hint: `letzte ${RULE.BILL_MAHN_DAYS} Tage · prüfen & zahlen`, sec: "card-bills", rows: mahn },
     { id: "oo_red", lvl: "red", n: ooRed.length, label: `Bestellungen > ${RULE.OO_RED_DAYS} Tage offen`, ok: "Keine alten Bestellungen", hint: "Versand prüfen", sec: "card-ooOld", rows: ooRed },
     { id: "kpi_unp_red", lvl: "red", n: kpiSum(unpRed), label: `Unbezahlt > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Keine alten Unbezahlten", hint: "Zahlung prüfen", sec: "card-kpiList", rows: unpRed },
@@ -755,7 +776,7 @@ function renderBills(bills) {
 }
 
 // ---------- Datenstand je Bereich ----------
-const FRESH = { "fr-sales": ["jtl", "shopify"], "fr-bills": ["ionos", "gmail"], "fr-orders": ["jtl", "shopify"], "fr-stock": ["jtl"], "fr-kpi": ["jtl"], "fr-tasks": ["notion", "gmail", "ionos"], "fr-social": ["social"] };
+const FRESH = { "fr-sales": ["jtl", "shopify"], "fr-bills": ["ionos", "gmail"], "fr-orders": ["jtl", "shopify"], "fr-stock": ["jtl"], "fr-kpi": ["jtl"], "fr-tasks": ["notion", "gmail", "ionos"], "fr-social": ["social"], "fr-quellen": ["quellen"] };
 function renderFresh(runs) {
   const last = {}; runs.forEach(r => { const k = String(r.source).toLowerCase(); if (!last[k]) last[k] = r; });
   const hl = {}; syncHealth(runs, []).forEach(h => hl[h.key] = h.lvl);
@@ -911,6 +932,102 @@ function renderSync(runs, conn) {
   table("tblConn", [{ t: "Verbindung" }, { t: "Status" }, { t: "Aktualisiert" }],
     [...conn].sort((a, b) => (a.status === "error" ? -1 : a.status === "live" ? 0 : 1) - (b.status === "error" ? -1 : b.status === "live" ? 0 : 1) || a.channel.localeCompare(b.channel))
       .map(c => ({ hl: !!want && want === "red" && c.status === "error", c: [`${esc(c.channel)}<div class="small muted">${esc(c.kind || "")}</div>`, pill(lbl(c.status), cls(c.status)), esc(fmtDT(c.updated_at))] })), errTxt("conn", "Keine Verbindungen."));
+}
+
+// ---------- Quellen & Tools (DHL, idealo, Shop-Traffic, Tools & Credits, Signale) ----------
+const DHL_ST = { offen_unterlagen: ["Unterlagen fehlen", "p-bad"], antwort_pruefen: ["Antwort prüfen", "p-warn"], laeuft: ["läuft", "p-off"], zahlung_gemeldet: ["Zahlung gemeldet", "p-warn"], bezahlt: ["bezahlt", "p-ok"], abgelehnt: ["abgelehnt", "p-bad"], nicht_registriert: ["nicht registriert", "p-bad"] };
+const DHL_ORDER = ["offen_unterlagen", "nicht_registriert", "antwort_pruefen", "zahlung_gemeldet", "laeuft", "abgelehnt", "bezahlt"];
+const latestTool = (tools, vendor, item) => (tools || []).filter(r => r.vendor === vendor && r.item === item).sort((a, b) => new Date(b.at) - new Date(a.at))[0];
+function quellenStats(d) {
+  const idl = d.idealo || [], tools = d.tools || [], sig = d.sig || [];
+  const bud = [...idl].reverse().find(r => r.budget_used_mtd_eur != null);
+  const cap = bud ? Number(bud.budget_cap_eur || RULE.IDEALO_CAP_EUR) : RULE.IDEALO_CAP_EUR;
+  const idealoBudget = bud && bud.day.slice(0, 7) === (state.today || berlinDate()).slice(0, 7) ? { used: Number(bud.budget_used_mtd_eur), cap, day: bud.day, at: bud.fetched_at } : null;
+  return {
+    idealoBudget, idealoPct: idealoBudget && cap ? idealoBudget.used / cap * 100 : 0,
+    higgs: latestTool(tools, "Higgsfield", "credits_balance"),
+    sigHigh7: sig.filter(r => r.schwere === "hoch" && ago(r.received_at) < 7 * 1440),
+  };
+}
+function renderQuellen(d) {
+  const Q = quellenStats(d), t = state.today || berlinDate();
+  const mini = (l, v, c = "", s = "") => `<div class="kpi mini ${c}"><div class="l">${l}</div><div class="v">${v}</div>${s ? `<div class="small muted" style="margin-top:3px">${s}</div>` : ""}</div>`;
+
+  // --- DHL ---
+  const dhl = d.dhl || [], open = dhl.filter(r => !["bezahlt", "abgelehnt"].includes(r.status));
+  const paid = dhl.reduce((a, r) => a + Number(r.betrag_erstattet_eur || 0), 0);
+  const claimedOpen = open.reduce((a, r) => a + Number(r.betrag_gefordert_eur || 0), 0);
+  const need = dhl.filter(r => ["offen_unterlagen", "nicht_registriert", "antwort_pruefen"].includes(r.status));
+  $("dhlKpis").innerHTML = state.err.dhl ? "" : [
+    mini("Offene Fälle", num(open.length)), mini("Handeln nötig", num(need.length), need.length ? "red" : "", "Unterlagen / Antwort / neu einreichen"),
+    mini("Offen gefordert", eur(claimedOpen), "", "nur Fälle mit Betrag"), mini("Erstattet", eur(paid, 2), "", `${num(dhl.filter(r => r.status === "bezahlt").length)} Fälle`)].join("");
+  const ds = [...dhl].sort((a, b) => DHL_ORDER.indexOf(a.status) - DHL_ORDER.indexOf(b.status) || new Date(b.letztes_ereignis_at || 0) - new Date(a.letztes_ereignis_at || 0));
+  table("tblDhl", [{ t: "Sendung / Anliegen" }, { t: "Status" }, { t: "Letztes Ereignis" }, { t: "Betrag", r: 1 }],
+    ds.map(r => [`<div class="name num">${esc(r.sendung || r.case_key)}</div><div class="small muted">${esc([r.anliegen, r.ticket, r.order_ref, r.problem].filter(Boolean).join(" · "))}</div>`,
+      pill(...(DHL_ST[r.status] || [r.status || "–", "p-off"])) + (r.naechster_schritt ? `<div class="small muted" style="margin-top:3px">${esc(r.naechster_schritt)}</div>` : ""),
+      (r.letztes_ereignis_at ? esc(fmtDT(r.letztes_ereignis_at)) : "–") + `<div class="small muted">${esc(r.letztes_ereignis || "")}</div>`,
+      r.betrag_erstattet_eur != null ? `<span style="color:var(--ok)">${eur(r.betrag_erstattet_eur, 2)}</span>` : r.betrag_gefordert_eur != null ? eur(r.betrag_gefordert_eur, 2) : "–"]),
+    errTxt("dhl", "Noch keine DHL-Fälle im Cockpit."));
+
+  // --- idealo ---
+  const idl = d.idealo || [], d30 = addDays(t, -29), d7 = addDays(t, -6);
+  const in30 = idl.filter(r => r.day >= d30), in7 = idl.filter(r => r.day >= d7);
+  const sm = (arr, k) => arr.reduce((a, r) => a + Number(r[k] || 0), 0);
+  const cost30 = in30.some(r => r.cost_eur != null) ? eur(sm(in30, "cost_eur"), 2) : "–";
+  const B = Q.idealoBudget, bp = Q.idealoPct, bc = bp >= RULE.IDEALO_RED_PCT ? "red" : bp >= RULE.IDEALO_YELLOW_PCT ? "yellow" : "";
+  $("idealoKpis").innerHTML = state.err.idealo ? "" : [
+    mini("Budget verbraucht", B ? pct(bp) : "–", bc, B ? `${eur(B.used)} von ${eur(B.cap)} · Stand ${fmtD(B.day)}` : "kein Stand diesen Monat"),
+    mini("Klicks 7 T", num(sm(in7, "clicks")), "", `30 T: ${num(sm(in30, "clicks"))}`),
+    mini("Kosten 30 T", cost30, "", "Bericht liefert Kosten noch nicht je Tag"),
+    mini("Bestellungen 30 T", num(sm(in30, "orders")), "", `Umsatz ${eur(sm(in30, "revenue_eur"))}`)].join("");
+  const days30 = []; for (let i = 29; i >= 0; i--) days30.push(addDays(t, -i));
+  const cm = {}; idl.forEach(r => cm[r.day] = Number(r.clicks || 0));
+  $("idealoSpark").innerHTML = idl.length ? `<div class="small muted">Klicks je Tag · 30 T</div>` + spark(days30.map(x => cm[x] || 0), "var(--gold)") : "";
+  table("tblIdealo", [{ t: "Tag" }, { t: "Klicks", r: 1 }, { t: "Best.", r: 1 }, { t: "Umsatz", r: 1 }],
+    [...in7].reverse().map(r => [esc(fmtD(r.day)), r.clicks == null ? `<span class="muted">–</span>` : num(r.clicks), num(r.orders), eur(r.revenue_eur)]),
+    errTxt("idealo", "Noch keine idealo-Daten im Cockpit."));
+
+  // --- Shop-Traffic (Shopify, Ersatz für GA4) ---
+  const tr = (d.traffic || []).filter(r => r.source === "shopify"), tm = {}; tr.forEach(r => tm[r.day] = r);
+  const win = (a, b) => tr.filter(r => r.day >= a && r.day <= b);
+  const y = addDays(t, -1), w7 = win(addDays(t, -7), y), p7 = win(addDays(t, -14), addDays(t, -8));
+  const ss = (arr, k) => arr.reduce((a, r) => a + Number(r[k] || 0), 0);
+  const cr = (arr) => ss(arr, "sessions") ? ss(arr, "completed_sessions") / ss(arr, "sessions") * 100 : 0;
+  const last = tm[t] || tm[y];
+  $("trafficKpis").innerHTML = state.err.traffic ? "" : !tr.length ? "" : [
+    mini("Sitzungen heute", num(last ? last.sessions : 0), "", last ? `Stand ${fmtD(last.day)}` : ""),
+    mini("Sitzungen 7 T", num(ss(w7, "sessions")), "", trend(ss(w7, "sessions"), ss(p7, "sessions"), p7.length >= 7, "vs. Vorwoche")),
+    mini("Conversion 7 T", pct(cr(w7), 2), "", `Vorwoche ${pct(cr(p7), 2)}`),
+    mini("Warenkorb → Kasse 7 T", `${num(ss(w7, "cart_sessions"))} → ${num(ss(w7, "checkout_sessions"))}`, "", `${num(ss(w7, "completed_sessions"))} abgeschlossen`)].join("");
+  $("trafficSpark").innerHTML = tr.length ? `<div class="small muted">Sitzungen je Tag · 30 T (gestrichelt = laufender Tag)</div>` + spark(days30.map(x => tm[x] ? Number(tm[x].sessions) : 0), "var(--txt)", { partialLast: true })
+    : `<div class="${state.err.traffic ? "err" : "empty"}">${esc(errTxt("traffic", "Noch keine Traffic-Daten im Cockpit."))}</div>`;
+
+  // --- Tools & Credits ---
+  const tools = d.tools || [], H = Q.higgs, G = latestTool(tools, "Grok", "weekly_limit_used_pct"), H7 = latestTool(tools, "Higgsfield", "credits_spent_7d");
+  const hLow = H && Number(H.amount) < RULE.HIGGS_LOW_CREDITS, gHigh = G && Number(G.amount) >= RULE.GROK_YELLOW_PCT;
+  $("toolKpis").innerHTML = state.err.tools ? "" : [
+    mini("Higgsfield-Credits", H ? Number(H.amount).toLocaleString("de-DE") : "–", hLow ? "yellow" : "", H ? (hLow ? "⚠ fast leer · " : "") + esc(H.action || "") : "noch kein Stand"),
+    mini("Higgsfield 7 T", H7 ? Number(H7.amount).toLocaleString("de-DE") : "–", "", "Credits verbraucht"),
+    mini("Grok Bot Wochenlimit", G ? pct(G.amount, 1) : "–", gHigh ? "yellow" : "", G ? esc(G.action || "") : "noch kein Stand"),
+    mini("Stand", H || G ? esc(fmtDT((H || G).at)) : "–", "", "Bot-Routine 07:30 / 12:30 / 18:30")].join("");
+  const lastBy = {}; tools.forEach(r => { const k = r.vendor + "|" + r.item; if (!lastBy[k] || new Date(r.at) > new Date(lastBy[k].at)) lastBy[k] = r; });
+  table("tblTools", [{ t: "Tool" }, { t: "Wert", r: 1 }, { t: "Stand" }],
+    Object.values(lastBy).sort((a, b) => a.vendor.localeCompare(b.vendor) || a.item.localeCompare(b.item)).map(r => [`${esc(r.vendor)}<div class="small muted">${esc(r.item)}</div>`, `${Number(r.amount).toLocaleString("de-DE")} <span class="muted">${esc(r.unit || "")}</span>`, esc(fmtDT(r.at))]),
+    errTxt("tools", "Noch keine Tool-Daten im Cockpit."));
+
+  // --- Signale aus Postfächern ---
+  const sig = d.sig || [], src = ["idealo", "DHL", "Qogita", "eSagu", "Metricool", "Higgsfield", "Grok"];
+  const by = {}; sig.forEach(r => { const b = by[r.quelle] ||= { n: 0, hoch: 0, last: null }; b.n++; if (r.schwere === "hoch") b.hoch++; if (!b.last || r.received_at > b.last) b.last = r.received_at; });
+  $("sigKpis").innerHTML = state.err.sig ? "" : ["idealo", "Qogita", "eSagu", "Metricool"].map(q => { const b = by[q] || { n: 0, hoch: 0 }; return mini(q, num(b.n), b.hoch ? "red" : "", b.hoch ? `${b.hoch} hoch` : b.last ? `zuletzt ${fmtD(b.last.slice(0, 10))}` : "keine"); }).join("");
+  const sevCls = { hoch: "p-bad", mittel: "p-warn", info: "p-off" }, sevR = { hoch: 0, mittel: 1, info: 2 };
+  const f = F(["sig_high"]);
+  const seen = new Set();
+  const list = (f ? Q.sigHigh7 : sig).filter(r => { const k = r.quelle + "|" + r.signal + "|" + String(r.betreff || "").toLowerCase().replace(/^((aw|re|fwd|wg):\s*)+/g, ""); if (seen.has(k)) return false; seen.add(k); return true; })
+    .sort((a, b) => sevR[a.schwere] - sevR[b.schwere] || new Date(b.received_at) - new Date(a.received_at)).slice(0, 40);
+  table("tblSig", [{ t: "Quelle" }, { t: "Signal" }, { t: "Betreff" }, { t: "Eingang" }],
+    list.map(r => ({ hl: !!f, c: [esc(r.quelle), pill(r.signal, sevCls[r.schwere] || "p-off"), `<div class="name">${esc(r.betreff || "–")}</div><div class="small muted">${esc(r.absender_domain || "")} · ${esc(r.mailbox || "")}</div>`, esc(fmtDT(r.received_at))] })),
+    errTxt("sig", "Keine Signale in den letzten 30 Tagen."));
+  filterChip("f-sig", f);
 }
 
 // Start
