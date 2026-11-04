@@ -482,16 +482,23 @@ const RULE = {
   MAIL_BIZ: /kunde|kontakt|marktplatz|bestellung|retoure|reklamation|shop\/merchant/i, // Rechnung/Zahlung → eigener Bereich
   BILL_NEW_DAYS: 7,        // Rechnung in den letzten 7 Tagen → gelb
   BILL_MAHN_DAYS: 30,      // Mahnung / Zahlungserinnerung in den letzten 30 Tagen → rot
-  MAHN_CAT: /mahnung/i,
-  MAHN_SUBJ: /mahnung|zahlungserinnerung|payment reminder|überfällig|ueberfaellig|overdue|letzte erinnerung/i,
+  MAHN_CAT: /(?<!ab)mahnung/i,
+  MAHN_SUBJ: /(?<![a-zäöü])(mahnung|zahlungserinnerung|payment reminder|überfällig|ueberfaellig|overdue|letzte erinnerung|letzte mahnung)/i, // "Abmahnung" zählt nicht
+  MAHN_NOT_SENDER: /(^|[@.])(news|newsletter|mailing)[.@-]|newsletter|jera-software|mails\.dpd/i, // Newsletter
+  TRK_EXCL_CH: /b2b|xml/i,  // B2B/XML-Import hat normal keine Sendungsnummer
+  BILL_EXCL_SENDER: /uploadmail\.datev\.de|black-elixir\.|parhoro\.|jera-software|mails\.dpd|newsletter|news\./i,
+  BILL_EXCL_SUBJ: /einlieferungsbeleg|paket nicht angekommen|umstellung auf e-rechnung|erinnerung an die e-rechnung/i,
   BILL_CAT: /rechnung|invoice/i,   // "Zahlung" (z. B. Zahlungseingang) wird gezeigt, aber nicht als neue Rechnung gezählt
 };
 const isDone = (t) => /^(erledigt|done|abgeschlossen|fertig)$/i.test(String(t.status || "").trim());
 const isCeo = (t) => /ceo|freigabe/i.test(t.status || "");
 const isHigh = (t) => /hoch|high|dringend|urgent/i.test(t.priority || "");
 const ageDays = (iso) => (Date.now() - new Date(iso).getTime()) / 864e5;
-const isMahn = (r) => RULE.MAHN_CAT.test(r.category || "") || RULE.MAHN_SUBJ.test(r.subject || "");
+const isMahn = (r) => !RULE.MAHN_NOT_SENDER.test(r.sender || "") && (RULE.MAHN_CAT.test(r.category || "") || RULE.MAHN_SUBJ.test(r.subject || ""));
 const isBill = (r) => !isMahn(r) && RULE.BILL_CAT.test(r.category || "");
+const isRealBill = (r) => isBill(r) && !RULE.BILL_EXCL_SENDER.test(r.sender || "") && !RULE.BILL_EXCL_SUBJ.test(r.subject || "");
+const billKey = (r) => String(r.subject || "").toLowerCase().replace(/^((aw|re|fwd|wg):\s*)+/g, "").replace(/\s+/g, " ").trim();
+const dedupBills = (rows) => { const seen = new Set(); return rows.filter(r => { const k = billKey(r); if (seen.has(k)) return false; seen.add(k); return true; }); };
 const isPay = (r) => !isMahn(r) && !isBill(r) && /zahlung/i.test(r.category || "");
 const billSrc = (r) => /^ionos:/i.test(r.thread_id || "") ? "IONOS" : /^gmail:/i.test(r.thread_id || "") ? "Gmail" : (r.mailbox || "–");
 
@@ -530,11 +537,11 @@ function computeUrgent(d) {
   const taskCeo = tasks.filter(t => isCeo(t) && !taskRed.includes(t));
   const mailBiz = d.inbox.filter(r => ago(r.received_at) < RULE.MAIL_DAYS * 1440 && RULE.MAIL_BIZ.test(r.category || ""));
   const mahn = d.bills.filter(r => isMahn(r) && ago(r.received_at) < RULE.BILL_MAHN_DAYS * 1440);
-  const billNew = d.bills.filter(r => isBill(r) && ago(r.received_at) < RULE.BILL_NEW_DAYS * 1440);
+  const billNew = dedupBills(d.bills.filter(r => isRealBill(r) && ago(r.received_at) < RULE.BILL_NEW_DAYS * 1440)); // ohne DATEV-Bestätigungen, eigene Rechnungen, Duplikate, DHL-Belege, Newsletter
   const syncRed = sh.filter(x => x.lvl === "red"), syncYel = sh.filter(x => x.lvl === "yellow"), syncOk = sh.filter(x => x.lvl === "green");
   const billsErr = !!state.err.bills, kpiErr = !!state.err.kpi;
   const kq = (k, lvl) => (d.kpi || []).filter(r => r.kpi === k && kpiLvl(r) === lvl);
-  const unpRed = kq("unbezahlt", "red"), unpYel = kq("unbezahlt", "yellow"), trkRed = kq("ohne_tracking", "red"), trkYel = kq("ohne_tracking", "yellow");
+  const unpRed = kq("unbezahlt", "red"), unpYel = kq("unbezahlt", "yellow"), trkRed = kq("ohne_tracking", "red").filter(r => !RULE.TRK_EXCL_CH.test(r.channel || "")), trkYel = kq("ohne_tracking", "yellow");
   const L = [
     { id: "bill_mahn", lvl: "red", n: mahn.length, label: "Mahnung / Zahlungserinnerung", ok: billsErr ? "" : "Keine Mahnungen", hint: `letzte ${RULE.BILL_MAHN_DAYS} Tage · prüfen & zahlen`, sec: "card-bills", rows: mahn },
     { id: "oo_red", lvl: "red", n: ooRed.length, label: `Bestellungen > ${RULE.OO_RED_DAYS} Tage offen`, ok: "Keine alten Bestellungen", hint: "Versand prüfen", sec: "card-ooOld", rows: ooRed },
