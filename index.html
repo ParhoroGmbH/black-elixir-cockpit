@@ -275,6 +275,10 @@ svg .gl{stroke:var(--grid)}
     <div class="card s6" id="sec-orders"><div class="kgrid" id="ooKpis"></div><div class="scroll"><table class="tbl" id="tblOo"></table></div></div>
     <div class="card s6" id="card-ooOld"><h3>Älteste offene Bestellungen <span id="f-oo"></span></h3><div class="scroll tall"><table class="tbl" id="tblOoOld"></table></div></div>
 
+    <div class="sec-h" id="sec-kpi"><h2 class="metal">Retouren, Zahlung, Versand</h2><span class="rule"></span><span class="fresh" id="fr-kpi"></span></div>
+    <div class="card s8 m12" id="card-kpi"><h3>Je Plattform <span class="sub">Retouren &amp; Stornos 30 Tage · unbezahlt &amp; ohne Sendungsnummer = Stand jetzt</span></h3><div class="kgrid" id="kpiKpis"></div><div class="scroll"><table class="tbl" id="tblKpi"></table></div><div class="note">Quelle JTL-Wawi (alle 30 Min.). Quote = Retouren ÷ Bestellungen 30 T. Unbezahlt = nicht storniert, Restbetrag offen. Ohne Sendungsnr. = Lieferschein der letzten 30 T ohne Sendungsnummer (Selbstabholer ausgenommen). Alter ab Bestelldatum: &gt; 2 Tage gelb, &gt; 3 Tage rot.</div></div>
+    <div class="card s4 m12" id="card-kpiList"><h3>Unbezahlt / ohne Sendungsnummer <span id="f-kpi"></span></h3><div class="scroll tall"><table class="tbl" id="tblKpiList"></table></div></div>
+
     <div class="sec-h" id="sec-stock"><h2 class="metal">Bestand &amp; Lagerwert</h2><span class="rule"></span><span class="fresh" id="fr-stock"></span></div>
     <div id="invKpis" style="display:contents"></div>
     <div class="card s6" id="card-cover"><h3>Nachbestellen · Reichweite unter 14 Tagen <span id="f-cover"></span></h3><div class="scroll tall"><table class="tbl" id="tblCover"></table></div></div>
@@ -422,7 +426,7 @@ async function load() {
 
     const today = berlinDate(); state.today = today; state.err = {};
     const from60 = addDays(today, -60), mailFrom = new Date(Date.now() - 30 * 864e5).toISOString();
-    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn] = await Promise.all([
+    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
       safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
       safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value").eq("source", "jtl"))),
@@ -435,9 +439,10 @@ async function load() {
       safe("social", res(sb.from("social_daily").select("day,network,followers,reach,content,interactions,followers_gained").gte("day", addDays(today, -60)).order("day"))),
       safe("runs", res(sb.from("sync_runs").select("source,started_at,finished_at,ok,rows_written,message").order("finished_at", { ascending: false, nullsFirst: false }).limit(300))),
       safe("conn", res(sb.from("channel_status").select("channel,kind,status,note,updated_at"))),
+      safe("kpi", fetchAll(() => sb.from("channel_kpi_daily").select("day,channel,kpi,anzahl,order_refs,aeltester"))),
     ]);
     state.sales = sales;
-    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn };
+    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi };
     renderAll();
     const failed = Object.keys(state.err);
     if (failed.length) warn = (warn ? warn + " " : "") + "Teilweise nicht geladen: " + failed.join(", ") + ". Übrige Bereiche sind aktuell.";
@@ -453,7 +458,7 @@ function renderAll() {
   const d = state.d; if (!d) return;
   state.U = computeUrgent(d);
   renderUrgent();
-  renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderInbox(d.inbox);
+  renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
   renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs);
   bindTilt();
 }
@@ -464,6 +469,8 @@ function renderAll() {
 const RULE = {
   OO_RED_DAYS: 3,          // offene Bestellung älter als 3 Tage  → rot
   OO_YELLOW_DAYS: 2,       // offene Bestellung 2–3 Tage alt     → gelb
+  KPI_RED_DAYS: 3,         // unbezahlt / ohne Sendungsnummer älter als 3 Tage → rot   (Tabelle channel_kpi_daily)
+  KPI_YELLOW_DAYS: 2,      // unbezahlt / ohne Sendungsnummer 2–3 Tage alt     → gelb
   BESTSELLER_SOLD30: 10,   // ausverkauft UND ≥10 Stück verkauft in 30 T → rot
   COVER_DAYS: 14,          // Reichweite < 14 Tage (Bestand > 0, ≥3 verkauft in 30 T) → gelb
   COVER_MIN_SOLD30: 3,
@@ -502,6 +509,16 @@ function syncHealth(runs, conn) {
   return out;
 }
 
+// Kanal-KPIs (channel_kpi_daily): Alter je Zeile ab ältester Bestellung des Tages
+const KPI_LBL = { retouren: "Retouren", stornos: "Stornos", unbezahlt: "Unbezahlt", ohne_tracking: "Ohne Sendungsnr." };
+const kpiAge = (r) => ageDays(r.aeltester || (r.day + "T00:00:00"));
+const kpiLvl = (r) => { const a = kpiAge(r); return a > RULE.KPI_RED_DAYS ? "red" : a > RULE.KPI_YELLOW_DAYS ? "yellow" : ""; };
+const kpiSum = (rows) => rows.reduce((a, r) => a + Number(r.anzahl || 0), 0);
+function kpiOrders(rows) { // je Auftragsnummer eine Zeile (max. 50 Nummern je Tag/Kanal gespeichert)
+  const out = []; rows.forEach(r => (r.order_refs && r.order_refs.length ? r.order_refs : ["(" + r.anzahl + " Aufträge)"]).forEach(ref => out.push({ ref, channel: r.channel, kpi: r.kpi, age: kpiAge(r), lvl: kpiLvl(r) })));
+  return out.sort((a, b) => b.age - a.age);
+}
+
 function computeUrgent(d) {
   const oo = d.oo, inv = d.inv, tasks = d.tasks.filter(t => !isDone(t));
   const ooRed = oo.filter(r => ageDays(r.created_at) > RULE.OO_RED_DAYS);
@@ -515,15 +532,21 @@ function computeUrgent(d) {
   const mahn = d.bills.filter(r => isMahn(r) && ago(r.received_at) < RULE.BILL_MAHN_DAYS * 1440);
   const billNew = d.bills.filter(r => isBill(r) && ago(r.received_at) < RULE.BILL_NEW_DAYS * 1440);
   const syncRed = sh.filter(x => x.lvl === "red"), syncYel = sh.filter(x => x.lvl === "yellow"), syncOk = sh.filter(x => x.lvl === "green");
-  const billsErr = !!state.err.bills;
+  const billsErr = !!state.err.bills, kpiErr = !!state.err.kpi;
+  const kq = (k, lvl) => (d.kpi || []).filter(r => r.kpi === k && kpiLvl(r) === lvl);
+  const unpRed = kq("unbezahlt", "red"), unpYel = kq("unbezahlt", "yellow"), trkRed = kq("ohne_tracking", "red"), trkYel = kq("ohne_tracking", "yellow");
   const L = [
     { id: "bill_mahn", lvl: "red", n: mahn.length, label: "Mahnung / Zahlungserinnerung", ok: billsErr ? "" : "Keine Mahnungen", hint: `letzte ${RULE.BILL_MAHN_DAYS} Tage · prüfen & zahlen`, sec: "card-bills", rows: mahn },
     { id: "oo_red", lvl: "red", n: ooRed.length, label: `Bestellungen > ${RULE.OO_RED_DAYS} Tage offen`, ok: "Keine alten Bestellungen", hint: "Versand prüfen", sec: "card-ooOld", rows: ooRed },
+    { id: "kpi_unp_red", lvl: "red", n: kpiSum(unpRed), label: `Unbezahlt > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Keine alten Unbezahlten", hint: "Zahlung prüfen", sec: "card-kpiList", rows: unpRed },
+    { id: "kpi_trk_red", lvl: "red", n: kpiSum(trkRed), label: `Ohne Sendungsnr. > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Sendungsnummern vollständig", hint: "Tracking nachtragen", sec: "card-kpiList", rows: trkRed },
     { id: "oos_best", lvl: "red", n: oosBest.length, label: "Bestseller ausverkauft", ok: "Bestseller lieferbar", hint: `≥ ${RULE.BESTSELLER_SOLD30} verkauft / 30 T`, sec: "card-oos", rows: oosBest },
     { id: "sync_red", lvl: "red", n: syncRed.length, label: "Sync gestört", ok: "", hint: "Fehler oder > 2 Std. alt", sec: "sec-sync", rows: syncRed },
     { id: "task_red", lvl: "red", n: taskRed.length, label: "Dringende Aufgaben", ok: "Keine dringenden Aufgaben", hint: "Prio hoch / CEO überfällig", sec: "sec-tasks", rows: taskRed },
     { id: "bill_new", lvl: "yellow", n: billNew.length, label: "Neue Rechnungen", ok: "", hint: `letzte ${RULE.BILL_NEW_DAYS} Tage`, sec: "card-bills", rows: billNew },
     { id: "oo_yel", lvl: "yellow", n: ooYel.length, label: `Bestellungen ${RULE.OO_YELLOW_DAYS}–${RULE.OO_RED_DAYS} Tage`, ok: "", hint: "bald verschicken", sec: "card-ooOld", rows: ooYel },
+    { id: "kpi_unp_yel", lvl: "yellow", n: kpiSum(unpYel), label: `Unbezahlt ${RULE.KPI_YELLOW_DAYS}–${RULE.KPI_RED_DAYS} Tage`, ok: "", hint: "Zahlung prüfen", sec: "card-kpiList", rows: unpYel },
+    { id: "kpi_trk_yel", lvl: "yellow", n: kpiSum(trkYel), label: `Ohne Sendungsnr. ${RULE.KPI_YELLOW_DAYS}–${RULE.KPI_RED_DAYS} Tage`, ok: "", hint: "Tracking nachtragen", sec: "card-kpiList", rows: trkYel },
     { id: "cover", lvl: "yellow", n: lowCover.length, label: "Reichweite < 14 Tage", ok: "Bestand reicht", hint: "nachbestellen", sec: "card-cover", rows: lowCover },
     { id: "task_ceo", lvl: "yellow", n: taskCeo.length, label: "Wartet auf dich", ok: "Nichts wartet auf dich", hint: "Freigabe / Login", sec: "sec-tasks", rows: taskCeo },
     { id: "mail_biz", lvl: "yellow", n: mailBiz.length, label: "Kunde / Marktplatz · Mails", ok: "", hint: `letzte ${RULE.MAIL_DAYS} Tage`, sec: "card-inbox", rows: mailBiz },
@@ -725,7 +748,7 @@ function renderBills(bills) {
 }
 
 // ---------- Datenstand je Bereich ----------
-const FRESH = { "fr-sales": ["jtl", "shopify"], "fr-bills": ["ionos", "gmail"], "fr-orders": ["jtl", "shopify"], "fr-stock": ["jtl"], "fr-tasks": ["notion", "gmail", "ionos"], "fr-social": ["social"] };
+const FRESH = { "fr-sales": ["jtl", "shopify"], "fr-bills": ["ionos", "gmail"], "fr-orders": ["jtl", "shopify"], "fr-stock": ["jtl"], "fr-kpi": ["jtl"], "fr-tasks": ["notion", "gmail", "ionos"], "fr-social": ["social"] };
 function renderFresh(runs) {
   const last = {}; runs.forEach(r => { const k = String(r.source).toLowerCase(); if (!last[k]) last[k] = r; });
   const hl = {}; syncHealth(runs, []).forEach(h => hl[h.key] = h.lvl);
@@ -790,6 +813,39 @@ function renderOpenOrders(oo) {
   table("tblOoOld", [{ t: "Bestellung" }, { t: "Kanal" }, { t: "Seit" }, { t: "Wert", r: 1 }],
     list.map(r => ({ hl: !!f, c: [esc(r.order_ref), `<span style="--pc:${pc(r.channel)};display:inline-flex;align-items:center;gap:6px"><i class="sw" style="width:8px;height:8px;box-shadow:none"></i>${esc(r.channel)}</span>`, esc(fmtDT(r.created_at)) + `<div class="small muted">${Math.floor(ageDays(r.created_at))} Tg.</div>`, eur(r.total, 2)] })), errTxt("oo", "Keine offenen Bestellungen."));
   filterChip("f-oo", f);
+}
+
+function renderKpi(kpi) {
+  kpi = kpi || [];
+  const sum = (k) => kpiSum(kpi.filter(r => r.kpi === k));
+  const old = (k) => kpiSum(kpi.filter(r => r.kpi === k && kpiLvl(r) === "red"));
+  $("kpiKpis").innerHTML = [["Retouren 30 T", num(sum("retouren")), ""], ["Stornos 30 T", num(sum("stornos")), ""], ["Unbezahlt", num(sum("unbezahlt")), old("unbezahlt") ? "red" : ""], ["Ohne Sendungsnr.", num(sum("ohne_tracking")), old("ohne_tracking") ? "red" : ""]]
+    .map(([l, v, c]) => `<div class="kpi mini ${c}"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
+  // Bestellungen 30 T je Kanal (für Retourenquote)
+  const from30 = addDays(state.today || berlinDate(), -29), ord = {};
+  (state.sales || []).filter(r => r.day >= from30).forEach(r => ord[r.channel] = (ord[r.channel] || 0) + Number(r.orders || 0));
+  const by = {};
+  kpi.forEach(r => { const c = by[r.channel] ||= { retouren: 0, stornos: 0, unbezahlt: 0, ohne_tracking: 0, red: { unbezahlt: 0, ohne_tracking: 0 }, yel: { unbezahlt: 0, ohne_tracking: 0 } };
+    c[r.kpi] += Number(r.anzahl || 0); const l = kpiLvl(r); if (r.kpi in c.red && l === "red") c.red[r.kpi] += Number(r.anzahl || 0); if (r.kpi in c.yel && l === "yellow") c.yel[r.kpi] += Number(r.anzahl || 0); });
+  const order = (ch) => { const i = PLAT.findIndex(p => p.re.test(ch)); return i < 0 ? 99 : i; };
+  const cell = (c, k) => c[k] ? num(c[k]) + (c.red[k] ? " " + pill(c.red[k] + " > " + RULE.KPI_RED_DAYS + " T", "p-bad") : "") + (c.yel[k] ? " " + pill(c.yel[k] + " > " + RULE.KPI_YELLOW_DAYS + " T", "p-warn") : "") : `<span class="muted">0</span>`;
+  table("tblKpi", [{ t: "Plattform" }, { t: "Retouren", r: 1 }, { t: "Quote", r: 1 }, { t: "Stornos", r: 1 }, { t: "Unbezahlt", r: 1 }, { t: "Ohne Sendungsnr.", r: 1 }],
+    Object.entries(by).sort((a, b) => order(a[0]) - order(b[0]) || a[0].localeCompare(b[0])).map(([ch, c]) => [
+      `<span style="--pc:${pc(ch)};display:inline-flex;align-items:center;gap:7px"><i class="sw"></i>${esc(ch)}</span>`,
+      c.retouren ? num(c.retouren) : `<span class="muted">0</span>`,
+      ord[ch] ? pct(c.retouren / ord[ch] * 100, 1) : "–",
+      c.stornos ? num(c.stornos) : `<span class="muted">0</span>`,
+      cell(c, "unbezahlt"), cell(c, "ohne_tracking")]),
+    errTxt("kpi", "Noch keine Kanal-KPIs (kommen mit dem nächsten JTL-Lauf)."));
+  const f = F(["kpi_unp_red", "kpi_unp_yel", "kpi_trk_red", "kpi_trk_yel"]);
+  const want = f ? { kpi: f.id.includes("unp") ? "unbezahlt" : "ohne_tracking", lvl: f.lvl } : null;
+  const all = kpiOrders(kpi.filter(r => r.kpi === "unbezahlt" || r.kpi === "ohne_tracking"));
+  const list = want ? all.filter(o => o.kpi === want.kpi && o.lvl === want.lvl) : all.slice(0, 20);
+  table("tblKpiList", [{ t: "Bestellung" }, { t: "Plattform" }, { t: "Art" }, { t: "Alter", r: 1 }],
+    list.map(o => ({ hl: !!f, c: [esc(o.ref), `<span style="--pc:${pc(o.channel)};display:inline-flex;align-items:center;gap:6px"><i class="sw" style="width:8px;height:8px;box-shadow:none"></i>${esc(o.channel)}</span>`,
+      pill(o.kpi === "unbezahlt" ? "unbezahlt" : "kein Tracking", o.lvl === "red" ? "p-bad" : o.lvl === "yellow" ? "p-warn" : "p-off"), `${Math.floor(o.age)} Tg.`] })),
+    errTxt("kpi", "Nichts offen: alles bezahlt, alle Sendungsnummern da."));
+  filterChip("f-kpi", f);
 }
 
 function renderInbox(inbox) {
