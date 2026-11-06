@@ -1,0 +1,3 @@
+Inter (Rasmus Andersson) und DM Serif Display (Colophon Foundry): SIL Open Font License 1.1.
+Quelle: Google Fonts (latin-Subset), lokal gehostet, damit keine Verbindung zu Google aufgebaut wird.
+https://openfontlicense.org

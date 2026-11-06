@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#1c140e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BE Cockpit">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://avsjxexvqgrgxeujkbei.supabase.co wss://avsjxexvqgrgxeujkbei.supabase.co; style-src 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://avsjxexvqgrgxeujkbei.supabase.co wss://avsjxexvqgrgxeujkbei.supabase.co; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/dm-serif-display-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <title>BLACK ELIXIR · Cockpit</title>
 <script>
 // Theme vor dem ersten Zeichnen setzen (kein Flackern). Gespeichert in localStorage "be-theme": "dark" | "light".
@@ -198,8 +200,171 @@ svg .gl{stroke:var(--grid)}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.card{transform:none!important}}
 @media (hover:none){.card::before{display:none}}
 </style>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · Design "Glassy Warm" (CEO-Vorlage vom 06.11.2026)
+   Nur Optik. Überschreibt die Regeln oben; Login, Daten und Logik unverändert.
+   Tag = data-theme="light" (helles Milchglas), Nacht = data-theme="dark" (Rauchglas).
+   Spiegel: body.bx bekommt zusätzlich .is-dark (wie in der Vorlage).
+   Schriften lokal (fonts/): Inter + DM Serif Display. Hintergrund: bg-salon.jpg (lokal).
+   ===================================================================== */
+@font-face{font-family:"Inter";font-style:normal;font-weight:400 600;font-display:swap;src:url(fonts/inter-latin-var.woff2) format("woff2")}
+@font-face{font-family:"DM Serif Display";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/dm-serif-display-latin-400.woff2) format("woff2")}
+:root{--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--serifd:"DM Serif Display",Georgia,"Times New Roman",serif;
+  --hero-ink:#F8EFE3;--hero-mute:#E2D3C1;--canvas:#6B5544;--r:24px}
+/* Nacht */
+:root,[data-theme=dark]{
+  --th-ink:#F6EDE2;--th-mut:#D2C1AE;--txt:var(--th-ink);--mut:var(--th-mut);
+  --gold:#E2C98F;--gold-a:#F6E3B4;--gold-b:#E2C98F;--gold-c:#9C7A3A;
+  --ok:#8FE0B5;--warn:#F2C27A;--bad:#FF9A93;--line:rgba(255,255,255,.14);--line2:rgba(255,255,255,.08);--grid:rgba(255,255,255,.12);
+  --card2:rgba(46,35,27,.7);--glass:rgba(40,30,22,.32);--edge:rgba(255,255,255,.18);--shine:rgba(255,255,255,.08);
+  --veil:linear-gradient(180deg,rgba(10,6,3,.30),rgba(10,6,3,.45));--headbg:rgba(28,20,14,.55);--sheetbg:rgba(26,18,12,.36);
+  --shadow:0 30px 60px -30px rgba(0,0,0,.7);--input:rgba(0,0,0,.22);color-scheme:dark}
+/* Tag */
+[data-theme=light]{
+  --th-ink:#221A14;--th-mut:#47382C;--txt:var(--th-ink);--mut:var(--th-mut);
+  --gold:#A47A2C;--gold-a:#E9CF92;--gold-b:#B8903F;--gold-c:#6E4F18;
+  --ok:#1F7A4D;--warn:#9A5B10;--bad:#B8322F;--line:rgba(90,66,48,.16);--line2:rgba(90,66,48,.10);--grid:rgba(90,66,48,.14);
+  --card2:rgba(251,246,239,.72);--glass:rgba(251,246,239,.46);--edge:rgba(255,255,255,.6);--shine:rgba(255,255,255,.6);
+  --veil:linear-gradient(180deg,rgba(25,15,8,0),rgba(25,15,8,.12));--headbg:rgba(64,48,36,.46);--sheetbg:rgba(58,44,33,.24);
+  --shadow:0 30px 60px -32px rgba(40,24,12,.55);--input:rgba(255,255,255,.55);color-scheme:light}
+
+html,body{background:var(--canvas);font:15px/1.45 var(--sans);font-variant-numeric:tabular-nums}
+body{background:transparent;position:relative;isolation:isolate}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--veil),url("bg-salon.jpg") center/cover no-repeat,var(--canvas);transition:opacity .35s}
+.serif,.brand{font-family:var(--serifd);font-weight:400}
+a{color:var(--gold)}
+
+/* ---------- Buttons (Grundform) ---------- */
+button,.btn{font-family:var(--sans);background:color-mix(in srgb,var(--txt) 8%,transparent);border:1px solid var(--line);box-shadow:inset 0 1px 0 var(--shine)}
+button:hover{border-color:color-mix(in srgb,var(--gold) 70%,transparent)}
+button.primary{color:#221A14;box-shadow:0 10px 24px -12px rgba(164,122,44,.9),inset 0 1px 0 rgba(255,255,255,.55)}
+
+/* ---------- Login: Salon-Glas ---------- */
+.login-box{position:relative;overflow:hidden;color:var(--hero-ink);border-radius:30px;padding:clamp(24px,5vw,40px);
+  background:var(--headbg);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(30px) saturate(1.15);backdrop-filter:blur(30px) saturate(1.15);box-shadow:var(--shadow);
+  --txt:var(--hero-ink);--mut:var(--hero-mute)}
+.login-box::after{content:"";position:absolute;right:-90px;top:-130px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(241,201,120,.32),transparent 65%);pointer-events:none}
+.login-box>*{position:relative;z-index:1}
+.login .brand{letter-spacing:.22em;font-size:clamp(30px,8vw,46px)}
+.login .card{--txt:var(--th-ink);--mut:var(--th-mut);color:var(--txt);background:var(--glass);border:1px solid var(--edge);border-radius:24px;padding:18px 20px;
+  -webkit-backdrop-filter:blur(14px) saturate(1.25);backdrop-filter:blur(14px) saturate(1.25);box-shadow:inset 0 1px 0 var(--shine),var(--shadow);transform:none}
+[data-theme=light] .login .card{background:rgba(251,246,239,.78)}
+.login .themeBtn{color:var(--hero-ink);background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22)}
+input{background:var(--input);border-color:var(--line);border-radius:14px;color:var(--txt)}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 25%,transparent)}
+
+/* ---------- Kopfzeile: Rauchglas ---------- */
+.top{top:max(8px,env(safe-area-inset-top));margin:max(8px,env(safe-area-inset-top)) var(--pad) 0;padding:10px clamp(12px,1.6vw,22px);border-radius:24px;
+  background:var(--headbg);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(30px) saturate(1.15);backdrop-filter:blur(30px) saturate(1.15);box-shadow:var(--shadow);
+  --txt:var(--hero-ink);--mut:var(--hero-mute);color:var(--txt)}
+.top .brandwrap{display:flex;align-items:center;gap:10px;min-width:0}
+.bx-logo{width:38px;height:38px;border-radius:50%;background:#0b0b0c;color:#E2C98F;display:flex;align-items:center;justify-content:center;font-family:var(--serifd);font-size:18px;flex-shrink:0;box-shadow:0 0 0 1px rgba(226,201,143,.35)}
+.top .brand{letter-spacing:.3em}
+.top .brand small{font-family:var(--sans);-webkit-text-fill-color:var(--hero-mute);color:var(--hero-mute)}
+.top button{color:var(--hero-ink);background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);box-shadow:none}
+.top button:hover{border-color:#F1D9A6}
+#loadedAt,#standM{color:var(--hero-mute)}
+.bx-mode{display:inline-flex;padding:3px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)}
+.top .bx-mode button{border:0;background:transparent;color:var(--hero-mute);padding:6px 12px;font-size:12.5px}
+.top .bx-mode button[aria-pressed=true]{background:#F8EFE3;color:#2A211A;font-weight:600}
+.bx-mode button:focus-visible{outline:2px solid #F1D9A6;outline-offset:2px}
+@media(max-width:520px){.top .bx-mode button{padding:0;width:34px;height:32px}.bx-mode .tx{display:none}.bx-logo{width:30px;height:30px;font-size:15px}.top{border-radius:20px}}
+
+/* ---------- Gerüst: Seitenleiste · Rauchglas-Blatt ---------- */
+.shell{display:flex;gap:22px;align-items:flex-start;padding:16px var(--pad) calc(28px + env(safe-area-inset-bottom))}
+.side{flex:0 0 220px;position:sticky;top:96px;max-height:calc(100vh - 112px);overflow:auto;box-sizing:border-box;display:flex;flex-direction:column;gap:2px;padding:14px 10px;border-radius:28px;
+  background:var(--glass);border:1px solid var(--edge);-webkit-backdrop-filter:blur(12px) saturate(1.25);backdrop-filter:blur(12px) saturate(1.25);box-shadow:inset 0 1px 0 var(--shine),var(--shadow);color:var(--txt)}
+.side .lbl{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);padding:12px 12px 4px}
+.side button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:transparent;box-shadow:none;color:var(--txt);padding:9px 12px;border-radius:14px;font-size:13px}
+.side button::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--tone,var(--gold));flex-shrink:0}
+.side button:hover,.side button:focus-visible{background:color-mix(in srgb,var(--txt) 10%,transparent);outline:none}
+.sheet{flex:1 1 560px;min-width:0;box-sizing:border-box;border-radius:30px;padding:clamp(14px,2.2vw,30px);
+  background:var(--sheetbg);border:1px solid rgba(255,255,255,.28);-webkit-backdrop-filter:blur(14px) saturate(1.25);backdrop-filter:blur(14px) saturate(1.25);box-shadow:0 40px 80px -40px rgba(30,18,10,.75);
+  /* hell auf dunkel im Blatt – in Tag und Nacht */
+  --txt:#F7EEE3;--mut:#DDCDBB;--line:rgba(255,255,255,.15);--line2:rgba(255,255,255,.09);--grid:rgba(255,255,255,.12);
+  --ok:#9BE8BF;--bad:#FFA79F;--warn:#F4C77E;--gold:#E9CF92;--gold-a:#F6E3B4;--gold-b:#E9CF92;--gold-c:#B08A45;--card2:#3A2D23;--reflect:transparent;
+  --p-amazon:#E3C27A;--p-b2b:#9DB3F5;--p-otto:#EE97B1;--p-shopify:#6FD6AE;--p-tiktok:#F6C3D0;--p-kaufland:#C9B6F5;--p-ebay:#8FD3E3;--p-other:#BDB0A2;
+  color:var(--txt);text-shadow:0 1px 6px rgba(20,10,4,.35)}
+@media(max-width:1099px){
+  .shell{flex-direction:column;gap:12px}
+  .side{position:static;width:100%;max-height:none;flex:none;flex-direction:row;overflow-x:auto;border-radius:999px;padding:6px;-webkit-overflow-scrolling:touch}
+  .side .lbl{display:none}.side button{width:auto;flex-shrink:0;padding:8px 14px}
+  .sheet{flex:none;width:100%}}
+@media(max-width:520px){.sheet{border-radius:22px;padding:12px}.shell{padding-top:10px}}
+
+.hero{padding:2px 2px 10px}
+.hero .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#F1D9A6}
+.hero h1{margin:2px 0 0;font-family:var(--serifd);font-weight:400;font-size:clamp(28px,3.4vw,42px);line-height:1.05;color:var(--txt)}
+
+/* Dringend-Leiste */
+.urgent{padding:6px 0 4px}
+.usum .t{color:#F1D9A6}
+.chip{border-radius:18px;background:radial-gradient(120% 90% at 0% 0%,var(--cg),transparent 55%),rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+.chip.red{--cg:rgba(255,167,159,.26);border-color:rgba(255,167,159,.5)}
+.chip.yellow{--cg:rgba(244,199,126,.22);border-color:rgba(244,199,126,.45)}
+.chip.green{--cg:rgba(155,232,191,.16)}
+.chip .n{font-family:var(--serifd);font-weight:400}
+.banner{margin:8px 0 0}
+main{padding:4px 0 0}
+
+/* Abschnitts-Überschriften */
+.sec-h{margin:22px 2px 0;padding-top:14px;border-top:1px solid var(--line)}
+.sheet .dash>.sec-h:first-child{margin-top:8px;padding-top:0;border-top:0}
+.sec-h h2,.sec-h h2.metal{display:flex;align-items:center;gap:10px;font-family:var(--serifd);font-weight:400;font-size:clamp(21px,2.1vw,28px);letter-spacing:0;text-transform:none;white-space:normal;
+  background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--txt);-webkit-text-fill-color:currentColor}
+.sec-h h2::before{content:"";width:4px;height:20px;border-radius:2px;background:var(--tone,var(--gold));flex-shrink:0}
+.sec-h .rule{opacity:.18}
+.fresh{color:var(--mut)}
+.t-sales{--tone:#E9CF92}.t-stock{--tone:#9DB3F5}.t-mkt{--tone:#F2A3BB}.t-tools{--tone:#F4BC78}.t-mail{--tone:#9CC2F2}.t-link{--tone:#D2C2B1}.t-ship{--tone:#C9952B}.t-bills{--tone:#F4BC78}
+[data-theme=light] .side .t-sales{--tone:#A47A2C}[data-theme=light] .side .t-stock{--tone:#3E63C9}[data-theme=light] .side .t-mkt{--tone:#B0506E}[data-theme=light] .side .t-tools,[data-theme=light] .side .t-bills{--tone:#B8691E}[data-theme=light] .side .t-mail{--tone:#3D6FB0}[data-theme=light] .side .t-link{--tone:#7A6858}
+
+/* Glas-Karten */
+.card{border-radius:24px;padding:18px 20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s,background .35s;
+  transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0px)) translateZ(0)}
+.card:hover{--lift:-4px;border-color:rgba(233,207,146,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 24px 40px -24px rgba(0,0,0,.6)}
+[data-theme=dark] .sheet .card{background:rgba(255,255,255,.06)}
+.card h3{font-family:var(--serifd);font-weight:400;font-size:18px;letter-spacing:.1px}
+.card h3::before{content:"";width:8px;height:8px;border-radius:4px;background:var(--tone,var(--gold));flex-shrink:0}
+.card h3 .sub,.card h3 .fchip{font-family:var(--sans)}
+.kpi .l{font-size:12px;letter-spacing:.08em;color:var(--mut)}
+.kpi .v{font-family:var(--serifd);font-weight:400;font-size:clamp(26px,2.6vw,36px);line-height:1.05;letter-spacing:0}
+.mini .v{font-size:22px}
+#kpis>.card:first-child{background:linear-gradient(160deg,#7C97EC 0%,#3E63C9 55%,#23409E 100%);border-color:rgba(255,255,255,.4);box-shadow:0 30px 50px -25px rgba(20,40,120,.7);
+  --txt:#FFFFFF;--mut:rgba(255,255,255,.82);--ok:#C9F5DD;--bad:#FFD0CB;--warn:#FFE3B0;--grid:rgba(255,255,255,.22);--gold:#FFFFFF}
+.kgrid .kpi{border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:none;transform:none}
+.kgrid .kpi:hover{--lift:0px}
+.pt{border-radius:16px;background:linear-gradient(180deg,color-mix(in srgb,var(--pc) 16%,transparent),transparent 62%),rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-top:2px solid var(--pc)}
+.pt-v{font-family:var(--serifd);font-weight:400}
+.share{background:rgba(255,255,255,.1)}
+.share span{border-right-color:rgba(40,30,22,.6)}
+
+/* Tabellen */
+.tbl{font-size:13px}
+.tbl th{background:rgba(60,45,34,.92);color:var(--mut);font-size:10.5px}
+[data-theme=dark] .tbl th{background:#2C2119}
+.tbl td{border-bottom-color:var(--line)}
+.tbl tbody tr:hover td{background:color-mix(in srgb,var(--tone,var(--gold)) 8%,transparent)}
+.scroll,.tall{border-radius:14px}
+.pill{border-color:var(--line)}
+.p-ok{border-color:color-mix(in srgb,var(--ok) 55%,transparent)}.p-warn{border-color:color-mix(in srgb,var(--warn) 55%,transparent)}.p-bad{border-color:color-mix(in srgb,var(--bad) 55%,transparent)}
+.seg button{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)}
+.seg button.on{border-color:var(--gold);color:var(--txt);background:color-mix(in srgb,var(--gold) 18%,transparent)}
+.sheet button{color:var(--txt)}
+.bar{background:var(--gold)}
+svg text{font-family:var(--sans)}
+.foot{color:var(--mut)}
+
+@media (hover:none){.card:hover{--lift:0px}}
+@media (prefers-reduced-motion: reduce){.card:hover{--lift:0px}body::before{transition:none}}
+/* Gold in Kopfzeile und Login immer hell (Rauchglas in Tag und Nacht) */
+.top,.login-box{--gold-a:#F6E3B4;--gold-b:#E2C98F;--gold-c:#9C7A3A;--gold:#E2C98F}
+.login .brand{letter-spacing:.14em;font-size:clamp(28px,7vw,42px);white-space:nowrap}
+@media(max-width:520px){.top .bx-logo{display:none}.hbtn{flex-wrap:nowrap;gap:4px}.top .bx-mode button{width:30px}.top .brand{letter-spacing:.18em}}
+</style>
 </head>
-<body>
+<body class="bx">
 
 <!-- LOGIN -->
 <section id="loginView" class="login hidden">
@@ -229,7 +394,7 @@ svg .gl{stroke:var(--grid)}
       <div id="loginMsg" class="msg muted"></div>
     </div>
     <p class="small muted" style="margin-top:18px">Nur für freigegebene Konten. Daten werden erst nach Anmeldung geladen.</p>
-    <button class="themeBtn" type="button" style="margin-top:6px">◐ Hell / Dunkel</button>
+    <button class="themeBtn" type="button" style="margin-top:6px">☀ Tag / ☾ Nacht</button>
   </div>
 </section>
 
@@ -237,16 +402,35 @@ svg .gl{stroke:var(--grid)}
 <section id="appView" class="hidden">
   <div class="top">
     <div class="hrow">
-      <div class="brand metal">BLACK ELIXIR<small>COCKPIT</small></div>
+      <div class="brandwrap"><div class="bx-logo" aria-hidden="true">B</div><div class="brand metal">BLACK ELIXIR<small>COCKPIT</small></div></div>
       <div class="hbtn">
         <span id="loadedAt" class="small muted"></span>
-        <button class="themeBtn icon" type="button" title="Schwarz / Weiß umschalten" aria-label="Theme umschalten">◐</button>
+        <div class="bx-mode" role="group" aria-label="Darstellung"><button type="button" class="modeBtn" data-mode="light" aria-pressed="false" title="Tag">☀<span class="tx"> Tag</span></button><button type="button" class="modeBtn" data-mode="dark" aria-pressed="true" title="Nacht">☾<span class="tx"> Nacht</span></button></div>
         <button id="btnRefresh" class="txt" type="button" title="Aktualisieren"><span class="tx">Aktualisieren</span><span class="ic">↻</span></button>
         <button id="btnLogout" class="txt" type="button" title="Abmelden"><span class="tx">Abmelden</span><span class="ic">⏻</span></button>
       </div>
     </div>
   </div>
 
+  <div class="shell">
+  <nav class="side" id="secNav" aria-label="Bereiche">
+    <div class="lbl">Überblick</div>
+    <button type="button" class="t-sales" data-go="urgentWrap">Dringend</button>
+    <button type="button" class="t-sales" data-go="sec-sales">Umsatz</button>
+    <button type="button" class="t-bills" data-go="sec-bills">Rechnungen</button>
+    <button type="button" class="t-sales" data-go="sec-oo">Offene Bestellungen</button>
+    <button type="button" class="t-ship" data-go="sec-kpi">Retouren · Versand</button>
+    <div class="lbl">Betrieb</div>
+    <button type="button" class="t-stock" data-go="sec-stock">Bestand</button>
+    <button type="button" class="t-mail" data-go="sec-tp">Aufgaben &amp; Postfach</button>
+    <button type="button" class="t-sales" data-go="sec-prod">Produkte</button>
+    <div class="lbl">Wachstum</div>
+    <button type="button" class="t-mkt" data-go="sec-social">Social</button>
+    <button type="button" class="t-tools" data-go="sec-quellen">Quellen &amp; Tools</button>
+    <button type="button" class="t-link" data-go="sec-data">Verbindungen</button>
+  </nav>
+  <div class="sheet">
+  <header class="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1></header>
   <!-- DRINGEND: rot / gelb / grün -->
   <div class="urgent" id="urgentWrap">
     <div class="usum"><span class="t">Was ist dringend?</span><span id="usum" class="small"></span><span id="standM" class="small muted"></span></div>
@@ -256,7 +440,7 @@ svg .gl{stroke:var(--grid)}
 
   <main>
   <div class="dash">
-    <div class="sec-h" id="sec-sales"><h2 class="metal">Umsatz netto</h2><span class="rule"></span><span class="fresh" id="fr-sales"></span></div>
+    <div class="sec-h t-sales" id="sec-sales"><h2 class="metal">Umsatz netto</h2><span class="rule"></span><span class="fresh" id="fr-sales"></span></div>
     <div id="kpis" style="display:contents"></div>
 
     <div class="card s12" id="card-plat"><h3>Umsatz je Plattform · 30 Tage <span class="sub">Anteil, Verlauf und Trend (7 volle Tage vs. Vorwoche)</span></h3>
@@ -267,48 +451,50 @@ svg .gl{stroke:var(--grid)}
     <div class="card s8 m12"><h3>Tagesumsatz netto · 30 Tage <span class="sub">gestapelt nach Plattform</span></h3><div class="legend" id="chartLegend"></div><div id="chart"></div></div>
     <div class="card s4 m12"><h3>Umsatz je Kanal</h3><div class="seg" id="segPeriod"></div><div class="scroll"><table class="tbl" id="tblChannels"></table></div><div class="note" id="chNote"></div></div>
 
-    <div class="sec-h" id="sec-bills"><h2 class="metal">Rechnungen &amp; Zahlungserinnerungen</h2><span class="rule"></span><span class="fresh" id="fr-bills"></span></div>
+    <div class="sec-h t-bills" id="sec-bills"><h2 class="metal">Rechnungen &amp; Zahlungserinnerungen</h2><span class="rule"></span><span class="fresh" id="fr-bills"></span></div>
     <div class="card s4 m12" id="card-billsK"><h3>Überblick <span class="sub">aus den Postfächern</span></h3><div class="kgrid" id="billKpis" style="grid-template-columns:1fr 1fr"></div><div class="note">Mahnung = Kategorie „Mahnung“ oder Betreff mit Mahnung / Zahlungserinnerung / überfällig. Ob bezahlt, ist im Cockpit noch nicht erfasst.</div></div>
     <div class="card s8 m12" id="card-bills"><h3>Neue Rechnungen / Zahlungserinnerungen <span id="f-bills"></span></h3><div class="scroll tall"><table class="tbl" id="tblBills"></table></div></div>
 
-    <div class="sec-h"><h2 class="metal">Offene Bestellungen</h2><span class="rule"></span><span class="fresh" id="fr-orders"></span></div>
+    <div class="sec-h t-sales" id="sec-oo"><h2 class="metal">Offene Bestellungen</h2><span class="rule"></span><span class="fresh" id="fr-orders"></span></div>
     <div class="card s6" id="sec-orders"><div class="kgrid" id="ooKpis"></div><div class="scroll"><table class="tbl" id="tblOo"></table></div></div>
     <div class="card s6" id="card-ooOld"><h3>Älteste offene Bestellungen <span id="f-oo"></span></h3><div class="scroll tall"><table class="tbl" id="tblOoOld"></table></div></div>
 
-    <div class="sec-h" id="sec-kpi"><h2 class="metal">Retouren, Zahlung, Versand</h2><span class="rule"></span><span class="fresh" id="fr-kpi"></span></div>
+    <div class="sec-h t-ship" id="sec-kpi"><h2 class="metal">Retouren, Zahlung, Versand</h2><span class="rule"></span><span class="fresh" id="fr-kpi"></span></div>
     <div class="card s8 m12" id="card-kpi"><h3>Je Plattform <span class="sub">Retouren &amp; Stornos 30 Tage · unbezahlt &amp; ohne Sendungsnummer = Stand jetzt</span></h3><div class="kgrid" id="kpiKpis"></div><div class="scroll"><table class="tbl" id="tblKpi"></table></div><div class="note">Quelle JTL-Wawi (alle 30 Min.). Quote = Retouren ÷ Bestellungen 30 T. Unbezahlt = nicht storniert, Restbetrag offen. Ohne Sendungsnr. = Lieferschein der letzten 30 T ohne Sendungsnummer (Selbstabholer ausgenommen). Alter ab Bestelldatum: &gt; 2 Tage gelb, &gt; 3 Tage rot.</div></div>
     <div class="card s4 m12" id="card-kpiList"><h3>Unbezahlt / ohne Sendungsnummer <span id="f-kpi"></span></h3><div class="scroll tall"><table class="tbl" id="tblKpiList"></table></div></div>
 
-    <div class="sec-h" id="sec-stock"><h2 class="metal">Bestand &amp; Lagerwert</h2><span class="rule"></span><span class="fresh" id="fr-stock"></span></div>
+    <div class="sec-h t-stock" id="sec-stock"><h2 class="metal">Bestand &amp; Lagerwert</h2><span class="rule"></span><span class="fresh" id="fr-stock"></span></div>
     <div id="invKpis" style="display:contents"></div>
     <div class="card s6" id="card-cover"><h3>Nachbestellen · Reichweite unter 14 Tagen <span id="f-cover"></span></h3><div class="scroll tall"><table class="tbl" id="tblCover"></table></div></div>
     <div class="card s6" id="card-oos"><h3>Ausverkauft, aber verkauft (30 T) <span id="f-oos"></span></h3><div class="scroll tall"><table class="tbl" id="tblOos"></table></div></div>
 
-    <div class="sec-h"><h2 class="metal">Aufgaben &amp; Postfach</h2><span class="rule"></span><span class="fresh" id="fr-tasks"></span></div>
+    <div class="sec-h t-mail" id="sec-tp"><h2 class="metal">Aufgaben &amp; Postfach</h2><span class="rule"></span><span class="fresh" id="fr-tasks"></span></div>
     <div class="card s8 m12" id="sec-tasks"><h3>Aufgaben <span id="f-tasks"></span></h3><div class="scroll tall"><table class="tbl" id="tblTasks"></table></div></div>
     <div class="card s4 m12" id="sec-inbox"><h3>Postfach · Kategorien 7 Tage</h3><div id="inboxCats"></div></div>
     <div class="card s12" id="card-inbox"><h3>Neueste E-Mails <span id="f-inbox"></span></h3><div class="scroll tall"><table class="tbl" id="tblInbox"></table></div></div>
 
-    <div class="sec-h"><h2 class="metal">Produkte · 30 Tage</h2><span class="rule"></span></div>
+    <div class="sec-h t-sales" id="sec-prod"><h2 class="metal">Produkte · 30 Tage</h2><span class="rule"></span></div>
     <div class="card s6"><h3>Top 10 nach Nettoumsatz</h3><div class="scroll"><table class="tbl" id="tblTop"></table></div></div>
     <div class="card s6"><h3>Flop 10 · Lagerwert ohne Verkauf (30 T)</h3><div class="scroll"><table class="tbl" id="tblFlop"></table></div></div>
 
-    <div class="sec-h"><h2 class="metal">Social</h2><span class="rule"></span><span class="fresh" id="fr-social"></span></div>
+    <div class="sec-h t-mkt" id="sec-social"><h2 class="metal">Social</h2><span class="rule"></span><span class="fresh" id="fr-social"></span></div>
     <div class="card s12"><div class="scroll"><table class="tbl" id="tblSocial"></table></div></div>
 
-    <div class="sec-h" id="sec-quellen"><h2 class="metal">Quellen &amp; Tools</h2><span class="rule"></span><span class="fresh" id="fr-quellen"></span></div>
+    <div class="sec-h t-tools" id="sec-quellen"><h2 class="metal">Quellen &amp; Tools</h2><span class="rule"></span><span class="fresh" id="fr-quellen"></span></div>
     <div class="card s6 m12" id="card-dhl"><h3>DHL-Fälle <span class="sub">Nachforschungen, Schäden, Ersatzleistungen</span></h3><div class="kgrid" id="dhlKpis"></div><div class="scroll tall"><table class="tbl" id="tblDhl"></table></div><div class="note">Quelle: DHL-/Deutsche-Post-Mails (IONOS/Gmail) und Fallliste des Accounting-Bots. Kein DHL-API: Zustellstatus je Sendung nicht live.</div></div>
     <div class="card s6 m12" id="card-idealo"><h3>idealo <span class="sub">Klicks, Kosten, Budget</span></h3><div class="kgrid" id="idealoKpis"></div><div id="idealoSpark" class="sp"></div><div class="scroll"><table class="tbl" id="tblIdealo"></table></div><div class="note" id="idealoNote">Quelle: Berichte aus idealo Business (Browser-Login des Idealo-Bots) + Shopify-Bestellungen mit idealo-Attribution. Kein idealo-API.</div></div>
     <div class="card s6 m12" id="card-traffic"><h3>Shop-Traffic <span class="sub">Shopify-Sitzungen · Ersatz für Google Analytics (GA4)</span></h3><div class="kgrid" id="trafficKpis"></div><div id="trafficSpark" class="sp"></div><div class="note">Quelle: Shopify-Analytics (vorhandener Connector). Echte GA4-Zahlen bräuchten ein neues Google-API – bewusst nicht angebunden.</div></div>
     <div class="card s6 m12" id="card-tools"><h3>Tools &amp; Credits</h3><div class="kgrid" id="toolKpis"></div><div class="scroll"><table class="tbl" id="tblTools"></table></div></div>
     <div class="card s12" id="card-signale"><h3>Signale aus Postfächern · 30 Tage <span class="sub">idealo, DHL, Qogita, eSagu, Metricool, Higgsfield, Grok</span> <span id="f-sig"></span></h3><div class="kgrid" id="sigKpis"></div><div class="scroll tall"><table class="tbl" id="tblSig"></table></div></div>
 
-    <div class="sec-h"><h2 class="metal">Datenstand &amp; Verbindungen</h2><span class="rule"></span></div>
+    <div class="sec-h t-link" id="sec-data"><h2 class="metal">Datenstand &amp; Verbindungen</h2><span class="rule"></span></div>
     <div class="card s6" id="sec-sync"><h3>Synchronisierung je Quelle <span id="f-sync"></span></h3><div class="scroll"><table class="tbl" id="tblSync"></table></div></div>
     <div class="card s6"><h3>Verbindungen</h3><div class="scroll tall"><table class="tbl" id="tblConn"></table></div></div>
   </div>
   <div class="foot">Angemeldet als <span id="who"></span> · Live aus Supabase (black-elixir-cockpit) · Beträge netto in € (de-DE) · Zeiten Europe/Berlin · Auto-Aktualisierung alle 5 Min.</div>
   </main>
+  </div>
+  </div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js" crossorigin="anonymous"></script>
@@ -352,9 +538,24 @@ const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: r
 function setTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
   try { localStorage.setItem("be-theme", t); } catch (e) {}
-  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === "light" ? "#ffffff" : "#000000";
+  syncTheme();
+}
+// Design "Glassy Warm": Tag = light, Nacht = dark; .bx.is-dark wie in der Vorlage, gespeicherte Wahl bleibt gültig.
+function syncTheme() {
+  const t = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  document.body.classList.toggle("is-dark", t === "dark");
+  document.querySelectorAll(".modeBtn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === t)));
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === "light" ? "#6b5544" : "#1c140e";
 }
 document.querySelectorAll(".themeBtn").forEach(b => b.onclick = () => setTheme(document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light"));
+document.querySelectorAll(".modeBtn").forEach(b => b.onclick = () => setTheme(b.dataset.mode));
+syncTheme();
+// Seitenleiste: springt zum Bereich (Abstand wie bei der Dringend-Leiste)
+document.querySelectorAll("#secNav [data-go]").forEach(b => b.onclick = () => {
+  const el = $(b.dataset.go); if (!el) return;
+  const top = el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18);
+  window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+});
 
 // ---------- Tabellen-Helfer ----------
 // rows: Array von { c: [Zellen], hl: bool } oder einfache Arrays
