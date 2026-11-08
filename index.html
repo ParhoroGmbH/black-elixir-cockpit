@@ -363,6 +363,79 @@ svg text{font-family:var(--sans)}
 .login .brand{letter-spacing:.14em;font-size:clamp(28px,7vw,42px);white-space:nowrap}
 @media(max-width:520px){.top .bx-logo{display:none}.hbtn{flex-wrap:nowrap;gap:4px}.top .bx-mode button{width:30px}.top .brand{letter-spacing:.18em}}
 </style>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · "Pro"-Feinschliff (08.11.2026) – nur Optik.
+   Ziel: alle Karten auf dem Niveau der Umsatz-Diagramm-Karte; ruhiger, klarer, professioneller.
+   ===================================================================== */
+/* Karten: einheitlicher Aufbau, feine Lichtkante, mehr Luft */
+.card{padding:20px 22px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border-color:rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 18px 40px -28px rgba(0,0,0,.55)}
+[data-theme=dark] .sheet .card{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025))}
+.card h3{font-size:19px;line-height:1.2;margin:0 0 14px;row-gap:3px}
+.card h3 .sub{flex-basis:100%;order:3;font-size:12px;letter-spacing:.01em;margin-left:16px}
+.card h3 .fchip{margin-left:auto}
+.note{font-size:11.5px;line-height:1.5;color:var(--mut);opacity:.85;margin-top:12px;padding-top:10px;border-top:1px solid var(--line2)}
+/* Kennzahl-Kacheln */
+.kpi .l{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.kgrid{gap:10px}
+.kgrid .kpi{padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.kgrid .kpi .v{font-size:clamp(22px,2vw,28px)}
+/* Dringend: ruhige Glas-Kacheln, Farbe nur im Punkt und in der Zahl */
+.chips{gap:10px}
+.chip{border-radius:16px;min-height:58px;padding:11px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.chip::before{width:3px;top:12px;bottom:12px;border-radius:0 3px 3px 0}
+.chip::after{background:radial-gradient(90% 120% at 0% 50%,var(--cg),transparent 60%);opacity:.7}
+.chip.red,.chip.yellow{border-color:rgba(255,255,255,.16)}
+.chip:hover{border-color:color-mix(in srgb,var(--c) 60%,transparent);background:rgba(255,255,255,.09)}
+.chip .n{font-size:26px;text-shadow:none}
+.chip .l{font-weight:500}
+/* Tabellen: kein schwerer Balken, feine Linien, ruhige Kopfzeile */
+.tbl{font-size:13px}
+.tbl th{background:rgba(44,33,25,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--mut);font-size:10px;font-weight:600;letter-spacing:.14em;padding:9px 10px;border-bottom:1px solid var(--line)}
+[data-theme=dark] .tbl th{background:rgba(30,22,16,.78)}
+.tbl th:first-child{border-top-left-radius:12px}.tbl th:last-child{border-top-right-radius:12px}
+.tbl td{padding:10px;border-bottom:1px solid var(--line2);line-height:1.35}
+.tbl tbody tr{transition:background .15s}
+.tbl tbody tr:hover td{background:rgba(255,255,255,.06)}
+.tbl tr.hl td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
+.scroll{border-radius:12px}
+.pill{font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:2px 9px;background:rgba(255,255,255,.06)}
+/* Plattform-Kacheln: alle in einer Reihe, wenn Platz ist */
+.ptiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,132px),1fr));gap:10px}
+.pt{border-top-width:2px;transition:transform .25s ease,background .25s}
+.pt:hover{transform:translateY(-3px);background:linear-gradient(180deg,color-mix(in srgb,var(--pc) 24%,transparent),transparent 70%),rgba(255,255,255,.07)}
+.share{height:10px;margin:4px 0 8px}
+/* Diagramm: Raster ruhig, Spalte beim Zeigen hervorheben, 7-Tage-Schnitt */
+#chart svg{display:block;overflow:visible}
+#chart .gl{stroke:var(--grid);stroke-dasharray:2 4}
+#chart text{fill:var(--mut);font-size:11px}
+#chart rect{rx:2px;transition:opacity .15s}
+#chart svg:hover g.col rect{opacity:.5}
+#chart svg g.col:hover rect{opacity:1}
+#chart .avg{fill:none;stroke:var(--txt);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.9;filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
+#chart .avg-dot{fill:var(--txt);stroke:rgba(40,30,22,.8);stroke-width:2}
+.legend{gap:6px 16px;margin:2px 0 12px}
+.legend span{display:inline-flex;align-items:center;gap:0;padding:3px 9px 3px 7px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.legend .lg-avg i{width:14px;height:2px;border-radius:1px;background:var(--txt);vertical-align:3px}
+/* Abschnitte */
+.sec-h{margin-top:30px;padding-top:18px}
+.sec-h h2::before{height:22px}
+.fresh{font-size:11.5px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.fresh:empty{display:none}
+/* Seitenleiste: aktiver Bereich */
+.side button[aria-current=true]{background:color-mix(in srgb,var(--txt) 14%,transparent);font-weight:600;box-shadow:inset 0 1px 0 var(--shine)}
+.side button[aria-current=true]::before{box-shadow:0 0 0 3px color-mix(in srgb,var(--tone,var(--gold)) 30%,transparent)}
+/* Segment-Schalter */
+.seg{padding:3px;gap:2px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:inline-flex}
+.seg button{border:0;background:transparent;border-radius:999px;padding:5px 12px}
+.seg button.on{background:rgba(248,239,227,.92);color:#2A211A;border:0;text-shadow:none;font-weight:600}
+/* schmale Karten: Tabellen kompakter, damit keine Spalte abgeschnitten wird */
+.card.s4 .tbl th,.card.s4 .tbl td{padding-left:6px;padding-right:6px}
+.pt-h .nm{white-space:normal;overflow:visible;line-height:1.15}
+@media(max-width:520px){.chip{padding:10px 10px 10px 12px;gap:8px}.chip .n{font-size:21px;min-width:22px}.chip .l{font-size:12.5px;overflow-wrap:anywhere;hyphens:auto;padding-right:10px}.card{padding:16px}.card h3{font-size:17px}.card h3 .sub{margin-left:0}}
+@media (prefers-reduced-motion: reduce){.pt:hover{transform:none}}
+</style>
 </head>
 <body class="bx">
 
@@ -556,6 +629,20 @@ document.querySelectorAll("#secNav [data-go]").forEach(b => b.onclick = () => {
   const top = el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18);
   window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
 });
+
+// Seitenleiste: markiert den Bereich, der gerade sichtbar ist
+(function () {
+  const btns = [...document.querySelectorAll("#secNav [data-go]")];
+  if (!btns.length || !("IntersectionObserver" in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => seen.set(e.target.id, e.isIntersecting ? e.boundingClientRect.top : null));
+    let best = null, bestTop = Infinity;
+    seen.forEach((t, id) => { if (t !== null && Math.abs(t) < bestTop) { bestTop = Math.abs(t); best = id; } });
+    if (best) btns.forEach(b => b.setAttribute("aria-current", String(b.dataset.go === best)));
+  }, { rootMargin: "-90px 0px -55% 0px" });
+  btns.forEach(b => { const el = $(b.dataset.go); if (el) io.observe(el); });
+})();
 
 // ---------- Tabellen-Helfer ----------
 // rows: Array von { c: [Zellen], hl: bool } oder einfache Arrays
@@ -931,14 +1018,20 @@ function renderSales() {
   let svg = `<svg viewBox="0 0 ${Wd} ${Hd}" width="100%" role="img" aria-label="Tagesumsatz netto je Plattform, 30 Tage">`;
   for (let g = 0; g <= 4; g++) { const v = top * g / 4, yy = Hd - pb - (Hd - pb - pt) * g / 4; svg += `<line class="gl" x1="${pl}" x2="${Wd}" y1="${yy}" y2="${yy}"/><text x="${pl - 6}" y="${yy + 3}" text-anchor="end">${tsd(v)}</text>`; }
   per.forEach((o, i) => {
-    let acc = 0; const isToday = i === days30.length - 1;
+    let acc = 0; const isToday = i === days30.length - 1; svg += `<g class="col">`;
     keys.forEach(k => { const v = o[k] || 0; if (!v) return; const h = (Hd - pb - pt) * v / top; const yy = Hd - pb - acc - h; acc += h;
       svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${yy.toFixed(1)}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${h.toFixed(1)}" style="fill:var(--p-${k})"${isToday ? ' fill-opacity=".45"' : ""}><title>${esc(fmtD(days30[i]) + " · " + (G[k] ? G[k].name : k) + ": " + eur(v))}</title></rect>`; });
-    svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${pt}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${Hd - pb - pt}" fill="transparent"><title>${esc(fmtD(days30[i]) + (isToday ? " (laufend)" : "") + " · gesamt " + eur(Object.values(o).reduce((a, b) => a + b, 0)))}</title></rect>`;
+    svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${pt}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${Hd - pb - pt}" fill="transparent"><title>${esc(fmtD(days30[i]) + (isToday ? " (laufend)" : "") + " · gesamt " + eur(Object.values(o).reduce((a, b) => a + b, 0)))}</title></rect></g>`;
   });
+  // 7-Tage-Schnitt der Tagessumme (volle Tage, laufender Tag ausgenommen)
+  const dayTot = per.map(o => Object.values(o).reduce((a, b) => a + b, 0));
+  const avgPts = [];
+  for (let i = 6; i < dayTot.length - 1; i++) { const a = dayTot.slice(i - 6, i + 1).reduce((x, y) => x + y, 0) / 7; avgPts.push([pl + i * bw + bw / 2, Hd - pb - (Hd - pb - pt) * a / top]); }
+  if (avgPts.length > 1) { const lp = avgPts[avgPts.length - 1];
+    svg += `<path class="avg" d="M${avgPts.map(p => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L")}"/><circle class="avg-dot" cx="${lp[0].toFixed(1)}" cy="${lp[1].toFixed(1)}" r="4"/>`; }
   [0, 7, 14, 21, 29].forEach(i => svg += `<text x="${pl + i * bw + bw / 2}" y="${Hd - 6}" text-anchor="middle">${i === 29 ? "heute" : fmtD(days30[i])}</text>`);
   $("chart").innerHTML = rows.length ? svg + "</svg>" : `<div class="${state.err.sales ? "err" : "empty"}">${esc(errTxt("sales", "Noch keine Umsätze."))}</div>`;
-  $("chartLegend").innerHTML = keys.map(k => `<span style="--pc:var(--p-${k})"><i></i>${esc(G[k].name)} <b>${tsd((groups.find(g => g.k === k) || { v30: { n: 0 } }).v30.n)} €</b></span>`).join("");
+  $("chartLegend").innerHTML = keys.map(k => `<span style="--pc:var(--p-${k})"><i></i>${esc(G[k].name)}&nbsp;<b>${tsd((groups.find(g => g.k === k) || { v30: { n: 0 } }).v30.n)} €</b></span>`).join("") + (rows.length ? `<span class="lg-avg"><i></i>7-Tage-Schnitt</span>` : "");
 
   // --- Tabelle je Kanal ---
   const periods = [["0", "Heute"], ["7", "7 Tage"], ["30", "30 Tage"]];
