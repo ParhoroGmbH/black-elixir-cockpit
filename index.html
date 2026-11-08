@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="de" data-theme="dark">
+<html lang="de" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#1c140e">
+<meta name="theme-color" content="#f5f5f7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,7 +13,6 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/dm-serif-display-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <title>BLACK ELIXIR · Cockpit</title>
 <script>
 // Theme vor dem ersten Zeichnen setzen (kein Flackern). Gespeichert in localStorage "be-theme": "dark" | "light".
@@ -363,8 +362,491 @@ svg text{font-family:var(--sans)}
 .login .brand{letter-spacing:.14em;font-size:clamp(28px,7vw,42px);white-space:nowrap}
 @media(max-width:520px){.top .bx-logo{display:none}.hbtn{flex-wrap:nowrap;gap:4px}.top .bx-mode button{width:30px}.top .brand{letter-spacing:.18em}}
 </style>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · "Pro"-Feinschliff (08.11.2026) – nur Optik.
+   Ziel: alle Karten auf dem Niveau der Umsatz-Diagramm-Karte; ruhiger, klarer, professioneller.
+   ===================================================================== */
+/* Karten: einheitlicher Aufbau, feine Lichtkante, mehr Luft */
+.card{padding:20px 22px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border-color:rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 18px 40px -28px rgba(0,0,0,.55)}
+[data-theme=dark] .sheet .card{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025))}
+.card h3{font-size:19px;line-height:1.2;margin:0 0 14px;row-gap:3px}
+.card h3 .sub{flex-basis:100%;order:3;font-size:12px;letter-spacing:.01em;margin-left:16px}
+.card h3 .fchip{margin-left:auto}
+.note{font-size:11.5px;line-height:1.5;color:var(--mut);opacity:.85;margin-top:12px;padding-top:10px;border-top:1px solid var(--line2)}
+/* Kennzahl-Kacheln */
+.kpi .l{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.kgrid{gap:10px}
+.kgrid .kpi{padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.kgrid .kpi .v{font-size:clamp(22px,2vw,28px)}
+/* Dringend: ruhige Glas-Kacheln, Farbe nur im Punkt und in der Zahl */
+.chips{gap:10px}
+.chip{border-radius:16px;min-height:58px;padding:11px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.chip::before{width:3px;top:12px;bottom:12px;border-radius:0 3px 3px 0}
+.chip::after{background:radial-gradient(90% 120% at 0% 50%,var(--cg),transparent 60%);opacity:.7}
+.chip.red,.chip.yellow{border-color:rgba(255,255,255,.16)}
+.chip:hover{border-color:color-mix(in srgb,var(--c) 60%,transparent);background:rgba(255,255,255,.09)}
+.chip .n{font-size:26px;text-shadow:none}
+.chip .l{font-weight:500}
+/* Tabellen: kein schwerer Balken, feine Linien, ruhige Kopfzeile */
+.tbl{font-size:13px}
+.tbl th{background:rgba(44,33,25,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--mut);font-size:10px;font-weight:600;letter-spacing:.14em;padding:9px 10px;border-bottom:1px solid var(--line)}
+[data-theme=dark] .tbl th{background:rgba(30,22,16,.78)}
+.tbl th:first-child{border-top-left-radius:12px}.tbl th:last-child{border-top-right-radius:12px}
+.tbl td{padding:10px;border-bottom:1px solid var(--line2);line-height:1.35}
+.tbl tbody tr{transition:background .15s}
+.tbl tbody tr:hover td{background:rgba(255,255,255,.06)}
+.tbl tr.hl td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
+.scroll{border-radius:12px}
+.pill{font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:2px 9px;background:rgba(255,255,255,.06)}
+/* Plattform-Kacheln: alle in einer Reihe, wenn Platz ist */
+.ptiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,132px),1fr));gap:10px}
+.pt{border-top-width:2px;transition:transform .25s ease,background .25s}
+.pt:hover{transform:translateY(-3px);background:linear-gradient(180deg,color-mix(in srgb,var(--pc) 24%,transparent),transparent 70%),rgba(255,255,255,.07)}
+.share{height:10px;margin:4px 0 8px}
+/* Diagramm: Raster ruhig, Spalte beim Zeigen hervorheben, 7-Tage-Schnitt */
+#chart svg{display:block;overflow:visible}
+#chart .gl{stroke:var(--grid);stroke-dasharray:2 4}
+#chart text{fill:var(--mut);font-size:11px}
+#chart rect{rx:2px;transition:opacity .15s}
+#chart svg:hover g.col rect{opacity:.5}
+#chart svg g.col:hover rect{opacity:1}
+#chart .avg{fill:none;stroke:var(--txt);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.9;filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
+#chart .avg-dot{fill:var(--txt);stroke:rgba(40,30,22,.8);stroke-width:2}
+.legend{gap:6px 16px;margin:2px 0 12px}
+.legend span{display:inline-flex;align-items:center;gap:0;padding:3px 9px 3px 7px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.legend .lg-avg i{width:14px;height:2px;border-radius:1px;background:var(--txt);vertical-align:3px}
+/* Abschnitte */
+.sec-h{margin-top:30px;padding-top:18px}
+.sec-h h2::before{height:22px}
+.fresh{font-size:11.5px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.fresh:empty{display:none}
+/* Seitenleiste: aktiver Bereich */
+.side button[aria-current=true]{background:color-mix(in srgb,var(--txt) 14%,transparent);font-weight:600;box-shadow:inset 0 1px 0 var(--shine)}
+.side button[aria-current=true]::before{box-shadow:0 0 0 3px color-mix(in srgb,var(--tone,var(--gold)) 30%,transparent)}
+/* Segment-Schalter */
+.seg{padding:3px;gap:2px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:inline-flex}
+.seg button{border:0;background:transparent;border-radius:999px;padding:5px 12px}
+.seg button.on{background:rgba(248,239,227,.92);color:#2A211A;border:0;text-shadow:none;font-weight:600}
+/* schmale Karten: Tabellen kompakter, damit keine Spalte abgeschnitten wird */
+.card.s4 .tbl th,.card.s4 .tbl td{padding-left:6px;padding-right:6px}
+.pt-h .nm{white-space:normal;overflow:visible;line-height:1.15}
+@media(max-width:520px){.chip{padding:10px 10px 10px 12px;gap:8px}.chip .n{font-size:21px;min-width:22px}.chip .l{font-size:12.5px;overflow-wrap:anywhere;hyphens:auto;padding-right:10px}.card{padding:16px}.card h3{font-size:17px}.card h3 .sub{margin-left:0}}
+@media (prefers-reduced-motion: reduce){.pt:hover{transform:none}}
+</style>
 </head>
-<body class="bx">
+<style>
+/* =====================================================================
+   BLACK ELIXIR · Stil „Apple" (08.11.2026) – nur Optik, letzte Ebene.
+   Tag = hell (#f5f5f7, weiße Karten), Nacht = iOS-Dunkel. Akzent Blau, Systemschrift.
+   ===================================================================== */
+:root,[data-theme=light]{
+  --bg:#f5f5f7;--card:#fff;--card2:#f5f5f7;--txt:#1d1d1f;--mut:#6e6e73;--line:rgba(0,0,0,.08);--line2:rgba(0,0,0,.06);--grid:rgba(0,0,0,.07);
+  --acc:#0071e3;--ok:#248a3d;--warn:#c93400;--bad:#d70015;--okc:#34c759;--warnc:#ff9f0a;--badc:#ff3b30;--gold:var(--acc);
+  --sh:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);--sh2:0 2px 4px rgba(0,0,0,.05),0 12px 32px rgba(0,0,0,.09);
+  --barbg:rgba(250,250,252,.78);--seg:rgba(118,118,128,.12);--segon:#fff;
+  --p-shopify:#34c759;--p-amazon:#ff9f0a;--p-otto:#ff375f;--p-ebay:#32ade6;--p-b2b:#5856d6;--p-kaufland:#af52de;--p-tiktok:#ff2d55;--p-other:#8e8e93;color-scheme:light}
+[data-theme=dark]{
+  --bg:#000;--card:#1c1c1e;--card2:#2c2c2e;--txt:#f5f5f7;--mut:#98989d;--line:rgba(255,255,255,.1);--line2:rgba(255,255,255,.07);--grid:rgba(255,255,255,.09);
+  --acc:#0a84ff;--ok:#30d158;--warn:#ff9f0a;--bad:#ff453a;--okc:#30d158;--warnc:#ff9f0a;--badc:#ff453a;--gold:var(--acc);
+  --sh:none;--sh2:0 12px 32px rgba(0,0,0,.5);--barbg:rgba(22,22,24,.78);--seg:rgba(118,118,128,.24);--segon:#636366;
+  --p-shopify:#30d158;--p-amazon:#ff9f0a;--p-otto:#ff375f;--p-ebay:#64d2ff;--p-b2b:#5e5ce6;--p-kaufland:#bf5af2;--p-tiktok:#ff6482;--p-other:#98989d;color-scheme:dark}
+:root{--sf:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",Inter,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--r:18px}
+html,body{background:var(--bg);color:var(--txt);font:15px/1.47 var(--sf);letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+body::before,body::after{display:none}
+a{color:var(--acc)}
+.serif,.brand,.metal,.sec-h h2,.sec-h h2.metal,.card h3,.kpi .v,.pt-v,.chip .n,.hero h1,.login .brand{font-family:var(--sf)!important;background:none!important;-webkit-text-fill-color:currentColor!important;color:var(--txt);text-shadow:none!important;animation:none!important}
+.reflect,.v.reflect{-webkit-box-reflect:unset}
+/* gemeinsame Farben: alte Überschreibungen in Kopf/Blatt/Leiste neutralisieren */
+.top,.side,.sheet,.login-box,.login .card{--txt:inherit;--mut:inherit;--hero-ink:inherit;--hero-mute:inherit}
+.top,.side,.sheet,.login-box{--txt:var(--t0);--mut:var(--m0);--line:var(--l0);--line2:var(--l0);--grid:var(--g0x)}
+:root,[data-theme=light]{--t0:#1d1d1f;--m0:#6e6e73;--c2:#f5f5f7;--l0:rgba(0,0,0,.08);--g0x:rgba(0,0,0,.07)}
+[data-theme=dark]{--t0:#f5f5f7;--m0:#98989d;--c2:#2c2c2e;--l0:rgba(255,255,255,.1);--g0x:rgba(255,255,255,.09)}
+.sheet,.side{--card2:var(--c2);--ok:inherit;--bad:inherit;--warn:inherit;--gold:var(--acc)}
+.sheet{--p-shopify:inherit;--p-amazon:inherit;--p-otto:inherit;--p-ebay:inherit;--p-b2b:inherit;--p-kaufland:inherit;--p-tiktok:inherit;--p-other:inherit}
+
+/* Buttons */
+button,.btn{font-family:var(--sf);font-size:13px;font-weight:500;color:var(--acc);background:transparent;border:0;box-shadow:none;border-radius:980px;padding:7px 14px}
+button:hover{background:color-mix(in srgb,var(--acc) 10%,transparent);border:0}
+button.primary{background:var(--acc);color:#fff;box-shadow:none}
+button.primary:hover{background:color-mix(in srgb,var(--acc) 88%,#000)}
+
+/* Kopfzeile: Milchglas wie macOS */
+.top{margin:0;border-radius:0;border:0;border-bottom:1px solid var(--line);background:var(--barbg);box-shadow:none;padding:10px clamp(14px,2vw,28px);color:var(--txt);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);top:0}
+.top .brand{font-size:15px;font-weight:600;letter-spacing:.18em;color:var(--txt)}
+.top .brand small{font-family:var(--sf);font-size:10px;font-weight:500;letter-spacing:.08em;color:var(--mut);-webkit-text-fill-color:var(--mut)}
+.bx-logo{width:32px;height:32px;border-radius:9px;background:#1d1d1f;color:#fff;font-family:var(--sf);font-weight:600;font-size:15px;box-shadow:none}
+[data-theme=dark] .bx-logo{background:#f5f5f7;color:#000}
+.top button{color:var(--acc);background:transparent;border:0}
+#loadedAt,#standM{color:var(--mut)}
+.bx-mode{background:var(--seg);border:0;padding:2px;border-radius:9px}
+.top .bx-mode button{border-radius:7px;color:var(--txt);padding:5px 12px;font-size:12.5px}
+.top .bx-mode button[aria-pressed=true]{background:var(--segon);color:var(--txt);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+/* Gerüst */
+.shell{padding:22px clamp(14px,2vw,28px) calc(32px + env(safe-area-inset-bottom));gap:28px}
+.side{background:transparent;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:4px 0;top:76px}
+@media(min-width:1100px){.side{flex-basis:210px}}
+.side .lbl{font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--mut);padding:16px 12px 4px}
+.side button{color:var(--txt);font-size:14px;font-weight:400;border-radius:8px;padding:7px 12px}
+.side button::before{display:none}
+.side button:hover{background:color-mix(in srgb,var(--txt) 6%,transparent)}
+.side button[aria-current=true]{background:var(--acc);color:#fff;font-weight:500;box-shadow:none}
+.sheet{background:transparent;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0;color:var(--txt);text-shadow:none}
+.sheet::before{display:none}
+@media(max-width:1099px){.side{border-radius:0;padding:2px 2px 6px;background:transparent;gap:6px;align-items:center}.side button{background:var(--card);box-shadow:var(--sh);border-radius:980px;padding:7px 14px}}
+
+/* Überschriften */
+.hero{padding:8px 0 18px;text-align:left}
+.hero .eyebrow{font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--mut)}
+.hero .eyebrow::before,.hero .eyebrow::after,.hero::after{display:none}
+.hero h1{font-size:clamp(30px,3.6vw,44px);font-weight:700;letter-spacing:-.035em;line-height:1.08;margin-top:4px;text-transform:none}
+.sec-h{margin:44px 2px 2px;padding-top:0;border-top:0}
+.sec-h h2,.sec-h h2.metal{font-size:clamp(22px,2.2vw,28px);font-weight:700;letter-spacing:-.025em;text-transform:none}
+.sec-h h2::before,.sec-h .rule{display:none}
+.sec-h{justify-content:space-between}
+.fresh{background:transparent;border:0;padding:0;font-size:12px;color:var(--mut)}
+
+/* Karten */
+.card,[data-theme=dark] .sheet .card{background:var(--card);border:0;border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);transform:none!important;transition:box-shadow .25s}
+.card::before,.card::after{display:none}
+.card:hover{box-shadow:var(--sh2)}
+.card h3{font-size:17px;font-weight:600;letter-spacing:-.015em;margin:0 0 14px}
+.card h3::before{display:none}
+.card h3 .sub{font-family:var(--sf);font-size:13px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--mut);margin-left:0}
+.note{border-top:1px solid var(--line2);color:var(--mut);opacity:1;font-size:12px}
+.kpi .l{font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--mut)}
+.kpi .v,.mini .v{font-size:clamp(28px,2.6vw,36px);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-top:6px}
+.kgrid .kpi{background:var(--card2);border:0;border-radius:14px;box-shadow:none}
+.kgrid .kpi .v{font-size:clamp(22px,1.8vw,26px)}
+#kpis>.card:first-child{background:var(--card);border:0;box-shadow:var(--sh);--txt:var(--t0);--mut:var(--m0);--grid:var(--g0x);color:var(--txt)}
+#kpis>.card:first-child .v{color:var(--acc)}
+.dl.up{color:var(--ok)}.dl.down{color:var(--bad)}
+
+/* Dringend: Widgets wie in iOS (Erinnerungen) */
+.urgent{padding:0 0 6px}
+.usum{margin:0 2px 12px}
+.usum .t{font-size:22px;font-weight:700;letter-spacing:-.025em;text-transform:none;color:var(--txt)}
+.chips{grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:12px}
+.chip,.chip.red,.chip.yellow,.chip.green{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"ico n" "l l";align-items:start;gap:10px 8px;
+  min-height:112px;padding:14px 16px;border:0;border-radius:16px;background:var(--card);box-shadow:var(--sh);color:var(--txt);transform:none!important;transition:transform .15s,box-shadow .2s}
+.chip::before,.chip::after,.chip .dot{display:none}
+.chip:hover{box-shadow:var(--sh2);background:var(--card)}
+.chip:active{transform:scale(.97)!important}
+.chip .ico{grid-area:ico;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--cc);color:#fff}
+.chip .ico svg{width:18px;height:18px}
+.chip.red{--cc:var(--badc)}.chip.yellow{--cc:var(--warnc)}.chip.green{--cc:var(--okc)}
+.chip .n{grid-area:n;justify-self:end;font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--txt);min-width:0;text-shadow:none}
+.chip .l{grid-area:l;align-self:end;font-size:14px;font-weight:600;line-height:1.25;padding:0;color:var(--txt)}
+.chip .h{font-size:12px;font-weight:400;color:var(--mut);margin-top:3px}
+.chip.green{min-height:0;grid-template-areas:"ico l";grid-template-columns:auto 1fr;align-items:center;padding:12px 14px}
+.chip.green .n{display:none}
+.chip.green .l{align-self:center;font-weight:500}
+.chip.green .ico{width:26px;height:26px}.chip.green .ico svg{width:15px;height:15px}
+@media(max-width:520px){.chips{grid-template-columns:1fr 1fr;gap:10px}.chip,.chip.red,.chip.yellow{min-height:104px;padding:12px 13px}.chip .n{font-size:26px}.chip .l{font-size:13px}}
+
+/* Plattformen */
+.share{height:8px;background:var(--line2);box-shadow:none}
+.share span{border-right:2px solid var(--card)}
+.ptiles{gap:12px}
+.pt{background:var(--card2);border:0;border-radius:14px;box-shadow:none}
+.pt:hover{transform:none;background:var(--card2)}
+.pt-v{font-size:clamp(19px,1.6vw,22px);font-weight:700;letter-spacing:-.02em}
+.sw{border-radius:50%;width:9px;height:9px;box-shadow:none}
+
+/* Diagramm */
+#chart .avg{stroke:var(--txt);stroke-width:1.75;filter:none;opacity:.85}
+#chart .avg-dot{fill:var(--txt);stroke:var(--card)}
+#chart text{fill:var(--mut)}
+.legend span{background:var(--card2);border:0;color:var(--mut)}
+.legend .lg-avg i{background:var(--txt)}
+
+/* Tabellen */
+.tbl{font-size:13px}
+.tbl th,[data-theme=dark] .tbl th{background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none;color:var(--mut);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{border-bottom:1px solid var(--line2);color:var(--txt)}
+.tbl tbody tr:hover td{background:color-mix(in srgb,var(--txt) 3%,transparent)}
+.pill{background:transparent;border:1px solid var(--line);font-weight:500;letter-spacing:0}
+.p-ok{color:var(--ok);background:color-mix(in srgb,var(--okc) 12%,transparent);border-color:transparent}
+.p-warn{color:var(--warn);background:color-mix(in srgb,var(--warnc) 14%,transparent);border-color:transparent}
+.p-bad{color:var(--bad);background:color-mix(in srgb,var(--badc) 12%,transparent);border-color:transparent}
+.seg{background:var(--seg);border:0;border-radius:9px;padding:2px}
+.seg button{color:var(--txt);border-radius:7px;padding:5px 12px}
+.seg button.on{background:var(--segon);color:var(--txt);box-shadow:0 1px 3px rgba(0,0,0,.12);text-shadow:none}
+.bar{background:var(--acc);opacity:1}
+.barbg{background:var(--line2)}
+.fchip{background:color-mix(in srgb,var(--acc) 12%,transparent);border:0;color:var(--acc)}
+.banner{border:0;background:color-mix(in srgb,var(--warnc) 14%,transparent);color:var(--warn)}
+.foot{color:var(--mut);font-size:12px;letter-spacing:0}
+
+/* Login */
+.login-box{background:var(--card);border:0;border-radius:22px;box-shadow:var(--sh2);color:var(--txt);-webkit-backdrop-filter:none;backdrop-filter:none}
+.login-box::after{display:none}
+.login .brand{font-size:28px;font-weight:700;letter-spacing:.12em}
+.login .card{background:transparent;box-shadow:none;padding:0}
+.login .themeBtn{color:var(--acc);background:transparent;border:0}
+input{background:var(--card2);border:1px solid transparent;border-radius:10px;color:var(--txt)}
+input:focus{border-color:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent)}
+</style>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · „Glas" über dem Apple-Stil (08.11.2026) – nur Optik.
+   Ruhiger Salon im Hintergrund (weich, abgedunkelt/aufgehellt), Karten aus Milchglas
+   mit Lichtkante, 3D-Neigung (Maus) und Spiegelung unter Kennzahlen und Titel.
+   ===================================================================== */
+:root,[data-theme=light]{
+  --room:linear-gradient(180deg,rgba(248,244,238,.50),rgba(244,239,232,.70));
+  --glass-bg:rgba(255,255,255,.58);--glass-bg2:rgba(255,255,255,.42);--glass-edge:rgba(255,255,255,.75);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35);
+  --glass-sh:0 1px 2px rgba(60,40,20,.06),0 18px 40px -18px rgba(60,40,20,.28);
+  --glass-sh2:0 2px 6px rgba(60,40,20,.08),0 30px 60px -24px rgba(60,40,20,.36);
+  --sheen:linear-gradient(120deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.12) 28%,rgba(255,255,255,0) 50%);
+  --mirror:rgba(255,255,255,.30);--barbg:rgba(255,255,255,.55);--segon:rgba(255,255,255,.9);--c2:rgba(255,255,255,.5)}
+[data-theme=dark]{
+  --room:linear-gradient(180deg,rgba(12,10,8,.58),rgba(10,8,7,.74));
+  --glass-bg:rgba(40,38,40,.46);--glass-bg2:rgba(255,255,255,.07);--glass-edge:rgba(255,255,255,.16);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(255,255,255,.04);
+  --glass-sh:0 18px 40px -18px rgba(0,0,0,.7);--glass-sh2:0 30px 60px -24px rgba(0,0,0,.85);
+  --sheen:linear-gradient(120deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.03) 28%,rgba(255,255,255,0) 50%);
+  --mirror:rgba(255,255,255,.12);--barbg:rgba(28,26,26,.5);--segon:rgba(120,120,128,.55);--c2:rgba(255,255,255,.07)}
+html,body{background:#3b2f26}
+body::before{display:block;content:"";position:fixed;inset:-24px;z-index:-1;pointer-events:none;
+  background:var(--room),url("bg-salon.jpg") center/cover no-repeat;filter:blur(3px) saturate(1.05)}
+body::after{display:none}
+
+/* Milchglas-Flächen */
+.card,[data-theme=dark] .sheet .card,.chip,.chip.red,.chip.yellow,.chip.green,.top,.side,.login-box{
+  background:var(--glass-bg);border:1px solid var(--glass-edge);
+  -webkit-backdrop-filter:blur(26px) saturate(1.7);backdrop-filter:blur(26px) saturate(1.7);box-shadow:var(--glass-hi),var(--glass-sh)}
+.top{border-width:0 0 1px;background:var(--barbg)}
+.side{border-radius:20px;padding:10px 8px}
+.kgrid .kpi,.pt,.legend span,.seg{background:var(--glass-bg2);border:1px solid var(--glass-edge);box-shadow:var(--glass-hi)}
+.tbl th,[data-theme=dark] .tbl th{background:var(--glass-bg);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.share span{border-right-color:transparent}
+
+/* 3D: Neigung folgt der Maus (Werte kommen aus bindTilt), Glanz wandert mit */
+.card,.chip,.chip.red,.chip.yellow,.chip.green{transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0px))!important;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;transform-style:preserve-3d;overflow:visible}
+.card:hover,.chip:hover{--lift:-4px;box-shadow:var(--glass-hi),var(--glass-sh2)}
+.chip:active{--lift:0px}
+.card::before,.chip::before{display:block!important;content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;width:auto;
+  background:var(--sheen);background-size:180% 180%;background-position:var(--shx,0%) 0;opacity:1;z-index:0}
+.card>*,.chip>*{position:relative;z-index:1}
+.chip .dot{display:none}
+
+/* Spiegelung wie auf Glas: unter den Umsatz-Kacheln und dem Titel */
+#kpis>.card{-webkit-box-reflect:below 6px linear-gradient(transparent 82%,var(--mirror))}
+#kpis>.card:first-child{background:var(--glass-bg);border:1px solid var(--glass-edge);box-shadow:var(--glass-hi),var(--glass-sh)}
+.hero{padding-bottom:40px}
+.hero h1{-webkit-box-reflect:below -6px linear-gradient(transparent 55%,rgba(255,255,255,.22))}
+.sec-h+#kpis~.card,#card-plat{margin-top:14px}
+
+/* Lesbarkeit direkt auf dem Raum */
+.hero h1,.sec-h h2,.usum .t{text-shadow:0 1px 18px var(--glow)!important}
+:root,[data-theme=light]{--glow:rgba(255,255,255,.7)}[data-theme=dark]{--glow:rgba(0,0,0,.6)}
+.hero .eyebrow,.fresh,.foot,.usum{color:var(--txt)}
+
+/* Marktplätze · Kontozustand */
+.mpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:12px}
+.mpt{position:relative;border-radius:14px;padding:12px 14px;background:var(--glass-bg2);border:1px solid var(--glass-edge);box-shadow:var(--glass-hi);min-width:0}
+.mpt::before{content:"";position:absolute;left:14px;right:14px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:var(--cc)}
+.mpt.red{--cc:var(--badc)}.mpt.yellow{--cc:var(--warnc)}.mpt.green{--cc:var(--okc)}
+.mpt-h{display:flex;justify-content:space-between;align-items:center;gap:6px;font-weight:600;font-size:14px}
+.mpt-h .st{font-size:11px;font-weight:600;padding:2px 8px;border-radius:980px;color:#fff;background:var(--cc);white-space:nowrap}
+.mpt-v{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-top:6px}
+.mpt-v small{font-size:12px;font-weight:500;color:var(--mut);letter-spacing:0}
+.mpt-s{font-size:12px;color:var(--mut)}
+.mpt-l{font-size:12px;margin-top:8px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (prefers-reduced-motion: reduce){.card,.chip{transform:none!important}}
+@media (hover:none){.card::before,.chip::before{background-position:0 0}}
+</style>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · „Galaxie" (08.11.2026) – Hintergrund + Kopf-Galaxie. Nur Optik/Navigation.
+   Nacht = tiefer Weltraum, Tag = heller Pastell-Nebel. Sterne auf <canvas id="stars">.
+   ===================================================================== */
+:root,[data-theme=light]{
+  --space:radial-gradient(900px 600px at 18% 12%,rgba(255,196,170,.55),transparent 60%),radial-gradient(1000px 700px at 85% 20%,rgba(190,170,255,.55),transparent 62%),
+    radial-gradient(1100px 800px at 60% 95%,rgba(160,210,255,.5),transparent 60%),linear-gradient(180deg,#f7f3fb,#eef0fa);
+  --ring:rgba(80,60,140,.22);--core-ink:#1d1d1f;--planet-ink:#1d1d1f;--star:120,100,180}
+[data-theme=dark]{
+  --space:radial-gradient(900px 600px at 18% 10%,rgba(120,60,160,.35),transparent 60%),radial-gradient(1000px 700px at 88% 22%,rgba(30,90,170,.35),transparent 62%),
+    radial-gradient(1200px 800px at 55% 100%,rgba(170,80,60,.22),transparent 60%),linear-gradient(180deg,#05040a,#080712 50%,#04030a);
+  --ring:rgba(255,255,255,.16);--core-ink:#fff;--planet-ink:#f5f5f7;--star:255,255,255}
+html,body{background:#05040a}
+[data-theme=light] html,[data-theme=light] body{background:#f2f0f8}
+body::before{background:var(--space)!important;filter:none!important;inset:0!important}
+#stars{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none}
+/* Glas auf Weltraum: im Dunkeln etwas dunkler, damit Text ruhig bleibt */
+[data-theme=dark]{--glass-bg:rgba(28,26,40,.52);--glass-bg2:rgba(255,255,255,.06);--barbg:rgba(14,12,22,.55)}
+[data-theme=light]{--glass-bg:rgba(255,255,255,.6);--glow:rgba(255,255,255,.85)}
+
+/* Kopf: Titel nur für Screenreader, die Galaxie ist die Bühne */
+.hero{padding:0 0 18px!important;text-align:center}
+.hero .eyebrow,.hero h1{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.galaxy{position:relative;height:var(--gh,480px);margin:0 auto;user-select:none;-webkit-user-select:none}
+.galaxy .ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid var(--ring);transform:translate(-50%,-50%);pointer-events:none;
+  box-shadow:0 0 30px -10px var(--ring) inset}
+.galaxy .ring.outer{border-style:dashed;opacity:.8}
+/* Kern */
+.core{position:absolute;left:50%;top:50%;width:var(--cs,180px);height:var(--cs,180px);transform:translate(-50%,-50%);border-radius:50%;z-index:50;
+  display:grid;place-items:center;text-align:center;color:var(--core-ink);
+  background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.95),rgba(255,255,255,.25) 22%,rgba(255,255,255,.06) 48%,transparent 62%),
+    radial-gradient(circle at 50% 60%,rgba(140,120,255,.35),rgba(255,140,120,.18) 55%,transparent 72%),rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 -14px 30px rgba(80,60,160,.25),inset 0 2px 0 rgba(255,255,255,.8),0 0 60px rgba(160,140,255,.45),0 0 140px rgba(255,160,130,.25);
+  -webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6)}
+[data-theme=dark] .core{box-shadow:inset 0 -14px 30px rgba(20,10,60,.55),inset 0 2px 0 rgba(255,255,255,.5),0 0 70px rgba(140,110,255,.55),0 0 160px rgba(255,120,90,.25)}
+.core::before{content:"";position:absolute;inset:-26px;border-radius:50%;background:radial-gradient(circle,rgba(170,150,255,.35),transparent 65%);z-index:-1;animation:breathe 6s ease-in-out infinite}
+.core b{display:block;font-size:calc(var(--cs,180px)*.098);font-weight:700;letter-spacing:.24em;margin-left:.24em}
+.core small{display:block;font-size:calc(var(--cs,180px)*.06);letter-spacing:.2em;text-transform:uppercase;opacity:.75;margin-top:4px}
+.core em{display:inline-block;font-style:normal;font-size:calc(var(--cs,180px)*.066);font-weight:600;margin-top:10px;padding:3px 10px;border-radius:980px;background:rgba(255,59,48,.92);color:#fff;letter-spacing:0}
+.core em.ok{background:rgba(52,199,89,.92)}
+@keyframes breathe{50%{transform:scale(1.08);opacity:.75}}
+/* Planeten */
+.planet{position:absolute;left:0;top:0;width:0;height:0;padding:0;border:0;background:none!important;box-shadow:none!important;color:var(--planet-ink);cursor:pointer;will-change:transform}
+.planet .orb{position:absolute;left:calc(var(--ps,62px)/-2);top:calc(var(--ps,62px)/-2);width:var(--ps,62px);height:var(--ps,62px);border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.9),rgba(255,255,255,.18) 30%,transparent 60%),radial-gradient(circle at 60% 75%,color-mix(in srgb,var(--pc) 70%,transparent),color-mix(in srgb,var(--pc) 25%,transparent) 70%);
+  border:1px solid rgba(255,255,255,.6);box-shadow:inset 0 1px 1px rgba(255,255,255,.6),inset 0 -6px 14px rgba(0,0,0,.18),0 8px 24px -8px color-mix(in srgb,var(--pc) 80%,transparent);
+  transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.planet .orb svg{width:42%;height:42%;color:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.planet .pl-name{position:absolute;left:50%;top:calc(var(--ps,62px)/2 + 6px);transform:translateX(-50%);font-size:12.5px;font-weight:600;white-space:nowrap;letter-spacing:-.01em;
+  padding:2px 8px;border-radius:980px;background:rgba(255,255,255,.8);color:#1d1d1f}
+[data-theme=dark] .planet .pl-name{background:rgba(0,0,0,.55);color:#f5f5f7}
+.planet .pl-n{position:absolute;left:calc(var(--ps,62px)/2 - 14px);top:calc(var(--ps,62px)/-2 - 4px);min-width:22px;height:22px;padding:0 6px;border-radius:11px;font-size:12px;font-weight:700;line-height:22px;
+  color:#fff;background:var(--sc);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.planet .pl-n:empty{display:none}
+.planet:hover .orb,.planet:focus-visible .orb{transform:scale(1.08)}
+.planet:focus-visible{outline:none}
+.planet:focus-visible .orb{outline:3px solid var(--acc);outline-offset:3px}
+.planet.green{--sc:var(--okc)}.planet.yellow{--sc:var(--warnc)}.planet.red{--sc:var(--badc)}
+/* Dringend: pulsierendes Licht + drehender Ring */
+.planet.red .orb::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px dotted rgba(255,69,58,.9)}
+.planet.red.pulse .orb{animation:alarm 2.2s ease-in-out infinite}
+.planet.red.pulse .orb::after{animation:spin 12s linear infinite}
+.planet.yellow .orb{box-shadow:inset 0 1px 1px rgba(255,255,255,.6),inset 0 -6px 14px rgba(0,0,0,.18),0 0 0 1.5px rgba(255,159,10,.9),0 0 22px rgba(255,159,10,.3)}
+@keyframes alarm{0%,100%{box-shadow:inset 0 -6px 14px rgba(0,0,0,.18),0 0 0 0 rgba(255,59,48,.55),0 0 18px rgba(255,59,48,.35)}50%{box-shadow:inset 0 -6px 14px rgba(0,0,0,.18),0 0 0 12px rgba(255,59,48,0),0 0 42px rgba(255,59,48,.75)}}
+@keyframes soft{50%{box-shadow:inset 0 -6px 14px rgba(0,0,0,.18),0 0 30px rgba(255,159,10,.6)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:620px){.galaxy.small .planet.back .pl-name{opacity:0}.planet .pl-name{font-size:10.5px;padding:1px 6px}.core em{font-size:10px;margin-top:6px}.planet .pl-n{min-width:19px;height:19px;line-height:19px;font-size:10.5px}}
+@media (prefers-reduced-motion: reduce){.planet.red .orb,.planet.yellow .orb,.planet.red .orb::after,.core::before{animation:none}}
+</style>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · „Real" (08.11.2026): echte Planeten, Schwarzes Loch, Milchstraße,
+   Typografie, lebendige Statistik. Nur Optik/Animation.
+   ===================================================================== */
+html,body{font-family:Inter,var(--sf);font-feature-settings:"cv11","ss01","ss03","calt";font-optical-sizing:auto}
+.kpi .v,.chip .n,.pt-v,.mpt-v,.ct-t,.tbl .r,.num{font-feature-settings:"tnum","cv11","ss01";font-variant-numeric:tabular-nums}
+.sec-h h2,.sec-h h2.metal,.usum .t{font-weight:650;letter-spacing:-.035em}
+.card h3{font-weight:620;letter-spacing:-.022em}
+.kpi .v,.mini .v{font-weight:650;letter-spacing:-.045em}
+[data-theme=dark] .sec-h h2,[data-theme=dark] .usum .t{background:linear-gradient(180deg,#fff 30%,#c9c3ff)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important}
+
+#usum,#standM,.fresh{text-shadow:0 1px 8px var(--glow),0 0 2px var(--glow)}
+/* Begrüßung */
+.greet{margin:-6px auto 4px;max-width:720px;text-align:center;font-size:clamp(15px,1.5vw,18px);line-height:1.5;color:var(--txt);text-shadow:0 1px 14px var(--glow)}
+.greet b{font-weight:650}
+.greet .hi{display:block;font-size:clamp(22px,2.6vw,32px);font-weight:650;letter-spacing:-.035em;margin-bottom:2px}
+[data-theme=dark] .greet .hi{background:linear-gradient(90deg,#fff,#ffd9b0 45%,#c9b8ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ---------- Schwarzes Loch im Kern ---------- */
+.core{background:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;overflow:visible}
+.core::before{display:none}
+.core .lens{position:absolute;inset:4%;border-radius:50%;z-index:1;filter:blur(.8px);animation:flick 5s ease-in-out infinite;
+  background:radial-gradient(circle,transparent 50%,rgba(255,226,180,.95) 53.5%,rgba(255,160,80,.55) 57%,rgba(160,110,255,.18) 64%,transparent 71%)}
+.core .disk{position:absolute;left:-40%;width:180%;aspect-ratio:1;top:50%;transform:translateY(-50%) scaleY(.26) rotate(0deg);pointer-events:none}
+.core .disk i{position:absolute;inset:0;border-radius:50%;filter:blur(.7px);animation:spin 16s linear infinite;
+  background:conic-gradient(from 0deg,#fff4e0,#ffb15e 12%,#ff7a2e 26%,#ffd3a1 41%,#fff7ea 52%,#ff9a48 66%,#e2602a 80%,#ffe2bf 92%,#fff4e0);
+  -webkit-mask:radial-gradient(circle,transparent 33%,#000 37%,#000 55%,rgba(0,0,0,.35) 63%,transparent 71%);mask:radial-gradient(circle,transparent 33%,#000 37%,#000 55%,rgba(0,0,0,.35) 63%,transparent 71%)}
+.core .disk.back{z-index:1;clip-path:inset(0 0 50% 0);opacity:.85}
+.core .disk.front{z-index:3;clip-path:inset(50% 0 0 0)}
+.core .bh{position:absolute;inset:19%;border-radius:50%;z-index:2;background:radial-gradient(circle at 50% 45%,#000 62%,#120b06 100%);
+  box-shadow:0 0 0 1.4px rgba(255,238,214,.95),0 0 10px 2px rgba(255,200,140,.9),0 0 34px 8px rgba(255,140,60,.5),0 0 90px 26px rgba(140,90,255,.28)}
+.core .ctxt{position:absolute;inset:19%;z-index:4;display:grid;place-items:center;text-align:center;color:#fff}
+.core .ctxt b{font-size:calc(var(--cs,170px)*.072);font-weight:650;letter-spacing:.3em;margin-left:.3em;line-height:1.35;display:block}
+.core .ctxt small{font-size:calc(var(--cs,170px)*.048);letter-spacing:.28em;opacity:.65;display:block;margin-top:2px}
+.core em[hidden]{display:none!important}
+.core em{position:absolute;left:50%;top:calc(100% + 2px);transform:translateX(-50%);white-space:nowrap;z-index:5;margin:0}
+@keyframes flick{50%{opacity:.8;transform:scale(1.015)}}
+
+/* ---------- Planeten: Kugel mit drehender Oberfläche, Schatten, Atmosphäre ---------- */
+.planet .orb{background:none!important;border:0!important;overflow:visible;
+  box-shadow:0 0 14px -2px color-mix(in srgb,var(--pc) 70%,transparent),0 10px 24px -10px rgba(0,0,0,.6)!important;border-radius:50%}
+.planet .globe{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:var(--pc)}
+.planet .tex{position:absolute;top:0;left:0;height:100%;width:200%;background-size:100% 100%;animation:roll var(--rot,40s) linear infinite}
+.planet .shade{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 30% 26%,rgba(255,255,255,.42),rgba(255,255,255,0) 34%),radial-gradient(circle at 68% 70%,rgba(0,0,0,0) 22%,rgba(0,0,0,.55) 58%,rgba(0,0,0,.9) 78%);
+  box-shadow:inset 1.5px 1.5px 3px rgba(255,255,255,.35),inset -4px -6px 10px rgba(0,0,0,.4)}
+.planet .sring{position:absolute;left:-42%;width:184%;top:50%;height:44%;transform:translateY(-50%) rotate(-16deg);border-radius:50%;pointer-events:none;z-index:2;
+  background:radial-gradient(closest-side,transparent 64%,rgba(240,226,196,.85) 66%,rgba(214,190,150,.5) 76%,rgba(240,226,196,.7) 82%,transparent 85%);
+  -webkit-mask:linear-gradient(to bottom,rgba(0,0,0,.22) 46%,#000 54%);mask:linear-gradient(to bottom,rgba(0,0,0,.22) 46%,#000 54%)}
+.planet .orb svg{display:none}
+.planet .pl-name{display:inline-flex;align-items:center;gap:4px}
+.planet .pl-name svg{width:12px;height:12px;flex:none;color:var(--pc)}
+.planet .halo{position:absolute;inset:-8px;border-radius:50%;pointer-events:none}
+.planet.red .orb::after{display:none}
+.planet.red .halo{border:2px dotted rgba(255,69,58,.95)}
+.planet.red.pulse .halo{animation:spin 12s linear infinite,alarm2 2.2s ease-in-out infinite}
+.planet.red.pulse .orb{animation:none}
+.planet.yellow .orb{box-shadow:0 0 0 2px rgba(255,159,10,.95),0 0 22px rgba(255,159,10,.45)!important}
+@keyframes alarm2{0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,.5),0 0 14px rgba(255,59,48,.35)}50%{box-shadow:0 0 0 10px rgba(255,59,48,0),0 0 36px rgba(255,59,48,.8)}}
+@keyframes roll{to{transform:translateX(-50%)}}
+
+/* ---------- Statistik ---------- */
+#chart{position:relative}
+#chart.anim g.col rect:not(.hit){transform-box:fill-box;transform-origin:50% 100%;animation:grow .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*22ms)}
+#chart.anim .avg{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s .6s cubic-bezier(.4,0,.2,1) forwards}
+#chart g.col:hover rect:not(.hit){filter:brightness(1.12)}
+#chart .avg{stroke-width:2.2;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+#chart .avg-dot{animation:ping 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.ctip{position:absolute;top:6px;min-width:170px;padding:10px 12px;border-radius:14px;z-index:5;pointer-events:none;font-size:12.5px;color:var(--txt);
+  background:var(--glass-bg);border:1px solid var(--glass-edge);-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);box-shadow:var(--glass-hi),var(--glass-sh2)}
+.ctip b{font-weight:600;color:var(--mut);font-size:12px}
+.ct-t{font-size:20px;font-weight:650;letter-spacing:-.03em;margin:1px 0 6px}
+.ct-r{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center;padding:2px 0}
+.ct-r i{width:8px;height:8px;border-radius:50%}
+.ct-r em{font-style:normal;font-weight:600;font-variant-numeric:tabular-nums}
+body.intro .sp-line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.5s .2s cubic-bezier(.4,0,.2,1) forwards}
+body.intro .sp-area{animation:fadein 1.4s .5s both}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadein{from{opacity:0}}
+@keyframes ping{50%{r:6}}
+@media (prefers-reduced-motion: reduce){.planet .tex,.core .disk i,.core .lens,#chart .avg-dot{animation:none!important}#chart.anim g.col rect,#chart.anim .avg,body.intro .sp-line,body.intro .sp-area{animation:none!important;stroke-dashoffset:0}}
+</style>
+<style>
+/* ---------- Tagesumsatz: klassische Linie ---------- */
+:root,[data-theme=light]{--line-c:#0071e3}[data-theme=dark]{--line-c:#7fb8ff}
+#chart svg{overflow:visible}
+#chart .gl{stroke:var(--grid);stroke-dasharray:none;stroke-width:1}
+#chart text{fill:var(--mut);font-size:11px}
+#chart .yl{font-size:10.5px;opacity:.8}
+#chart .c-line{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 4px 10px color-mix(in srgb,var(--line-c) 45%,transparent))}
+#chart .c-today{fill:none;stroke:var(--line-c);stroke-width:2.2;stroke-dasharray:3 5;stroke-linecap:round;opacity:.7}
+#chart .avg{fill:none;stroke:var(--txt);stroke-width:1.2;stroke-dasharray:1 5;stroke-linecap:round;opacity:.55;filter:none}
+#chart .c-best circle{fill:var(--card,#fff);stroke:var(--line-c);stroke-width:2}
+#chart .c-best text{fill:var(--txt);font-size:11px;font-weight:600;opacity:.85}
+#chart .c-now{fill:var(--line-c);stroke:#fff;stroke-width:2}
+#chart .c-now-halo{fill:var(--line-c);opacity:.25;transform-box:fill-box;transform-origin:center;animation:nowpulse 2.4s ease-out infinite}
+#chart .c-guide{stroke:var(--txt);stroke-width:1;opacity:.35}
+#chart .c-dot{fill:var(--line-c);stroke:#fff;stroke-width:2.5;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+#chart.anim .c-line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s cubic-bezier(.4,0,.2,1) forwards}
+#chart.anim .c-area{animation:fadein 1.6s .4s both}
+#chart.anim .avg{animation:fadein 1s 1.4s both}
+@keyframes nowpulse{0%{transform:scale(.6);opacity:.45}100%{transform:scale(1.9);opacity:0}}
+.legend{gap:4px 18px}
+.legend span{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;font-size:12.5px;color:var(--mut);display:inline-flex;align-items:center;gap:5px}
+.legend i{width:8px!important;height:8px!important;border-radius:50%!important;transform:none!important;margin:0 1px 0 0!important}
+.legend b{color:var(--txt);font-weight:600}
+.legend .lg-avg i{width:16px!important;height:0!important;border-radius:0!important;background:none!important;border-top:2px dotted var(--txt);opacity:.6}
+.ct-d{font-size:12px;margin:-4px 0 6px}
+.ct-r{grid-template-columns:10px 1fr auto;position:relative;padding:3px 0 6px}
+.ct-r u{position:absolute;left:18px;bottom:1px;height:2px;width:calc((100% - 18px) * var(--w) / 100);border-radius:1px;opacity:.6;text-decoration:none}
+@media (prefers-reduced-motion: reduce){#chart .c-now-halo{animation:none}}
+</style>
+<body class="bx intro">
+<canvas id="stars" aria-hidden="true"></canvas>
 
 <!-- LOGIN -->
 <section id="loginView" class="login hidden">
@@ -420,6 +902,7 @@ svg text{font-family:var(--sans)}
     <button type="button" class="t-bills" data-go="sec-bills">Rechnungen</button>
     <button type="button" class="t-sales" data-go="sec-oo">Offene Bestellungen</button>
     <button type="button" class="t-ship" data-go="sec-kpi">Retouren · Versand</button>
+    <button type="button" class="t-ship" data-go="sec-mp">Marktplätze</button>
     <div class="lbl">Betrieb</div>
     <button type="button" class="t-stock" data-go="sec-stock">Bestand</button>
     <button type="button" class="t-mail" data-go="sec-tp">Aufgaben &amp; Postfach</button>
@@ -430,7 +913,7 @@ svg text{font-family:var(--sans)}
     <button type="button" class="t-link" data-go="sec-data">Verbindungen</button>
   </nav>
   <div class="sheet">
-  <header class="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1></header>
+  <header class="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><div class="galaxy" id="galaxy" role="navigation" aria-label="Bereiche als Galaxie"></div><p class="greet" id="greet" aria-live="polite"></p></header>
   <!-- DRINGEND: rot / gelb / grün -->
   <div class="urgent" id="urgentWrap">
     <div class="usum"><span class="t">Was ist dringend?</span><span id="usum" class="small"></span><span id="standM" class="small muted"></span></div>
@@ -448,7 +931,7 @@ svg text{font-family:var(--sans)}
       <div class="ptiles" id="platTiles"></div>
       <div class="note" id="platNote"></div>
     </div>
-    <div class="card s8 m12"><h3>Tagesumsatz netto · 30 Tage <span class="sub">gestapelt nach Plattform</span></h3><div class="legend" id="chartLegend"></div><div id="chart"></div></div>
+    <div class="card s8 m12"><h3>Tagesumsatz netto · 30 Tage <span class="sub">Verlauf netto · zeigen oder antippen für die Aufteilung je Plattform</span></h3><div class="legend" id="chartLegend"></div><div id="chart"></div></div>
     <div class="card s4 m12"><h3>Umsatz je Kanal</h3><div class="seg" id="segPeriod"></div><div class="scroll"><table class="tbl" id="tblChannels"></table></div><div class="note" id="chNote"></div></div>
 
     <div class="sec-h t-bills" id="sec-bills"><h2 class="metal">Rechnungen &amp; Zahlungserinnerungen</h2><span class="rule"></span><span class="fresh" id="fr-bills"></span></div>
@@ -462,6 +945,11 @@ svg text{font-family:var(--sans)}
     <div class="sec-h t-ship" id="sec-kpi"><h2 class="metal">Retouren, Zahlung, Versand</h2><span class="rule"></span><span class="fresh" id="fr-kpi"></span></div>
     <div class="card s8 m12" id="card-kpi"><h3>Je Plattform <span class="sub">Retouren &amp; Stornos 30 Tage · unbezahlt &amp; ohne Sendungsnummer = Stand jetzt</span></h3><div class="kgrid" id="kpiKpis"></div><div class="scroll"><table class="tbl" id="tblKpi"></table></div><div class="note">Quelle JTL-Wawi (alle 30 Min.). Quote = Retouren ÷ Bestellungen 30 T. Unbezahlt = nicht storniert, Restbetrag offen. Ohne Sendungsnr. = Lieferschein der letzten 30 T ohne Sendungsnummer (Selbstabholer ausgenommen). Alter ab Bestelldatum: &gt; 2 Tage gelb, &gt; 3 Tage rot.</div></div>
     <div class="card s4 m12" id="card-kpiList"><h3>Unbezahlt / ohne Sendungsnummer <span id="f-kpi"></span></h3><div class="scroll tall"><table class="tbl" id="tblKpiList"></table></div></div>
+
+    <div class="sec-h t-ship" id="sec-mp"><h2 class="metal">Marktplätze · Kontozustand</h2><span class="rule"></span><span class="fresh" id="fr-mp"></span></div>
+    <div class="card s12" id="card-mp"><h3>Hinweise der Plattformen <span class="sub">aus den Plattform-Mails der letzten 30 Tage · Sperrungen, Verstöße, deaktivierte Angebote, Kundennachrichten</span> <span id="f-mp"></span></h3>
+      <div class="mpgrid" id="mpTiles"></div><div class="scroll tall" style="margin-top:14px"><table class="tbl" id="tblMp"></table></div>
+      <div class="note">Quelle: IONOS/Gmail-Postfächer (alle 30 Min.). Ohne Plattform-API: zeigt, was Amazon, eBay, OTTO, Kaufland, TikTok Shop und idealo per E-Mail melden. Gleiche Meldungen zählen einmal. Rot = Konto-Hinweis in den letzten 7 Tagen, Gelb = in 30 Tagen.</div></div>
 
     <div class="sec-h t-stock" id="sec-stock"><h2 class="metal">Bestand &amp; Lagerwert</h2><span class="rule"></span><span class="fresh" id="fr-stock"></span></div>
     <div id="invKpis" style="display:contents"></div>
@@ -557,6 +1045,20 @@ document.querySelectorAll("#secNav [data-go]").forEach(b => b.onclick = () => {
   window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
 });
 
+// Seitenleiste: markiert den Bereich, der gerade sichtbar ist
+(function () {
+  const btns = [...document.querySelectorAll("#secNav [data-go]")];
+  if (!btns.length || !("IntersectionObserver" in window)) return;
+  const seen = new Map();
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => seen.set(e.target.id, e.isIntersecting ? e.boundingClientRect.top : null));
+    let best = null, bestTop = Infinity;
+    seen.forEach((t, id) => { if (t !== null && Math.abs(t) < bestTop) { bestTop = Math.abs(t); best = id; } });
+    if (best) btns.forEach(b => b.setAttribute("aria-current", String(b.dataset.go === best)));
+  }, { rootMargin: "-90px 0px -55% 0px" });
+  btns.forEach(b => { const el = $(b.dataset.go); if (el) io.observe(el); });
+})();
+
 // ---------- Tabellen-Helfer ----------
 // rows: Array von { c: [Zellen], hl: bool } oder einfache Arrays
 function table(el, head, rows, emptyText) {
@@ -634,7 +1136,7 @@ async function load() {
 
     const today = berlinDate(); state.today = today; state.err = {};
     const from60 = addDays(today, -60), mailFrom = new Date(Date.now() - 30 * 864e5).toISOString();
-    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig] = await Promise.all([
+    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
       safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
       safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value").eq("source", "jtl"))),
@@ -653,9 +1155,10 @@ async function load() {
       safe("idealo", res(sb.from("idealo_daily").select("day,clicks,cost_eur,orders,revenue_eur,budget_used_mtd_eur,budget_cap_eur,fetched_at").gte("day", from60).order("day"))),
       safe("tools", res(sb.from("tool_usage").select("vendor,item,amount,unit,action,at,fetched_at").order("at", { ascending: false }).limit(300))),
       safe("sig", res(sb.from("bot_quellen_signale").select("quelle,signal,schwere,received_at,mailbox,absender_domain,betreff,thread_id").order("received_at", { ascending: false }).limit(500))),
+      safe("mp", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at").eq("category", "Marktplatz").gte("received_at", mailFrom).order("received_at", { ascending: false }).limit(1500))),
     ]);
     state.sales = sales;
-    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig };
+    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp };
     renderAll();
     const failed = Object.keys(state.err);
     if (failed.length) warn = (warn ? warn + " " : "") + "Teilweise nicht geladen: " + failed.join(", ") + ". Übrige Bereiche sind aktuell.";
@@ -667,12 +1170,22 @@ async function load() {
   } finally { loading = false; $("btnRefresh").disabled = false; $("btnRefresh").classList.remove("busy"); }
 }
 
+function countUp() {
+  if (state.counted) return; state.counted = true; setTimeout(() => document.body.classList.remove("intro"), 2600); if (reduceMotion) return;
+  document.querySelectorAll("#kpis .kpi .v, .chip .n, .pt-v").forEach(el => {
+    const m = (el.textContent || "").trim().match(/^([\d.]+)(\s*.*)$/); if (!m) return;
+    const end = Number(m[1].replace(/\./g, "")); if (!(end > 0)) return;
+    const t0 = performance.now(), dur = 1300, fmt = new Intl.NumberFormat("de-DE");
+    const tick = (t) => { const k = Math.min(1, (t - t0) / dur), e = k >= 1 ? 1 : 1 - Math.pow(2, -10 * k); el.textContent = fmt.format(Math.round(end * e)) + m[2]; if (k < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  });
+}
 function renderAll() {
   const d = state.d; if (!d) return;
   state.U = computeUrgent(d);
   renderUrgent();
   renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
-  renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d);
+  renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d); requestAnimationFrame(countUp);
   bindTilt();
 }
 
@@ -770,6 +1283,7 @@ function computeUrgent(d) {
     { id: "kpi_unp_red", lvl: "red", n: kpiSum(unpRed), label: `Unbezahlt > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Keine alten Unbezahlten", hint: "Zahlung prüfen", sec: "card-kpiList", rows: unpRed },
     { id: "kpi_trk_red", lvl: "red", n: kpiSum(trkRed), label: `Ohne Sendungsnr. > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Sendungsnummern vollständig", hint: "Tracking nachtragen", sec: "card-kpiList", rows: trkRed },
     { id: "oos_best", lvl: "red", n: oosBest.length, label: "Bestseller ausverkauft", ok: "Bestseller lieferbar", hint: `≥ ${RULE.BESTSELLER_SOLD30} verkauft / 30 T`, sec: "card-oos", rows: oosBest },
+    { id: "mp_health", lvl: "red", n: mpStats(d.mp).reduce((a, x) => a + x.h7.length, 0), label: "Marktplatz-Konto-Hinweise", ok: state.err.mp ? "" : "Marktplatz-Konten ohne Hinweis", hint: "letzte 7 Tage · " + mpStats(d.mp).filter(x => x.h7.length).map(x => x.name).join(", "), sec: "card-mp", rows: [] },
     { id: "sync_red", lvl: "red", n: syncRed.length, label: "Sync gestört", ok: "", hint: "Fehler oder > 2 Std. alt", sec: "sec-sync", rows: syncRed },
     { id: "task_red", lvl: "red", n: taskRed.length, label: "Dringende Aufgaben", ok: "Keine dringenden Aufgaben", hint: "Prio hoch / CEO überfällig", sec: "sec-tasks", rows: taskRed },
     { id: "bill_new", lvl: "yellow", n: billNew.length, label: "Neue Rechnungen", ok: "", hint: `letzte ${RULE.BILL_NEW_DAYS} Tage`, sec: "card-bills", rows: billNew },
@@ -787,13 +1301,189 @@ function computeUrgent(d) {
     .sort((a, b) => ({ red: 0, yellow: 1, green: 2 })[a.lvl] - ({ red: 0, yellow: 1, green: 2 })[b.lvl]);
 }
 
+// Symbole für die Dringend-Widgets (Linien-Icons, 24er Raster)
+const ICON = {
+  doc: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>',
+  box: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+  card: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/>',
+  truck: '<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/>',
+  tag: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>',
+  sync: '<path d="M20 11a8 8 0 0 0-14-4.5L4 9M4 13a8 8 0 0 0 14 4.5l2-2.5"/><path d="M4 4v5h5M20 20v-5h-5"/>',
+  check: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>',
+  person: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  euro: '<path d="M17 6a7 7 0 1 0 0 12M4 10h9M4 14h9"/>',
+  bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+  spark: '<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',
+  shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M12 8v5M12 16v.5"/>'
+};
+const ICON_OF = { bill_mahn: "doc", bill_new: "doc", oo_red: "box", oo_yel: "box", kpi_unp_red: "card", kpi_unp_yel: "card", kpi_trk_red: "truck", kpi_trk_yel: "truck",
+  oos_best: "tag", mp_health: "shield", sync_red: "sync", sync_yel: "sync", sync_ok: "sync", task_red: "check", task_ceo: "person", mail_biz: "mail", cover: "chart", idealo_budget: "euro", higgs_low: "spark", sig_high: "bell" };
+const chipIcon = (x) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[ICON_OF[x.id] || "bell"]}</svg>`;
+
+// ---------- Galaxie: Bereiche kreisen um den Kern; dringend = Puls + drehender Ring ----------
+const GAL = [
+  { name: "Umsatz", go: "sec-sales", ico: "chart", c: "#34c759", ids: [] },
+  { name: "Rechnungen", go: "sec-bills", ico: "doc", c: "#ff9f0a", ids: ["bill_mahn", "bill_new"] },
+  { name: "Bestellungen", go: "sec-oo", ico: "box", c: "#0a84ff", ids: ["oo_red", "oo_yel"] },
+  { name: "Versand", go: "sec-kpi", ico: "truck", c: "#5e5ce6", ids: ["kpi_unp_red", "kpi_unp_yel", "kpi_trk_red", "kpi_trk_yel"] },
+  { name: "Marktplätze", go: "sec-mp", ico: "shield", c: "#ff375f", ids: ["mp_health"] },
+  { name: "Bestand", go: "sec-stock", ico: "tag", c: "#30b0c7", ids: ["oos_best", "cover"] },
+  { name: "Aufgaben", go: "sec-tp", ico: "check", c: "#af52de", ids: ["task_red", "task_ceo", "mail_biz"] },
+  { name: "Social", go: "sec-social", ico: "person", c: "#ff2d55", ids: [] },
+  { name: "Quellen", go: "sec-quellen", ico: "bell", c: "#ffcc00", ids: ["idealo_budget", "higgs_low", "sig_high"] },
+  { name: "Verbindungen", go: "sec-data", ico: "sync", c: "#64d2ff", ids: ["sync_red", "sync_yel"] },
+];
+const goTo = (id) => { const el = $(id); if (!el) return; window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18), behavior: reduceMotion ? "auto" : "smooth" }); };
+const galaxy = { t: 0, last: 0, raf: 0, paused: false, visible: true, built: false, geo: null };
+// Prozedurale Planeten-Oberfläche (Bänder + Wirbel), horizontal nahtlos → Drehung per translateX
+function planetTex(hex, seed) {
+  const W = 128, H = 128, c = document.createElement("canvas"); c.width = W * 2; c.height = H; const x = c.getContext("2d");
+  const n = parseInt(hex.slice(1), 16), base = [n >> 16 & 255, n >> 8 & 255, n & 255], img = x.createImageData(W, H);
+  let r = seed * 9973 + 7; const rnd = () => (r = (r * 16807) % 2147483647) / 2147483647;
+  const f = [rnd() * 6 + 3, rnd() * 14 + 8, rnd() * 30 + 18], ph = [rnd() * 6, rnd() * 6, rnd() * 6], wob = 1 + Math.floor(rnd() * 3);
+  for (let y = 0; y < H; y++) for (let xx = 0; xx < W; xx++) {
+    const u = xx / W * Math.PI * 2, v = y / H;
+    const w = Math.sin(u * wob + v * 9 + ph[0]) * .05 + Math.sin(u * (wob + 2) - v * 21 + ph[1]) * .025;
+    let t = .5 + .26 * Math.sin((v + w) * f[0] + ph[0]) + .16 * Math.sin((v + w) * f[1] + ph[1]) + .08 * Math.sin((v - w) * f[2] + ph[2]);
+    const spot = Math.exp(-((Math.cos(u - ph[2]) - 1) ** 2 * 18 + ((v - .62) * 9) ** 2)); t = t * (1 - .5 * spot) + .95 * spot * .5;
+    const k = (y * W + xx) * 4, lift = t > .5 ? (t - .5) * 2 : 0, dark = t < .5 ? (.5 - t) * 2 : 0;
+    for (let ch = 0; ch < 3; ch++) img.data[k + ch] = Math.max(0, Math.min(255, base[ch] * (1 - .55 * dark) + (255 - base[ch]) * .55 * lift));
+    img.data[k + 3] = 255;
+  }
+  x.putImageData(img, 0, 0); x.putImageData(img, W, 0); return c.toDataURL("image/png");
+}
+function renderGreet(U, red) {
+  const el = $("greet"); if (!el || !state.sales) return;
+  const h = Number(new Intl.DateTimeFormat("de-DE", { timeZone: TZ, hour: "numeric", hour12: false }).format(new Date()));
+  const hi = h < 5 ? "Gute Nacht" : h < 11 ? "Guten Morgen" : h < 18 ? "Guten Tag" : "Guten Abend";
+  const td = state.sales.filter(r => r.day === state.today), net = td.reduce((a, r) => a + Number(r.net_sales || 0), 0), ord = td.reduce((a, r) => a + Number(r.orders || 0), 0);
+  const yel = U.filter(u => u.lvl === "yellow").length;
+  el.innerHTML = `<span class="hi">${hi}, Ihssan.</span>Heute bisher <b>${eur(net)}</b> aus <b>${num(ord)} Bestellungen</b>. ` +
+    (red ? `<b style="color:var(--bad)">${red} ${red === 1 ? "Sache braucht" : "Dinge brauchen"} dich jetzt</b>${yel ? `, ${yel} im Blick behalten` : ""} – der Rest läuft.` : yel ? `Nichts Dringendes – ${yel} im Blick behalten.` : "Alles ruhig. Der Laden läuft.");
+}
+function renderGalaxy() {
+  const g = $("galaxy"); if (!g) return;
+  const U = (state.U || []).filter(u => !u.empty && u.n > 0 && u.lvl !== "green");
+  const red = U.filter(u => u.lvl === "red").length;
+  if (!galaxy.built) {
+    const ic = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
+    g.innerHTML = `<div class="ring inner"></div><div class="ring outer"></div><div class="core" aria-hidden="true"><div class="lens"></div><div class="disk back"><i></i></div><div class="bh"></div><div class="disk front"><i></i></div><div class="ctxt"><div><b>BLACK<br>ELIXIR</b></div></div><em id="coreSt" hidden></em></div>` +
+      GAL.map((p, i) => `<button type="button" class="planet" data-i="${i}" style="--pc:${p.c};--rot:${30 + (i * 7) % 26}s"><span class="orb"><span class="globe"><span class="tex" style="background-image:url(${planetTex(p.c, i)})"></span></span><span class="shade"></span>${i === 0 ? '<span class="sring"></span>' : ""}<span class="halo"></span></span><span class="pl-n"></span><span class="pl-name">${ic(p.ico)}${esc(p.name)}</span></button>`).join("");
+    g.querySelectorAll(".planet").forEach(b => { b.onclick = () => goTo(GAL[b.dataset.i].go);
+      b.onmouseenter = b.onfocus = () => galaxy.paused = true; b.onmouseleave = b.onblur = () => galaxy.paused = false; });
+    galaxy.built = true; layoutGalaxy(); new ResizeObserver(layoutGalaxy).observe(g);
+    new IntersectionObserver(e => { galaxy.visible = e[0].isIntersecting; if (galaxy.visible) startGalaxy(); }).observe(g);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) startGalaxy(); });
+  }
+  const st = $("coreSt"); st.textContent = red ? `${red} dringend` : "Alles ruhig"; st.className = red ? "" : "ok"; renderGreet(U, red);
+  g.querySelectorAll(".planet").forEach(b => {
+    const p = GAL[b.dataset.i], hits = U.filter(u => p.ids.includes(u.id));
+    const lvl = hits.some(u => u.lvl === "red") ? "red" : hits.length ? "yellow" : "green", n = hits.reduce((a, u) => a + u.n, 0);
+    b.className = "planet " + lvl + (b.classList.contains("back") ? " back" : ""); b._n = lvl === "red" ? n : -1; b.querySelector(".pl-n").textContent = n ? (n > 99 ? "99+" : n) : "";
+    b.setAttribute("aria-label", `${p.name}: ${lvl === "red" ? "dringend" : lvl === "yellow" ? "beachten" : "in Ordnung"}${n ? ", " + n + " offen" : ""}`);
+  });
+  // höchstens 3 Planeten pulsieren gleichzeitig (die mit den meisten offenen Punkten)
+  [...g.querySelectorAll(".planet.red")].sort((a, b) => b._n - a._n).slice(0, 3).forEach(b => b.classList.add("pulse"));
+  startGalaxy();
+}
+function layoutGalaxy() {
+  const g = $("galaxy"), W = g.clientWidth; if (!W) return;
+  const small = W < 620, ps = small ? 44 : 62, cs = small ? 92 : 170;
+  const rx2 = Math.min(W / 2 - ps / 2 - (small ? 8 : 40), 520), ry2 = rx2 * (small ? .8 : .34), rx1 = rx2 * (small ? .58 : .6), ry1 = ry2 * (small ? .58 : .6);
+  const H = Math.round(Math.max(cs + 60, 2 * ry2 + ps + 64));
+  g.style.setProperty("--gh", H + "px"); g.style.setProperty("--ps", ps + "px"); g.style.setProperty("--cs", cs + "px");
+  const [ri, ro] = g.querySelectorAll(".ring");
+  ri.style.width = 2 * rx1 + "px"; ri.style.height = 2 * ry1 + "px"; ro.style.width = 2 * rx2 + "px"; ro.style.height = 2 * ry2 + "px";
+  galaxy.geo = { cx: W / 2, cy: H / 2 - 8, rx1, ry1, rx2, ry2, small }; g.classList.toggle("small", small); drawGalaxy();
+}
+function drawGalaxy() {
+  const g = $("galaxy"), G = galaxy.geo; if (!G) return;
+  g.querySelectorAll(".planet").forEach(b => {
+    const i = +b.dataset.i, inner = i < 5, k = inner ? i : i - 5;
+    const a = (inner ? galaxy.t / 60 : -galaxy.t / 120) * Math.PI * 2 + k * (Math.PI * 2 / 5) + (inner ? 0 : Math.PI / 5);
+    const rx = inner ? G.rx1 : G.rx2, ry = inner ? G.ry1 : G.ry2, d = (Math.sin(a) + 1) / 2; // 0 = hinten, 1 = vorne
+    const x = G.cx + Math.cos(a) * rx, y = G.cy + Math.sin(a) * ry, sc = .72 + .38 * d;
+    b.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(${sc.toFixed(3)})`;
+    b.style.zIndex = d > .5 ? 60 + Math.round(d * 20) : 10 + Math.round(d * 20); b.style.opacity = (.55 + .45 * d).toFixed(2); b.classList.toggle("back", d < .45);
+  });
+}
+function startGalaxy() {
+  if (reduceMotion) { drawGalaxy(); return; }
+  if (galaxy.raf) return;
+  const step = (ts) => {
+    if (!galaxy.visible || document.hidden) { galaxy.raf = 0; galaxy.last = 0; return; }
+    const dt = galaxy.last ? Math.min(.1, (ts - galaxy.last) / 1000) : 0; galaxy.last = ts;
+    if (!galaxy.paused) galaxy.t += dt; drawGalaxy(); galaxy.raf = requestAnimationFrame(step);
+  };
+  galaxy.raf = requestAnimationFrame(step);
+}
+// Milchstraße: einmal gerendert (Nebel, Staub, Sternfeld), darüber funkelnde Sterne, Sternschnuppen, leichte Tiefe zur Maus
+(function sky() {
+  const cv = $("stars"); if (!cv) return; const cx = cv.getContext("2d");
+  let off = null, B = [], w = 0, h = 0, raf = 0, last = 0, mx = 0, my = 0, tx = 0, ty = 0, shoot = null, nextShoot = 0;
+  const PAD = 24, dark = () => document.documentElement.getAttribute("data-theme") === "dark";
+  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  function build() {
+    const dpr = Math.min(1.5, devicePixelRatio || 1); w = innerWidth; h = innerHeight;
+    cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const W = w + PAD * 2, H = h + PAD * 2; off = document.createElement("canvas"); off.width = W; off.height = H; const o = off.getContext("2d");
+    const D = dark(), diag = Math.hypot(W, H), ax = -.05 * W, ay = .92 * H, bx = 1.05 * W, by = .08 * H; // Band diagonal
+    const along = (t, s) => { const x = ax + (bx - ax) * t, y = ay + (by - ay) * t, nx = -(by - ay) / diag, ny = (bx - ax) / diag; return [x + nx * s, y + ny * s]; };
+    // Nebelwolken
+    o.globalCompositeOperation = D ? "lighter" : "source-over";
+    const pal = D ? [[110, 70, 200], [50, 100, 220], [235, 120, 80], [255, 205, 160], [200, 90, 170]] : [[190, 160, 255], [150, 200, 255], [255, 190, 170], [255, 225, 200], [230, 170, 230]];
+    for (let i = 0; i < 170; i++) { const t = Math.random(), [x, y] = along(t, gauss() * diag * .06), r = 40 + Math.random() * 200, c = pal[Math.floor(Math.random() * pal.length)];
+      const g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${c},${(D ? .05 : .09) + Math.random() * .05})`); g.addColorStop(1, `rgba(${c},0)`); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); }
+    // Kern der Galaxie (helle Wolke)
+    { const [x, y] = along(.62, 0), r = diag * .22, g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, D ? "rgba(255,225,190,.20)" : "rgba(255,240,225,.5)"); g.addColorStop(1, "rgba(255,225,190,0)"); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); }
+    // Staubbänder (nur Nacht)
+    if (D) { o.globalCompositeOperation = "source-over"; for (let i = 0; i < 90; i++) { const t = Math.random(), [x, y] = along(t, gauss() * diag * .012 + diag * .006), r = 18 + Math.random() * 70;
+      const g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(4,3,10,${.18 + Math.random() * .2})`); g.addColorStop(1, "rgba(4,3,10,0)"); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); } }
+    // Sternfeld: dichter im Band
+    o.globalCompositeOperation = "source-over"; const rgb = D ? "255,255,255" : "110,90,170", N = Math.round(W * H / (D ? 260 : 520));
+    for (let i = 0; i < N; i++) { const inBand = Math.random() < .6, [x, y] = inBand ? along(Math.random(), gauss() * diag * .07) : [Math.random() * W, Math.random() * H];
+      const r = Math.random() < .015 ? 1 + Math.random() * .8 : .25 + Math.random() * .55, a = (inBand ? .25 : .15) + Math.random() * (D ? .55 : .35);
+      const tint = Math.random(); o.fillStyle = D && tint < .12 ? `rgba(180,200,255,${a})` : D && tint > .9 ? `rgba(255,220,180,${a})` : `rgba(${rgb},${a})`;
+      o.beginPath(); o.arc(x, y, r, 0, 6.283); o.fill(); }
+    // helle Sterne zum Funkeln
+    B = Array.from({ length: Math.round(w * h / 14000) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: .9 + Math.random() * 1.1, p: Math.random() * 6.3, s: .5 + Math.random() * 1.3 }));
+  }
+  function frame(t) {
+    raf = 0; if (document.hidden) return;
+    if (t - last < 33 && !reduceMotion) { raf = requestAnimationFrame(frame); return; } last = t; // ~30 fps reichen
+    tx += (mx - tx) * .05; ty += (my - ty) * .05; const ox = -PAD + tx * PAD * .6, oy = -PAD + ty * PAD * .6;
+    cx.clearRect(0, 0, w, h); cx.drawImage(off, ox, oy);
+    const D = dark(), rgb = D ? "255,255,255" : "120,95,190";
+    for (const s of B) { const a = reduceMotion ? .8 : .45 + .55 * (Math.sin(t / 1000 * s.s + s.p) + 1) / 2, x = s.x + ox, y = s.y + oy;
+      cx.fillStyle = `rgba(${rgb},${a.toFixed(2)})`; cx.beginPath(); cx.arc(x, y, s.r, 0, 6.283); cx.fill();
+      if (D && s.r > 1.6) { cx.strokeStyle = `rgba(${rgb},${(a * .35).toFixed(2)})`; cx.lineWidth = .6; cx.beginPath(); cx.moveTo(x - s.r * 4, y); cx.lineTo(x + s.r * 4, y); cx.moveTo(x, y - s.r * 4); cx.lineTo(x, y + s.r * 4); cx.stroke(); } }
+    // Sternschnuppe alle ~8–18 s
+    if (!reduceMotion) {
+      if (!shoot && t > nextShoot) { shoot = { x: Math.random() * w * .7 + w * .2, y: Math.random() * h * .35, vx: -(5 + Math.random() * 4), vy: 2 + Math.random() * 2, life: 0 }; nextShoot = t + 8000 + Math.random() * 10000; }
+      if (shoot) { shoot.life++; shoot.x += shoot.vx; shoot.y += shoot.vy; const L = 16, g = cx.createLinearGradient(shoot.x, shoot.y, shoot.x - shoot.vx * L, shoot.y - shoot.vy * L);
+        const fa = Math.min(1, shoot.life / 6) * Math.max(0, 1 - shoot.life / 50); g.addColorStop(0, `rgba(${rgb},${fa})`); g.addColorStop(1, `rgba(${rgb},0)`);
+        cx.strokeStyle = g; cx.lineWidth = 1.6; cx.beginPath(); cx.moveTo(shoot.x, shoot.y); cx.lineTo(shoot.x - shoot.vx * L, shoot.y - shoot.vy * L); cx.stroke(); if (shoot.life > 50) shoot = null; }
+      raf = requestAnimationFrame(frame);
+    }
+  }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  build(); kick();
+  let rt = 0; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { build(); kick(); }, 150); });
+  addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1; if (reduceMotion) kick(); }, { passive: true });
+  document.addEventListener("visibilitychange", kick);
+  new MutationObserver(() => { build(); kick(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+
 function renderUrgent() {
   const U = state.U, c = { red: 0, yellow: 0, green: 0 };
   U.forEach(x => c[x.lvl]++);
   $("usum").innerHTML = `<b style="color:var(--bad)">${c.red} dringend</b> · <b style="color:var(--warn)">${c.yellow} beachten</b> · <b style="color:var(--ok)">${c.green} ok</b>`;
   $("urgent").innerHTML = U.map(x => `<button type="button" class="chip ${x.lvl}" data-id="${x.id}" aria-label="${esc(x.label)}: ${x.n}">
-      <span class="n">${x.empty ? "✓" : num(x.n)}</span><span class="l">${esc(x.label)}${x.hint ? `<span class="h">${esc(x.hint)}</span>` : ""}</span>${x.lvl !== "green" ? '<span class="dot"></span>' : ""}</button>`).join("");
+      <span class="ico" aria-hidden="true">${chipIcon(x)}</span><span class="n">${x.empty ? "✓" : num(x.n)}</span><span class="l">${esc(x.label)}${x.hint ? `<span class="h">${esc(x.hint)}</span>` : ""}</span>${x.lvl !== "green" ? '<span class="dot"></span>' : ""}</button>`).join("");
   $("urgent").querySelectorAll(".chip").forEach(b => b.onclick = () => focusRule(b.dataset.id));
+  renderGalaxy();
 }
 
 const LVLC = { red: ["var(--bad)", "rgba(239,95,80,.22)"], yellow: ["var(--warn)", "rgba(232,176,74,.22)"], green: ["var(--ok)", "rgba(76,195,138,.18)"] };
@@ -846,14 +1536,23 @@ function bindTilt() {
 // ---------- Render-Helfer ----------
 let sparkId = 0;
 // Sparkline (Linie + zarte Fläche). color = CSS-Farbe oder var(--…)
+// Catmull-Rom → kubische Bézier: ruhige, natürliche Kurve ohne Überschwingen
+function smoothPath(P) {
+  if (P.length < 3) return "M" + P.map(p => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L");
+  let d = `M${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
+  for (let i = 0; i < P.length - 1; i++) { const p0 = P[i - 1] || P[i], p1 = P[i], p2 = P[i + 1], p3 = P[i + 2] || p2, t = .18;
+    const lo = Math.min(p1[1], p2[1]), hi = Math.max(p1[1], p2[1]), cl = (v) => Math.min(Math.max(v, lo), hi);
+    d += ` C${(p1[0] + (p2[0] - p0[0]) * t).toFixed(1)} ${cl(p1[1] + (p2[1] - p0[1]) * t).toFixed(1)} ${(p2[0] - (p3[0] - p1[0]) * t).toFixed(1)} ${cl(p2[1] - (p3[1] - p1[1]) * t).toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`; }
+  return d;
+}
 function spark(vals, color, opt = {}) {
   const W = 200, H = 36, n = vals.length; if (!n || vals.every(v => !v)) return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><line x1="0" x2="${W}" y1="${H - 2}" y2="${H - 2}" class="gl"/></svg>`;
   const mx = Math.max(...vals, 0) || 1, step = n > 1 ? W / (n - 1) : W;
   const pts = vals.map((v, i) => [i * step, H - 3 - (H - 8) * Math.max(0, v) / mx]);
-  const line = pts.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
-  const gid = "sg" + (++sparkId);
+  const line = pts.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" "), curve = smoothPath(pts);
+  const gid = "sg" + (++sparkId), lp = pts[n - 1];
   const lastPartial = opt.partialLast && n > 1 ? `<polyline points="${pts[n - 2][0].toFixed(1)},${pts[n - 2][1].toFixed(1)} ${pts[n - 1][0].toFixed(1)},${pts[n - 1][1].toFixed(1)}" fill="none" style="stroke:var(--card2)" stroke-width="2.4" stroke-dasharray="2 3" vector-effect="non-scaling-stroke"/>` : "";
-  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${color}" stop-opacity=".30"/><stop offset="1" style="stop-color:${color}" stop-opacity="0"/></linearGradient></defs><polygon points="0,${H} ${line} ${W},${H}" fill="url(#${gid})"/><polyline points="${line}" fill="none" style="stroke:${color}" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>${lastPartial}</svg>`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${color}" stop-opacity=".30"/><stop offset="1" style="stop-color:${color}" stop-opacity="0"/></linearGradient></defs><path class="sp-area" d="${curve} L${W},${H} L0,${H} Z" fill="url(#${gid})"/><path class="sp-line" pathLength="1" d="${curve}" fill="none" style="stroke:${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>${lastPartial}</svg>`;
 }
 // Trend mit Pfeil + Zahl (nicht nur Farbe). ok=false → Vorperiode fehlt, nichts erfinden.
 function trend(cur, prev, ok, lbl, missTxt = "Vorperiode fehlt") {
@@ -921,24 +1620,48 @@ function renderSales() {
     (with30.length ? `30-Tage-Vergleich nur, wo die Vorperiode vollständig vorliegt (derzeit: ${with30.join(", ")}). ` : "30-Tage-Vergleich erscheint, sobald 60 Tage Daten vorliegen. ") +
     (others ? `Sonstige = ${others.chs.join(", ")}. ` : "") + "Gestrichelt = laufender Tag.";
 
-  // --- Gestapeltes Tagesdiagramm, Reihenfolge = feste Plattform-Reihenfolge ---
+  // --- Tagesumsatz als ruhige Linie (Stil Aktien/Health), Aufteilung je Plattform beim Zeigen ---
   const order = [...PLAT.map(p => p.k), "other"];
   const keys = groups.map(g => g.k).sort((a, b) => order.indexOf(a) - order.indexOf(b));
   const per = days30.map(d => { const o = {}; rows.filter(r => r.day === d).forEach(r => { const k = platOf(r.channel).k; o[k] = (o[k] || 0) + Math.max(0, Number(r.net_sales || 0)); }); return o; });
-  const maxV = Math.max(1, ...per.map(o => Object.values(o).reduce((a, b) => a + b, 0)));
+  const dayTot = per.map(o => Object.values(o).reduce((a, b) => a + b, 0)), nD = days30.length;
   const nice = (v) => { const p = Math.pow(10, Math.floor(Math.log10(v))); const m = v / p; return ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(x => m <= x)) * p; };
-  const top = nice(maxV / 4) * 4, Wd = 900, Hd = 260, pl = 48, pb = 22, pt = 8, bw = (Wd - pl - 6) / days30.length;
-  let svg = `<svg viewBox="0 0 ${Wd} ${Hd}" width="100%" role="img" aria-label="Tagesumsatz netto je Plattform, 30 Tage">`;
-  for (let g = 0; g <= 4; g++) { const v = top * g / 4, yy = Hd - pb - (Hd - pb - pt) * g / 4; svg += `<line class="gl" x1="${pl}" x2="${Wd}" y1="${yy}" y2="${yy}"/><text x="${pl - 6}" y="${yy + 3}" text-anchor="end">${tsd(v)}</text>`; }
-  per.forEach((o, i) => {
-    let acc = 0; const isToday = i === days30.length - 1;
-    keys.forEach(k => { const v = o[k] || 0; if (!v) return; const h = (Hd - pb - pt) * v / top; const yy = Hd - pb - acc - h; acc += h;
-      svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${yy.toFixed(1)}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${h.toFixed(1)}" style="fill:var(--p-${k})"${isToday ? ' fill-opacity=".45"' : ""}><title>${esc(fmtD(days30[i]) + " · " + (G[k] ? G[k].name : k) + ": " + eur(v))}</title></rect>`; });
-    svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${pt}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${Hd - pb - pt}" fill="transparent"><title>${esc(fmtD(days30[i]) + (isToday ? " (laufend)" : "") + " · gesamt " + eur(Object.values(o).reduce((a, b) => a + b, 0)))}</title></rect>`;
-  });
-  [0, 7, 14, 21, 29].forEach(i => svg += `<text x="${pl + i * bw + bw / 2}" y="${Hd - 6}" text-anchor="middle">${i === 29 ? "heute" : fmtD(days30[i])}</text>`);
-  $("chart").innerHTML = rows.length ? svg + "</svg>" : `<div class="${state.err.sales ? "err" : "empty"}">${esc(errTxt("sales", "Noch keine Umsätze."))}</div>`;
-  $("chartLegend").innerHTML = keys.map(k => `<span style="--pc:var(--p-${k})"><i></i>${esc(G[k].name)} <b>${tsd((groups.find(g => g.k === k) || { v30: { n: 0 } }).v30.n)} €</b></span>`).join("");
+  const top = nice(Math.max(1, ...dayTot) / 3) * 3, Wd = 900, Hd = 280, pl = 8, pr = 8, pb = 26, pt = 34;
+  const X = (i) => pl + (Wd - pl - pr) * i / (nD - 1), Y = (v) => Hd - pb - (Hd - pb - pt) * v / top;
+  const full = dayTot.slice(0, -1).map((v, i) => [X(i), Y(v)]), curve = smoothPath(full), last = [X(nD - 1), Y(dayTot[nD - 1])];
+  const best = dayTot.slice(0, -1).reduce((b, v, i) => v > dayTot[b] ? i : b, 0);
+  let svg = `<svg viewBox="0 0 ${Wd} ${Hd}" width="100%" role="img" aria-label="Tagesumsatz netto, 30 Tage"><defs>
+    <linearGradient id="cArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--line-c)" stop-opacity=".34"/><stop offset=".7" stop-color="var(--line-c)" stop-opacity=".06"/><stop offset="1" stop-color="var(--line-c)" stop-opacity="0"/></linearGradient>
+    <linearGradient id="cLine" x1="0" x2="1"><stop offset="0" stop-color="var(--line-c)" stop-opacity=".55"/><stop offset="1" stop-color="var(--line-c)"/></linearGradient></defs>`;
+  for (let g = 1; g <= 3; g++) { const v = top * g / 3, yy = Y(v); svg += `<line class="gl" x1="${pl}" x2="${Wd - pr}" y1="${yy}" y2="${yy}"/><text class="yl" x="${Wd - pr}" y="${yy - 6}" text-anchor="end">${tsd(v)} €</text>`; }
+  if (rows.length) {
+    svg += `<path class="c-area" d="${curve} L${full[full.length - 1][0].toFixed(1)} ${Hd - pb} L${pl} ${Hd - pb} Z" fill="url(#cArea)"/>`;
+    // 7-Tage-Schnitt (volle Tage)
+    const avgPts = []; for (let i = 6; i < nD - 1; i++) avgPts.push([X(i), Y(dayTot.slice(i - 6, i + 1).reduce((x, y) => x + y, 0) / 7)]);
+    if (avgPts.length > 1) svg += `<path class="avg" d="${smoothPath(avgPts)}"/>`;
+    svg += `<path class="c-line" pathLength="1" d="${curve}" stroke="url(#cLine)"/>`;
+    svg += `<path class="c-today" d="M${full[full.length - 1][0].toFixed(1)} ${full[full.length - 1][1].toFixed(1)} L${last[0].toFixed(1)} ${last[1].toFixed(1)}"/>`;
+    svg += `<g class="c-best"><circle cx="${X(best).toFixed(1)}" cy="${Y(dayTot[best]).toFixed(1)}" r="3.5"/><text x="${X(best).toFixed(1)}" y="${(Y(dayTot[best]) - 12).toFixed(1)}" text-anchor="middle">Bester Tag · ${tsd(dayTot[best])} €</text></g>`;
+    svg += `<circle class="c-now-halo" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="9"/><circle class="c-now" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="4.5"/>`;
+    svg += `<line class="c-guide" id="cGuide" x1="0" x2="0" y1="${pt - 10}" y2="${Hd - pb}" visibility="hidden"/><circle class="c-dot" id="cDot" r="5.5" visibility="hidden"/>`;
+    for (let i = 0; i < nD; i++) svg += `<rect class="hit" data-i="${i}" x="${(X(i) - (Wd - pl - pr) / (nD - 1) / 2).toFixed(1)}" y="0" width="${((Wd - pl - pr) / (nD - 1)).toFixed(1)}" height="${Hd}" fill="transparent"/>`;
+  }
+  [0, 7, 14, 21, 29].forEach(i => svg += `<text class="xl" x="${X(i)}" y="${Hd - 6}" text-anchor="${i === 0 ? "start" : i === 29 ? "end" : "middle"}">${i === 29 ? "heute" : fmtD(days30[i])}</text>`);
+  $("chart").innerHTML = rows.length ? svg + '</svg><div class="ctip" id="ctip" hidden></div>' : `<div class="${state.err.sales ? "err" : "empty"}">${esc(errTxt("sales", "Noch keine Umsätze."))}</div>`;
+  const tip = $("ctip"), ch = $("chart"); ch.classList.toggle("anim", !state.counted);
+  if (tip) { const gd = $("cGuide"), dt = $("cDot");
+    ch.querySelectorAll("rect.hit").forEach(hr => {
+      hr.onmouseenter = hr.onclick = () => { const i = +hr.dataset.i, o = per[i], x = X(i), y = Y(dayTot[i]);
+        gd.setAttribute("x1", x); gd.setAttribute("x2", x); gd.setAttribute("visibility", "visible"); dt.setAttribute("cx", x); dt.setAttribute("cy", y); dt.setAttribute("visibility", "visible");
+        const prev = i ? dayTot[i - 1] : 0;
+        tip.innerHTML = `<b>${esc(i === nD - 1 ? "Heute (laufend)" : fmtD(days30[i]))}</b><div class="ct-t">${eur(dayTot[i])}</div>` + (i && i < nD - 1 ? `<div class="ct-d">${trend(dayTot[i], prev, true, "zum Vortag")}</div>` : "") +
+          keys.filter(k => o[k]).sort((a, b) => o[b] - o[a]).map(k => `<div class="ct-r"><i style="background:var(--p-${k})"></i><span>${esc(G[k].name)}</span><em>${eur(o[k])}</em><u style="--w:${(o[k] / (dayTot[i] || 1) * 100).toFixed(0)}%;background:var(--p-${k})"></u></div>`).join("");
+        tip.hidden = false; const cr = ch.getBoundingClientRect(), px = x / Wd * cr.width;
+        tip.style.left = Math.min(cr.width - tip.offsetWidth - 4, Math.max(4, px + (px > cr.width / 2 ? -tip.offsetWidth - 16 : 16))) + "px"; };
+    });
+    ch.onmouseleave = () => { tip.hidden = true; gd.setAttribute("visibility", "hidden"); dt.setAttribute("visibility", "hidden"); };
+  }
+  $("chartLegend").innerHTML = keys.map(k => `<span style="--pc:var(--p-${k})"><i></i>${esc(G[k].name)} <b>${tsd((groups.find(g => g.k === k) || { v30: { n: 0 } }).v30.n)} €</b></span>`).join("") + (rows.length ? `<span class="lg-avg"><i></i>7-Tage-Schnitt</span>` : "");
 
   // --- Tabelle je Kanal ---
   const periods = [["0", "Heute"], ["7", "7 Tage"], ["30", "30 Tage"]];
@@ -1075,6 +1798,34 @@ function renderKpi(kpi) {
       pill(o.kpi === "unbezahlt" ? "unbezahlt" : "kein Tracking", o.lvl === "red" ? "p-bad" : o.lvl === "yellow" ? "p-warn" : "p-off"), `${Math.floor(o.age)} Tg.`] })),
     errTxt("kpi", "Nichts offen: alles bezahlt, alle Sendungsnummern da."));
   filterChip("f-kpi", f);
+}
+
+// ---------- Marktplätze: Kontozustand aus Plattform-Mails ----------
+const MP = [["Amazon", /amazon\./i], ["eBay", /ebay\./i], ["OTTO", /otto\.(market|de)/i], ["Kaufland", /kaufland/i], ["TikTok Shop", /tiktok/i], ["idealo", /idealo/i]];
+const MP_HEALTH = /deaktiv|ausgeblendet|entfernt|versto(ß|ss)|gesperrt|sperrung|nicht berechtigt|ma(ß|ss)nahme erforderlich|jetzt handeln|reaktivier|preisfehler|deckelung|kontozustand|leistungskennzahl|nicht versandt|warnung|richtlinie|abgelehnt|suspend|violation|policy|blockiert/i;
+const MP_CUST = /kundennachricht|frage (von|zur|zu)|enquiry|hat eine nachricht|anfrage von/i;
+function mpStats(mp) {
+  return MP.map(([name, re]) => {
+    const all = (mp || []).filter(r => re.test(r.sender || ""));
+    const seen = new Set(); // gleiche Meldung (Betreff ohne Nummern) nur einmal zählen – die neueste
+    const h = all.filter(r => MP_HEALTH.test(r.subject || "") && !seen.has((r.subject || "").replace(/[\d#]+/g, "")) && seen.add((r.subject || "").replace(/[\d#]+/g, "")));
+    const c = all.filter(r => MP_CUST.test(r.subject || ""));
+    const h7 = h.filter(r => ago(r.received_at) < 7 * 1440), c7 = c.filter(r => ago(r.received_at) < 7 * 1440);
+    return { name, all, h, h7, c7, lvl: h7.length ? "red" : h.length ? "yellow" : "green", last: h[0] };
+  });
+}
+function renderMp(mp) {
+  const S = mpStats(mp), f = F(["mp_health"]);
+  const word = { red: "Handeln", yellow: "Beobachten", green: "In Ordnung" };
+  $("mpTiles").innerHTML = S.map(x => `<div class="mpt ${x.lvl}"><div class="mpt-h"><span class="nm">${esc(x.name)}</span><span class="st">${word[x.lvl]}</span></div>
+    <div class="mpt-v">${num(x.h7.length)}<small> Meldungen · 7 T</small></div>
+    <div class="mpt-s">${num(x.h.length)} in 30 T · ${num(x.c7.length)} Kundennachr. 7 T</div>
+    <div class="mpt-l">${x.last ? esc(x.last.subject) : "Keine Konto-Hinweise"}</div></div>`).join("");
+  const rows = S.flatMap(x => (f ? x.h7 : x.h).map(r => ({ ...r, pf: x.name }))).sort((a, b) => b.received_at.localeCompare(a.received_at)).slice(0, 60);
+  table("tblMp", [{ t: "Eingang" }, { t: "Plattform" }, { t: "Hinweis" }, { t: "Postfach" }],
+    rows.map(r => ({ hl: !!f, c: [esc(fmtDT(r.received_at)), esc(r.pf), `<div class="name">${esc(r.subject)}</div><div class="small muted">${esc(r.sender)}</div>`, `<span class="small muted">${esc(r.mailbox || "–")}</span>`] })),
+    errTxt("mp", "Keine Konto-Hinweise in den letzten 30 Tagen."));
+  filterChip("f-mp", f);
 }
 
 function renderInbox(inbox) {
