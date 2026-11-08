@@ -815,6 +815,36 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
 @keyframes ping{50%{r:6}}
 @media (prefers-reduced-motion: reduce){.planet .tex,.core .disk i,.core .lens,#chart .avg-dot{animation:none!important}#chart.anim g.col rect,#chart.anim .avg,body.intro .sp-line,body.intro .sp-area{animation:none!important;stroke-dashoffset:0}}
 </style>
+<style>
+/* ---------- Tagesumsatz: klassische Linie ---------- */
+:root,[data-theme=light]{--line-c:#0071e3}[data-theme=dark]{--line-c:#7fb8ff}
+#chart svg{overflow:visible}
+#chart .gl{stroke:var(--grid);stroke-dasharray:none;stroke-width:1}
+#chart text{fill:var(--mut);font-size:11px}
+#chart .yl{font-size:10.5px;opacity:.8}
+#chart .c-line{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 4px 10px color-mix(in srgb,var(--line-c) 45%,transparent))}
+#chart .c-today{fill:none;stroke:var(--line-c);stroke-width:2.2;stroke-dasharray:3 5;stroke-linecap:round;opacity:.7}
+#chart .avg{fill:none;stroke:var(--txt);stroke-width:1.2;stroke-dasharray:1 5;stroke-linecap:round;opacity:.55;filter:none}
+#chart .c-best circle{fill:var(--card,#fff);stroke:var(--line-c);stroke-width:2}
+#chart .c-best text{fill:var(--txt);font-size:11px;font-weight:600;opacity:.85}
+#chart .c-now{fill:var(--line-c);stroke:#fff;stroke-width:2}
+#chart .c-now-halo{fill:var(--line-c);opacity:.25;transform-box:fill-box;transform-origin:center;animation:nowpulse 2.4s ease-out infinite}
+#chart .c-guide{stroke:var(--txt);stroke-width:1;opacity:.35}
+#chart .c-dot{fill:var(--line-c);stroke:#fff;stroke-width:2.5;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+#chart.anim .c-line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s cubic-bezier(.4,0,.2,1) forwards}
+#chart.anim .c-area{animation:fadein 1.6s .4s both}
+#chart.anim .avg{animation:fadein 1s 1.4s both}
+@keyframes nowpulse{0%{transform:scale(.6);opacity:.45}100%{transform:scale(1.9);opacity:0}}
+.legend{gap:4px 18px}
+.legend span{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;font-size:12.5px;color:var(--mut);display:inline-flex;align-items:center;gap:5px}
+.legend i{width:8px!important;height:8px!important;border-radius:50%!important;transform:none!important;margin:0 1px 0 0!important}
+.legend b{color:var(--txt);font-weight:600}
+.legend .lg-avg i{width:16px!important;height:0!important;border-radius:0!important;background:none!important;border-top:2px dotted var(--txt);opacity:.6}
+.ct-d{font-size:12px;margin:-4px 0 6px}
+.ct-r{grid-template-columns:10px 1fr auto;position:relative;padding:3px 0 6px}
+.ct-r u{position:absolute;left:18px;bottom:1px;height:2px;width:calc((100% - 18px) * var(--w) / 100);border-radius:1px;opacity:.6;text-decoration:none}
+@media (prefers-reduced-motion: reduce){#chart .c-now-halo{animation:none}}
+</style>
 <body class="bx intro">
 <canvas id="stars" aria-hidden="true"></canvas>
 
@@ -901,7 +931,7 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
       <div class="ptiles" id="platTiles"></div>
       <div class="note" id="platNote"></div>
     </div>
-    <div class="card s8 m12"><h3>Tagesumsatz netto · 30 Tage <span class="sub">gestapelt nach Plattform</span></h3><div class="legend" id="chartLegend"></div><div id="chart"></div></div>
+    <div class="card s8 m12"><h3>Tagesumsatz netto · 30 Tage <span class="sub">Verlauf netto · zeigen oder antippen für die Aufteilung je Plattform</span></h3><div class="legend" id="chartLegend"></div><div id="chart"></div></div>
     <div class="card s4 m12"><h3>Umsatz je Kanal</h3><div class="seg" id="segPeriod"></div><div class="scroll"><table class="tbl" id="tblChannels"></table></div><div class="note" id="chNote"></div></div>
 
     <div class="sec-h t-bills" id="sec-bills"><h2 class="metal">Rechnungen &amp; Zahlungserinnerungen</h2><span class="rule"></span><span class="fresh" id="fr-bills"></span></div>
@@ -1590,39 +1620,48 @@ function renderSales() {
     (with30.length ? `30-Tage-Vergleich nur, wo die Vorperiode vollständig vorliegt (derzeit: ${with30.join(", ")}). ` : "30-Tage-Vergleich erscheint, sobald 60 Tage Daten vorliegen. ") +
     (others ? `Sonstige = ${others.chs.join(", ")}. ` : "") + "Gestrichelt = laufender Tag.";
 
-  // --- Gestapeltes Tagesdiagramm, Reihenfolge = feste Plattform-Reihenfolge ---
+  // --- Tagesumsatz als ruhige Linie (Stil Aktien/Health), Aufteilung je Plattform beim Zeigen ---
   const order = [...PLAT.map(p => p.k), "other"];
   const keys = groups.map(g => g.k).sort((a, b) => order.indexOf(a) - order.indexOf(b));
   const per = days30.map(d => { const o = {}; rows.filter(r => r.day === d).forEach(r => { const k = platOf(r.channel).k; o[k] = (o[k] || 0) + Math.max(0, Number(r.net_sales || 0)); }); return o; });
-  const maxV = Math.max(1, ...per.map(o => Object.values(o).reduce((a, b) => a + b, 0)));
+  const dayTot = per.map(o => Object.values(o).reduce((a, b) => a + b, 0)), nD = days30.length;
   const nice = (v) => { const p = Math.pow(10, Math.floor(Math.log10(v))); const m = v / p; return ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find(x => m <= x)) * p; };
-  const top = nice(maxV / 4) * 4, Wd = 900, Hd = 260, pl = 48, pb = 22, pt = 8, bw = (Wd - pl - 6) / days30.length;
-  let svg = `<svg viewBox="0 0 ${Wd} ${Hd}" width="100%" role="img" aria-label="Tagesumsatz netto je Plattform, 30 Tage">`;
-  for (let g = 0; g <= 4; g++) { const v = top * g / 4, yy = Hd - pb - (Hd - pb - pt) * g / 4; svg += `<line class="gl" x1="${pl}" x2="${Wd}" y1="${yy}" y2="${yy}"/><text x="${pl - 6}" y="${yy + 3}" text-anchor="end">${tsd(v)}</text>`; }
-  per.forEach((o, i) => {
-    let acc = 0; const isToday = i === days30.length - 1; svg += `<g class="col" data-i="${i}" style="--i:${i}">`;
-    keys.forEach(k => { const v = o[k] || 0; if (!v) return; const h = (Hd - pb - pt) * v / top; const yy = Hd - pb - acc - h; acc += h;
-      svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${yy.toFixed(1)}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${Math.max(0, h - .8).toFixed(1)}" rx="2.5" style="fill:var(--p-${k})"${isToday ? ' fill-opacity=".45"' : ""}/>`; });
-    svg += `<rect class="hit" x="${(pl + i * bw).toFixed(1)}" y="${pt}" width="${bw.toFixed(1)}" height="${Hd - pb - pt}" fill="transparent"/></g>`;
-  });
-  // 7-Tage-Schnitt der Tagessumme (volle Tage, laufender Tag ausgenommen)
-  const dayTot = per.map(o => Object.values(o).reduce((a, b) => a + b, 0));
-  const avgPts = [];
-  for (let i = 6; i < dayTot.length - 1; i++) { const a = dayTot.slice(i - 6, i + 1).reduce((x, y) => x + y, 0) / 7; avgPts.push([pl + i * bw + bw / 2, Hd - pb - (Hd - pb - pt) * a / top]); }
-  if (avgPts.length > 1) { const lp = avgPts[avgPts.length - 1];
-    svg += `<path class="avg" pathLength="1" d="${smoothPath(avgPts)}"/><circle class="avg-dot" cx="${lp[0].toFixed(1)}" cy="${lp[1].toFixed(1)}" r="4"/>`; }
-  [0, 7, 14, 21, 29].forEach(i => svg += `<text x="${pl + i * bw + bw / 2}" y="${Hd - 6}" text-anchor="middle">${i === 29 ? "heute" : fmtD(days30[i])}</text>`);
+  const top = nice(Math.max(1, ...dayTot) / 3) * 3, Wd = 900, Hd = 280, pl = 8, pr = 8, pb = 26, pt = 34;
+  const X = (i) => pl + (Wd - pl - pr) * i / (nD - 1), Y = (v) => Hd - pb - (Hd - pb - pt) * v / top;
+  const full = dayTot.slice(0, -1).map((v, i) => [X(i), Y(v)]), curve = smoothPath(full), last = [X(nD - 1), Y(dayTot[nD - 1])];
+  const best = dayTot.slice(0, -1).reduce((b, v, i) => v > dayTot[b] ? i : b, 0);
+  let svg = `<svg viewBox="0 0 ${Wd} ${Hd}" width="100%" role="img" aria-label="Tagesumsatz netto, 30 Tage"><defs>
+    <linearGradient id="cArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--line-c)" stop-opacity=".34"/><stop offset=".7" stop-color="var(--line-c)" stop-opacity=".06"/><stop offset="1" stop-color="var(--line-c)" stop-opacity="0"/></linearGradient>
+    <linearGradient id="cLine" x1="0" x2="1"><stop offset="0" stop-color="var(--line-c)" stop-opacity=".55"/><stop offset="1" stop-color="var(--line-c)"/></linearGradient></defs>`;
+  for (let g = 1; g <= 3; g++) { const v = top * g / 3, yy = Y(v); svg += `<line class="gl" x1="${pl}" x2="${Wd - pr}" y1="${yy}" y2="${yy}"/><text class="yl" x="${Wd - pr}" y="${yy - 6}" text-anchor="end">${tsd(v)} €</text>`; }
+  if (rows.length) {
+    svg += `<path class="c-area" d="${curve} L${full[full.length - 1][0].toFixed(1)} ${Hd - pb} L${pl} ${Hd - pb} Z" fill="url(#cArea)"/>`;
+    // 7-Tage-Schnitt (volle Tage)
+    const avgPts = []; for (let i = 6; i < nD - 1; i++) avgPts.push([X(i), Y(dayTot.slice(i - 6, i + 1).reduce((x, y) => x + y, 0) / 7)]);
+    if (avgPts.length > 1) svg += `<path class="avg" d="${smoothPath(avgPts)}"/>`;
+    svg += `<path class="c-line" pathLength="1" d="${curve}" stroke="url(#cLine)"/>`;
+    svg += `<path class="c-today" d="M${full[full.length - 1][0].toFixed(1)} ${full[full.length - 1][1].toFixed(1)} L${last[0].toFixed(1)} ${last[1].toFixed(1)}"/>`;
+    svg += `<g class="c-best"><circle cx="${X(best).toFixed(1)}" cy="${Y(dayTot[best]).toFixed(1)}" r="3.5"/><text x="${X(best).toFixed(1)}" y="${(Y(dayTot[best]) - 12).toFixed(1)}" text-anchor="middle">Bester Tag · ${tsd(dayTot[best])} €</text></g>`;
+    svg += `<circle class="c-now-halo" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="9"/><circle class="c-now" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="4.5"/>`;
+    svg += `<line class="c-guide" id="cGuide" x1="0" x2="0" y1="${pt - 10}" y2="${Hd - pb}" visibility="hidden"/><circle class="c-dot" id="cDot" r="5.5" visibility="hidden"/>`;
+    for (let i = 0; i < nD; i++) svg += `<rect class="hit" data-i="${i}" x="${(X(i) - (Wd - pl - pr) / (nD - 1) / 2).toFixed(1)}" y="0" width="${((Wd - pl - pr) / (nD - 1)).toFixed(1)}" height="${Hd}" fill="transparent"/>`;
+  }
+  [0, 7, 14, 21, 29].forEach(i => svg += `<text class="xl" x="${X(i)}" y="${Hd - 6}" text-anchor="${i === 0 ? "start" : i === 29 ? "end" : "middle"}">${i === 29 ? "heute" : fmtD(days30[i])}</text>`);
   $("chart").innerHTML = rows.length ? svg + '</svg><div class="ctip" id="ctip" hidden></div>' : `<div class="${state.err.sales ? "err" : "empty"}">${esc(errTxt("sales", "Noch keine Umsätze."))}</div>`;
-  // Glas-Tooltip: Tag, Summe, Aufteilung je Plattform
   const tip = $("ctip"), ch = $("chart"); ch.classList.toggle("anim", !state.counted);
-  if (tip) ch.querySelectorAll("g.col").forEach(gc => {
-    gc.onmouseenter = gc.onclick = () => { const i = +gc.dataset.i, o = per[i];
-      tip.innerHTML = `<b>${esc(i === days30.length - 1 ? "Heute (laufend)" : fmtD(days30[i]))}</b><div class="ct-t">${eur(dayTot[i])}</div>` +
-        keys.filter(k => o[k]).sort((a, b) => o[b] - o[a]).map(k => `<div class="ct-r"><i style="background:var(--p-${k})"></i><span>${esc(G[k].name)}</span><em>${eur(o[k])}</em></div>`).join("");
-      tip.hidden = false; const r = gc.getBoundingClientRect(), cr = ch.getBoundingClientRect();
-      tip.style.left = Math.min(cr.width - tip.offsetWidth - 4, Math.max(4, r.left - cr.left + r.width / 2 - tip.offsetWidth / 2)) + "px"; };
-    gc.onmouseleave = () => tip.hidden = true; });
-  $("chartLegend").innerHTML = keys.map(k => `<span style="--pc:var(--p-${k})"><i></i>${esc(G[k].name)}&nbsp;<b>${tsd((groups.find(g => g.k === k) || { v30: { n: 0 } }).v30.n)} €</b></span>`).join("") + (rows.length ? `<span class="lg-avg"><i></i>7-Tage-Schnitt</span>` : "");
+  if (tip) { const gd = $("cGuide"), dt = $("cDot");
+    ch.querySelectorAll("rect.hit").forEach(hr => {
+      hr.onmouseenter = hr.onclick = () => { const i = +hr.dataset.i, o = per[i], x = X(i), y = Y(dayTot[i]);
+        gd.setAttribute("x1", x); gd.setAttribute("x2", x); gd.setAttribute("visibility", "visible"); dt.setAttribute("cx", x); dt.setAttribute("cy", y); dt.setAttribute("visibility", "visible");
+        const prev = i ? dayTot[i - 1] : 0;
+        tip.innerHTML = `<b>${esc(i === nD - 1 ? "Heute (laufend)" : fmtD(days30[i]))}</b><div class="ct-t">${eur(dayTot[i])}</div>` + (i && i < nD - 1 ? `<div class="ct-d">${trend(dayTot[i], prev, true, "zum Vortag")}</div>` : "") +
+          keys.filter(k => o[k]).sort((a, b) => o[b] - o[a]).map(k => `<div class="ct-r"><i style="background:var(--p-${k})"></i><span>${esc(G[k].name)}</span><em>${eur(o[k])}</em><u style="--w:${(o[k] / (dayTot[i] || 1) * 100).toFixed(0)}%;background:var(--p-${k})"></u></div>`).join("");
+        tip.hidden = false; const cr = ch.getBoundingClientRect(), px = x / Wd * cr.width;
+        tip.style.left = Math.min(cr.width - tip.offsetWidth - 4, Math.max(4, px + (px > cr.width / 2 ? -tip.offsetWidth - 16 : 16))) + "px"; };
+    });
+    ch.onmouseleave = () => { tip.hidden = true; gd.setAttribute("visibility", "hidden"); dt.setAttribute("visibility", "hidden"); };
+  }
+  $("chartLegend").innerHTML = keys.map(k => `<span style="--pc:var(--p-${k})"><i></i>${esc(G[k].name)} <b>${tsd((groups.find(g => g.k === k) || { v30: { n: 0 } }).v30.n)} €</b></span>`).join("") + (rows.length ? `<span class="lg-avg"><i></i>7-Tage-Schnitt</span>` : "");
 
   // --- Tabelle je Kanal ---
   const periods = [["0", "Heute"], ["7", "7 Tage"], ["30", "30 Tage"]];
