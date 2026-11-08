@@ -949,8 +949,8 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
 
     <div class="sec-h t-ship" id="sec-kpi"><h2 class="metal">Retouren, Zahlung, Versand</h2><span class="rule"></span><span class="fresh" id="fr-kpi"></span></div>
     <div class="card s8 m12" id="card-kpi"><h3>Je Plattform <span class="sub">Retouren &amp; Stornos 30 Tage · unbezahlt &amp; ohne Sendungsnummer = Stand jetzt</span></h3><div class="kgrid" id="kpiKpis"></div><div class="scroll"><table class="tbl" id="tblKpi"></table></div><div class="note">Quelle JTL-Wawi (alle 30 Min.). Quote = Retouren ÷ Bestellungen 30 T. Unbezahlt = nicht storniert, Restbetrag offen. Ohne Sendungsnr. = Lieferschein der letzten 30 T ohne Sendungsnummer (Selbstabholer ausgenommen). Alter ab Bestelldatum: &gt; 2 Tage gelb, &gt; 3 Tage rot.</div></div>
-    <div class="card s12" id="card-ship"><h3>Sendungen · DHL &amp; GLS <span class="sub">alle Kanäle der letzten 35 Tage · Shopify mit Live-Status (alle 10 Min.) · Marktplätze aus JTL-Wawi (alle 30 Min.)</span> <span id="f-ship"></span></h3>
-      <div class="kgrid" id="shipKpis" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))"></div><div class="scroll tall"><table class="tbl" id="tblShip"></table></div>
+    <div class="card s12" id="card-ship"><h3>Sendungen · alle Kanäle <span class="sub">alle Kanäle der letzten 35 Tage · Shopify mit Live-Status (alle 10 Min.) · Marktplätze aus JTL-Wawi (alle 30 Min.)</span> <span id="f-ship"></span></h3>
+      <div class="kgrid" id="shipKpis" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))"></div><div class="seg" id="shipSeg" style="margin:4px 0 10px"></div><div class="scroll tall"><table class="tbl" id="tblShip"></table></div>
       <div class="note">Status kommt von DHL/GLS über Shopify (kein eigenes DHL-API nötig). Problem = nicht zugestellt, Zustellversuch, Fehler oder voraussichtliches Lieferdatum überschritten. Marktplatz-Sendungen kommen mit Trackingnummer aus JTL-Wawi; einen Live-Status haben sie nur, wenn JTL ihn liefert.</div></div>
     <div class="card s4 m12" id="card-kpiList"><h3>Unbezahlt / ohne Sendungsnummer <span id="f-kpi"></span></h3><div class="scroll tall"><table class="tbl" id="tblKpiList"></table></div></div>
 
@@ -1830,28 +1830,36 @@ function renderKpi(kpi) {
 
 // ---------- Sendungen (DHL/GLS über Shopify-Tracking) ----------
 const SHIP_TXT = { DELIVERED: "Zugestellt", IN_TRANSIT: "Unterwegs", OUT_FOR_DELIVERY: "In Zustellung", ATTEMPTED_DELIVERY: "Zustellversuch", NOT_DELIVERED: "Nicht zugestellt", FAILURE: "Fehler", READY_FOR_PICKUP: "Abholbereit", PICKED_UP: "Abgeholt", CONFIRMED: "Label erstellt", LABEL_PRINTED: "Label erstellt", LABEL_PURCHASED: "Label erstellt", FULFILLED: "Versendet" };
-const shipUrl = (r) => /gls/i.test(r.carrier || "") ? "https://www.gls-pakete.de/sendungsverfolgung?trackingNumber=" + encodeURIComponent(r.number) : "https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=" + encodeURIComponent(r.number);
+const shipUrl = (r) => /gls/i.test(r.carrier || "") ? "https://www.gls-pakete.de/sendungsverfolgung?trackingNumber=" + encodeURIComponent(r.number) : /dhl|deutsche post/i.test(r.carrier || "") ? "https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=" + encodeURIComponent(r.number) : null;
+const shipCarrier = (r) => /gls/i.test(r.carrier || "") ? "GLS" : /dhl|deutsche post/i.test(r.carrier || "") ? "DHL" : (r.carrier || "–");
+const noLive = (r) => r.channel !== "Shopify" && !r.delivered_at && !r.in_transit_at && (!r.status || r.status === "FULFILLED"); // aus JTL, ohne Live-Status
 function shipStats(sh) {
-  sh = sh || []; const open = sh.filter(r => !r.delivered_at && r.status !== "DELIVERED" && r.status !== "PICKED_UP");
+  sh = sh || []; const jtl = sh.filter(noLive); const open = sh.filter(r => !noLive(r) && !r.delivered_at && r.status !== "DELIVERED" && r.status !== "PICKED_UP");
   const bad = open.filter(r => /NOT_DELIVERED|ATTEMPTED|FAILURE/.test(r.status || "") || (r.eta && new Date(r.eta) < new Date()));
   const noScan = open.filter(r => !bad.includes(r) && r.channel === "Shopify" && !r.in_transit_at && ago(r.shipped_at) > 3 * 1440); // JTL liefert (noch) keine Scans
   const moving = open.filter(r => !bad.includes(r) && !noScan.includes(r));
   const del7 = sh.filter(r => r.delivered_at && ago(r.delivered_at) < 7 * 1440);
   const dur = sh.filter(r => r.delivered_at && r.shipped_at).map(r => (new Date(r.delivered_at) - new Date(r.shipped_at)) / 864e5);
-  return { bad, noScan, moving, del7, avg: dur.length ? dur.reduce((a, b) => a + b, 0) / dur.length : null };
+  const jtl7 = jtl.filter(r => ago(r.shipped_at) < 7 * 1440);
+  return { bad, noScan, moving, del7, jtl, jtl7, avg: dur.length ? dur.reduce((a, b) => a + b, 0) / dur.length : null };
 }
 function renderShip(sh) {
   const S = shipStats(sh), f = F(["ship_bad", "ship_noscan"]);
   $("shipKpis").innerHTML = [["Unterwegs", num(S.moving.length), ""], ["Zugestellt · 7 T", num(S.del7.length), ""], ["Ø Laufzeit", S.avg == null ? "–" : S.avg.toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " Tage", ""],
-    ["Problem", num(S.bad.length), S.bad.length ? "red" : ""], ["Ohne Scan > 3 T", num(S.noScan.length), S.noScan.length ? "yellow" : ""]]
+    ["Problem", num(S.bad.length), S.bad.length ? "red" : ""], ["Ohne Scan > 3 T", num(S.noScan.length), S.noScan.length ? "yellow" : ""], ["Marktplätze · 7 T versendet", num(S.jtl7.length), ""]]
     .map(([l, v, c]) => `<div class="kpi mini ${c}"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
+  const chs = ["Alle", ...[...new Set((sh || []).map(r => r.channel))].sort()];
+  if (!chs.includes(state.shipCh)) state.shipCh = "Alle";
+  $("shipSeg").innerHTML = chs.map(c => `<button type="button" class="${state.shipCh === c ? "on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+  $("shipSeg").querySelectorAll("button").forEach(b => b.onclick = () => { state.shipCh = b.dataset.c; renderShip(sh); });
   const pr = (r) => S.bad.includes(r) ? 0 : S.noScan.includes(r) ? 1 : S.moving.includes(r) ? 2 : 3;
-  const list = f ? (f.id === "ship_bad" ? S.bad : S.noScan) : [...(sh || [])].sort((a, b) => pr(a) - pr(b) || (b.shipped_at || "").localeCompare(a.shipped_at || "")).slice(0, 60);
+  const list = f ? (f.id === "ship_bad" ? S.bad : S.noScan) : [...(sh || [])].filter(r => state.shipCh === "Alle" || r.channel === state.shipCh).sort((a, b) => pr(a) - pr(b) || (b.shipped_at || "").localeCompare(a.shipped_at || "")).slice(0, 60);
   const cls = (r) => S.bad.includes(r) ? "p-bad" : S.noScan.includes(r) ? "p-warn" : r.delivered_at ? "p-ok" : "p-off";
+  const stTxt = (r) => noLive(r) ? "Versendet (JTL)" : SHIP_TXT[r.status] || r.status || "–";
   table("tblShip", [{ t: "Bestellung" }, { t: "Versand" }, { t: "Status" }, { t: "Versendet" }, { t: "Zugestellt / erwartet" }, { t: "" }],
-    list.map(r => ({ hl: !!f, c: [`${esc(r.order_ref)}<div class="small muted">${esc(r.channel || "")}</div>`, `<span class="small">${esc(/gls/i.test(r.carrier || "") ? "GLS" : "DHL")}</span><div class="small muted">${esc(r.number)}</div>`,
-      pill(SHIP_TXT[r.status] || r.status || "–", cls(r)), esc(fmtDT(r.shipped_at)), r.delivered_at ? esc(fmtDT(r.delivered_at)) : r.eta ? (new Date(r.eta) < new Date() ? pill("fällig " + fmtDT(r.eta), "p-bad") : esc("bis " + fmtDT(r.eta))) : "–",
-      `<a href="${shipUrl(r)}" target="_blank" rel="noopener noreferrer">Verfolgen ↗</a>`] })),
+    list.map(r => ({ hl: !!f, c: [`${esc(r.order_ref)}<div class="small muted">${esc(r.channel || "")}</div>`, `<span class="small">${esc(shipCarrier(r))}</span><div class="small muted">${esc(r.number)}</div>`,
+      pill(stTxt(r), cls(r)), esc(fmtDT(r.shipped_at)), r.delivered_at ? esc(fmtDT(r.delivered_at)) : r.eta ? (new Date(r.eta) < new Date() ? pill("fällig " + fmtDT(r.eta), "p-bad") : esc("bis " + fmtDT(r.eta))) : "–",
+      shipUrl(r) ? `<a href="${shipUrl(r)}" target="_blank" rel="noopener noreferrer">Verfolgen ↗</a>` : ""] })),
     errTxt("ship", "Noch keine Sendungen im Cockpit."));
   filterChip("f-ship", f);
 }
