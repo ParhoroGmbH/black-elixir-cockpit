@@ -661,7 +661,78 @@ body::after{display:none}
 @media (prefers-reduced-motion: reduce){.card,.chip{transform:none!important}}
 @media (hover:none){.card::before,.chip::before{background-position:0 0}}
 </style>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · „Galaxie" (08.11.2026) – Hintergrund + Kopf-Galaxie. Nur Optik/Navigation.
+   Nacht = tiefer Weltraum, Tag = heller Pastell-Nebel. Sterne auf <canvas id="stars">.
+   ===================================================================== */
+:root,[data-theme=light]{
+  --space:radial-gradient(900px 600px at 18% 12%,rgba(255,196,170,.55),transparent 60%),radial-gradient(1000px 700px at 85% 20%,rgba(190,170,255,.55),transparent 62%),
+    radial-gradient(1100px 800px at 60% 95%,rgba(160,210,255,.5),transparent 60%),linear-gradient(180deg,#f7f3fb,#eef0fa);
+  --ring:rgba(80,60,140,.22);--core-ink:#1d1d1f;--planet-ink:#1d1d1f;--star:120,100,180}
+[data-theme=dark]{
+  --space:radial-gradient(900px 600px at 18% 10%,rgba(120,60,160,.35),transparent 60%),radial-gradient(1000px 700px at 88% 22%,rgba(30,90,170,.35),transparent 62%),
+    radial-gradient(1200px 800px at 55% 100%,rgba(170,80,60,.22),transparent 60%),linear-gradient(180deg,#05040a,#080712 50%,#04030a);
+  --ring:rgba(255,255,255,.16);--core-ink:#fff;--planet-ink:#f5f5f7;--star:255,255,255}
+html,body{background:#05040a}
+[data-theme=light] html,[data-theme=light] body{background:#f2f0f8}
+body::before{background:var(--space)!important;filter:none!important;inset:0!important}
+#stars{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none}
+/* Glas auf Weltraum: im Dunkeln etwas dunkler, damit Text ruhig bleibt */
+[data-theme=dark]{--glass-bg:rgba(28,26,40,.52);--glass-bg2:rgba(255,255,255,.06);--barbg:rgba(14,12,22,.55)}
+[data-theme=light]{--glass-bg:rgba(255,255,255,.6);--glow:rgba(255,255,255,.85)}
+
+/* Kopf: Titel nur für Screenreader, die Galaxie ist die Bühne */
+.hero{padding:0 0 18px!important;text-align:center}
+.hero .eyebrow,.hero h1{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.galaxy{position:relative;height:var(--gh,480px);margin:0 auto;user-select:none;-webkit-user-select:none}
+.galaxy .ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid var(--ring);transform:translate(-50%,-50%);pointer-events:none;
+  box-shadow:0 0 30px -10px var(--ring) inset}
+.galaxy .ring.outer{border-style:dashed;opacity:.8}
+/* Kern */
+.core{position:absolute;left:50%;top:50%;width:var(--cs,180px);height:var(--cs,180px);transform:translate(-50%,-50%);border-radius:50%;z-index:50;
+  display:grid;place-items:center;text-align:center;color:var(--core-ink);
+  background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.95),rgba(255,255,255,.25) 22%,rgba(255,255,255,.06) 48%,transparent 62%),
+    radial-gradient(circle at 50% 60%,rgba(140,120,255,.35),rgba(255,140,120,.18) 55%,transparent 72%),rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 -14px 30px rgba(80,60,160,.25),inset 0 2px 0 rgba(255,255,255,.8),0 0 60px rgba(160,140,255,.45),0 0 140px rgba(255,160,130,.25);
+  -webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6)}
+[data-theme=dark] .core{box-shadow:inset 0 -14px 30px rgba(20,10,60,.55),inset 0 2px 0 rgba(255,255,255,.5),0 0 70px rgba(140,110,255,.55),0 0 160px rgba(255,120,90,.25)}
+.core::before{content:"";position:absolute;inset:-26px;border-radius:50%;background:radial-gradient(circle,rgba(170,150,255,.35),transparent 65%);z-index:-1;animation:breathe 6s ease-in-out infinite}
+.core b{display:block;font-size:calc(var(--cs,180px)*.098);font-weight:700;letter-spacing:.24em;margin-left:.24em}
+.core small{display:block;font-size:calc(var(--cs,180px)*.06);letter-spacing:.2em;text-transform:uppercase;opacity:.75;margin-top:4px}
+.core em{display:inline-block;font-style:normal;font-size:calc(var(--cs,180px)*.066);font-weight:600;margin-top:10px;padding:3px 10px;border-radius:980px;background:rgba(255,59,48,.92);color:#fff;letter-spacing:0}
+.core em.ok{background:rgba(52,199,89,.92)}
+@keyframes breathe{50%{transform:scale(1.08);opacity:.75}}
+/* Planeten */
+.planet{position:absolute;left:0;top:0;width:0;height:0;padding:0;border:0;background:none!important;box-shadow:none!important;color:var(--planet-ink);cursor:pointer;will-change:transform}
+.planet .orb{position:absolute;left:calc(var(--ps,62px)/-2);top:calc(var(--ps,62px)/-2);width:var(--ps,62px);height:var(--ps,62px);border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.9),rgba(255,255,255,.18) 30%,transparent 60%),radial-gradient(circle at 60% 75%,color-mix(in srgb,var(--pc) 70%,transparent),color-mix(in srgb,var(--pc) 25%,transparent) 70%);
+  border:1px solid rgba(255,255,255,.6);box-shadow:inset 0 1px 1px rgba(255,255,255,.6),inset 0 -6px 14px rgba(0,0,0,.18),0 8px 24px -8px color-mix(in srgb,var(--pc) 80%,transparent);
+  transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.planet .orb svg{width:42%;height:42%;color:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.planet .pl-name{position:absolute;left:50%;top:calc(var(--ps,62px)/2 + 6px);transform:translateX(-50%);font-size:12.5px;font-weight:600;white-space:nowrap;letter-spacing:-.01em;
+  padding:2px 8px;border-radius:980px;background:rgba(255,255,255,.8);color:#1d1d1f}
+[data-theme=dark] .planet .pl-name{background:rgba(0,0,0,.55);color:#f5f5f7}
+.planet .pl-n{position:absolute;left:calc(var(--ps,62px)/2 - 14px);top:calc(var(--ps,62px)/-2 - 4px);min-width:22px;height:22px;padding:0 6px;border-radius:11px;font-size:12px;font-weight:700;line-height:22px;
+  color:#fff;background:var(--sc);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.planet .pl-n:empty{display:none}
+.planet:hover .orb,.planet:focus-visible .orb{transform:scale(1.08)}
+.planet:focus-visible{outline:none}
+.planet:focus-visible .orb{outline:3px solid var(--acc);outline-offset:3px}
+.planet.green{--sc:var(--okc)}.planet.yellow{--sc:var(--warnc)}.planet.red{--sc:var(--badc)}
+/* Dringend: pulsierendes Licht + drehender Ring */
+.planet.red .orb::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px dotted rgba(255,69,58,.9)}
+.planet.red.pulse .orb{animation:alarm 2.2s ease-in-out infinite}
+.planet.red.pulse .orb::after{animation:spin 12s linear infinite}
+.planet.yellow .orb{box-shadow:inset 0 1px 1px rgba(255,255,255,.6),inset 0 -6px 14px rgba(0,0,0,.18),0 0 0 1.5px rgba(255,159,10,.9),0 0 22px rgba(255,159,10,.3)}
+@keyframes alarm{0%,100%{box-shadow:inset 0 -6px 14px rgba(0,0,0,.18),0 0 0 0 rgba(255,59,48,.55),0 0 18px rgba(255,59,48,.35)}50%{box-shadow:inset 0 -6px 14px rgba(0,0,0,.18),0 0 0 12px rgba(255,59,48,0),0 0 42px rgba(255,59,48,.75)}}
+@keyframes soft{50%{box-shadow:inset 0 -6px 14px rgba(0,0,0,.18),0 0 30px rgba(255,159,10,.6)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:620px){.galaxy.small .planet.back .pl-name{opacity:0}.planet .pl-name{font-size:10.5px;padding:1px 6px}.core em{font-size:10px;margin-top:6px}.planet .pl-n{min-width:19px;height:19px;line-height:19px;font-size:10.5px}}
+@media (prefers-reduced-motion: reduce){.planet.red .orb,.planet.yellow .orb,.planet.red .orb::after,.core::before{animation:none}}
+</style>
 <body class="bx">
+<canvas id="stars" aria-hidden="true"></canvas>
 
 <!-- LOGIN -->
 <section id="loginView" class="login hidden">
@@ -728,7 +799,7 @@ body::after{display:none}
     <button type="button" class="t-link" data-go="sec-data">Verbindungen</button>
   </nav>
   <div class="sheet">
-  <header class="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1></header>
+  <header class="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><div class="galaxy" id="galaxy" role="navigation" aria-label="Bereiche als Galaxie"></div></header>
   <!-- DRINGEND: rot / gelb / grün -->
   <div class="urgent" id="urgentWrap">
     <div class="usum"><span class="t">Was ist dringend?</span><span id="usum" class="small"></span><span id="standM" class="small muted"></span></div>
@@ -1127,6 +1198,91 @@ const ICON_OF = { bill_mahn: "doc", bill_new: "doc", oo_red: "box", oo_yel: "box
   oos_best: "tag", mp_health: "shield", sync_red: "sync", sync_yel: "sync", sync_ok: "sync", task_red: "check", task_ceo: "person", mail_biz: "mail", cover: "chart", idealo_budget: "euro", higgs_low: "spark", sig_high: "bell" };
 const chipIcon = (x) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[ICON_OF[x.id] || "bell"]}</svg>`;
 
+// ---------- Galaxie: Bereiche kreisen um den Kern; dringend = Puls + drehender Ring ----------
+const GAL = [
+  { name: "Umsatz", go: "sec-sales", ico: "chart", c: "#34c759", ids: [] },
+  { name: "Rechnungen", go: "sec-bills", ico: "doc", c: "#ff9f0a", ids: ["bill_mahn", "bill_new"] },
+  { name: "Bestellungen", go: "sec-oo", ico: "box", c: "#0a84ff", ids: ["oo_red", "oo_yel"] },
+  { name: "Versand", go: "sec-kpi", ico: "truck", c: "#5e5ce6", ids: ["kpi_unp_red", "kpi_unp_yel", "kpi_trk_red", "kpi_trk_yel"] },
+  { name: "Marktplätze", go: "sec-mp", ico: "shield", c: "#ff375f", ids: ["mp_health"] },
+  { name: "Bestand", go: "sec-stock", ico: "tag", c: "#30b0c7", ids: ["oos_best", "cover"] },
+  { name: "Aufgaben", go: "sec-tp", ico: "check", c: "#af52de", ids: ["task_red", "task_ceo", "mail_biz"] },
+  { name: "Social", go: "sec-social", ico: "person", c: "#ff2d55", ids: [] },
+  { name: "Quellen", go: "sec-quellen", ico: "bell", c: "#ffcc00", ids: ["idealo_budget", "higgs_low", "sig_high"] },
+  { name: "Verbindungen", go: "sec-data", ico: "sync", c: "#64d2ff", ids: ["sync_red", "sync_yel"] },
+];
+const goTo = (id) => { const el = $(id); if (!el) return; window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18), behavior: reduceMotion ? "auto" : "smooth" }); };
+const galaxy = { t: 0, last: 0, raf: 0, paused: false, visible: true, built: false, geo: null };
+function renderGalaxy() {
+  const g = $("galaxy"); if (!g) return;
+  const U = (state.U || []).filter(u => !u.empty && u.n > 0 && u.lvl !== "green");
+  const red = U.filter(u => u.lvl === "red").length;
+  if (!galaxy.built) {
+    g.innerHTML = `<div class="ring inner"></div><div class="ring outer"></div><div class="core" aria-hidden="true"><div><b>BLACK ELIXIR</b><small>Cockpit</small><em id="coreSt"></em></div></div>` +
+      GAL.map((p, i) => `<button type="button" class="planet" data-i="${i}" style="--pc:${p.c}"><span class="orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[p.ico]}</svg></span><span class="pl-n"></span><span class="pl-name">${esc(p.name)}</span></button>`).join("");
+    g.querySelectorAll(".planet").forEach(b => { b.onclick = () => goTo(GAL[b.dataset.i].go);
+      b.onmouseenter = b.onfocus = () => galaxy.paused = true; b.onmouseleave = b.onblur = () => galaxy.paused = false; });
+    galaxy.built = true; layoutGalaxy(); new ResizeObserver(layoutGalaxy).observe(g);
+    new IntersectionObserver(e => { galaxy.visible = e[0].isIntersecting; if (galaxy.visible) startGalaxy(); }).observe(g);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) startGalaxy(); });
+  }
+  const st = $("coreSt"); st.textContent = red ? `${red} dringend` : "Alles ruhig"; st.className = red ? "" : "ok";
+  g.querySelectorAll(".planet").forEach(b => {
+    const p = GAL[b.dataset.i], hits = U.filter(u => p.ids.includes(u.id));
+    const lvl = hits.some(u => u.lvl === "red") ? "red" : hits.length ? "yellow" : "green", n = hits.reduce((a, u) => a + u.n, 0);
+    b.className = "planet " + lvl; b._n = lvl === "red" ? n : -1; b.querySelector(".pl-n").textContent = n ? (n > 99 ? "99+" : n) : "";
+    b.setAttribute("aria-label", `${p.name}: ${lvl === "red" ? "dringend" : lvl === "yellow" ? "beachten" : "in Ordnung"}${n ? ", " + n + " offen" : ""}`);
+  });
+  // höchstens 3 Planeten pulsieren gleichzeitig (die mit den meisten offenen Punkten)
+  [...g.querySelectorAll(".planet.red")].sort((a, b) => b._n - a._n).slice(0, 3).forEach(b => b.classList.add("pulse"));
+  startGalaxy();
+}
+function layoutGalaxy() {
+  const g = $("galaxy"), W = g.clientWidth; if (!W) return;
+  const small = W < 620, ps = small ? 44 : 62, cs = small ? 92 : 170;
+  const rx2 = Math.min(W / 2 - ps / 2 - (small ? 8 : 40), 520), ry2 = rx2 * (small ? .8 : .34), rx1 = rx2 * (small ? .58 : .6), ry1 = ry2 * (small ? .58 : .6);
+  const H = Math.round(Math.max(cs + 60, 2 * ry2 + ps + 64));
+  g.style.setProperty("--gh", H + "px"); g.style.setProperty("--ps", ps + "px"); g.style.setProperty("--cs", cs + "px");
+  const [ri, ro] = g.querySelectorAll(".ring");
+  ri.style.width = 2 * rx1 + "px"; ri.style.height = 2 * ry1 + "px"; ro.style.width = 2 * rx2 + "px"; ro.style.height = 2 * ry2 + "px";
+  galaxy.geo = { cx: W / 2, cy: H / 2 - 8, rx1, ry1, rx2, ry2, small }; g.classList.toggle("small", small); drawGalaxy();
+}
+function drawGalaxy() {
+  const g = $("galaxy"), G = galaxy.geo; if (!G) return;
+  g.querySelectorAll(".planet").forEach(b => {
+    const i = +b.dataset.i, inner = i < 5, k = inner ? i : i - 5;
+    const a = (inner ? galaxy.t / 60 : -galaxy.t / 120) * Math.PI * 2 + k * (Math.PI * 2 / 5) + (inner ? 0 : Math.PI / 5);
+    const rx = inner ? G.rx1 : G.rx2, ry = inner ? G.ry1 : G.ry2, d = (Math.sin(a) + 1) / 2; // 0 = hinten, 1 = vorne
+    const x = G.cx + Math.cos(a) * rx, y = G.cy + Math.sin(a) * ry, sc = .72 + .38 * d;
+    b.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(${sc.toFixed(3)})`;
+    b.style.zIndex = d > .5 ? 60 + Math.round(d * 20) : 10 + Math.round(d * 20); b.style.opacity = (.55 + .45 * d).toFixed(2); b.classList.toggle("back", d < .45);
+  });
+}
+function startGalaxy() {
+  if (reduceMotion) { drawGalaxy(); return; }
+  if (galaxy.raf) return;
+  const step = (ts) => {
+    if (!galaxy.visible || document.hidden) { galaxy.raf = 0; galaxy.last = 0; return; }
+    const dt = galaxy.last ? Math.min(.1, (ts - galaxy.last) / 1000) : 0; galaxy.last = ts;
+    if (!galaxy.paused) galaxy.t += dt; drawGalaxy(); galaxy.raf = requestAnimationFrame(step);
+  };
+  galaxy.raf = requestAnimationFrame(step);
+}
+// Sternenhimmel (ruhig funkelnd), pausiert im Hintergrund-Tab
+(function stars() {
+  const cv = $("stars"); if (!cv) return; const cx = cv.getContext("2d"); let S = [], w = 0, h = 0, raf = 0;
+  const seed = () => { const dpr = Math.min(2, devicePixelRatio || 1); w = innerWidth; h = innerHeight; cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    S = Array.from({ length: Math.round(w * h / 3200) }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() < .05 ? 1.4 + Math.random() * .6 : .3 + Math.random() * .8, p: Math.random() * 6.3, s: .4 + Math.random() * 1.2 })); };
+  const draw = (t) => { const rgb = getComputedStyle(document.documentElement).getPropertyValue("--star").trim() || "255,255,255"; cx.clearRect(0, 0, w, h);
+    for (const s of S) { const a = reduceMotion ? .7 : .35 + .55 * (Math.sin(t / 1000 * s.s + s.p) + 1) / 2; cx.fillStyle = `rgba(${rgb},${(a * (s.r > 1.5 ? 1 : .8)).toFixed(2)})`; cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, 6.283); cx.fill();
+      if (s.r > 1.5) { cx.fillStyle = `rgba(${rgb},${(a * .05).toFixed(2)})`; cx.beginPath(); cx.arc(s.x, s.y, s.r * 2.6, 0, 6.283); cx.fill(); } } };
+  const loop = (t) => { draw(t); raf = document.hidden || reduceMotion ? 0 : requestAnimationFrame(loop); };
+  seed(); addEventListener("resize", () => { seed(); draw(performance.now()); });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && !raf && !reduceMotion) raf = requestAnimationFrame(loop); });
+  new MutationObserver(() => draw(performance.now())).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  raf = requestAnimationFrame(loop);
+})();
+
 function renderUrgent() {
   const U = state.U, c = { red: 0, yellow: 0, green: 0 };
   U.forEach(x => c[x.lvl]++);
@@ -1134,6 +1290,7 @@ function renderUrgent() {
   $("urgent").innerHTML = U.map(x => `<button type="button" class="chip ${x.lvl}" data-id="${x.id}" aria-label="${esc(x.label)}: ${x.n}">
       <span class="ico" aria-hidden="true">${chipIcon(x)}</span><span class="n">${x.empty ? "✓" : num(x.n)}</span><span class="l">${esc(x.label)}${x.hint ? `<span class="h">${esc(x.hint)}</span>` : ""}</span>${x.lvl !== "green" ? '<span class="dot"></span>' : ""}</button>`).join("");
   $("urgent").querySelectorAll(".chip").forEach(b => b.onclick = () => focusRule(b.dataset.id));
+  renderGalaxy();
 }
 
 const LVLC = { red: ["var(--bad)", "rgba(239,95,80,.22)"], yellow: ["var(--warn)", "rgba(232,176,74,.22)"], green: ["var(--ok)", "rgba(76,195,138,.18)"] };
