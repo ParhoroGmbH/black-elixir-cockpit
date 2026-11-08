@@ -589,6 +589,78 @@ button.primary:hover{background:color-mix(in srgb,var(--acc) 88%,#000)}
 input{background:var(--card2);border:1px solid transparent;border-radius:10px;color:var(--txt)}
 input:focus{border-color:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent)}
 </style>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · „Glas" über dem Apple-Stil (08.11.2026) – nur Optik.
+   Ruhiger Salon im Hintergrund (weich, abgedunkelt/aufgehellt), Karten aus Milchglas
+   mit Lichtkante, 3D-Neigung (Maus) und Spiegelung unter Kennzahlen und Titel.
+   ===================================================================== */
+:root,[data-theme=light]{
+  --room:linear-gradient(180deg,rgba(248,244,238,.50),rgba(244,239,232,.70));
+  --glass-bg:rgba(255,255,255,.58);--glass-bg2:rgba(255,255,255,.42);--glass-edge:rgba(255,255,255,.75);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35);
+  --glass-sh:0 1px 2px rgba(60,40,20,.06),0 18px 40px -18px rgba(60,40,20,.28);
+  --glass-sh2:0 2px 6px rgba(60,40,20,.08),0 30px 60px -24px rgba(60,40,20,.36);
+  --sheen:linear-gradient(120deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.12) 28%,rgba(255,255,255,0) 50%);
+  --mirror:rgba(255,255,255,.30);--barbg:rgba(255,255,255,.55);--segon:rgba(255,255,255,.9);--c2:rgba(255,255,255,.5)}
+[data-theme=dark]{
+  --room:linear-gradient(180deg,rgba(12,10,8,.58),rgba(10,8,7,.74));
+  --glass-bg:rgba(40,38,40,.46);--glass-bg2:rgba(255,255,255,.07);--glass-edge:rgba(255,255,255,.16);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(255,255,255,.04);
+  --glass-sh:0 18px 40px -18px rgba(0,0,0,.7);--glass-sh2:0 30px 60px -24px rgba(0,0,0,.85);
+  --sheen:linear-gradient(120deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.03) 28%,rgba(255,255,255,0) 50%);
+  --mirror:rgba(255,255,255,.12);--barbg:rgba(28,26,26,.5);--segon:rgba(120,120,128,.55);--c2:rgba(255,255,255,.07)}
+html,body{background:#3b2f26}
+body::before{display:block;content:"";position:fixed;inset:-24px;z-index:-1;pointer-events:none;
+  background:var(--room),url("bg-salon.jpg") center/cover no-repeat;filter:blur(3px) saturate(1.05)}
+body::after{display:none}
+
+/* Milchglas-Flächen */
+.card,[data-theme=dark] .sheet .card,.chip,.chip.red,.chip.yellow,.chip.green,.top,.side,.login-box{
+  background:var(--glass-bg);border:1px solid var(--glass-edge);
+  -webkit-backdrop-filter:blur(26px) saturate(1.7);backdrop-filter:blur(26px) saturate(1.7);box-shadow:var(--glass-hi),var(--glass-sh)}
+.top{border-width:0 0 1px;background:var(--barbg)}
+.side{border-radius:20px;padding:10px 8px}
+.kgrid .kpi,.pt,.legend span,.seg{background:var(--glass-bg2);border:1px solid var(--glass-edge);box-shadow:var(--glass-hi)}
+.tbl th,[data-theme=dark] .tbl th{background:var(--glass-bg);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.share span{border-right-color:transparent}
+
+/* 3D: Neigung folgt der Maus (Werte kommen aus bindTilt), Glanz wandert mit */
+.card,.chip,.chip.red,.chip.yellow,.chip.green{transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0px))!important;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;transform-style:preserve-3d;overflow:visible}
+.card:hover,.chip:hover{--lift:-4px;box-shadow:var(--glass-hi),var(--glass-sh2)}
+.chip:active{--lift:0px}
+.card::before,.chip::before{display:block!important;content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;width:auto;
+  background:var(--sheen);background-size:180% 180%;background-position:var(--shx,0%) 0;opacity:1;z-index:0}
+.card>*,.chip>*{position:relative;z-index:1}
+.chip .dot{display:none}
+
+/* Spiegelung wie auf Glas: unter den Umsatz-Kacheln und dem Titel */
+#kpis>.card{-webkit-box-reflect:below 6px linear-gradient(transparent 82%,var(--mirror))}
+#kpis>.card:first-child{background:var(--glass-bg);border:1px solid var(--glass-edge);box-shadow:var(--glass-hi),var(--glass-sh)}
+.hero{padding-bottom:40px}
+.hero h1{-webkit-box-reflect:below -6px linear-gradient(transparent 55%,rgba(255,255,255,.22))}
+.sec-h+#kpis~.card,#card-plat{margin-top:14px}
+
+/* Lesbarkeit direkt auf dem Raum */
+.hero h1,.sec-h h2,.usum .t{text-shadow:0 1px 18px var(--glow)!important}
+:root,[data-theme=light]{--glow:rgba(255,255,255,.7)}[data-theme=dark]{--glow:rgba(0,0,0,.6)}
+.hero .eyebrow,.fresh,.foot,.usum{color:var(--txt)}
+
+/* Marktplätze · Kontozustand */
+.mpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:12px}
+.mpt{position:relative;border-radius:14px;padding:12px 14px;background:var(--glass-bg2);border:1px solid var(--glass-edge);box-shadow:var(--glass-hi);min-width:0}
+.mpt::before{content:"";position:absolute;left:14px;right:14px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:var(--cc)}
+.mpt.red{--cc:var(--badc)}.mpt.yellow{--cc:var(--warnc)}.mpt.green{--cc:var(--okc)}
+.mpt-h{display:flex;justify-content:space-between;align-items:center;gap:6px;font-weight:600;font-size:14px}
+.mpt-h .st{font-size:11px;font-weight:600;padding:2px 8px;border-radius:980px;color:#fff;background:var(--cc);white-space:nowrap}
+.mpt-v{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-top:6px}
+.mpt-v small{font-size:12px;font-weight:500;color:var(--mut);letter-spacing:0}
+.mpt-s{font-size:12px;color:var(--mut)}
+.mpt-l{font-size:12px;margin-top:8px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (prefers-reduced-motion: reduce){.card,.chip{transform:none!important}}
+@media (hover:none){.card::before,.chip::before{background-position:0 0}}
+</style>
 <body class="bx">
 
 <!-- LOGIN -->
@@ -645,6 +717,7 @@ input:focus{border-color:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(-
     <button type="button" class="t-bills" data-go="sec-bills">Rechnungen</button>
     <button type="button" class="t-sales" data-go="sec-oo">Offene Bestellungen</button>
     <button type="button" class="t-ship" data-go="sec-kpi">Retouren · Versand</button>
+    <button type="button" class="t-ship" data-go="sec-mp">Marktplätze</button>
     <div class="lbl">Betrieb</div>
     <button type="button" class="t-stock" data-go="sec-stock">Bestand</button>
     <button type="button" class="t-mail" data-go="sec-tp">Aufgaben &amp; Postfach</button>
@@ -687,6 +760,11 @@ input:focus{border-color:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(-
     <div class="sec-h t-ship" id="sec-kpi"><h2 class="metal">Retouren, Zahlung, Versand</h2><span class="rule"></span><span class="fresh" id="fr-kpi"></span></div>
     <div class="card s8 m12" id="card-kpi"><h3>Je Plattform <span class="sub">Retouren &amp; Stornos 30 Tage · unbezahlt &amp; ohne Sendungsnummer = Stand jetzt</span></h3><div class="kgrid" id="kpiKpis"></div><div class="scroll"><table class="tbl" id="tblKpi"></table></div><div class="note">Quelle JTL-Wawi (alle 30 Min.). Quote = Retouren ÷ Bestellungen 30 T. Unbezahlt = nicht storniert, Restbetrag offen. Ohne Sendungsnr. = Lieferschein der letzten 30 T ohne Sendungsnummer (Selbstabholer ausgenommen). Alter ab Bestelldatum: &gt; 2 Tage gelb, &gt; 3 Tage rot.</div></div>
     <div class="card s4 m12" id="card-kpiList"><h3>Unbezahlt / ohne Sendungsnummer <span id="f-kpi"></span></h3><div class="scroll tall"><table class="tbl" id="tblKpiList"></table></div></div>
+
+    <div class="sec-h t-ship" id="sec-mp"><h2 class="metal">Marktplätze · Kontozustand</h2><span class="rule"></span><span class="fresh" id="fr-mp"></span></div>
+    <div class="card s12" id="card-mp"><h3>Hinweise der Plattformen <span class="sub">aus den Plattform-Mails der letzten 30 Tage · Sperrungen, Verstöße, deaktivierte Angebote, Kundennachrichten</span> <span id="f-mp"></span></h3>
+      <div class="mpgrid" id="mpTiles"></div><div class="scroll tall" style="margin-top:14px"><table class="tbl" id="tblMp"></table></div>
+      <div class="note">Quelle: IONOS/Gmail-Postfächer (alle 30 Min.). Ohne Plattform-API: zeigt, was Amazon, eBay, OTTO, Kaufland, TikTok Shop und idealo per E-Mail melden. Gleiche Meldungen zählen einmal. Rot = Konto-Hinweis in den letzten 7 Tagen, Gelb = in 30 Tagen.</div></div>
 
     <div class="sec-h t-stock" id="sec-stock"><h2 class="metal">Bestand &amp; Lagerwert</h2><span class="rule"></span><span class="fresh" id="fr-stock"></span></div>
     <div id="invKpis" style="display:contents"></div>
@@ -873,7 +951,7 @@ async function load() {
 
     const today = berlinDate(); state.today = today; state.err = {};
     const from60 = addDays(today, -60), mailFrom = new Date(Date.now() - 30 * 864e5).toISOString();
-    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig] = await Promise.all([
+    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
       safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
       safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value").eq("source", "jtl"))),
@@ -892,9 +970,10 @@ async function load() {
       safe("idealo", res(sb.from("idealo_daily").select("day,clicks,cost_eur,orders,revenue_eur,budget_used_mtd_eur,budget_cap_eur,fetched_at").gte("day", from60).order("day"))),
       safe("tools", res(sb.from("tool_usage").select("vendor,item,amount,unit,action,at,fetched_at").order("at", { ascending: false }).limit(300))),
       safe("sig", res(sb.from("bot_quellen_signale").select("quelle,signal,schwere,received_at,mailbox,absender_domain,betreff,thread_id").order("received_at", { ascending: false }).limit(500))),
+      safe("mp", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at").eq("category", "Marktplatz").gte("received_at", mailFrom).order("received_at", { ascending: false }).limit(1500))),
     ]);
     state.sales = sales;
-    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig };
+    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp };
     renderAll();
     const failed = Object.keys(state.err);
     if (failed.length) warn = (warn ? warn + " " : "") + "Teilweise nicht geladen: " + failed.join(", ") + ". Übrige Bereiche sind aktuell.";
@@ -911,7 +990,7 @@ function renderAll() {
   state.U = computeUrgent(d);
   renderUrgent();
   renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
-  renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d);
+  renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d);
   bindTilt();
 }
 
@@ -1009,6 +1088,7 @@ function computeUrgent(d) {
     { id: "kpi_unp_red", lvl: "red", n: kpiSum(unpRed), label: `Unbezahlt > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Keine alten Unbezahlten", hint: "Zahlung prüfen", sec: "card-kpiList", rows: unpRed },
     { id: "kpi_trk_red", lvl: "red", n: kpiSum(trkRed), label: `Ohne Sendungsnr. > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Sendungsnummern vollständig", hint: "Tracking nachtragen", sec: "card-kpiList", rows: trkRed },
     { id: "oos_best", lvl: "red", n: oosBest.length, label: "Bestseller ausverkauft", ok: "Bestseller lieferbar", hint: `≥ ${RULE.BESTSELLER_SOLD30} verkauft / 30 T`, sec: "card-oos", rows: oosBest },
+    { id: "mp_health", lvl: "red", n: mpStats(d.mp).reduce((a, x) => a + x.h7.length, 0), label: "Marktplatz-Konto-Hinweise", ok: state.err.mp ? "" : "Marktplatz-Konten ohne Hinweis", hint: "letzte 7 Tage · " + mpStats(d.mp).filter(x => x.h7.length).map(x => x.name).join(", "), sec: "card-mp", rows: [] },
     { id: "sync_red", lvl: "red", n: syncRed.length, label: "Sync gestört", ok: "", hint: "Fehler oder > 2 Std. alt", sec: "sec-sync", rows: syncRed },
     { id: "task_red", lvl: "red", n: taskRed.length, label: "Dringende Aufgaben", ok: "Keine dringenden Aufgaben", hint: "Prio hoch / CEO überfällig", sec: "sec-tasks", rows: taskRed },
     { id: "bill_new", lvl: "yellow", n: billNew.length, label: "Neue Rechnungen", ok: "", hint: `letzte ${RULE.BILL_NEW_DAYS} Tage`, sec: "card-bills", rows: billNew },
@@ -1040,10 +1120,11 @@ const ICON = {
   chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   euro: '<path d="M17 6a7 7 0 1 0 0 12M4 10h9M4 14h9"/>',
   bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
-  spark: '<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>'
+  spark: '<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',
+  shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M12 8v5M12 16v.5"/>'
 };
 const ICON_OF = { bill_mahn: "doc", bill_new: "doc", oo_red: "box", oo_yel: "box", kpi_unp_red: "card", kpi_unp_yel: "card", kpi_trk_red: "truck", kpi_trk_yel: "truck",
-  oos_best: "tag", sync_red: "sync", sync_yel: "sync", sync_ok: "sync", task_red: "check", task_ceo: "person", mail_biz: "mail", cover: "chart", idealo_budget: "euro", higgs_low: "spark", sig_high: "bell" };
+  oos_best: "tag", mp_health: "shield", sync_red: "sync", sync_yel: "sync", sync_ok: "sync", task_red: "check", task_ceo: "person", mail_biz: "mail", cover: "chart", idealo_budget: "euro", higgs_low: "spark", sig_high: "bell" };
 const chipIcon = (x) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[ICON_OF[x.id] || "bell"]}</svg>`;
 
 function renderUrgent() {
@@ -1340,6 +1421,34 @@ function renderKpi(kpi) {
       pill(o.kpi === "unbezahlt" ? "unbezahlt" : "kein Tracking", o.lvl === "red" ? "p-bad" : o.lvl === "yellow" ? "p-warn" : "p-off"), `${Math.floor(o.age)} Tg.`] })),
     errTxt("kpi", "Nichts offen: alles bezahlt, alle Sendungsnummern da."));
   filterChip("f-kpi", f);
+}
+
+// ---------- Marktplätze: Kontozustand aus Plattform-Mails ----------
+const MP = [["Amazon", /amazon\./i], ["eBay", /ebay\./i], ["OTTO", /otto\.(market|de)/i], ["Kaufland", /kaufland/i], ["TikTok Shop", /tiktok/i], ["idealo", /idealo/i]];
+const MP_HEALTH = /deaktiv|ausgeblendet|entfernt|versto(ß|ss)|gesperrt|sperrung|nicht berechtigt|ma(ß|ss)nahme erforderlich|jetzt handeln|reaktivier|preisfehler|deckelung|kontozustand|leistungskennzahl|nicht versandt|warnung|richtlinie|abgelehnt|suspend|violation|policy|blockiert/i;
+const MP_CUST = /kundennachricht|frage (von|zur|zu)|enquiry|hat eine nachricht|anfrage von/i;
+function mpStats(mp) {
+  return MP.map(([name, re]) => {
+    const all = (mp || []).filter(r => re.test(r.sender || ""));
+    const seen = new Set(); // gleiche Meldung (Betreff ohne Nummern) nur einmal zählen – die neueste
+    const h = all.filter(r => MP_HEALTH.test(r.subject || "") && !seen.has((r.subject || "").replace(/[\d#]+/g, "")) && seen.add((r.subject || "").replace(/[\d#]+/g, "")));
+    const c = all.filter(r => MP_CUST.test(r.subject || ""));
+    const h7 = h.filter(r => ago(r.received_at) < 7 * 1440), c7 = c.filter(r => ago(r.received_at) < 7 * 1440);
+    return { name, all, h, h7, c7, lvl: h7.length ? "red" : h.length ? "yellow" : "green", last: h[0] };
+  });
+}
+function renderMp(mp) {
+  const S = mpStats(mp), f = F(["mp_health"]);
+  const word = { red: "Handeln", yellow: "Beobachten", green: "In Ordnung" };
+  $("mpTiles").innerHTML = S.map(x => `<div class="mpt ${x.lvl}"><div class="mpt-h"><span class="nm">${esc(x.name)}</span><span class="st">${word[x.lvl]}</span></div>
+    <div class="mpt-v">${num(x.h7.length)}<small> Meldungen · 7 T</small></div>
+    <div class="mpt-s">${num(x.h.length)} in 30 T · ${num(x.c7.length)} Kundennachr. 7 T</div>
+    <div class="mpt-l">${x.last ? esc(x.last.subject) : "Keine Konto-Hinweise"}</div></div>`).join("");
+  const rows = S.flatMap(x => (f ? x.h7 : x.h).map(r => ({ ...r, pf: x.name }))).sort((a, b) => b.received_at.localeCompare(a.received_at)).slice(0, 60);
+  table("tblMp", [{ t: "Eingang" }, { t: "Plattform" }, { t: "Hinweis" }, { t: "Postfach" }],
+    rows.map(r => ({ hl: !!f, c: [esc(fmtDT(r.received_at)), esc(r.pf), `<div class="name">${esc(r.subject)}</div><div class="small muted">${esc(r.sender)}</div>`, `<span class="small muted">${esc(r.mailbox || "–")}</span>`] })),
+    errTxt("mp", "Keine Konto-Hinweise in den letzten 30 Tagen."));
+  filterChip("f-mp", f);
 }
 
 function renderInbox(inbox) {
