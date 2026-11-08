@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#1c140e">
+<meta name="theme-color" content="#0a0806">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/dm-serif-display-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/cormorant-garamond-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <title>BLACK ELIXIR · Cockpit</title>
 <script>
 // Theme vor dem ersten Zeichnen setzen (kein Flackern). Gespeichert in localStorage "be-theme": "dark" | "light".
@@ -437,6 +437,149 @@ svg text{font-family:var(--sans)}
 @media (prefers-reduced-motion: reduce){.pt:hover{transform:none}}
 </style>
 </head>
+<style>
+/* =====================================================================
+   BLACK ELIXIR · "Maison" (08.11.2026) – nur Optik, überschreibt alles darüber.
+   Nacht = Noir (schwarzer Lack, Gold-Haarlinien). Tag = Ivoire (Elfenbein, Gold).
+   Schriften lokal: Cormorant Garamond (Zahlen/Titel), Bodoni Moda (Wortmarke), Inter (Text).
+   ===================================================================== */
+@font-face{font-family:"Cormorant";font-weight:500;font-display:swap;src:url(fonts/cormorant-garamond-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Cormorant";font-weight:600;font-display:swap;src:url(fonts/cormorant-garamond-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Bodoni Moda";font-weight:500;font-display:swap;src:url(fonts/bodoni-moda-latin-500-normal.woff2) format("woff2")}
+*{font-variant-numeric:lining-nums tabular-nums}
+:root{--disp:"Cormorant","Cormorant Garamond",Georgia,serif;--mark:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;--r:12px;
+  --foil:linear-gradient(105deg,#8a6a2c 0%,#c9a45c 18%,#f6e7bf 38%,#d8b56a 55%,#9b7633 75%,#e9d29b 100%)}
+/* ---------- Noir ---------- */
+:root,[data-theme=dark]{
+  --canvas:#0a0806;--veil:linear-gradient(180deg,rgba(8,6,4,.86),rgba(8,6,4,.94)),radial-gradient(1200px 700px at 78% -10%,rgba(214,176,104,.16),transparent 60%);
+  --ink:#F3EBDD;--ink2:#B9A98F;--g0:#D9B977;--gold:#D9B977;--foil-t:var(--foil);--hair:rgba(217,185,119,.22);--hair2:rgba(217,185,119,.12);
+  --lacq:rgba(16,12,9,.78);--panel:linear-gradient(180deg,rgba(255,236,200,.045),rgba(255,236,200,.012));--th:rgba(14,11,8,.92)}
+/* ---------- Ivoire ---------- */
+[data-theme=light]{
+  --canvas:#efe7da;--veil:linear-gradient(180deg,rgba(246,240,230,.88),rgba(240,232,219,.94)),radial-gradient(1200px 700px at 78% -10%,rgba(201,164,92,.20),transparent 60%);
+  --ink:#1F1812;--ink2:#6E5E4C;--g0:#8E6A2A;--gold:#8E6A2A;--foil-t:linear-gradient(105deg,#5e4416 0%,#8e6a2a 25%,#b8903f 45%,#7a5a22 65%,#a07a2e 100%);--hair:rgba(142,106,42,.28);--hair2:rgba(142,106,42,.14);
+  --lacq:rgba(253,250,244,.86);--panel:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,252,246,.7));--th:rgba(250,245,236,.96)}
+body::before{background:var(--veil),url("bg-salon.jpg") center/cover no-repeat,var(--canvas)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;box-shadow:inset 0 0 240px rgba(0,0,0,.55)}
+[data-theme=light] body::after{box-shadow:inset 0 0 200px rgba(120,90,40,.12)}
+
+/* Farben im Blatt je Thema (überschreibt das alte „hell auf dunkel") */
+.sheet,.side,.top,.login-box{--gold:var(--g0);--txt:var(--ink);--mut:var(--ink2);--line:var(--hair2);--line2:var(--hair2);--grid:var(--hair2)}
+[data-theme=light] .sheet,[data-theme=light] .side{--ok:#1E7A4B;--warn:#9A5B10;--bad:#A8322B;--gold-a:#e9cf92;--gold-b:#b8903f;--gold-c:#6e4f18;
+  --p-amazon:#A27A28;--p-b2b:#2B4F9E;--p-otto:#8E2A48;--p-shopify:#23866A;--p-tiktok:#C2607C;--p-kaufland:#7A5CC4;--p-ebay:#2D7F93;--p-other:#8A7F72}
+
+/* ---------- Kopfzeile: schwarzer Lack ---------- */
+.top{background:var(--lacq);border:1px solid var(--hair);border-radius:16px;box-shadow:0 20px 50px -30px rgba(0,0,0,.8);-webkit-backdrop-filter:blur(22px) saturate(1.1);backdrop-filter:blur(22px) saturate(1.1)}
+.top .brand{font-family:var(--mark);font-weight:500;letter-spacing:.42em;font-size:clamp(15px,1.6vw,19px);background:var(--foil-t);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:foil 9s ease-in-out infinite alternate}
+.top .brand small{letter-spacing:.5em;font-size:8.5px;margin-top:5px}
+@keyframes foil{to{background-position:100% 0}}
+.bx-logo{width:40px;height:40px;background:radial-gradient(circle at 35% 30%,#2a2118,#0b0907);color:transparent;font-family:var(--mark);font-size:19px;position:relative;
+  box-shadow:0 0 0 1px rgba(217,185,119,.55),0 0 0 4px rgba(10,8,6,.9),0 0 0 5px rgba(217,185,119,.25)}
+.bx-logo::after{content:"B";position:absolute;inset:0;display:grid;place-items:center;background:var(--foil);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top button,.bx-mode{background:transparent;border-color:var(--hair);color:var(--ink)}
+[data-theme=light] .top{--hero-ink:var(--ink);--hero-mute:var(--ink2)}
+.top .bx-mode button[aria-pressed=true]{background:var(--foil);color:#1b140c}
+#loadedAt,#standM{color:var(--ink2)}
+
+/* ---------- Seitenleiste ---------- */
+.side{background:var(--lacq);border:1px solid var(--hair);border-radius:16px;box-shadow:0 30px 60px -40px rgba(0,0,0,.8);padding:18px 10px}
+.side .lbl{font-family:var(--disp);font-weight:600;font-size:13px;letter-spacing:.24em;color:var(--gold);padding:14px 12px 6px}
+.side .lbl::after{content:"";display:block;height:1px;margin-top:8px;background:linear-gradient(90deg,var(--hair),transparent)}
+.side button{font-size:13px;letter-spacing:.02em;color:var(--ink2);border-radius:8px;position:relative}
+.side button::before{width:5px;height:5px;border-radius:0;transform:rotate(45deg);background:transparent;box-shadow:inset 0 0 0 1px var(--gold)}
+.side button:hover{color:var(--ink);background:var(--hair2)}
+.side button[aria-current=true]{color:var(--ink);background:linear-gradient(90deg,var(--hair),transparent);box-shadow:inset 2px 0 0 var(--gold);font-weight:500}
+.side button[aria-current=true]::before{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+
+/* ---------- Blatt: Rahmen mit doppelter Goldlinie ---------- */
+.sheet{background:var(--lacq);border:1px solid var(--hair);border-radius:18px;text-shadow:none;position:relative;
+  box-shadow:0 50px 100px -50px rgba(0,0,0,.85);-webkit-backdrop-filter:blur(26px) saturate(1.05);backdrop-filter:blur(26px) saturate(1.05)}
+.sheet::before{content:"";position:absolute;inset:7px;border:1px solid var(--hair2);border-radius:13px;pointer-events:none}
+.hero{text-align:center;padding:18px 0 22px;position:relative}
+.hero .eyebrow{display:flex;align-items:center;justify-content:center;gap:14px;font-size:10.5px;letter-spacing:.42em;color:var(--gold)}
+.hero .eyebrow::before,.hero .eyebrow::after{content:"";width:min(90px,12vw);height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.hero .eyebrow::after{transform:scaleX(-1)}
+.hero h1{font-family:var(--mark);font-weight:500;text-transform:uppercase;letter-spacing:.28em;font-size:clamp(24px,3.6vw,46px);margin-top:12px;
+  background:var(--foil-t);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:foil 9s ease-in-out infinite alternate}
+.hero::after{content:"✦";display:block;margin-top:10px;font-size:11px;color:var(--gold);opacity:.8}
+
+/* ---------- Abschnitte ---------- */
+.sec-h{margin-top:40px;padding-top:0;border-top:0;gap:16px}
+.sec-h h2,.sec-h h2.metal{font-family:var(--disp);font-weight:600;font-size:clamp(24px,2.4vw,32px);letter-spacing:.01em;color:var(--ink)}
+.sec-h h2::before{width:7px;height:7px;border-radius:0;transform:rotate(45deg);background:var(--gold);box-shadow:0 0 12px color-mix(in srgb,var(--gold) 60%,transparent)}
+.sec-h .rule{display:block;opacity:1;background:linear-gradient(90deg,var(--hair),transparent)}
+.fresh{background:transparent;border:1px solid var(--hair2);color:var(--ink2);letter-spacing:.04em}
+
+/* ---------- Karten ---------- */
+.card,[data-theme=dark] .sheet .card{border-radius:var(--r);padding:22px 24px;background:var(--panel);border:1px solid var(--hair2);
+  box-shadow:inset 0 1px 0 rgba(255,240,210,.06),0 24px 50px -36px rgba(0,0,0,.9)}
+[data-theme=light] .card,[data-theme=light] .sheet .card{box-shadow:0 1px 0 #fff inset,0 18px 40px -30px rgba(90,60,20,.35)}
+.card::after{content:"";position:absolute;left:24px;right:24px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.55;pointer-events:none}
+.card::before{display:none}
+.card:hover{--lift:-3px;border-color:var(--hair);box-shadow:inset 0 1px 0 rgba(255,240,210,.08),0 30px 60px -34px rgba(0,0,0,.95)}
+.card h3{font-family:var(--disp);font-weight:600;font-size:22px;letter-spacing:.01em;color:var(--ink);margin-bottom:16px}
+.card h3::before{width:5px;height:5px;border-radius:0;transform:rotate(45deg);background:var(--gold)}
+.card h3 .sub{font-family:var(--sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);margin-left:13px}
+.note{border-top:1px solid var(--hair2);font-size:11.5px;color:var(--ink2)}
+
+/* Kennzahlen */
+.kpi .l{font-size:10.5px;letter-spacing:.24em;color:var(--ink2);font-weight:500}
+.kpi .v,.kgrid .kpi .v,.mini .v{font-family:var(--mark);font-weight:500;font-size:clamp(30px,2.8vw,40px);line-height:1;letter-spacing:-.005em;color:var(--ink);margin-top:10px}
+.kgrid .kpi .v{font-size:clamp(22px,1.9vw,28px)}
+.kgrid .kpi{background:transparent;border:1px solid var(--hair2);border-radius:10px}
+.v.reflect{-webkit-box-reflect:unset}
+/* Haupt-KPI: schwarzer Lack mit Goldfolie (in Tag und Nacht) */
+#kpis>.card:first-child{background:radial-gradient(120% 90% at 100% 0%,rgba(217,185,119,.22),transparent 55%),linear-gradient(160deg,#1d1610,#0b0806);
+  border:1px solid rgba(217,185,119,.55);box-shadow:0 30px 60px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,235,190,.12);
+  --txt:#F3EBDD;--mut:#B9A98F;--ink:#F3EBDD;--ink2:#B9A98F;--ok:#9BE0B8;--bad:#FF9E95;--warn:#F2C27A;--grid:rgba(217,185,119,.18);--gold:#D9B977;--g0:#D9B977;--foil-t:var(--foil);color:var(--txt)}
+#kpis>.card:first-child .v{background:var(--foil-t);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:foil 9s ease-in-out infinite alternate}
+#kpis>.card:first-child::after{opacity:1}
+
+/* Dringend */
+.usum .t{font-family:var(--disp);font-weight:600;font-size:15px;letter-spacing:.24em;color:var(--gold)}
+.chip,.chip.red,.chip.yellow{background:var(--panel);border:1px solid var(--hair2);border-radius:10px;box-shadow:none}
+.chip::after{opacity:.45}
+.chip .n{font-family:var(--mark);font-weight:500;font-size:24px}
+.chip:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent)}
+
+/* Plattformen */
+.pt{border-radius:10px;background:var(--panel);border:1px solid var(--hair2);border-top:1px solid var(--pc);box-shadow:inset 0 2px 0 -1px var(--pc)}
+.pt:hover{background:linear-gradient(180deg,color-mix(in srgb,var(--pc) 14%,transparent),transparent 70%)}
+.pt-v{font-family:var(--mark);font-weight:500;font-size:clamp(19px,1.6vw,24px)}
+.sw{border-radius:0;transform:rotate(45deg);width:8px;height:8px}
+.share{height:6px;background:var(--hair2)}
+.share span{border-right:2px solid var(--canvas)}
+
+/* Diagramm */
+#chart .avg{stroke:var(--gold);stroke-width:1.75;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--gold) 50%,transparent))}
+#chart .avg-dot{fill:var(--gold);stroke:var(--canvas)}
+.legend span{background:transparent;border-color:var(--hair2);color:var(--ink2)}
+.legend .lg-avg i{background:var(--gold)}
+.legend i{border-radius:0;transform:rotate(45deg);width:7px;height:7px}
+
+/* Tabellen */
+.tbl th,[data-theme=dark] .tbl th{background:var(--th);color:var(--gold);font-weight:600;font-size:9.5px;letter-spacing:.2em;border-bottom:1px solid var(--hair)}
+.tbl td{border-bottom:1px solid var(--hair2);color:var(--ink)}
+.tbl tbody tr:hover td{background:linear-gradient(90deg,var(--hair2),transparent)}
+.pill{background:transparent;letter-spacing:.06em}
+.seg{background:transparent;border-color:var(--hair)}
+.seg button{color:var(--ink2)}
+.seg button.on{background:var(--foil);color:#1b140c}
+.bar{background:var(--foil)}
+.barbg{background:var(--hair2)}
+button.primary{background:var(--foil);color:#1b140c}
+.foot{font-size:10.5px;letter-spacing:.12em;color:var(--ink2)}
+.foot::before{content:"✦";display:block;color:var(--gold);margin-bottom:8px}
+
+/* Login */
+.login-box{background:var(--lacq);border-color:var(--hair);border-radius:18px}
+.login .brand{font-family:var(--mark);font-weight:500;letter-spacing:.3em;background:var(--foil-t);-webkit-background-clip:text;background-clip:text;color:transparent}
+.login .card{background:var(--panel);border-color:var(--hair2);border-radius:12px}
+
+@media(max-width:1099px){.side{border-radius:999px;padding:6px}.side .lbl{display:none}}
+@media(max-width:520px){.hero{padding:10px 0 14px}.hero h1{letter-spacing:.18em}.card{padding:18px}.sheet::before{inset:5px}.kpi .v{font-size:32px}}
+@media (prefers-reduced-motion: reduce){.top .brand,.hero h1,#kpis>.card:first-child .v{animation:none}}
+</style>
 <body class="bx">
 
 <!-- LOGIN -->
