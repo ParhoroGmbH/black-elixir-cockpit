@@ -744,6 +744,11 @@ html,body{font-family:Inter,var(--sf);font-feature-settings:"cv11","ss01","ss03"
 [data-theme=dark] .sec-h h2,[data-theme=dark] .usum .t{background:linear-gradient(180deg,#fff 30%,#c9c3ff)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important}
 
 #usum,#standM,.fresh{text-shadow:0 1px 8px var(--glow),0 0 2px var(--glow)}
+.galaxy{cursor:grab;touch-action:pan-y}
+.galaxy.dragging{cursor:grabbing}
+.galaxy.dragging .planet{transition:none}
+.g-hint{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font-size:11.5px;color:var(--mut);white-space:nowrap;opacity:.75;pointer-events:none;text-shadow:0 1px 8px var(--glow)}
+@media(max-width:620px){.greet{margin-top:2px}.hero{padding-bottom:10px!important}}
 /* Begrüßung */
 .greet{margin:-6px auto 4px;max-width:720px;text-align:center;font-size:clamp(15px,1.5vw,18px);line-height:1.5;color:var(--txt);text-shadow:0 1px 14px var(--glow)}
 .greet b{font-weight:650}
@@ -1336,7 +1341,8 @@ const GAL = [
   { name: "Verbindungen", go: "sec-data", ico: "sync", c: "#64d2ff", ids: ["sync_red", "sync_yel"] },
 ];
 const goTo = (id) => { const el = $(id); if (!el) return; window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18), behavior: reduceMotion ? "auto" : "smooth" }); };
-const galaxy = { t: 0, last: 0, raf: 0, paused: false, visible: true, built: false, geo: null };
+const galaxy = { a: 0, vel: 0, drag: null, justDragged: false, last: 0, raf: 0, paused: false, visible: true, built: false, geo: null };
+const SPIN = Math.PI * 2 / 80; // eine Umdrehung in 80 s
 // Prozedurale Planeten-Oberfläche (Bänder + Wirbel), horizontal nahtlos → Drehung per translateX
 function planetTex(hex, seed) {
   const W = 128, H = 128, c = document.createElement("canvas"); c.width = W * 2; c.height = H; const x = c.getContext("2d");
@@ -1373,6 +1379,19 @@ function renderGalaxy() {
       GAL.map((p, i) => `<button type="button" class="planet" data-i="${i}" style="--pc:${p.c};--rot:${30 + (i * 7) % 26}s"><span class="orb"><span class="globe"><span class="tex" style="background-image:url(${planetTex(p.c, i)})"></span></span><span class="shade"></span>${i === 0 ? '<span class="sring"></span>' : ""}<span class="halo"></span></span><span class="pl-n"></span><span class="pl-name">${ic(p.ico)}${esc(p.name)}</span></button>`).join("");
     g.querySelectorAll(".planet").forEach(b => { b.onclick = () => goTo(GAL[b.dataset.i].go);
       b.onmouseenter = b.onfocus = () => galaxy.paused = true; b.onmouseleave = b.onblur = () => galaxy.paused = false; });
+    // Von Hand drehen: Maus ziehen / Finger wischen (waagrecht), mit Schwung; Pfeiltasten ebenso
+    g.insertAdjacentHTML("beforeend", '<div class="g-hint" aria-hidden="true">↔ Ziehen oder wischen zum Drehen</div>');
+    g.addEventListener("pointerdown", (e) => { if (e.button > 0) return; galaxy.drag = { id: e.pointerId, x: e.clientX, a0: galaxy.a, lx: e.clientX, lt: performance.now(), moved: false }; galaxy.vel = 0; });
+    g.addEventListener("pointermove", (e) => { const d = galaxy.drag; if (!d || d.id !== e.pointerId || !galaxy.geo) return;
+      const dx = e.clientX - d.x; if (!d.moved && Math.abs(dx) < 6) return;
+      if (!d.moved) { d.moved = true; try { g.setPointerCapture(e.pointerId); } catch (_) {} g.classList.add("dragging"); }
+      const k = 1 / Math.max(120, galaxy.geo.rx2) * 1.6, now = performance.now();
+      galaxy.a = d.a0 - dx * k; galaxy.vel = -(e.clientX - d.lx) * k * Math.min(1, 16 / Math.max(1, now - d.lt)); d.lx = e.clientX; d.lt = now; drawGalaxy(); });
+    const end = (e) => { const d = galaxy.drag; if (!d || d.id !== e.pointerId) return; galaxy.drag = null; g.classList.remove("dragging");
+      if (d.moved) { galaxy.justDragged = true; setTimeout(() => galaxy.justDragged = false, 80); if (performance.now() - d.lt > 90) galaxy.vel = 0; galaxy.vel = Math.max(-.25, Math.min(.25, galaxy.vel)); if (reduceMotion) galaxy.vel = 0; else startGalaxy(); } };
+    g.addEventListener("pointerup", end); g.addEventListener("pointercancel", end);
+    g.addEventListener("click", (e) => { if (galaxy.justDragged) { e.stopPropagation(); e.preventDefault(); } }, true);
+    g.addEventListener("keydown", (e) => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); galaxy.a += (e.key === "ArrowLeft" ? .35 : -.35); drawGalaxy(); } });
     galaxy.built = true; layoutGalaxy(); new ResizeObserver(layoutGalaxy).observe(g);
     new IntersectionObserver(e => { galaxy.visible = e[0].isIntersecting; if (galaxy.visible) startGalaxy(); }).observe(g);
     document.addEventListener("visibilitychange", () => { if (!document.hidden) startGalaxy(); });
@@ -1390,9 +1409,9 @@ function renderGalaxy() {
 }
 function layoutGalaxy() {
   const g = $("galaxy"), W = g.clientWidth; if (!W) return;
-  const small = W < 620, ps = small ? 44 : 62, cs = small ? 92 : 170;
-  const rx2 = Math.min(W / 2 - ps / 2 - (small ? 8 : 40), 520), ry2 = rx2 * (small ? .8 : .34), rx1 = rx2 * (small ? .58 : .6), ry1 = ry2 * (small ? .58 : .6);
-  const H = Math.round(Math.max(cs + 60, 2 * ry2 + ps + 64));
+  const small = W < 620, ps = small ? 46 : 62, cs = small ? 88 : 170;
+  const rx2 = Math.min(W / 2 - ps / 2 - (small ? 4 : 40), 520), ry2 = rx2 * (small ? .74 : .36), rx1 = rx2 * (small ? .56 : .58), ry1 = ry2 * (small ? .56 : .58);
+  const H = Math.round(Math.max(cs + 60, 2 * ry2 + ps + (small ? 44 : 80)));
   g.style.setProperty("--gh", H + "px"); g.style.setProperty("--ps", ps + "px"); g.style.setProperty("--cs", cs + "px");
   const [ri, ro] = g.querySelectorAll(".ring");
   ri.style.width = 2 * rx1 + "px"; ri.style.height = 2 * ry1 + "px"; ro.style.width = 2 * rx2 + "px"; ro.style.height = 2 * ry2 + "px";
@@ -1402,20 +1421,23 @@ function drawGalaxy() {
   const g = $("galaxy"), G = galaxy.geo; if (!G) return;
   g.querySelectorAll(".planet").forEach(b => {
     const i = +b.dataset.i, inner = i < 5, k = inner ? i : i - 5;
-    const a = (inner ? galaxy.t / 60 : -galaxy.t / 120) * Math.PI * 2 + k * (Math.PI * 2 / 5) + (inner ? 0 : Math.PI / 5);
+    // alle Planeten drehen gemeinsam (feste Abstände, nichts überlappt); äußere Bahn um 36° versetzt
+    const a = galaxy.a + k * (Math.PI * 2 / 5) + (inner ? 0 : Math.PI / 5);
     const rx = inner ? G.rx1 : G.rx2, ry = inner ? G.ry1 : G.ry2, d = (Math.sin(a) + 1) / 2; // 0 = hinten, 1 = vorne
-    const x = G.cx + Math.cos(a) * rx, y = G.cy + Math.sin(a) * ry, sc = .72 + .38 * d;
+    const x = G.cx + Math.cos(a) * rx, y = G.cy + Math.sin(a) * ry, sc = G.small ? .66 + .3 * d : .72 + .38 * d;
     b.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(${sc.toFixed(3)})`;
-    b.style.zIndex = d > .5 ? 60 + Math.round(d * 20) : 10 + Math.round(d * 20); b.style.opacity = (.55 + .45 * d).toFixed(2); b.classList.toggle("back", d < .45);
+    b.style.zIndex = d > .5 ? 60 + Math.round(d * 20) : 10 + Math.round(d * 20); b.style.opacity = (.55 + .45 * d).toFixed(2); b.classList.toggle("back", d < (G.small ? .6 : .45));
   });
 }
 function startGalaxy() {
-  if (reduceMotion) { drawGalaxy(); return; }
+  if (reduceMotion && !galaxy.vel) { drawGalaxy(); return; }
   if (galaxy.raf) return;
   const step = (ts) => {
     if (!galaxy.visible || document.hidden) { galaxy.raf = 0; galaxy.last = 0; return; }
     const dt = galaxy.last ? Math.min(.1, (ts - galaxy.last) / 1000) : 0; galaxy.last = ts;
-    if (!galaxy.paused) galaxy.t += dt; drawGalaxy(); galaxy.raf = requestAnimationFrame(step);
+    if (galaxy.drag) { /* Hand führt */ } else if (Math.abs(galaxy.vel) > .0006) { galaxy.a += galaxy.vel; galaxy.vel *= Math.pow(.94, dt * 60); }
+    else if (!galaxy.paused) galaxy.a += SPIN * dt;
+    drawGalaxy(); galaxy.raf = requestAnimationFrame(step);
   };
   galaxy.raf = requestAnimationFrame(step);
 }
