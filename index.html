@@ -731,7 +731,91 @@ body::before{background:var(--space)!important;filter:none!important;inset:0!imp
 @media(max-width:620px){.galaxy.small .planet.back .pl-name{opacity:0}.planet .pl-name{font-size:10.5px;padding:1px 6px}.core em{font-size:10px;margin-top:6px}.planet .pl-n{min-width:19px;height:19px;line-height:19px;font-size:10.5px}}
 @media (prefers-reduced-motion: reduce){.planet.red .orb,.planet.yellow .orb,.planet.red .orb::after,.core::before{animation:none}}
 </style>
-<body class="bx">
+<style>
+/* =====================================================================
+   BLACK ELIXIR · „Real" (08.11.2026): echte Planeten, Schwarzes Loch, Milchstraße,
+   Typografie, lebendige Statistik. Nur Optik/Animation.
+   ===================================================================== */
+html,body{font-family:Inter,var(--sf);font-feature-settings:"cv11","ss01","ss03","calt";font-optical-sizing:auto}
+.kpi .v,.chip .n,.pt-v,.mpt-v,.ct-t,.tbl .r,.num{font-feature-settings:"tnum","cv11","ss01";font-variant-numeric:tabular-nums}
+.sec-h h2,.sec-h h2.metal,.usum .t{font-weight:650;letter-spacing:-.035em}
+.card h3{font-weight:620;letter-spacing:-.022em}
+.kpi .v,.mini .v{font-weight:650;letter-spacing:-.045em}
+[data-theme=dark] .sec-h h2,[data-theme=dark] .usum .t{background:linear-gradient(180deg,#fff 30%,#c9c3ff)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important}
+
+#usum,#standM,.fresh{text-shadow:0 1px 8px var(--glow),0 0 2px var(--glow)}
+/* Begrüßung */
+.greet{margin:-6px auto 4px;max-width:720px;text-align:center;font-size:clamp(15px,1.5vw,18px);line-height:1.5;color:var(--txt);text-shadow:0 1px 14px var(--glow)}
+.greet b{font-weight:650}
+.greet .hi{display:block;font-size:clamp(22px,2.6vw,32px);font-weight:650;letter-spacing:-.035em;margin-bottom:2px}
+[data-theme=dark] .greet .hi{background:linear-gradient(90deg,#fff,#ffd9b0 45%,#c9b8ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ---------- Schwarzes Loch im Kern ---------- */
+.core{background:none!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;overflow:visible}
+.core::before{display:none}
+.core .lens{position:absolute;inset:4%;border-radius:50%;z-index:1;filter:blur(.8px);animation:flick 5s ease-in-out infinite;
+  background:radial-gradient(circle,transparent 50%,rgba(255,226,180,.95) 53.5%,rgba(255,160,80,.55) 57%,rgba(160,110,255,.18) 64%,transparent 71%)}
+.core .disk{position:absolute;left:-40%;width:180%;aspect-ratio:1;top:50%;transform:translateY(-50%) scaleY(.26) rotate(0deg);pointer-events:none}
+.core .disk i{position:absolute;inset:0;border-radius:50%;filter:blur(.7px);animation:spin 16s linear infinite;
+  background:conic-gradient(from 0deg,#fff4e0,#ffb15e 12%,#ff7a2e 26%,#ffd3a1 41%,#fff7ea 52%,#ff9a48 66%,#e2602a 80%,#ffe2bf 92%,#fff4e0);
+  -webkit-mask:radial-gradient(circle,transparent 33%,#000 37%,#000 55%,rgba(0,0,0,.35) 63%,transparent 71%);mask:radial-gradient(circle,transparent 33%,#000 37%,#000 55%,rgba(0,0,0,.35) 63%,transparent 71%)}
+.core .disk.back{z-index:1;clip-path:inset(0 0 50% 0);opacity:.85}
+.core .disk.front{z-index:3;clip-path:inset(50% 0 0 0)}
+.core .bh{position:absolute;inset:19%;border-radius:50%;z-index:2;background:radial-gradient(circle at 50% 45%,#000 62%,#120b06 100%);
+  box-shadow:0 0 0 1.4px rgba(255,238,214,.95),0 0 10px 2px rgba(255,200,140,.9),0 0 34px 8px rgba(255,140,60,.5),0 0 90px 26px rgba(140,90,255,.28)}
+.core .ctxt{position:absolute;inset:19%;z-index:4;display:grid;place-items:center;text-align:center;color:#fff}
+.core .ctxt b{font-size:calc(var(--cs,170px)*.072);font-weight:650;letter-spacing:.3em;margin-left:.3em;line-height:1.35;display:block}
+.core .ctxt small{font-size:calc(var(--cs,170px)*.048);letter-spacing:.28em;opacity:.65;display:block;margin-top:2px}
+.core em[hidden]{display:none!important}
+.core em{position:absolute;left:50%;top:calc(100% + 2px);transform:translateX(-50%);white-space:nowrap;z-index:5;margin:0}
+@keyframes flick{50%{opacity:.8;transform:scale(1.015)}}
+
+/* ---------- Planeten: Kugel mit drehender Oberfläche, Schatten, Atmosphäre ---------- */
+.planet .orb{background:none!important;border:0!important;overflow:visible;
+  box-shadow:0 0 14px -2px color-mix(in srgb,var(--pc) 70%,transparent),0 10px 24px -10px rgba(0,0,0,.6)!important;border-radius:50%}
+.planet .globe{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:var(--pc)}
+.planet .tex{position:absolute;top:0;left:0;height:100%;width:200%;background-size:100% 100%;animation:roll var(--rot,40s) linear infinite}
+.planet .shade{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 30% 26%,rgba(255,255,255,.42),rgba(255,255,255,0) 34%),radial-gradient(circle at 68% 70%,rgba(0,0,0,0) 22%,rgba(0,0,0,.55) 58%,rgba(0,0,0,.9) 78%);
+  box-shadow:inset 1.5px 1.5px 3px rgba(255,255,255,.35),inset -4px -6px 10px rgba(0,0,0,.4)}
+.planet .sring{position:absolute;left:-42%;width:184%;top:50%;height:44%;transform:translateY(-50%) rotate(-16deg);border-radius:50%;pointer-events:none;z-index:2;
+  background:radial-gradient(closest-side,transparent 64%,rgba(240,226,196,.85) 66%,rgba(214,190,150,.5) 76%,rgba(240,226,196,.7) 82%,transparent 85%);
+  -webkit-mask:linear-gradient(to bottom,rgba(0,0,0,.22) 46%,#000 54%);mask:linear-gradient(to bottom,rgba(0,0,0,.22) 46%,#000 54%)}
+.planet .orb svg{display:none}
+.planet .pl-name{display:inline-flex;align-items:center;gap:4px}
+.planet .pl-name svg{width:12px;height:12px;flex:none;color:var(--pc)}
+.planet .halo{position:absolute;inset:-8px;border-radius:50%;pointer-events:none}
+.planet.red .orb::after{display:none}
+.planet.red .halo{border:2px dotted rgba(255,69,58,.95)}
+.planet.red.pulse .halo{animation:spin 12s linear infinite,alarm2 2.2s ease-in-out infinite}
+.planet.red.pulse .orb{animation:none}
+.planet.yellow .orb{box-shadow:0 0 0 2px rgba(255,159,10,.95),0 0 22px rgba(255,159,10,.45)!important}
+@keyframes alarm2{0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,.5),0 0 14px rgba(255,59,48,.35)}50%{box-shadow:0 0 0 10px rgba(255,59,48,0),0 0 36px rgba(255,59,48,.8)}}
+@keyframes roll{to{transform:translateX(-50%)}}
+
+/* ---------- Statistik ---------- */
+#chart{position:relative}
+#chart.anim g.col rect:not(.hit){transform-box:fill-box;transform-origin:50% 100%;animation:grow .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*22ms)}
+#chart.anim .avg{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s .6s cubic-bezier(.4,0,.2,1) forwards}
+#chart g.col:hover rect:not(.hit){filter:brightness(1.12)}
+#chart .avg{stroke-width:2.2;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+#chart .avg-dot{animation:ping 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.ctip{position:absolute;top:6px;min-width:170px;padding:10px 12px;border-radius:14px;z-index:5;pointer-events:none;font-size:12.5px;color:var(--txt);
+  background:var(--glass-bg);border:1px solid var(--glass-edge);-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);box-shadow:var(--glass-hi),var(--glass-sh2)}
+.ctip b{font-weight:600;color:var(--mut);font-size:12px}
+.ct-t{font-size:20px;font-weight:650;letter-spacing:-.03em;margin:1px 0 6px}
+.ct-r{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center;padding:2px 0}
+.ct-r i{width:8px;height:8px;border-radius:50%}
+.ct-r em{font-style:normal;font-weight:600;font-variant-numeric:tabular-nums}
+body.intro .sp-line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.5s .2s cubic-bezier(.4,0,.2,1) forwards}
+body.intro .sp-area{animation:fadein 1.4s .5s both}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadein{from{opacity:0}}
+@keyframes ping{50%{r:6}}
+@media (prefers-reduced-motion: reduce){.planet .tex,.core .disk i,.core .lens,#chart .avg-dot{animation:none!important}#chart.anim g.col rect,#chart.anim .avg,body.intro .sp-line,body.intro .sp-area{animation:none!important;stroke-dashoffset:0}}
+</style>
+<body class="bx intro">
 <canvas id="stars" aria-hidden="true"></canvas>
 
 <!-- LOGIN -->
@@ -799,7 +883,7 @@ body::before{background:var(--space)!important;filter:none!important;inset:0!imp
     <button type="button" class="t-link" data-go="sec-data">Verbindungen</button>
   </nav>
   <div class="sheet">
-  <header class="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><div class="galaxy" id="galaxy" role="navigation" aria-label="Bereiche als Galaxie"></div></header>
+  <header class="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><div class="galaxy" id="galaxy" role="navigation" aria-label="Bereiche als Galaxie"></div><p class="greet" id="greet" aria-live="polite"></p></header>
   <!-- DRINGEND: rot / gelb / grün -->
   <div class="urgent" id="urgentWrap">
     <div class="usum"><span class="t">Was ist dringend?</span><span id="usum" class="small"></span><span id="standM" class="small muted"></span></div>
@@ -1056,12 +1140,22 @@ async function load() {
   } finally { loading = false; $("btnRefresh").disabled = false; $("btnRefresh").classList.remove("busy"); }
 }
 
+function countUp() {
+  if (state.counted) return; state.counted = true; setTimeout(() => document.body.classList.remove("intro"), 2600); if (reduceMotion) return;
+  document.querySelectorAll("#kpis .kpi .v, .chip .n, .pt-v").forEach(el => {
+    const m = (el.textContent || "").trim().match(/^([\d.]+)(\s*.*)$/); if (!m) return;
+    const end = Number(m[1].replace(/\./g, "")); if (!(end > 0)) return;
+    const t0 = performance.now(), dur = 1300, fmt = new Intl.NumberFormat("de-DE");
+    const tick = (t) => { const k = Math.min(1, (t - t0) / dur), e = k >= 1 ? 1 : 1 - Math.pow(2, -10 * k); el.textContent = fmt.format(Math.round(end * e)) + m[2]; if (k < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  });
+}
 function renderAll() {
   const d = state.d; if (!d) return;
   state.U = computeUrgent(d);
   renderUrgent();
   renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
-  renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d);
+  renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d); requestAnimationFrame(countUp);
   bindTilt();
 }
 
@@ -1213,24 +1307,51 @@ const GAL = [
 ];
 const goTo = (id) => { const el = $(id); if (!el) return; window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18), behavior: reduceMotion ? "auto" : "smooth" }); };
 const galaxy = { t: 0, last: 0, raf: 0, paused: false, visible: true, built: false, geo: null };
+// Prozedurale Planeten-Oberfläche (Bänder + Wirbel), horizontal nahtlos → Drehung per translateX
+function planetTex(hex, seed) {
+  const W = 128, H = 128, c = document.createElement("canvas"); c.width = W * 2; c.height = H; const x = c.getContext("2d");
+  const n = parseInt(hex.slice(1), 16), base = [n >> 16 & 255, n >> 8 & 255, n & 255], img = x.createImageData(W, H);
+  let r = seed * 9973 + 7; const rnd = () => (r = (r * 16807) % 2147483647) / 2147483647;
+  const f = [rnd() * 6 + 3, rnd() * 14 + 8, rnd() * 30 + 18], ph = [rnd() * 6, rnd() * 6, rnd() * 6], wob = 1 + Math.floor(rnd() * 3);
+  for (let y = 0; y < H; y++) for (let xx = 0; xx < W; xx++) {
+    const u = xx / W * Math.PI * 2, v = y / H;
+    const w = Math.sin(u * wob + v * 9 + ph[0]) * .05 + Math.sin(u * (wob + 2) - v * 21 + ph[1]) * .025;
+    let t = .5 + .26 * Math.sin((v + w) * f[0] + ph[0]) + .16 * Math.sin((v + w) * f[1] + ph[1]) + .08 * Math.sin((v - w) * f[2] + ph[2]);
+    const spot = Math.exp(-((Math.cos(u - ph[2]) - 1) ** 2 * 18 + ((v - .62) * 9) ** 2)); t = t * (1 - .5 * spot) + .95 * spot * .5;
+    const k = (y * W + xx) * 4, lift = t > .5 ? (t - .5) * 2 : 0, dark = t < .5 ? (.5 - t) * 2 : 0;
+    for (let ch = 0; ch < 3; ch++) img.data[k + ch] = Math.max(0, Math.min(255, base[ch] * (1 - .55 * dark) + (255 - base[ch]) * .55 * lift));
+    img.data[k + 3] = 255;
+  }
+  x.putImageData(img, 0, 0); x.putImageData(img, W, 0); return c.toDataURL("image/png");
+}
+function renderGreet(U, red) {
+  const el = $("greet"); if (!el || !state.sales) return;
+  const h = Number(new Intl.DateTimeFormat("de-DE", { timeZone: TZ, hour: "numeric", hour12: false }).format(new Date()));
+  const hi = h < 5 ? "Gute Nacht" : h < 11 ? "Guten Morgen" : h < 18 ? "Guten Tag" : "Guten Abend";
+  const td = state.sales.filter(r => r.day === state.today), net = td.reduce((a, r) => a + Number(r.net_sales || 0), 0), ord = td.reduce((a, r) => a + Number(r.orders || 0), 0);
+  const yel = U.filter(u => u.lvl === "yellow").length;
+  el.innerHTML = `<span class="hi">${hi}, Ihssan.</span>Heute bisher <b>${eur(net)}</b> aus <b>${num(ord)} Bestellungen</b>. ` +
+    (red ? `<b style="color:var(--bad)">${red} ${red === 1 ? "Sache braucht" : "Dinge brauchen"} dich jetzt</b>${yel ? `, ${yel} im Blick behalten` : ""} – der Rest läuft.` : yel ? `Nichts Dringendes – ${yel} im Blick behalten.` : "Alles ruhig. Der Laden läuft.");
+}
 function renderGalaxy() {
   const g = $("galaxy"); if (!g) return;
   const U = (state.U || []).filter(u => !u.empty && u.n > 0 && u.lvl !== "green");
   const red = U.filter(u => u.lvl === "red").length;
   if (!galaxy.built) {
-    g.innerHTML = `<div class="ring inner"></div><div class="ring outer"></div><div class="core" aria-hidden="true"><div><b>BLACK ELIXIR</b><small>Cockpit</small><em id="coreSt"></em></div></div>` +
-      GAL.map((p, i) => `<button type="button" class="planet" data-i="${i}" style="--pc:${p.c}"><span class="orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[p.ico]}</svg></span><span class="pl-n"></span><span class="pl-name">${esc(p.name)}</span></button>`).join("");
+    const ic = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
+    g.innerHTML = `<div class="ring inner"></div><div class="ring outer"></div><div class="core" aria-hidden="true"><div class="lens"></div><div class="disk back"><i></i></div><div class="bh"></div><div class="disk front"><i></i></div><div class="ctxt"><div><b>BLACK<br>ELIXIR</b></div></div><em id="coreSt" hidden></em></div>` +
+      GAL.map((p, i) => `<button type="button" class="planet" data-i="${i}" style="--pc:${p.c};--rot:${30 + (i * 7) % 26}s"><span class="orb"><span class="globe"><span class="tex" style="background-image:url(${planetTex(p.c, i)})"></span></span><span class="shade"></span>${i === 0 ? '<span class="sring"></span>' : ""}<span class="halo"></span></span><span class="pl-n"></span><span class="pl-name">${ic(p.ico)}${esc(p.name)}</span></button>`).join("");
     g.querySelectorAll(".planet").forEach(b => { b.onclick = () => goTo(GAL[b.dataset.i].go);
       b.onmouseenter = b.onfocus = () => galaxy.paused = true; b.onmouseleave = b.onblur = () => galaxy.paused = false; });
     galaxy.built = true; layoutGalaxy(); new ResizeObserver(layoutGalaxy).observe(g);
     new IntersectionObserver(e => { galaxy.visible = e[0].isIntersecting; if (galaxy.visible) startGalaxy(); }).observe(g);
     document.addEventListener("visibilitychange", () => { if (!document.hidden) startGalaxy(); });
   }
-  const st = $("coreSt"); st.textContent = red ? `${red} dringend` : "Alles ruhig"; st.className = red ? "" : "ok";
+  const st = $("coreSt"); st.textContent = red ? `${red} dringend` : "Alles ruhig"; st.className = red ? "" : "ok"; renderGreet(U, red);
   g.querySelectorAll(".planet").forEach(b => {
     const p = GAL[b.dataset.i], hits = U.filter(u => p.ids.includes(u.id));
     const lvl = hits.some(u => u.lvl === "red") ? "red" : hits.length ? "yellow" : "green", n = hits.reduce((a, u) => a + u.n, 0);
-    b.className = "planet " + lvl; b._n = lvl === "red" ? n : -1; b.querySelector(".pl-n").textContent = n ? (n > 99 ? "99+" : n) : "";
+    b.className = "planet " + lvl + (b.classList.contains("back") ? " back" : ""); b._n = lvl === "red" ? n : -1; b.querySelector(".pl-n").textContent = n ? (n > 99 ? "99+" : n) : "";
     b.setAttribute("aria-label", `${p.name}: ${lvl === "red" ? "dringend" : lvl === "yellow" ? "beachten" : "in Ordnung"}${n ? ", " + n + " offen" : ""}`);
   });
   // höchstens 3 Planeten pulsieren gleichzeitig (die mit den meisten offenen Punkten)
@@ -1268,19 +1389,61 @@ function startGalaxy() {
   };
   galaxy.raf = requestAnimationFrame(step);
 }
-// Sternenhimmel (ruhig funkelnd), pausiert im Hintergrund-Tab
-(function stars() {
-  const cv = $("stars"); if (!cv) return; const cx = cv.getContext("2d"); let S = [], w = 0, h = 0, raf = 0;
-  const seed = () => { const dpr = Math.min(2, devicePixelRatio || 1); w = innerWidth; h = innerHeight; cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    S = Array.from({ length: Math.round(w * h / 3200) }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() < .05 ? 1.4 + Math.random() * .6 : .3 + Math.random() * .8, p: Math.random() * 6.3, s: .4 + Math.random() * 1.2 })); };
-  const draw = (t) => { const rgb = getComputedStyle(document.documentElement).getPropertyValue("--star").trim() || "255,255,255"; cx.clearRect(0, 0, w, h);
-    for (const s of S) { const a = reduceMotion ? .7 : .35 + .55 * (Math.sin(t / 1000 * s.s + s.p) + 1) / 2; cx.fillStyle = `rgba(${rgb},${(a * (s.r > 1.5 ? 1 : .8)).toFixed(2)})`; cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, 6.283); cx.fill();
-      if (s.r > 1.5) { cx.fillStyle = `rgba(${rgb},${(a * .05).toFixed(2)})`; cx.beginPath(); cx.arc(s.x, s.y, s.r * 2.6, 0, 6.283); cx.fill(); } } };
-  const loop = (t) => { draw(t); raf = document.hidden || reduceMotion ? 0 : requestAnimationFrame(loop); };
-  seed(); addEventListener("resize", () => { seed(); draw(performance.now()); });
-  document.addEventListener("visibilitychange", () => { if (!document.hidden && !raf && !reduceMotion) raf = requestAnimationFrame(loop); });
-  new MutationObserver(() => draw(performance.now())).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-  raf = requestAnimationFrame(loop);
+// Milchstraße: einmal gerendert (Nebel, Staub, Sternfeld), darüber funkelnde Sterne, Sternschnuppen, leichte Tiefe zur Maus
+(function sky() {
+  const cv = $("stars"); if (!cv) return; const cx = cv.getContext("2d");
+  let off = null, B = [], w = 0, h = 0, raf = 0, last = 0, mx = 0, my = 0, tx = 0, ty = 0, shoot = null, nextShoot = 0;
+  const PAD = 24, dark = () => document.documentElement.getAttribute("data-theme") === "dark";
+  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  function build() {
+    const dpr = Math.min(1.5, devicePixelRatio || 1); w = innerWidth; h = innerHeight;
+    cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const W = w + PAD * 2, H = h + PAD * 2; off = document.createElement("canvas"); off.width = W; off.height = H; const o = off.getContext("2d");
+    const D = dark(), diag = Math.hypot(W, H), ax = -.05 * W, ay = .92 * H, bx = 1.05 * W, by = .08 * H; // Band diagonal
+    const along = (t, s) => { const x = ax + (bx - ax) * t, y = ay + (by - ay) * t, nx = -(by - ay) / diag, ny = (bx - ax) / diag; return [x + nx * s, y + ny * s]; };
+    // Nebelwolken
+    o.globalCompositeOperation = D ? "lighter" : "source-over";
+    const pal = D ? [[110, 70, 200], [50, 100, 220], [235, 120, 80], [255, 205, 160], [200, 90, 170]] : [[190, 160, 255], [150, 200, 255], [255, 190, 170], [255, 225, 200], [230, 170, 230]];
+    for (let i = 0; i < 170; i++) { const t = Math.random(), [x, y] = along(t, gauss() * diag * .06), r = 40 + Math.random() * 200, c = pal[Math.floor(Math.random() * pal.length)];
+      const g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${c},${(D ? .05 : .09) + Math.random() * .05})`); g.addColorStop(1, `rgba(${c},0)`); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); }
+    // Kern der Galaxie (helle Wolke)
+    { const [x, y] = along(.62, 0), r = diag * .22, g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, D ? "rgba(255,225,190,.20)" : "rgba(255,240,225,.5)"); g.addColorStop(1, "rgba(255,225,190,0)"); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); }
+    // Staubbänder (nur Nacht)
+    if (D) { o.globalCompositeOperation = "source-over"; for (let i = 0; i < 90; i++) { const t = Math.random(), [x, y] = along(t, gauss() * diag * .012 + diag * .006), r = 18 + Math.random() * 70;
+      const g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(4,3,10,${.18 + Math.random() * .2})`); g.addColorStop(1, "rgba(4,3,10,0)"); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); } }
+    // Sternfeld: dichter im Band
+    o.globalCompositeOperation = "source-over"; const rgb = D ? "255,255,255" : "110,90,170", N = Math.round(W * H / (D ? 260 : 520));
+    for (let i = 0; i < N; i++) { const inBand = Math.random() < .6, [x, y] = inBand ? along(Math.random(), gauss() * diag * .07) : [Math.random() * W, Math.random() * H];
+      const r = Math.random() < .015 ? 1 + Math.random() * .8 : .25 + Math.random() * .55, a = (inBand ? .25 : .15) + Math.random() * (D ? .55 : .35);
+      const tint = Math.random(); o.fillStyle = D && tint < .12 ? `rgba(180,200,255,${a})` : D && tint > .9 ? `rgba(255,220,180,${a})` : `rgba(${rgb},${a})`;
+      o.beginPath(); o.arc(x, y, r, 0, 6.283); o.fill(); }
+    // helle Sterne zum Funkeln
+    B = Array.from({ length: Math.round(w * h / 14000) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: .9 + Math.random() * 1.1, p: Math.random() * 6.3, s: .5 + Math.random() * 1.3 }));
+  }
+  function frame(t) {
+    raf = 0; if (document.hidden) return;
+    if (t - last < 33 && !reduceMotion) { raf = requestAnimationFrame(frame); return; } last = t; // ~30 fps reichen
+    tx += (mx - tx) * .05; ty += (my - ty) * .05; const ox = -PAD + tx * PAD * .6, oy = -PAD + ty * PAD * .6;
+    cx.clearRect(0, 0, w, h); cx.drawImage(off, ox, oy);
+    const D = dark(), rgb = D ? "255,255,255" : "120,95,190";
+    for (const s of B) { const a = reduceMotion ? .8 : .45 + .55 * (Math.sin(t / 1000 * s.s + s.p) + 1) / 2, x = s.x + ox, y = s.y + oy;
+      cx.fillStyle = `rgba(${rgb},${a.toFixed(2)})`; cx.beginPath(); cx.arc(x, y, s.r, 0, 6.283); cx.fill();
+      if (D && s.r > 1.6) { cx.strokeStyle = `rgba(${rgb},${(a * .35).toFixed(2)})`; cx.lineWidth = .6; cx.beginPath(); cx.moveTo(x - s.r * 4, y); cx.lineTo(x + s.r * 4, y); cx.moveTo(x, y - s.r * 4); cx.lineTo(x, y + s.r * 4); cx.stroke(); } }
+    // Sternschnuppe alle ~8–18 s
+    if (!reduceMotion) {
+      if (!shoot && t > nextShoot) { shoot = { x: Math.random() * w * .7 + w * .2, y: Math.random() * h * .35, vx: -(5 + Math.random() * 4), vy: 2 + Math.random() * 2, life: 0 }; nextShoot = t + 8000 + Math.random() * 10000; }
+      if (shoot) { shoot.life++; shoot.x += shoot.vx; shoot.y += shoot.vy; const L = 16, g = cx.createLinearGradient(shoot.x, shoot.y, shoot.x - shoot.vx * L, shoot.y - shoot.vy * L);
+        const fa = Math.min(1, shoot.life / 6) * Math.max(0, 1 - shoot.life / 50); g.addColorStop(0, `rgba(${rgb},${fa})`); g.addColorStop(1, `rgba(${rgb},0)`);
+        cx.strokeStyle = g; cx.lineWidth = 1.6; cx.beginPath(); cx.moveTo(shoot.x, shoot.y); cx.lineTo(shoot.x - shoot.vx * L, shoot.y - shoot.vy * L); cx.stroke(); if (shoot.life > 50) shoot = null; }
+      raf = requestAnimationFrame(frame);
+    }
+  }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  build(); kick();
+  let rt = 0; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { build(); kick(); }, 150); });
+  addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1; if (reduceMotion) kick(); }, { passive: true });
+  document.addEventListener("visibilitychange", kick);
+  new MutationObserver(() => { build(); kick(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 })();
 
 function renderUrgent() {
@@ -1343,14 +1506,23 @@ function bindTilt() {
 // ---------- Render-Helfer ----------
 let sparkId = 0;
 // Sparkline (Linie + zarte Fläche). color = CSS-Farbe oder var(--…)
+// Catmull-Rom → kubische Bézier: ruhige, natürliche Kurve ohne Überschwingen
+function smoothPath(P) {
+  if (P.length < 3) return "M" + P.map(p => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L");
+  let d = `M${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
+  for (let i = 0; i < P.length - 1; i++) { const p0 = P[i - 1] || P[i], p1 = P[i], p2 = P[i + 1], p3 = P[i + 2] || p2, t = .18;
+    const lo = Math.min(p1[1], p2[1]), hi = Math.max(p1[1], p2[1]), cl = (v) => Math.min(Math.max(v, lo), hi);
+    d += ` C${(p1[0] + (p2[0] - p0[0]) * t).toFixed(1)} ${cl(p1[1] + (p2[1] - p0[1]) * t).toFixed(1)} ${(p2[0] - (p3[0] - p1[0]) * t).toFixed(1)} ${cl(p2[1] - (p3[1] - p1[1]) * t).toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`; }
+  return d;
+}
 function spark(vals, color, opt = {}) {
   const W = 200, H = 36, n = vals.length; if (!n || vals.every(v => !v)) return `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><line x1="0" x2="${W}" y1="${H - 2}" y2="${H - 2}" class="gl"/></svg>`;
   const mx = Math.max(...vals, 0) || 1, step = n > 1 ? W / (n - 1) : W;
   const pts = vals.map((v, i) => [i * step, H - 3 - (H - 8) * Math.max(0, v) / mx]);
-  const line = pts.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
-  const gid = "sg" + (++sparkId);
+  const line = pts.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" "), curve = smoothPath(pts);
+  const gid = "sg" + (++sparkId), lp = pts[n - 1];
   const lastPartial = opt.partialLast && n > 1 ? `<polyline points="${pts[n - 2][0].toFixed(1)},${pts[n - 2][1].toFixed(1)} ${pts[n - 1][0].toFixed(1)},${pts[n - 1][1].toFixed(1)}" fill="none" style="stroke:var(--card2)" stroke-width="2.4" stroke-dasharray="2 3" vector-effect="non-scaling-stroke"/>` : "";
-  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${color}" stop-opacity=".30"/><stop offset="1" style="stop-color:${color}" stop-opacity="0"/></linearGradient></defs><polygon points="0,${H} ${line} ${W},${H}" fill="url(#${gid})"/><polyline points="${line}" fill="none" style="stroke:${color}" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>${lastPartial}</svg>`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${color}" stop-opacity=".30"/><stop offset="1" style="stop-color:${color}" stop-opacity="0"/></linearGradient></defs><path class="sp-area" d="${curve} L${W},${H} L0,${H} Z" fill="url(#${gid})"/><path class="sp-line" pathLength="1" d="${curve}" fill="none" style="stroke:${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>${lastPartial}</svg>`;
 }
 // Trend mit Pfeil + Zahl (nicht nur Farbe). ok=false → Vorperiode fehlt, nichts erfinden.
 function trend(cur, prev, ok, lbl, missTxt = "Vorperiode fehlt") {
@@ -1428,19 +1600,28 @@ function renderSales() {
   let svg = `<svg viewBox="0 0 ${Wd} ${Hd}" width="100%" role="img" aria-label="Tagesumsatz netto je Plattform, 30 Tage">`;
   for (let g = 0; g <= 4; g++) { const v = top * g / 4, yy = Hd - pb - (Hd - pb - pt) * g / 4; svg += `<line class="gl" x1="${pl}" x2="${Wd}" y1="${yy}" y2="${yy}"/><text x="${pl - 6}" y="${yy + 3}" text-anchor="end">${tsd(v)}</text>`; }
   per.forEach((o, i) => {
-    let acc = 0; const isToday = i === days30.length - 1; svg += `<g class="col">`;
+    let acc = 0; const isToday = i === days30.length - 1; svg += `<g class="col" data-i="${i}" style="--i:${i}">`;
     keys.forEach(k => { const v = o[k] || 0; if (!v) return; const h = (Hd - pb - pt) * v / top; const yy = Hd - pb - acc - h; acc += h;
-      svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${yy.toFixed(1)}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${h.toFixed(1)}" style="fill:var(--p-${k})"${isToday ? ' fill-opacity=".45"' : ""}><title>${esc(fmtD(days30[i]) + " · " + (G[k] ? G[k].name : k) + ": " + eur(v))}</title></rect>`; });
-    svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${pt}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${Hd - pb - pt}" fill="transparent"><title>${esc(fmtD(days30[i]) + (isToday ? " (laufend)" : "") + " · gesamt " + eur(Object.values(o).reduce((a, b) => a + b, 0)))}</title></rect></g>`;
+      svg += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${yy.toFixed(1)}" width="${Math.max(1, bw - 4).toFixed(1)}" height="${Math.max(0, h - .8).toFixed(1)}" rx="2.5" style="fill:var(--p-${k})"${isToday ? ' fill-opacity=".45"' : ""}/>`; });
+    svg += `<rect class="hit" x="${(pl + i * bw).toFixed(1)}" y="${pt}" width="${bw.toFixed(1)}" height="${Hd - pb - pt}" fill="transparent"/></g>`;
   });
   // 7-Tage-Schnitt der Tagessumme (volle Tage, laufender Tag ausgenommen)
   const dayTot = per.map(o => Object.values(o).reduce((a, b) => a + b, 0));
   const avgPts = [];
   for (let i = 6; i < dayTot.length - 1; i++) { const a = dayTot.slice(i - 6, i + 1).reduce((x, y) => x + y, 0) / 7; avgPts.push([pl + i * bw + bw / 2, Hd - pb - (Hd - pb - pt) * a / top]); }
   if (avgPts.length > 1) { const lp = avgPts[avgPts.length - 1];
-    svg += `<path class="avg" d="M${avgPts.map(p => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L")}"/><circle class="avg-dot" cx="${lp[0].toFixed(1)}" cy="${lp[1].toFixed(1)}" r="4"/>`; }
+    svg += `<path class="avg" pathLength="1" d="${smoothPath(avgPts)}"/><circle class="avg-dot" cx="${lp[0].toFixed(1)}" cy="${lp[1].toFixed(1)}" r="4"/>`; }
   [0, 7, 14, 21, 29].forEach(i => svg += `<text x="${pl + i * bw + bw / 2}" y="${Hd - 6}" text-anchor="middle">${i === 29 ? "heute" : fmtD(days30[i])}</text>`);
-  $("chart").innerHTML = rows.length ? svg + "</svg>" : `<div class="${state.err.sales ? "err" : "empty"}">${esc(errTxt("sales", "Noch keine Umsätze."))}</div>`;
+  $("chart").innerHTML = rows.length ? svg + '</svg><div class="ctip" id="ctip" hidden></div>' : `<div class="${state.err.sales ? "err" : "empty"}">${esc(errTxt("sales", "Noch keine Umsätze."))}</div>`;
+  // Glas-Tooltip: Tag, Summe, Aufteilung je Plattform
+  const tip = $("ctip"), ch = $("chart"); ch.classList.toggle("anim", !state.counted);
+  if (tip) ch.querySelectorAll("g.col").forEach(gc => {
+    gc.onmouseenter = gc.onclick = () => { const i = +gc.dataset.i, o = per[i];
+      tip.innerHTML = `<b>${esc(i === days30.length - 1 ? "Heute (laufend)" : fmtD(days30[i]))}</b><div class="ct-t">${eur(dayTot[i])}</div>` +
+        keys.filter(k => o[k]).sort((a, b) => o[b] - o[a]).map(k => `<div class="ct-r"><i style="background:var(--p-${k})"></i><span>${esc(G[k].name)}</span><em>${eur(o[k])}</em></div>`).join("");
+      tip.hidden = false; const r = gc.getBoundingClientRect(), cr = ch.getBoundingClientRect();
+      tip.style.left = Math.min(cr.width - tip.offsetWidth - 4, Math.max(4, r.left - cr.left + r.width / 2 - tip.offsetWidth / 2)) + "px"; };
+    gc.onmouseleave = () => tip.hidden = true; });
   $("chartLegend").innerHTML = keys.map(k => `<span style="--pc:var(--p-${k})"><i></i>${esc(G[k].name)}&nbsp;<b>${tsd((groups.find(g => g.k === k) || { v30: { n: 0 } }).v30.n)} €</b></span>`).join("") + (rows.length ? `<span class="lg-avg"><i></i>7-Tage-Schnitt</span>` : "");
 
   // --- Tabelle je Kanal ---
