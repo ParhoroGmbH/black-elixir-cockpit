@@ -949,6 +949,9 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
 
     <div class="sec-h t-ship" id="sec-kpi"><h2 class="metal">Retouren, Zahlung, Versand</h2><span class="rule"></span><span class="fresh" id="fr-kpi"></span></div>
     <div class="card s8 m12" id="card-kpi"><h3>Je Plattform <span class="sub">Retouren &amp; Stornos 30 Tage · unbezahlt &amp; ohne Sendungsnummer = Stand jetzt</span></h3><div class="kgrid" id="kpiKpis"></div><div class="scroll"><table class="tbl" id="tblKpi"></table></div><div class="note">Quelle JTL-Wawi (alle 30 Min.). Quote = Retouren ÷ Bestellungen 30 T. Unbezahlt = nicht storniert, Restbetrag offen. Ohne Sendungsnr. = Lieferschein der letzten 30 T ohne Sendungsnummer (Selbstabholer ausgenommen). Alter ab Bestelldatum: &gt; 2 Tage gelb, &gt; 3 Tage rot.</div></div>
+    <div class="card s12" id="card-ship"><h3>Sendungen · DHL &amp; GLS <span class="sub">live über die Sendungsverfolgung in Shopify · Shopify-Bestellungen der letzten 35 Tage · alle 10 Min.</span> <span id="f-ship"></span></h3>
+      <div class="kgrid" id="shipKpis" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))"></div><div class="scroll tall"><table class="tbl" id="tblShip"></table></div>
+      <div class="note">Status kommt von DHL/GLS über Shopify (kein eigenes DHL-API nötig). Problem = nicht zugestellt, Zustellversuch, Fehler oder voraussichtliches Lieferdatum überschritten. Marktplatz-Bestellungen (Amazon, eBay …) sind hier noch nicht enthalten.</div></div>
     <div class="card s4 m12" id="card-kpiList"><h3>Unbezahlt / ohne Sendungsnummer <span id="f-kpi"></span></h3><div class="scroll tall"><table class="tbl" id="tblKpiList"></table></div></div>
 
     <div class="sec-h t-ship" id="sec-mp"><h2 class="metal">Marktplätze · Kontozustand</h2><span class="rule"></span><span class="fresh" id="fr-mp"></span></div>
@@ -1141,7 +1144,7 @@ async function load() {
 
     const today = berlinDate(); state.today = today; state.err = {};
     const from60 = addDays(today, -60), mailFrom = new Date(Date.now() - 30 * 864e5).toISOString();
-    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp] = await Promise.all([
+    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp, ship] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
       safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
       safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value").eq("source", "jtl"))),
@@ -1161,9 +1164,10 @@ async function load() {
       safe("tools", res(sb.from("tool_usage").select("vendor,item,amount,unit,action,at,fetched_at").order("at", { ascending: false }).limit(300))),
       safe("sig", res(sb.from("bot_quellen_signale").select("quelle,signal,schwere,received_at,mailbox,absender_domain,betreff,thread_id").order("received_at", { ascending: false }).limit(500))),
       safe("mp", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at").eq("category", "Marktplatz").gte("received_at", mailFrom).order("received_at", { ascending: false }).limit(1500))),
+      safe("ship", fetchAll(() => sb.from("shipments").select("number,order_ref,channel,carrier,status,shipped_at,in_transit_at,delivered_at,eta").gte("shipped_at", new Date(Date.now() - 35 * 864e5).toISOString()).order("shipped_at", { ascending: false }))),
     ]);
     state.sales = sales;
-    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp };
+    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp, ship };
     renderAll();
     const failed = Object.keys(state.err);
     if (failed.length) warn = (warn ? warn + " " : "") + "Teilweise nicht geladen: " + failed.join(", ") + ". Übrige Bereiche sind aktuell.";
@@ -1190,7 +1194,7 @@ function renderAll() {
   state.U = computeUrgent(d);
   renderUrgent();
   renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
-  renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d); requestAnimationFrame(countUp);
+  renderShip(d.ship); renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d); requestAnimationFrame(countUp);
   bindTilt();
 }
 
@@ -1288,6 +1292,8 @@ function computeUrgent(d) {
     { id: "kpi_unp_red", lvl: "red", n: kpiSum(unpRed), label: `Unbezahlt > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Keine alten Unbezahlten", hint: "Zahlung prüfen", sec: "card-kpiList", rows: unpRed },
     { id: "kpi_trk_red", lvl: "red", n: kpiSum(trkRed), label: `Ohne Sendungsnr. > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Sendungsnummern vollständig", hint: "Tracking nachtragen", sec: "card-kpiList", rows: trkRed },
     { id: "oos_best", lvl: "red", n: oosBest.length, label: "Bestseller ausverkauft", ok: "Bestseller lieferbar", hint: `≥ ${RULE.BESTSELLER_SOLD30} verkauft / 30 T`, sec: "card-oos", rows: oosBest },
+    { id: "ship_bad", lvl: "red", n: shipStats(d.ship).bad.length, label: "Pakete mit Problem", ok: state.err.ship ? "" : "Alle Pakete im Plan", hint: "nicht zugestellt / überfällig · DHL & GLS", sec: "card-ship", rows: [] },
+    { id: "ship_noscan", lvl: "yellow", n: shipStats(d.ship).noScan.length, label: "Pakete ohne Scan > 3 Tage", ok: "", hint: "Label da, aber noch nicht bei DHL/GLS erfasst", sec: "card-ship", rows: [] },
     { id: "mp_health", lvl: "red", n: mpStats(d.mp).reduce((a, x) => a + x.h7.length, 0), label: "Marktplatz-Konto-Hinweise", ok: state.err.mp ? "" : "Marktplatz-Konten ohne Hinweis", hint: "letzte 7 Tage · " + mpStats(d.mp).filter(x => x.h7.length).map(x => x.name).join(", "), sec: "card-mp", rows: [] },
     { id: "sync_red", lvl: "red", n: syncRed.length, label: "Sync gestört", ok: "", hint: "Fehler oder > 2 Std. alt", sec: "sec-sync", rows: syncRed },
     { id: "task_red", lvl: "red", n: taskRed.length, label: "Dringende Aufgaben", ok: "Keine dringenden Aufgaben", hint: "Prio hoch / CEO überfällig", sec: "sec-tasks", rows: taskRed },
@@ -1324,7 +1330,7 @@ const ICON = {
   shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M12 8v5M12 16v.5"/>'
 };
 const ICON_OF = { bill_mahn: "doc", bill_new: "doc", oo_red: "box", oo_yel: "box", kpi_unp_red: "card", kpi_unp_yel: "card", kpi_trk_red: "truck", kpi_trk_yel: "truck",
-  oos_best: "tag", mp_health: "shield", sync_red: "sync", sync_yel: "sync", sync_ok: "sync", task_red: "check", task_ceo: "person", mail_biz: "mail", cover: "chart", idealo_budget: "euro", higgs_low: "spark", sig_high: "bell" };
+  oos_best: "tag", mp_health: "shield", ship_bad: "truck", ship_noscan: "truck", sync_red: "sync", sync_yel: "sync", sync_ok: "sync", task_red: "check", task_ceo: "person", mail_biz: "mail", cover: "chart", idealo_budget: "euro", higgs_low: "spark", sig_high: "bell" };
 const chipIcon = (x) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[ICON_OF[x.id] || "bell"]}</svg>`;
 
 // ---------- Galaxie: Bereiche kreisen um den Kern; dringend = Puls + drehender Ring ----------
@@ -1332,7 +1338,7 @@ const GAL = [
   { name: "Umsatz", go: "sec-sales", ico: "chart", c: "#34c759", ids: [] },
   { name: "Rechnungen", go: "sec-bills", ico: "doc", c: "#ff9f0a", ids: ["bill_mahn", "bill_new"] },
   { name: "Bestellungen", go: "sec-oo", ico: "box", c: "#0a84ff", ids: ["oo_red", "oo_yel"] },
-  { name: "Versand", go: "sec-kpi", ico: "truck", c: "#5e5ce6", ids: ["kpi_unp_red", "kpi_unp_yel", "kpi_trk_red", "kpi_trk_yel"] },
+  { name: "Versand", go: "sec-kpi", ico: "truck", c: "#5e5ce6", ids: ["kpi_unp_red", "kpi_unp_yel", "kpi_trk_red", "kpi_trk_yel", "ship_bad", "ship_noscan"] },
   { name: "Marktplätze", go: "sec-mp", ico: "shield", c: "#ff375f", ids: ["mp_health"] },
   { name: "Bestand", go: "sec-stock", ico: "tag", c: "#30b0c7", ids: ["oos_best", "cover"] },
   { name: "Aufgaben", go: "sec-tp", ico: "check", c: "#af52de", ids: ["task_red", "task_ceo", "mail_biz"] },
@@ -1820,6 +1826,34 @@ function renderKpi(kpi) {
       pill(o.kpi === "unbezahlt" ? "unbezahlt" : "kein Tracking", o.lvl === "red" ? "p-bad" : o.lvl === "yellow" ? "p-warn" : "p-off"), `${Math.floor(o.age)} Tg.`] })),
     errTxt("kpi", "Nichts offen: alles bezahlt, alle Sendungsnummern da."));
   filterChip("f-kpi", f);
+}
+
+// ---------- Sendungen (DHL/GLS über Shopify-Tracking) ----------
+const SHIP_TXT = { DELIVERED: "Zugestellt", IN_TRANSIT: "Unterwegs", OUT_FOR_DELIVERY: "In Zustellung", ATTEMPTED_DELIVERY: "Zustellversuch", NOT_DELIVERED: "Nicht zugestellt", FAILURE: "Fehler", READY_FOR_PICKUP: "Abholbereit", PICKED_UP: "Abgeholt", CONFIRMED: "Label erstellt", LABEL_PRINTED: "Label erstellt", LABEL_PURCHASED: "Label erstellt", FULFILLED: "Versendet" };
+const shipUrl = (r) => /gls/i.test(r.carrier || "") ? "https://www.gls-pakete.de/sendungsverfolgung?trackingNumber=" + encodeURIComponent(r.number) : "https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html?piececode=" + encodeURIComponent(r.number);
+function shipStats(sh) {
+  sh = sh || []; const open = sh.filter(r => !r.delivered_at && r.status !== "DELIVERED" && r.status !== "PICKED_UP");
+  const bad = open.filter(r => /NOT_DELIVERED|ATTEMPTED|FAILURE/.test(r.status || "") || (r.eta && new Date(r.eta) < new Date()));
+  const noScan = open.filter(r => !bad.includes(r) && !r.in_transit_at && ago(r.shipped_at) > 3 * 1440);
+  const moving = open.filter(r => !bad.includes(r) && !noScan.includes(r));
+  const del7 = sh.filter(r => r.delivered_at && ago(r.delivered_at) < 7 * 1440);
+  const dur = sh.filter(r => r.delivered_at && r.shipped_at).map(r => (new Date(r.delivered_at) - new Date(r.shipped_at)) / 864e5);
+  return { bad, noScan, moving, del7, avg: dur.length ? dur.reduce((a, b) => a + b, 0) / dur.length : null };
+}
+function renderShip(sh) {
+  const S = shipStats(sh), f = F(["ship_bad", "ship_noscan"]);
+  $("shipKpis").innerHTML = [["Unterwegs", num(S.moving.length), ""], ["Zugestellt · 7 T", num(S.del7.length), ""], ["Ø Laufzeit", S.avg == null ? "–" : S.avg.toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " Tage", ""],
+    ["Problem", num(S.bad.length), S.bad.length ? "red" : ""], ["Ohne Scan > 3 T", num(S.noScan.length), S.noScan.length ? "yellow" : ""]]
+    .map(([l, v, c]) => `<div class="kpi mini ${c}"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
+  const pr = (r) => S.bad.includes(r) ? 0 : S.noScan.includes(r) ? 1 : S.moving.includes(r) ? 2 : 3;
+  const list = f ? (f.id === "ship_bad" ? S.bad : S.noScan) : [...(sh || [])].sort((a, b) => pr(a) - pr(b) || (b.shipped_at || "").localeCompare(a.shipped_at || "")).slice(0, 60);
+  const cls = (r) => S.bad.includes(r) ? "p-bad" : S.noScan.includes(r) ? "p-warn" : r.delivered_at ? "p-ok" : "p-off";
+  table("tblShip", [{ t: "Bestellung" }, { t: "Versand" }, { t: "Status" }, { t: "Versendet" }, { t: "Zugestellt / erwartet" }, { t: "" }],
+    list.map(r => ({ hl: !!f, c: [esc(r.order_ref), `<span class="small">${esc(/gls/i.test(r.carrier || "") ? "GLS" : "DHL")}</span><div class="small muted">${esc(r.number)}</div>`,
+      pill(SHIP_TXT[r.status] || r.status || "–", cls(r)), esc(fmtDT(r.shipped_at)), r.delivered_at ? esc(fmtDT(r.delivered_at)) : r.eta ? (new Date(r.eta) < new Date() ? pill("fällig " + fmtDT(r.eta), "p-bad") : esc("bis " + fmtDT(r.eta))) : "–",
+      `<a href="${shipUrl(r)}" target="_blank" rel="noopener noreferrer">Verfolgen ↗</a>`] })),
+    errTxt("ship", "Noch keine Sendungen im Cockpit."));
+  filterChip("f-ship", f);
 }
 
 // ---------- Marktplätze: Kontozustand aus Plattform-Mails ----------
