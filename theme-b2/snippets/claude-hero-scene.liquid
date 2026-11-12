@@ -11,9 +11,9 @@
   comment
     Ort je Produkt: Schlüssel → Dateien be-hsc-<key>.webp (Desktop 3840) und be-hsc-<key>-m.webp (Mobil 2048). Parameter je Ort: rot (Drehung Panorama, rad), h (Projektionshöhe), ei (Umgebungslicht), rf (Spiegelung im Boden)
   endcomment
-  assign hsc_place = 'babor|1.57|1|1.1|.16,artdeco|1.57|1|1.1|.16,mb|1.57|1|1.1|.16,wfs|1.57|1|1.1|.16,soap|1.57|1|1.1|.16,alchemist|1.57|1|1.1|.12,mirth|1.57|1|1.1|.16,orlando|1.57|1|1.1|.16,cities|1.57|1|1.1|.16,beloved|1.57|1|1.1|.10,romeo|1.57|1|1.1|.16,rebecca|1.57|1|1.1|.14,hardtimes|1.57|1|1.1|.12,commodus|1.57|1|1.1|.10,spartacus|1.57|1|1.1|.10,crixus|1.57|1|1.1|.10,marcus|1.57|1|1.1|.10,rexor|1.57|1|1.1|.10,priscus|1.57|1|1.1|.10,verus|1.57|1|1.1|.10' | split: ','
+  assign hsc_place = 'babor|1.57|1|1.1|0.16,artdeco|1.57|1|1.1|0.16,mb|1.57|1|1.1|0.16,wfs|1.57|1|1.1|0.16,soap|1.57|1|1.1|0.16,alchemist|1.57|1|1.1|0.12,mirth|1.57|1|1.1|0.16,orlando|1.57|1|1.1|0.16,cities|1.57|1|1.1|0.16,beloved|1.57|1|1.1|0.10,romeo|1.57|1|1.1|0.16,rebecca|1.57|1|1.1|0.14,hardtimes|1.57|1|1.1|0.12,commodus|1.57|1|1.1|0.10,spartacus|1.57|1|1.1|0.10,crixus|1.57|1|1.1|0.10,marcus|1.57|1|1.1|0.10,rexor|1.57|1|1.1|0.10,priscus|1.57|1|1.1|0.10,verus|1.57|1|1.1|0.10' | split: ','
 -%}
-{%- capture hsc_places -%}{%- for p in hsc_place -%}{%- assign q = p | split: '|' -%}{%- assign fd = 'be-hsc-' | append: q[0] | append: '.webp' -%}{%- assign fm = 'be-hsc-' | append: q[0] | append: '-m.webp' -%}{%- if images[fd] -%}{{ q[0] | json }}:{"env":{{ images[fd] | image_url | json }},"envM":{{ images[fm] | default: images[fd] | image_url | json }},"rot":{{ q[1] }},"h":{{ q[2] }},"ei":{{ q[3] }},"rf":{{ q[4] }}},{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- capture hsc_places -%}{%- for p in hsc_place -%}{%- assign q = p | split: '|' -%}{%- assign fd = 'be-hsc-' | append: q[0] | append: '.webp' -%}{%- assign fm = 'be-hsc-' | append: q[0] | append: '-m.webp' -%}{%- assign imd = images[fd] -%}{%- assign imm = images[fm] -%}{%- if imd.id != blank -%}{%- unless imm.id != blank -%}{%- assign imm = imd -%}{%- endunless -%}{{ q[0] | json }}:{"env":{{ imd | image_url: width: imd.width | json }},"envM":{{ imm | image_url: width: imm.width | json }},"rot":{{ q[1] }},"h":{{ q[2] }},"ei":{{ q[3] }},"rf":{{ q[4] }}},{%- endif -%}{%- endfor -%}{%- endcapture -%}
 <style>
 /* B2: eine Leinwand hinter allen Motiven; Text/Chips/Pfeile liegen darüber. Poster (h3-bgl) bis die Szene steht, dann aus. */
 .ch .hsc-canvas,.ch .hsc-snap{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block}
@@ -91,8 +91,14 @@
       assign pn = 'be-hsc-poster-' | append: n | append: '.jpg'
       assign pm = 'be-hsc-poster-' | append: n | append: '-m.jpg'
       assign bgn = 'be-hero-bg-advent.png,be-hero-bg-seife.png,be-hero-bg-library.png,be-hero-bg-dumo.png' | split: ',' | slice: forloop.index0 | first
-      assign poster = images[pn] | default: images[bgn]
-      assign posterM = images[pm] | default: poster
+      assign poster = images[pn]
+      unless poster.id != blank
+        assign poster = images[bgn]
+      endunless
+      assign posterM = images[pm]
+      unless posterM.id != blank
+        assign posterM = poster
+      endunless
       case n
         when 1
           assign mlist = 'BABOR|eab800eba079cdeb/be-cal-babor.glb|-24|babor|flat,ARTDECO|7f0bc976655f8fa4/be-cal-artdeco.glb|-24|artdeco|flat,Molton Brown|5c65f193dc68588a/be-cal-mb3.glb|-24|mb|flat,Wir für Sie|8c572b0420074443/be-cal-wfs.glb|-24|wfs|flat' | split: ','
