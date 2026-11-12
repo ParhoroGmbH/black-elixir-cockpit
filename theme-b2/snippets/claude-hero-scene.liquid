@@ -1,0 +1,479 @@
+{%- comment -%}
+  claude-hero-scene · Paket B2 (12.11.2026): echter 3D-Hero für alle 4 Motive. Das Produkt (vorhandenes GLB, unverändert) steht still,
+  die KAMERA kreist durch einen echten 360°-Ort (eigenes Panorama je Produkt; die 6 Seifen teilen sich einen Ort). Ziehen = Kamera bewegt sich.
+  Gleiches Markup/gleiche Klassen wie claude-home-hero3d (Text, CTA, Chips, Seifen-Badge, Pfeile/Punkte, 20-s-Slider, Stopp bei Interaktion),
+  aber EIN WebGL-Renderer für alle Motive statt model-viewer. Ohne WebGL bleibt das Poster je Motiv stehen.
+  Aufruf: {% render 'claude-hero-scene', sec: section %}
+{%- endcomment -%}
+{%- assign s = sec.settings -%}
+{%- liquid
+  assign cdn = 'https://cdn.shopify.com/3d/models/o/'
+  comment
+    Ort je Produkt: Schlüssel → Dateien be-hsc-<key>.webp (Desktop 3840) und be-hsc-<key>-m.webp (Mobil 2048). Parameter je Ort: rot (Drehung Panorama, rad), h (Projektionshöhe), ei (Umgebungslicht), rf (Spiegelung im Boden)
+  endcomment
+  assign hsc_place = 'babor|1.57|1|1.1|.16,artdeco|1.57|1|1.1|.16,mb|1.57|1|1.1|.16,wfs|1.57|1|1.1|.16,soap|1.57|1|1.1|.16,alchemist|1.57|1|1.1|.12,mirth|1.57|1|1.1|.16,orlando|1.57|1|1.1|.16,cities|1.57|1|1.1|.16,beloved|1.57|1|1.1|.10,romeo|1.57|1|1.1|.16,rebecca|1.57|1|1.1|.14,hardtimes|1.57|1|1.1|.12,commodus|1.57|1|1.1|.10,spartacus|1.57|1|1.1|.10,crixus|1.57|1|1.1|.10,marcus|1.57|1|1.1|.10,rexor|1.57|1|1.1|.10,priscus|1.57|1|1.1|.10,verus|1.57|1|1.1|.10' | split: ','
+-%}
+{%- capture hsc_places -%}{%- for p in hsc_place -%}{%- assign q = p | split: '|' -%}{%- assign fd = 'be-hsc-' | append: q[0] | append: '.webp' -%}{%- assign fm = 'be-hsc-' | append: q[0] | append: '-m.webp' -%}{%- if images[fd] -%}{{ q[0] | json }}:{"env":{{ images[fd] | image_url | json }},"envM":{{ images[fm] | default: images[fd] | image_url | json }},"rot":{{ q[1] }},"h":{{ q[2] }},"ei":{{ q[3] }},"rf":{{ q[4] }}},{%- endif -%}{%- endfor -%}{%- endcapture -%}
+<style>
+/* B2: eine Leinwand hinter allen Motiven; Text/Chips/Pfeile liegen darüber. Poster (h3-bgl) bis die Szene steht, dann aus. */
+.ch .hsc-canvas,.ch .hsc-snap{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block}
+.ch .hsc-canvas{opacity:0;transition:opacity .8s ease;cursor:grab;outline:0;-webkit-user-select:none;user-select:none;touch-action:pan-y}
+.ch .hsc-canvas:active{cursor:grabbing}
+.ch .hsc-canvas:focus-visible{outline:2px solid var(--acc);outline-offset:-4px}
+.ch .hsc-snap{pointer-events:none;opacity:0}
+.ch .hsc-live .hsc-canvas{opacity:1}
+.ch .hsc .h3-slide{background:transparent}
+.ch .hsc-live .h3-bgl{background-image:none!important}
+.ch .hsc .h3-slide.is-on{pointer-events:none}
+.ch .hsc .h3-slide.is-on :is(a,button,.m3-tabs){pointer-events:auto}
+.ch .hsc .h3-stage{transform:none!important}
+.ch .hsc .m3-glint,.ch .hsc .m3-dust,.ch .hsc .dm3-ring{display:none!important}
+.ch .hsc .h3-bgl::after{background:linear-gradient(90deg,rgba(0,0,0,.74) 0%,rgba(0,0,0,.5) 34%,rgba(0,0,0,.06) 62%,rgba(0,0,0,0) 80%),linear-gradient(0deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,0) 22%)}
+@media (min-width:861px){.ch .hsc .h3-bgl::after{background:linear-gradient(90deg,rgba(0,0,0,.42) 0,rgba(0,0,0,.42) calc(var(--bx-sbw,0px) * .7),rgba(0,0,0,.74) calc(var(--bx-sbw,0px) + 5%),rgba(0,0,0,.5) 36%,rgba(0,0,0,.06) 62%,rgba(0,0,0,0) 80%),linear-gradient(0deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,0) 22%)}
+  html[dir="rtl"] .ch .hsc .h3-bgl::after{transform:scaleX(-1)}}
+@media (max-width:860px){.ch .hsc .h3-bgl::after{background:linear-gradient(180deg,rgba(0,0,0,.84) 0%,rgba(0,0,0,.55) 34%,rgba(0,0,0,0) 56%,rgba(0,0,0,0) 78%,rgba(0,0,0,.45))}}
+@media (prefers-reduced-motion:reduce){.ch .hsc-canvas{transition:none}}
+</style>
+<div class="ch-hero ch-h3 hsc" data-ch-hero data-hsc>
+  <canvas class="hsc-canvas" tabindex="0" role="img" aria-label="{{ 'claude.hero.alt_3d_html' | t: name: 'BLACK ELIXIR' | strip_html | escape }}"></canvas><canvas class="hsc-snap" aria-hidden="true"></canvas>
+  {%- for i in (1..14) -%}
+    <span class="ch-dust" style="left:{{ i | times: 37 | modulo: 100 }}%;width:{{ i | modulo: 3 | plus: 2 }}px;height:{{ i | modulo: 3 | plus: 2 }}px;animation-delay:-{{ i | times: 0.61 }}s" aria-hidden="true"></span>
+  {%- endfor -%}
+  {%- capture hsc_items -%}
+  {%- for n in (1..4) -%}
+    {%- liquid
+      assign btn2 = blank
+      case n
+        when 1
+          assign eyebrow = 'claude.hero.e1_html' | t
+          assign title = s.hero1_title
+          if title == 'Die Adventszeit beginnt mit einem Türchen' or title == blank
+            assign title = 'claude.hero.t1_html' | t
+          endif
+          assign text = s.hero1_text
+          if text == 'Adventskalender von BABOR, ARTDECO, Molton Brown und Wir für Sie – Tür für Tür Pflege und Duft.' or text == blank
+            assign text = 'claude.hero.x1_html' | t
+          endif
+          assign btn = s.hero1_btn
+          if btn == 'Adventskalender entdecken' or btn == blank
+            assign btn = 'claude.hero.b1_html' | t
+          endif
+          assign link = s.hero1_link | default: '/collections/luxus-adventskalender'
+        when 2
+          assign eyebrow = 'claude.c.only_until_html' | t
+          assign title = 'claude.hero.t2_html' | t
+          assign text = s.hero2_text
+          if text == 'Ab 59 € eine italienische Seife deiner Wahl, ab 99 € zwei Seifen und eine Duftprobe – ganz ohne Code.' or text == blank
+            assign text = 'claude.hero.x2_html' | t
+          endif
+          assign btn = s.hero2_btn
+          if btn == 'Seife wählen' or btn == blank
+            assign btn = 'claude.c.choose_soap_html' | t
+          endif
+          assign link = s.hero2_link | default: '/collections/geschenk-seifen'
+          assign btn2 = 'claude.hero.b2b_html' | t
+          assign link2 = '#ch-geschenk'
+        when 3
+          assign eyebrow = 'Fragrance Library · Extrait de Parfum'
+          assign title = 'claude.hero.t3_html' | t
+          assign text = 'claude.hero.x3_html' | t
+          assign btn = 'claude.hero.b3_html' | t
+          assign link = routes.collections_url | append: '/' | append: s.col_library
+        else
+          assign eyebrow = 'DUMO · Luxury Perfume'
+          assign title = 'claude.hero.t4_html' | t
+          assign text = 'claude.hero.x4_html' | t
+          assign btn = 'claude.hero.b4_html' | t
+          assign link = routes.collections_url | append: '/' | append: s.col_dumo
+      endcase
+      assign last = title | split: ' ' | last
+      assign first = title | remove_last: last
+      assign pn = 'be-hsc-poster-' | append: n | append: '.jpg'
+      assign pm = 'be-hsc-poster-' | append: n | append: '-m.jpg'
+      assign bgn = 'be-hero-bg-advent.png,be-hero-bg-seife.png,be-hero-bg-library.png,be-hero-bg-dumo.png' | split: ',' | slice: forloop.index0 | first
+      assign poster = images[pn] | default: images[bgn]
+      assign posterM = images[pm] | default: poster
+      case n
+        when 1
+          assign mlist = 'BABOR|eab800eba079cdeb/be-cal-babor.glb|-24|babor|flat,ARTDECO|7f0bc976655f8fa4/be-cal-artdeco.glb|-24|artdeco|flat,Molton Brown|5c65f193dc68588a/be-cal-mb3.glb|-24|mb|flat,Wir für Sie|8c572b0420074443/be-cal-wfs.glb|-24|wfs|flat' | split: ','
+        when 2
+          assign mlist = 'Ambra & Vaniglia|66fa7df71ad55bd5/be2-soap-ambra.glb|-14|soap|soap,Bergamotto|9833b75849710d28/be2-soap-bergamotto.glb|-14|soap|soap,Fiori di Ciliegio|f65a5d777bb2cf87/be2-soap-ciliegio.glb|-14|soap|soap,Gelsomino|75befa81eadd0dfc/be2-soap-gelsomino.glb|-14|soap|soap,Lavanda|48fc8442dbc81963/be2-soap-lavanda.glb|-14|soap|soap,Orchidea Nera|9f0765b514b3ab27/be2-soap-orchidea.glb|-14|soap|soap' | split: ','
+        when 3
+          assign mlist = 'The Alchemist|726d6965c7f4d746/be4-fl-red.glb|20|alchemist|bottle,The House of Mirth|7a67b14fc1ffec9a/be4-fl-yellow.glb|20|mirth|bottle,Orlando|d4c849a1041ec3a7/be4-fl-orlando.glb|20|orlando|bottle,Invisible Cities|b4395c42ef329856/be4-fl-cities.glb|20|cities|bottle,Beloved|50b5261580d3bfd9/be4-fl-beloved.glb|20|beloved|bottle,Romeo and Juliet|ce3b708a28188d20/be4-fl-romeo.glb|20|romeo|bottle,Rebecca|13a61eafefe41e40/be4-fl-white.glb|20|rebecca|bottle,Hard Times|3e91251fba23d183/be4-fl-hardtimes.glb|20|hardtimes|bottle' | split: ','
+        else
+          assign mlist = ''
+          assign c_dumo = collections[s.col_dumo]
+          for p in c_dumo.products limit: 7
+            assign nm = p.title | remove: 'DUMO ' | split: ' ' | first
+            assign low = nm | downcase
+            case low
+              when 'spartacus'
+                assign g = '047518974017eb47/be6-dumo-spartacus.glb'
+              when 'commodus'
+                assign g = '61da2d04a7777b4a/be6-dumo-commodus.glb'
+              when 'crixus'
+                assign g = '7cc23c0d5f6caf4f/be6-dumo-crixus.glb'
+              when 'marcus'
+                assign g = '93cab1590bc3d47f/be6-dumo-marcus.glb'
+              when 'rexor'
+                assign g = 'ac06e8a8d2318792/be6-dumo-rexor.glb'
+              when 'priscus'
+                assign g = '4ba273098301cc2a/be6-dumo-priscus.glb'
+              when 'verus'
+                assign g = 'f62e89f263d62df5/be6-dumo-verus.glb'
+              else
+                assign g = ''
+            endcase
+            assign nmc = nm | capitalize
+            if g != ''
+              assign mlist = mlist | append: ',' | append: nmc | append: '|' | append: g | append: '|0|' | append: low | append: '|bust'
+            endif
+          endfor
+          assign mlist = mlist | remove_first: ',' | split: ','
+      endcase
+    -%}
+    {%- unless forloop.first -%},{%- endunless -%}{"items":[{%- for it in mlist -%}{%- assign ip = it | split: '|' -%}{"src":{{ cdn | append: ip[1] | json }},"az":{{ ip[2] }},"place":{{ ip[3] | json }},"kind":{{ ip[4] | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}
+    {%- capture slide_html -%}
+    <div class="ch-slide h3-slide{% if forloop.first %} is-on{% endif %}" data-h3-slide style="--bg:url({{ poster | image_url: width: 2000 }});--bgm:url({{ posterM | image_url: width: 900 }})">
+      <span class="h3-bgl" aria-hidden="true"></span><span class="h3-wipe" aria-hidden="true"></span>
+      <div class="h3-text">
+        <a href="{{ routes.collections_url }}/{{ s.col_soaps }}" class="h3-chip ch-glassD"><i></i>{{ 'claude.hero.chip_html' | t }}</a>
+        <p class="h3-eyebrow">{{ eyebrow }}</p>
+        {%- if forloop.first -%}<h1 class="h3-title">{{ first }}<em class="h3-shine">{{ last }}</em></h1>{%- else -%}<h2 class="h3-title">{{ first }}<em class="h3-shine">{{ last }}</em></h2>{%- endif -%}
+        <p class="d">{{ text }}</p>
+        {%- if n == 1 -%}<p class="h3-count" data-h3-count></p>{%- endif -%}
+        <div class="h3-btns"><a class="ch-btn ch-btn--gold" href="{{ link }}">{{ btn }}</a>{%- if btn2 != blank -%}<a class="ch-btn ch-btn--line" href="{{ link2 }}">{{ btn2 }}</a>{%- endif -%}</div>
+      </div>
+      <div class="h3-stage">
+        <div class="h3-par">
+          <div class="m3{% if n == 2 %} m3-soap{% endif %}{% if n == 4 %} m3-dumo{% endif %}" data-m3>
+            {%- if mlist.size > 1 -%}
+            <div class="ca3-tabs m3-tabs" role="group" aria-label="{% if n == 4 %}{{ 'claude.hero.aria_warrior_html' | t }}{% else %}{{ 'claude.hero.aria_pick_html' | t }}{% endif %}">{%- for it in mlist -%}{%- assign ip = it | split: '|' -%}<button type="button" data-m3-go{% if forloop.first %} class="on"{% endif %}>{{ ip[0] }}</button>{%- endfor -%}</div>
+            {%- endif -%}{%- if n == 2 -%}<span class="sp3-tag">{{ 'claude.hero.tag59_html' | t }}</span>{%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+    {%- endcapture -%}
+    {%- assign hsc_slides = hsc_slides | append: slide_html -%}
+  {%- endfor -%}
+  {%- endcapture -%}
+  {{ hsc_slides }}
+  <div class="ch-ctrl">
+    <button type="button" data-h3-prev aria-label="{{ 'claude.hero.prev_html' | t }}">←</button>
+    <div class="ch-dots">{%- for n in (1..4) -%}<button type="button" data-h3-dot="{{ forloop.index0 }}" aria-label="{{ 'claude.hero.dot_html' | t: n: n }}"{% if forloop.first %} class="is-on"{% endif %}></button>{%- endfor -%}</div>
+    <button type="button" data-h3-next aria-label="{{ 'claude.hero.next_html' | t }}">→</button>
+  </div>
+  <script type="application/json" data-hsc-cfg>{"lib":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/+esm","orbit":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/controls/OrbitControls.js/+esm","gltf":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/loaders/GLTFLoader.js/+esm"},
+  "fov":40,"fovM":48,"crop":0.3,"polar":[1.22,1.42,1.53],"spin":0.17,"flat":1.22,"flatDrift":0.85,"resume":3000,"exposure":1.08,
+  "kinds":{"flat":{"px":400,"key":2.0,"fill":1.3},"soap":{"px":250,"key":2.0,"fill":1.2},"bottle":{"px":370,"key":1.6,"fill":0.9},"bust":{"px":400,"key":2.2,"fill":1.2}},
+  "places":{ {{- hsc_places | remove_last: ',' -}} },
+  "slides":[{{ hsc_items }}]}</script>
+</div>
+<style>.ch .hsc .h3-bgl{background-image:var(--bg)}@media (max-width:860px){.ch .hsc .h3-bgl{background-image:var(--bgm)}}</style>
+<script>
+(function () {
+  var h = document.currentScript.previousElementSibling.previousElementSibling;
+  if (!h || !h.hasAttribute('data-hsc')) h = document.querySelector('[data-hsc]');
+  var cfg = JSON.parse(h.querySelector('[data-hsc-cfg]').textContent);
+  // Adventskalender: Tage bis zum ersten Türchen (wie bisher)
+  var cn = h.querySelector('[data-h3-count]'), now = new Date(), y = now.getFullYear(), d1 = new Date(y, 11, 1), days = Math.ceil((d1 - now) / 864e5);
+  if (cn) cn.innerHTML = days > 0 ? '<b>' + days + '</b>' + (days === 1 ? {{ 'claude.hero.day1_html' | t | json }} : {{ 'claude.hero.dayn_html' | t | json }}) : (now.getMonth() === 11 && now.getDate() <= 24 ? '<b>' + now.getDate() + '</b>' + {{ 'claude.hero.today_html' | t | json }}.replace('{n}', now.getDate()) : '');
+
+  var still = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var slides = h.querySelectorAll('[data-h3-slide]'), dots = h.querySelectorAll('[data-h3-dot]'), ctl = h.querySelector('.ch-ctrl');
+  var si = 0, el = 0, sw = 0, stop = 0, hov = 0, last = Date.now(), DUR = 20000, SWT = 10000, want = 0, vis = 1;
+  var boxes = [].map.call(slides, function (sl, k) {
+    return { k: k, sl: sl, box: sl.querySelector('[data-m3]'), bs: sl.querySelectorAll('[data-m3-go]'), tag: sl.querySelector('.sp3-tag'), tabs: sl.querySelector('.m3-tabs'), i: 0, touched: 0 };
+  });
+  function hold() { stop = 1; }
+  var S = null; // 3D-Szene, sobald geladen; ohne Szene (kein WebGL) wechseln nur Text + Poster
+
+  function activate(j) {
+    slides.forEach(function (x, k) { x.classList.toggle('is-on', k === j); });
+    slides[(j + 1) % slides.length].classList.add('bg-ok');
+  }
+  function show(i) {
+    si = (i + slides.length) % slides.length; el = 0; sw = 0; var j = si; want = j;
+    dots.forEach(function (x, k) { x.classList.toggle('is-on', k === j); });
+    if (!S || S.dead) { activate(j); return; }
+    S.go(j, boxes[j].i, function () { if (want === j) activate(j); });
+  }
+  function pick(o, j) {
+    o.i = (j + o.bs.length) % o.bs.length; var b = o.bs[o.i];
+    o.bs.forEach(function (x, k) { x.classList.toggle('on', k === o.i); });
+    var tb = b.parentNode; if (tb.scrollWidth > tb.clientWidth + 1) tb.scrollTo({ left: b.offsetLeft - (tb.clientWidth - b.offsetWidth) / 2, behavior: still ? 'auto' : 'smooth' });
+    if (S && !S.dead) S.go(o.k, o.i);
+  }
+  boxes.forEach(function (o) { o.bs.forEach(function (b, j) { b.addEventListener('click', function () { hold(); pick(o, j); }); b.addEventListener('pointerenter', function () { if (S && !S.dead) S.warm(o.k, j); }); }); });
+  var pv = h.querySelector('[data-h3-prev]'), nx = h.querySelector('[data-h3-next]');
+  if (pv) pv.addEventListener('click', function () { hold(); show(si - 1); });
+  if (nx) nx.addEventListener('click', function () { hold(); show(si + 1); });
+  dots.forEach(function (x, k) { x.addEventListener('click', function () { hold(); show(k); }); });
+  h.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hov = 1; });
+  h.addEventListener('pointerleave', function () { hov = 0; });
+  // 20 s je Motiv, bei 10 s ein Produktwechsel im Motiv; jede Bedienung (Pfeil, Punkt, Chip, Ziehen) stoppt den Automatismus für diesen Besuch; Maus über dem Hero pausiert.
+  setInterval(function () {
+    var t = Date.now(), dt = t - last; last = t;
+    if (stop || hov || !vis || document.hidden || slides.length < 2 || (S && S.busy)) return;
+    el += dt; var o = boxes[si];
+    if (!sw && el >= SWT && el < DUR - 6000 && o.bs.length > 1) { sw = 1; pick(o, o.i + 1); }
+    if (el >= DUR) show(si + 1);
+  }, 250);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting ? 1 : 0; if (S) S.kick(); }).observe(h);
+  function bgAll() { setTimeout(function () { slides.forEach(function (x) { x.classList.add('bg-ok'); }); }, 2500); }
+  if (document.readyState === 'complete') bgAll(); else addEventListener('load', bgAll);
+
+  // ---------- 3D: ein Renderer, ein Ort + ein Produkt zur Zeit ----------
+  boot();
+  async function boot() {
+    var canvas = h.querySelector('.hsc-canvas'), snap = h.querySelector('.hsc-snap');
+    var THREE, OrbitControls, GLTFLoader, renderer;
+    function fail() { h.classList.add('hsc-fail'); S = { dead: 1 }; activate(want); }
+    try {
+      var m = await Promise.all([import(cfg.lib.three), import(cfg.lib.orbit), import(cfg.lib.gltf)]);
+      THREE = m[0]; OrbitControls = m[1].OrbitControls; GLTFLoader = m[2].GLTFLoader;
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
+    } catch (e) { return fail(); }
+    canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); h.classList.remove('hsc-live'); fail(); });
+    renderer.toneMapping = THREE.NeutralToneMapping; renderer.toneMappingExposure = cfg.exposure;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    var mob = function () { return innerWidth <= 860; };
+    var pmrem = new THREE.PMREMGenerator(renderer), aniso = Math.min(16, renderer.capabilities.getMaxAnisotropy());
+    var scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(cfg.fov, 2, 0.02, 400), target = new THREE.Vector3();
+    var HW = 0.4; // Produkthöhe in Welteinheiten (alle Produkte gleich normiert; Größe am Bildschirm regelt das Layout)
+    var sky = new THREE.Mesh(groundedSphere(THREE, 1, 60, cfg.crop), new THREE.MeshBasicMaterial({ depthWrite: false, toneMapped: false }));
+    sky.renderOrder = -10; sky.visible = false; scene.add(sky);
+    var key = new THREE.DirectionalLight(0xfff0dc, 2); scene.add(key);
+    var fill = new THREE.DirectionalLight(0xfff4e6, 1); camera.add(fill); fill.position.set(-0.4, 0.5, 1); scene.add(camera);
+    var slot = new THREE.Group(); scene.add(slot);
+    var shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, toneMapped: false, opacity: 0 }));
+    shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.0015; shadow.renderOrder = -5; scene.add(shadow);
+    var loader = new GLTFLoader();
+    var controls = new OrbitControls(camera, canvas);
+    controls.enableZoom = false; controls.enablePan = false; controls.enableDamping = true; controls.dampingFactor = 0.07; controls.rotateSpeed = 0.5;
+    controls.minPolarAngle = cfg.polar[0]; controls.maxPolarAngle = cfg.polar[2];
+    canvas.style.touchAction = 'pan-y'; // senkrechtes Wischen scrollt die Seite, waagrechtes Ziehen bewegt die Kamera
+
+    // --- Caches: Orte (Textur + Umgebungslicht) und Modelle; nur das Nötige bleibt im Speicher
+    var places = {}, models = {}, use = 0, curIt = null, curSlide = -1;
+    function itemOf(s, i) { var it = cfg.slides[s] && cfg.slides[s].items[i]; return it; }
+    function placeOf(it) { return cfg.places[it.place] || cfg.places.romeo || cfg.places[Object.keys(cfg.places)[0]]; }
+    function loadPlace(it) {
+      var P = placeOf(it); if (!P) return Promise.reject('no place');
+      var url = mob() ? P.envM : P.env, c = places[url];
+      if (c) { c.u = ++use; return c.p; }
+      c = places[url] = { u: ++use, p: null };
+      c.p = new THREE.TextureLoader().loadAsync(url).then(function (tex) {
+        tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = aniso; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
+        c.tex = tex; c.env = hdrEnv(tex.image); return c;
+      });
+      c.p.catch(function () { delete places[url]; });
+      return c.p;
+    }
+    // Licht/Spiegelungen: kleine Kopie des Panoramas mit angehobenen Lichtern (Pseudo-HDR) → PMREM; Glas und Metall bekommen echte Glanzpunkte des Ortes
+    function hdrEnv(img) {
+      var W = 1024, H2 = 512, cv = document.createElement('canvas'); cv.width = W; cv.height = H2;
+      var x = cv.getContext('2d', { willReadFrequently: true }), c0 = Math.round(H2 * cfg.crop); // Panorama ohne obere 30 % (nie sichtbar): oberste Zeile nach oben strecken
+      x.drawImage(img, 0, 0, img.width, 1, 0, 0, W, c0 + 1); x.drawImage(img, 0, c0, W, H2 - c0);
+      var d = x.getImageData(0, 0, W, H2).data, f = new Uint16Array(W * H2 * 4), th = THREE.DataUtils.toHalfFloat;
+      for (var i = 0; i < W * H2; i++) {
+        var r = lin(d[4 * i] / 255), g = lin(d[4 * i + 1] / 255), b = lin(d[4 * i + 2] / 255), mx = Math.max(r, g, b), k = mx > 0.55 ? 1 + 9 * Math.pow((mx - 0.55) / 0.45, 2) : 1;
+        f[4 * i] = th(r * k); f[4 * i + 1] = th(g * k); f[4 * i + 2] = th(b * k); f[4 * i + 3] = th(1);
+      }
+      var dt = new THREE.DataTexture(f, W, H2, THREE.RGBAFormat, THREE.HalfFloatType);
+      dt.mapping = THREE.EquirectangularReflectionMapping; dt.colorSpace = THREE.LinearSRGBColorSpace; dt.magFilter = dt.minFilter = THREE.LinearFilter; dt.needsUpdate = true;
+      var rt = pmrem.fromEquirectangular(dt); dt.dispose(); return rt;
+    }
+    function lin(v) { return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+    function loadModel(it) {
+      var c = models[it.src]; if (c) { c.u = ++use; return c.p; }
+      c = models[it.src] = { u: ++use };
+      c.p = loader.loadAsync(it.src).then(function (g) { c.obj = prep(g.scene); return c; });
+      c.p.catch(function () { delete models[it.src]; });
+      return c.p;
+    }
+    function prep(obj) {
+      var box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3()), ce = box.getCenter(new THREE.Vector3()), s = HW / size.y;
+      var g = new THREE.Group(); obj.position.set(-ce.x, -box.min.y, -ce.z); g.add(obj); g.scale.setScalar(s);
+      // schwaches Spiegelbild im polierten Boden: gespiegelte Kopie, direkt auf den Boden gezeichnet
+      var mir = obj.clone(true); mir.traverse(function (o) { if (o.isMesh) { o.material = o.material.clone(); o.material.transparent = true; o.material.depthWrite = false; o.renderOrder = -4; o.userData.mir = 1; } });
+      var mg = new THREE.Group(); mg.add(mir); mg.scale.set(s, -s, s);
+      var w = new THREE.Group(); w.add(mg, g); w.userData.foot = [size.x * s, size.z * s]; w.userData.mir = mir;
+      return w;
+    }
+    function free(o) { o.traverse(function (n) { if (n.isMesh) { n.geometry.dispose(); [].concat(n.material).forEach(function (mt) { for (var k in mt) if (mt[k] && mt[k].isTexture) mt[k].dispose(); mt.dispose(); }); } }); }
+    function trim() { // höchstens 3 Modelle und 2 Orte behalten (aktuelles immer)
+      [[models, 3, function (c) { if (c.obj) free(c.obj); }], [places, 2, function (c) { if (c.tex) c.tex.dispose(); if (c.env) c.env.dispose(); }]].forEach(function (a) {
+        var ks = Object.keys(a[0]).filter(function (k) { return a[0][k].obj !== (curIt && curIt.obj) && a[0][k].tex !== (curIt && curIt.tex) && (a[0][k].obj || a[0][k].tex); }).sort(function (p, q) { return a[0][p].u - a[0][q].u; });
+        while (ks.length > a[1] - 1) { var k = ks.shift(); a[2](a[0][k]); delete a[0][k]; }
+      });
+    }
+
+    function shadowTex(fx, fz) {
+      var Sz = 256, pad = 0.12, W = fx + pad * 2, D = fz + pad * 2, cv = document.createElement('canvas'); cv.width = cv.height = Sz;
+      var x = cv.getContext('2d'), sx = Sz / W, sz = Sz / D;
+      x.filter = 'blur(' + (0.035 * sx) + 'px)'; x.fillStyle = 'rgba(0,0,0,.6)'; x.fillRect((pad - 0.02) * sx, (pad - 0.02) * sz, (fx + 0.04) * sx, (fz + 0.04) * sz);
+      x.filter = 'blur(' + (0.006 * sx) + 'px)'; x.fillStyle = 'rgba(0,0,0,.85)'; x.fillRect(pad * sx, pad * sz, fx * sx, fz * sz);
+      var t = new THREE.CanvasTexture(cv); shadow.scale.set(W, D, 1); return t;
+    }
+
+    // --- Wechsel: altes Bild bleibt stehen (Schnappschuss), bis Ort + Produkt fertig sind, dann Überblendung
+    var tok = 0, live = 0, az = 0, az0 = 0, flat = 0, ph = 0, dir = 1, drag = 0, resumeT = 0, fadeT = 0, lt = 0, layoutN = 0;
+    var view = { cx: 0, cy: 0, P: 300 };
+    function go(s, i, done) {
+      var it = itemOf(s, i); if (!it) return;
+      var my = ++tok; S.busy = 1;
+      Promise.all([loadPlace(it), loadModel(it)]).then(function (r) {
+        if (my !== tok) return;
+        swap(it, s, r[0], r[1]); if (done) done(); S.busy = 0;
+        warmNext(s, i);
+      }).catch(function () { if (my === tok) { S.busy = 0; if (done) done(); } });
+    }
+    function warm(s, i) { var it = itemOf(s, i); if (it) { loadPlace(it).catch(function () {}); loadModel(it).catch(function () {}); } }
+    function warmNext(s, i) { // nächstes Produkt im Motiv und erstes des nächsten Motivs vorladen
+      setTimeout(function () {
+        var n = cfg.slides[s].items.length; if (n > 1) warm(s, (i + 1) % n);
+        var s2 = (s + 1) % cfg.slides.length; warm(s2, boxes[s2] ? boxes[s2].i : 0);
+      }, 1200);
+    }
+    function swap(it, s, pl, md) {
+      var K = cfg.kinds[it.kind] || cfg.kinds.bottle, P = placeOf(it);
+      if (live) { // Schnappschuss des letzten Bildes über die Leinwand legen
+        renderer.render(scene, camera);
+        snap.width = canvas.width; snap.height = canvas.height; snap.getContext('2d').drawImage(canvas, 0, 0);
+        snap.style.transition = 'none'; snap.style.opacity = 1;
+      }
+      sky.material.map = pl.tex; sky.material.needsUpdate = true; sky.visible = true;
+      sky.geometry.dispose(); sky.geometry = groundedSphere(THREE, P.h, 60, cfg.crop); sky.position.y = P.h; sky.rotation.y = P.rot;
+      scene.environment = pl.env.texture; scene.environmentIntensity = P.ei; scene.environmentRotation.y = P.rot;
+      key.intensity = K.key; fill.intensity = K.fill; key.position.set(Math.sin(P.rot - 2.2) * 3, 2.4, Math.cos(P.rot - 2.2) * 3);
+      slot.clear(); slot.add(md.obj);
+      md.obj.userData.mir.traverse(function (o) { if (o.isMesh) o.material.opacity = P.rf; });
+      if (shadow.material.map) shadow.material.map.dispose();
+      shadow.material.map = shadowTex(md.obj.userData.foot[0], md.obj.userData.foot[1]); shadow.material.opacity = 1; shadow.material.needsUpdate = true;
+      curIt = { it: it, obj: md.obj, tex: pl.tex, K: K };
+      // Kamera: Kalender nur ±70° um die Vorderseite (nie hochkant), Flakons/Büsten volle 360°
+      flat = it.kind === 'flat'; az0 = 0; az = (it.az || 0) * Math.PI / 180; ph = flat ? Math.asin(Math.max(-1, Math.min(1, az / cfg.flatDrift))) : 0; dir = 1;
+      controls.minAzimuthAngle = flat ? -cfg.flat : -Infinity; controls.maxAzimuthAngle = flat ? cfg.flat : Infinity;
+      if (curSlide !== s) layoutN = 0; curSlide = s; layout(true);
+      place(az, cfg.polar[1]);
+      fadeT = performance.now(); trim();
+      renderer.render(scene, camera);
+      if (!live) { live = 1; h.classList.add('hsc-live'); }
+      else requestAnimationFrame(function () { snap.style.transition = 'opacity .7s ease'; snap.style.opacity = 0; });
+      kick();
+    }
+    function dist() { var f = camera.fov * Math.PI / 180, Vh = canvas.clientHeight || 1; return HW * Vh / (2 * view.P * Math.tan(f / 2)) * 1.06; }
+    function place(a, pol) {
+      target.set(0, HW * 0.5, 0); controls.target.copy(target);
+      camera.position.setFromSpherical(new THREE.Spherical(dist(), pol, a)).add(target); controls.update();
+    }
+
+    // --- Layout: Produktgruppe wie bisher positionieren (Desktop ~63,5 % der freien Breite, nie im Text; Chips mind. 16 px über Pfeilen), Produkt genau darüber
+    function txr(sl, rtl) { var m = rtl ? 1e9 : 0; [].forEach.call(sl.querySelectorAll('.h3-text > *'), function (e) { var g = document.createRange(); g.selectNodeContents(e); var q = g.getBoundingClientRect(); if (q.width) m = rtl ? Math.min(m, q.left) : Math.max(m, q.right); }); return m; }
+    function layout(force) {
+      var o = boxes[curSlide]; if (!o || !curIt) return;
+      var r = h.getBoundingClientRect(), b = o.box.getBoundingClientRect(), k = b.height / o.box.offsetHeight || 1, sh = parseFloat(o.box.style.left) || 0, nx = 0, rtl = document.documentElement.dir === 'rtl';
+      var bs = o.bs.length ? o.bs : [o.box];
+      if (innerWidth > 860) {
+        var c0 = b.left + b.width / 2 - sh, bl = 1e9; [].forEach.call(bs, function (x) { bl = Math.min(bl, x.getBoundingClientRect().left - sh); });
+        var gs = getComputedStyle(document.documentElement), sbw = parseFloat(gs.getPropertyValue('--bx-sbw')) || 0, rsw = parseFloat(gs.getPropertyValue('--bx-rsw')) || 0;
+        var dl = c0 - Math.min(bl, c0 - 150 * k), wnt = Math.max(r.left + sbw + (r.width - sbw - rsw) * .635, txr(o.sl) + 32 + dl);
+        nx = Math.min(wnt, Math.max(c0, r.right - rsw - 20 - b.width / 2)) - c0;
+        var brr = -1e9; [].forEach.call(bs, function (x) { brr = Math.max(brr, x.getBoundingClientRect().right - sh); });
+        nx = Math.max(Math.min(nx, r.right - rsw - 56 - brr), Math.min(nx, txr(o.sl) + 32 + dl - c0));
+        if (rtl) { var br = -1e9; [].forEach.call(bs, function (x) { br = Math.max(br, x.getBoundingClientRect().right - sh); });
+          var dr = Math.max(br, c0 + 150 * k) - c0; wnt = Math.min(r.right - sbw - (r.width - sbw - rsw) * .635, txr(o.sl, 1) - 32 - dr);
+          nx = Math.max(wnt, Math.min(c0, r.left + rsw + 20 + b.width / 2)) - c0; }
+      }
+      if (Math.abs(nx - sh) > .5) { o.box.style.left = nx.toFixed(1) + 'px'; b = o.box.getBoundingClientRect(); }
+      var tx = o.sl.querySelector('.h3-text'), cr = ctl.getBoundingClientRect();
+      // CTA nie in der Pfeil-Zeile (wie bisher)
+      if (tx && innerWidth > 860) { var t0 = parseFloat(tx.style.top) || 0, xb = 0, xr = 0;
+        [].forEach.call(tx.querySelectorAll('.h3-btns a'), function (a) { var q = a.getBoundingClientRect(); xb = Math.max(xb, q.bottom - t0); xr = Math.max(xr, q.right); });
+        var lift = xr > cr.left - 16 ? Math.max(0, Math.min(xb - (cr.top - 16), tx.getBoundingClientRect().top - t0 - r.top - 16)) : 0;
+        if (Math.abs(lift + t0) > .5) tx.style.top = (-lift).toFixed(0) + 'px'; } else if (tx) tx.style.top = '';
+      var th = o.tabs ? o.tabs.getBoundingClientRect().height : 0;
+      var tmax = cr.top - 16 - 40 * k - th, ty = innerWidth <= 860 ? tmax : Math.min(r.top + r.height * .78, tmax);
+      o.box.style.setProperty('--gy', ((ty - b.top) / k).toFixed(1) + 'px'); o.box.classList.add('is-set');
+      var hh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bx-hh')) || 0;
+      var top = innerWidth <= 860 ? (tx ? tx.getBoundingClientRect().bottom + 14 : r.top + 60) : Math.max(b.top + 10 * k, r.top + hh + 14);
+      if (o.tag) top += 46;
+      var want = curIt.K.px * k * (innerWidth <= 860 ? 1.25 : 1), P = Math.min(want, ty - top);
+      if (innerWidth <= 860 && P < want * .8 && !h.style.minHeight) { h.style.minHeight = Math.min(980, h.offsetHeight + Math.ceil(want * .8 - P)) + 'px'; return layout(force); }
+      P = Math.max(P, 120);
+      view.cx = b.left + b.width / 2 - r.left; view.cy = ty - P * 0.5 - r.top; view.P = P;
+      var W = canvas.clientWidth, Hc = canvas.clientHeight;
+      camera.fov = innerWidth <= 860 ? cfg.fovM : cfg.fov; camera.aspect = W / Hc;
+      camera.setViewOffset(W, Hc, W / 2 - view.cx, Hc / 2 - view.cy, W, Hc); camera.updateProjectionMatrix();
+      var sp = new THREE.Spherical().setFromVector3(camera.position.clone().sub(target)); sp.radius = dist(); camera.position.setFromSpherical(sp).add(target);
+      controls.minDistance = controls.maxDistance = sp.radius;
+      tagPos(o, b, k);
+    }
+    var tv = new THREE.Vector3();
+    function tagPos(o, b, k) { // Badge „Ab 59 € geschenkt“ direkt über der Seife
+      if (!o.tag) return; var r = h.getBoundingClientRect();
+      tv.set(0, HW * 1.02, 0).project(camera);
+      var sx = (tv.x + 1) / 2 * canvas.clientWidth + r.left, sy = (1 - tv.y) / 2 * canvas.clientHeight + r.top;
+      o.tag.style.left = ((sx - b.left) / k).toFixed(1) + 'px'; o.tag.style.top = ((sy - b.top - 12) / k).toFixed(1) + 'px';
+    }
+
+    function size() {
+      var W = h.clientWidth, Hc = h.clientHeight; if (!W || !Hc) return;
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mob() ? 1.5 : 2));
+      renderer.setSize(W, Hc, false); layout(true); dirty = 1;
+    }
+
+    // --- Ziehen = Kamera; losgelassen treibt sie nach ein paar Sekunden weiter
+    controls.addEventListener('start', function () { drag = 1; hold(); boxes[curSlide] && (boxes[curSlide].touched = 1); kick(); });
+    controls.addEventListener('end', function () { drag = 0; resumeT = performance.now() + cfg.resume;
+      var a = controls.getAzimuthalAngle(); az = a; if (flat) { ph = Math.asin(Math.max(-1, Math.min(1, a / cfg.flatDrift))); } kick(); });
+    controls.addEventListener('change', function () { dirty = 1; });
+    canvas.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault(); hold(); var a = controls.getAzimuthalAngle() + (e.key === 'ArrowLeft' ? -0.25 : 0.25);
+      if (flat) a = Math.max(-cfg.flat, Math.min(cfg.flat, a)); az = a; resumeT = performance.now() + cfg.resume; place(a, camera.position.clone().sub(target).angleTo(new THREE.Vector3(0, 1, 0))); kick();
+    });
+
+    var running = 0, dirty = 1;
+    function kick() { dirty = 1; if (!running && vis && !document.hidden && live) { running = 1; lt = 0; requestAnimationFrame(tick); } }
+    function tick(t) {
+      var dt = lt ? Math.min(0.05, (t - lt) / 1000) : 0; lt = t;
+      if (!drag && t > resumeT && !still && curIt) { // Auto-Drift
+        if (flat) { ph += dt * cfg.spin / cfg.flatDrift * 0.9; az = az0 + cfg.flatDrift * Math.sin(ph); }
+        else az -= cfg.spin * dt;
+        var sp = new THREE.Spherical().setFromVector3(camera.position.clone().sub(target)); sp.theta = az; sp.phi += (cfg.polar[1] - sp.phi) * Math.min(1, dt * 0.8);
+        camera.position.setFromSpherical(sp).add(target); dirty = 1;
+      }
+      if (controls.update()) dirty = 1;
+      if (++layoutN < 90 || layoutN % 30 === 0) layout();
+      else if (boxes[curSlide] && boxes[curSlide].tag) tagPos(boxes[curSlide], boxes[curSlide].box.getBoundingClientRect(), boxes[curSlide].box.getBoundingClientRect().height / boxes[curSlide].box.offsetHeight || 1);
+      if (dirty) { renderer.render(scene, camera); dirty = 0; }
+      var moving = drag || (!still && t > resumeT) || t - fadeT < 1500 || layoutN < 90;
+      if (vis && !document.hidden && (moving || dirty)) requestAnimationFrame(tick); else running = 0;
+      if (still && !drag) { /* bei reduzierter Bewegung nur bei Bedarf zeichnen */ }
+    }
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) kick(); });
+    if ('ResizeObserver' in window) new ResizeObserver(function () { size(); kick(); }).observe(h);
+    addEventListener('resize', function () { h.style.minHeight = ''; });
+
+    S = { go: go, warm: warm, kick: kick, busy: 0, THREE: THREE, renderer: renderer, scene: scene, camera: camera, controls: controls, info: function () { return { it: curIt && curIt.it, az: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), places: Object.keys(places).length, models: Object.keys(models).length, mem: renderer.info.memory, view: view }; } };
+    h.__hsc = S;
+    size();
+    go(0, 0, function () { activate(want); });
+  }
+
+  // Kugel, deren untere Hälfte zu einer echten Bodenebene abgeflacht ist (wie three GroundedSkybox): Boden bei y = -height
+  function groundedSphere(THREE, height, radius, crop) {
+    var g = new THREE.SphereGeometry(radius, 192, 96); g.scale(1, 1, -1);
+    var pos = g.getAttribute('position'), v = new THREE.Vector3(), y1 = -height * 1.5;
+    for (var i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i);
+      if (v.y < 0) { v.multiplyScalar(v.y < y1 ? -height / v.y : 1 - v.y * v.y / (3 * y1 * y1)); v.toArray(pos.array, 3 * i); }
+    }
+    var uv = g.getAttribute('uv'); for (i = 0; i < uv.count; i++) uv.setY(i, Math.min(1, uv.getY(i) / (1 - (crop || 0)))); // Bild beginnt erst bei crop (obere Kappe = oberste Zeile)
+    return g;
+  }
+})();
+</script>

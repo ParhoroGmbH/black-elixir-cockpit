@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "hero-scene-test",
+      "settings": {
+        "hero1_link": "shopify://collections/luxus-adventskalender",
+        "hero2_link": "shopify://collections/geschenk-seifen"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

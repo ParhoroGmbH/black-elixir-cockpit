@@ -1,0 +1,222 @@
+{%- comment -%} Testsektion Paket B2 (12.11.2026): kompletter 3D-Szenen-Hero (4 Motive, alle Produkte) mit den Startseiten-Styles. Nur Vorschau. Inline-Styles = Kopie aus claude-home-hero3d (Stand 12.11.2026 21:55). {%- endcomment -%}
+{%- render 'claude-home-style', sec: section -%}
+{%- render 'claude-home-style2', sec: section -%}
+{%- render 'claude-home-fix', sec: section -%}
+<style>/* Perf 12.11.2026: Hintergrundbilder tieferer Sektionen erst laden, wenn die Sektion naht (Klasse bg-in aus claude-home-js); Animationen außerhalb des Sichtbereichs pausieren (ch-off) */
+.js .ch .ca:not(.bg-in),.js .ch .cl:not(.bg-in),.js .ch .cr.cr:not(.bg-in),.js .ch .cv-sec.cv-sec:not(.bg-in),.js .ch .cr:not(.bg-in) .cr-frame{background-image:none!important}
+.ch .ch-off,.ch .ch-off::before,.ch .ch-off::after,.ch .ch-off *,.ch .ch-off *::before,.ch .ch-off *::after{animation-play-state:paused!important}
+/* Mobil-Bedienbarkeit 12.11.2026: größere Tippfläche für Hero-Punkte (Optik gleich), Kartenlabels lesbar (mind. 12 px) */
+@media (max-width:860px){.ch .ch-dots button{height:44px;margin:-10px 0}.ch .ch-dots button::after{top:20px}.ch .ch-dots button::before{content:"";position:absolute;top:0;bottom:0;left:-4px;right:-4px}.ch .ch-card__tag,.ch .ch-card__vendor{font-size:12px}}</style>
+<style>/* 12.11.2026 Vollbreite wie Fragrance-Library-/DUMO-Landing: die Startseite läuft unter der linken Glas-Seitenleiste durch (--bx-sbw = Leistenbreite, 0 ohne Leiste/mobil);
+   alle Sektionen halten ihren Inhalt um die Leistenbreite frei, beim Marken-Laufband läuft nur das schwarze Band darunter durch (Logos enden an der Leistenkante). Schriftfarbe der Leiste: sidebarTone in claude-global-chrome. */
+.claude-home-section{width:calc(100% + var(--bx-sbw,0px));margin-inline-start:calc(-1*var(--bx-sbw,0px))}
+.ch>:is(div,section):not(.ch-marq){padding-inline-start:var(--bx-sbw,0px)!important}
+.ch .ch-marq::before{content:"";position:absolute;z-index:1;inset-inline-start:0;top:0;bottom:0;width:var(--bx-sbw,0px);background:#000}
+/* A1 12.11.2026: Glas-Kopfzeile liegt über dem Hero (Desktop), Ankündigungsleiste 32 px – hier vorab, damit beim Laden nichts springt (Optik/Ton: claude-global-chrome, Abschnitt 7). Arabisch: gespiegelt, Leiste rechts. */
+html body .announcement-bar-section .slider__viewport{padding:0!important;height:32px}
+@media (min-width:921px){#shopify-section-secondary-header{margin-bottom:calc(-1 * var(--bx-hh,118px))}}</style>
+<script>(function(){var de=document.documentElement,me=document.currentScript.parentNode,sb=document.querySelector('.main-sidebar-section'),hd=document.getElementById('shopify-section-secondary-header');
+function w(){de.style.setProperty('--bx-sbw',(sb&&getComputedStyle(sb).display!=='none'?sb.offsetWidth:0)+'px');de.style.setProperty('--bx-hh',(hd?hd.getBoundingClientRect().height:0).toFixed(1)+'px');de.style.setProperty('--ch-top',Math.max(0,Math.round(me.getBoundingClientRect().top+(window.pageYOffset||0)))+'px')}
+w();addEventListener('resize',w);addEventListener('load',w);if('ResizeObserver' in window)new ResizeObserver(w).observe(document.body)})();</script>
+<style>.ch .h3-slide::before{display:none!important}.ch .h3-slide{background:#000;overflow:hidden}.ch .h3-bgl{position:absolute;inset:0;z-index:0;pointer-events:none;background:var(--bg) center/cover no-repeat;transform:translate3d(var(--px,0px),0,0) scale(1.04);will-change:transform}.ch .h3-bgl::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.62) 38%,rgba(0,0,0,.12) 72%,rgba(0,0,0,.25))}.ch .h3-floor{display:none}.ch .h3-slide.is-on .h3-wipe{animation-name:h3WipeT}@keyframes h3WipeT{0%{transform:translateX(0);opacity:1}100%{transform:translateX(500%);opacity:0}}.ch .h3-par{transform:none!important}.ch .m3{position:relative;width:460px;height:560px}.ch .m3 model-viewer{position:absolute;z-index:1;left:0;right:0;top:0;bottom:92px;width:100%;height:auto;--poster-color:transparent;background:transparent;transform:translate3d(0,calc(var(--dy,0px) + var(--sy,0px)),0) scale(var(--ms,1));transform-origin:50% 60%;transition:opacity .35s}.ch .m3 model-viewer::part(default-progress-bar){display:none}.ch .m3 [slot^=hotspot]{width:1px;height:1px;opacity:0;pointer-events:none}.ch .m3-soap model-viewer{--ms:.72}.ch .m3-glint{position:absolute;z-index:0;left:var(--gx,50%);top:var(--gy,80%);width:300px;height:46px;margin:-23px 0 0 -150px;border-radius:50%;background:radial-gradient(ellipse at 50% 50%,rgba(255,222,165,.30),rgba(255,200,130,.10) 45%,transparent 72%);filter:blur(6px);mix-blend-mode:screen;pointer-events:none;opacity:0;transition:opacity .8s}.ch .m3.is-set .m3-glint{opacity:1}.ch .m3-soap .m3-glint{width:240px;margin-left:-120px}.ch .m3-dust{position:absolute;left:-40px;top:-40px;width:calc(100% + 80px);height:calc(100% + 80px);pointer-events:none;z-index:2}.js .ch .h3-slide:not(.is-on):not(.bg-ok) .h3-bgl{background-image:none!important}.ch .m3 model-viewer{opacity:0}.ch .m3:not(.is-set) .m3-tabs{visibility:hidden}.ch .m3-tabs{top:calc(var(--gy,500px) + 40px);bottom:auto;gap:4px;width:460px;flex-wrap:wrap;justify-content:center}.ch .m3-tabs button{padding:6px 10px;min-height:30px;font-size:10px;letter-spacing:.1em}.ch .m3-dumo .dm3-ring{top:40%;width:340px;height:340px;margin:-170px 0 0 -170px;opacity:.55}.ch .m3 .sp3-tag{right:auto;left:50%;top:10px;transform:translate(-50%,-100%) rotate(-3deg);white-space:nowrap;transition:left .3s,top .3s}.ch .m3:not(.is-set) .sp3-tag{visibility:hidden}.ch .ch-h3 .ch-ctrl{left:50%;right:auto;bottom:24px;transform:translateX(-50%)}.ch .h3-slide.is-on{z-index:1}.ch .h3-slide:not(.is-on){transition:opacity .5s .7s}.ch .ch-h3 .ch-ctrl{z-index:4}@media (max-width:1100px){.ch .m3{scale:.82}}@media (max-width:860px){.ch .m3{height:560px;scale:.62}}@media (max-width:400px){.ch .m3{scale:.56}}@media (max-width:860px){.ch .h3-bgl{background-position:70% center}.ch .h3-bgl::after{background:linear-gradient(180deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.6) 40%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.5))}.ch .m3-tabs{width:560px}.ch .m3 model-viewer{bottom:110px}}
+/* 12.11.2026 Vollbreite + erste Ansicht: Hero läuft unter der linken Glas-Leiste durch (--bx-sbw), Text/Steuerung bleiben rechts davon; Hero-Höhe = Fensterhöhe minus Kopfbereich (--ch-top), damit Pfeile/Punkte sofort sichtbar sind */
+.ch .ch-h3 .ch-ctrl{left:calc(50% + var(--bx-sbw,0px) / 2 - var(--bx-rsw,0px) / 2)}html[dir="rtl"] .ch .ch-h3 .ch-ctrl{left:calc(50% - var(--bx-sbw,0px) / 2 + var(--bx-rsw,0px) / 2)}.ch .m3 model-viewer{direction:ltr}/* Arabisch: Hotspots (Fuß-/Kopfpunkt) und Zeichenfläche des 3D-Modells rechnen von links */
+@media (min-width:861px){
+  /* A1 12.11.2026: Hero beginnt direkt unter der Ankündigungsleiste und füllt das Fenster; die Glas-Kopfzeile (--bx-hh) liegt darüber. Unter der Glas-Leiste ist der Hintergrund heller abgedunkelt, damit das Bild durchscheint. Arabisch gespiegelt. */
+  .ch .ch-hero.ch-h3{height:clamp(560px,calc(100vh - var(--ch-top,32px)),1200px)}
+  .ch .h3-slide{padding-block:calc(var(--bx-hh,0px) + clamp(4px,1.5vh,20px)) 88px;padding-inline:calc(var(--bx-sbw,0px) + clamp(20px,5vw,80px)) calc(var(--bx-rsw,0px) + clamp(20px,5vw,80px));gap:clamp(20px,3vw,40px)}
+  .ch .h3-bgl::after{background:linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.5) calc(var(--bx-sbw,0px) * .7),rgba(0,0,0,.84) calc(var(--bx-sbw,0px) + 5%),rgba(0,0,0,.62) 38%,rgba(0,0,0,.12) 72%,rgba(0,0,0,.25))}
+  html[dir="rtl"] .ch .h3-bgl{transform:translate3d(var(--px,0px),0,0) scale(-1.04,1.04)}/* Arabisch: Hintergrund samt Abdunklung gespiegelt – Boden/Tisch liegt unter dem Produkt (links), Text rechts */
+  .ch .h3-text{flex:1 0 380px;gap:clamp(8px,1.9vh,18px)}
+  .ch .h3-stage{min-width:0;height:min(72vh,620px,100%)}
+  .ch .h3-title{font-size:clamp(30px,min(4.2vw,6vh),64px)}
+  .ch .h3-text p.d{font-size:clamp(14px,2vh,17px)}
+  .ch .h3-chip,.ch .h3-btns .ch-btn{white-space:nowrap}
+}
+/* Mobil: Produkt-Chips in einer wischbaren Zeile, echte Größe mind. 36 px hoch / 12 px Schrift (die Gruppe ist skaliert, daher Gegenrechnung über --m3s) */
+@media (max-width:860px){
+  .ch .ch-hero.ch-h3{height:clamp(640px,calc(100vh - var(--ch-top,36px)),820px);height:clamp(640px,calc(100svh - var(--ch-top,36px)),820px)}
+  .ch .m3{--m3s:.62;scale:var(--m3s)}
+  .ch .m3-tabs{width:calc((100vw - 24px) / var(--m3s));flex-wrap:nowrap;justify-content:flex-start;justify-content:safe center;gap:calc(6px / var(--m3s));overflow-x:auto;scrollbar-width:none;padding:0 calc(26px / var(--m3s)) 0 0;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px / var(--m3s)),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px / var(--m3s)),transparent)}
+  .ch .m3-tabs::-webkit-scrollbar{display:none}
+  .ch .ch-h3 .ch-ctrl{gap:8px}.ch .ch-h3 .ch-ctrl>button{width:44px;height:44px}.ch .ch-h3 .ch-dots button{width:18px}.ch .ch-h3 .ch-dots button.is-on{width:40px}
+  .ch .m3-tabs button{flex:0 0 auto;min-height:calc(36px / var(--m3s));padding:0 calc(14px / var(--m3s));font-size:calc(12px / var(--m3s));letter-spacing:.08em}
+}
+@media (max-width:400px){.ch .m3{--m3s:.56}}
+/* A1 12.11.2026: niedrige Handys (bis 700 px Höhe, z. B. 375×667): Text kompakter und Hero genau fensterhoch, damit Text, Produkt, Chips und Pfeile in die erste Ansicht passen */
+@media (max-width:860px) and (max-height:700px){.ch .ch-hero.ch-h3{height:clamp(580px,calc(100vh - var(--ch-top,32px)),820px);height:clamp(580px,calc(100svh - var(--ch-top,32px)),820px)}.ch .ch-h3 .h3-slide{padding-top:calc(var(--ch-mh,56px) + 8px)}.ch .ch-h3 .h3-text{gap:8px}.ch .ch-h3 .h3-eyebrow{font-size:11px;letter-spacing:.16em}.ch .ch-h3 .h3-title{font-size:30px}.ch .ch-h3 .h3-text p.d{font-size:14px;line-height:1.5}.ch .ch-h3 .h3-btns .ch-btn{min-height:44px;padding-top:10px;padding-bottom:10px}}</style>
+<div class="ch" id="ch-{{ section.id }}">
+  {%- render 'claude-hero-scene', sec: section -%}
+  <div style="height:120vh;background:#f5f2ec;padding:40px;color:#333">Testfläche unter dem Hero (Scrollen prüfen)</div>
+</div>
+{% schema %}
+{
+ "name": "Hero-Szene Test",
+ "tag": "div",
+ "class": "claude-home-section",
+ "settings": [
+  {
+   "type": "color",
+   "id": "acc",
+   "label": "Akzent (Gold)",
+   "default": "#C8A45C"
+  },
+  {
+   "type": "color",
+   "id": "acc_light",
+   "label": "Akzent hell",
+   "default": "#F1DEA8"
+  },
+  {
+   "type": "color",
+   "id": "acc_dark",
+   "label": "Akzent dunkel",
+   "default": "#7D5F25"
+  },
+  {
+   "type": "color",
+   "id": "dark",
+   "label": "Dunkel",
+   "default": "#000000"
+  },
+  {
+   "type": "color",
+   "id": "light",
+   "label": "Hellgrund",
+   "default": "#F5F2EC"
+  },
+  {
+   "type": "text",
+   "id": "hero1_title",
+   "label": "Titel",
+   "default": "Die Adventszeit beginnt mit einem Türchen"
+  },
+  {
+   "type": "text",
+   "id": "hero1_text",
+   "label": "Text",
+   "default": "Adventskalender von BABOR, ARTDECO, Molton Brown und Wir für Sie – Tür für Tür Pflege und Duft."
+  },
+  {
+   "type": "text",
+   "id": "hero1_btn",
+   "label": "Button",
+   "default": "Adventskalender entdecken"
+  },
+  {
+   "type": "url",
+   "id": "hero1_link",
+   "label": "Link",
+   "default": "/collections/all"
+  },
+  {
+   "type": "text",
+   "id": "hero2_title",
+   "label": "Titel",
+   "default": "Ein Geschenk statt Rabatt"
+  },
+  {
+   "type": "text",
+   "id": "hero2_text",
+   "label": "Text",
+   "default": "Ab 59 € eine italienische Seife deiner Wahl, ab 99 € zwei Seifen und eine Duftprobe – ganz ohne Code."
+  },
+  {
+   "type": "text",
+   "id": "hero2_btn",
+   "label": "Button",
+   "default": "Seife wählen"
+  },
+  {
+   "type": "url",
+   "id": "hero2_link",
+   "label": "Link",
+   "default": "/collections/all"
+  },
+  {
+   "type": "text",
+   "id": "hero3_title",
+   "label": "Titel",
+   "default": "Jeder Duft ist ein Geheimnis"
+  },
+  {
+   "type": "text",
+   "id": "hero3_text",
+   "label": "Text",
+   "default": "Von Chanel bis DUMO – sorgfältig ausgewählt und liebevoll verpackt."
+  },
+  {
+   "type": "text",
+   "id": "hero3_btn",
+   "label": "Button",
+   "default": "Meinen Duft finden"
+  },
+  {
+   "type": "url",
+   "id": "hero3_link",
+   "label": "Link",
+   "default": "/collections/all"
+  },
+  {
+   "type": "text",
+   "id": "col_best",
+   "label": "Bestseller",
+   "default": "bestseller-parfums"
+  },
+  {
+   "type": "text",
+   "id": "col_new",
+   "label": "Neuheiten",
+   "default": "neue-duftprodukte-kaufen"
+  },
+  {
+   "type": "text",
+   "id": "col_damen",
+   "label": "Damen",
+   "default": "damenparfum"
+  },
+  {
+   "type": "text",
+   "id": "col_herren",
+   "label": "Herren",
+   "default": "herrenparfum"
+  },
+  {
+   "type": "text",
+   "id": "col_nische",
+   "label": "Nischendüfte",
+   "default": "nischenduefte"
+  },
+  {
+   "type": "text",
+   "id": "col_sale",
+   "label": "Sale",
+   "default": "parfum-sale"
+  },
+  {
+   "type": "text",
+   "id": "col_dumo",
+   "label": "DUMO",
+   "default": "dumo"
+  },
+  {
+   "type": "text",
+   "id": "col_library",
+   "label": "Fragrance Library",
+   "default": "fragrance-library"
+  },
+  {
+   "type": "text",
+   "id": "col_advent",
+   "label": "Adventskalender",
+   "default": "luxus-adventskalender"
+  },
+  {
+   "type": "text",
+   "id": "col_soaps",
+   "label": "Geschenk-Seifen",
+   "default": "geschenk-seifen"
+  }
+ ]
+}
+{% endschema %}
