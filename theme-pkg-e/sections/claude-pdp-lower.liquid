@@ -201,6 +201,7 @@
 
 /* ---------- 6) Joy „Merken“ als Herz am Titel ---------- */
 .main-product .product__info-container > .app:has(.Joy-Wishlist-ButtonWrapper){float:inline-end;width:46px;height:46px;margin:0 0 6px 12px!important;position:relative;z-index:2}
+.main-product .product__info-container > .app joy-wishlist-button:not([data-cpl]){visibility:hidden}
 [dir="rtl"] .main-product .product__info-container > .app:has(.Joy-Wishlist-ButtonWrapper){margin:0 12px 6px 0!important}
 .main-product .product__info-container > .app:has(.Joy-Wishlist-ButtonWrapper) + .product__text{margin-top:6px!important}
 
@@ -218,7 +219,8 @@
   .cpl-stage{padding:14px}
   [id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .banner__wrapper{min-height:520px!important}
   [id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .banner__media::after{background:linear-gradient(0deg,rgba(8,7,6,.88) 0%,rgba(8,7,6,.4) 55%,rgba(8,7,6,.1) 100%)}
-  [id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .banner__content{justify-content:flex-end}
+  [id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .banner__wrapper{justify-content:flex-end!important}
+  [id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .banner__content{padding-bottom:36px!important;margin-top:auto}
 }
 @media (prefers-reduced-motion:reduce){.cpl-in{opacity:1;translate:none;transition:none}.cpl-film__stage img{transition:none}}
 </style>
@@ -252,7 +254,7 @@ var init=function(){
       items.push({big:big,cap:cap,b:b,href:cap.getAttribute('href')});
     });
     if(items.length<2)return;
-    var cur=-1,show=function(n){n=(n+items.length)%items.length;if(n===cur)return;var it=items[n];if(!it.big.src)it.big.src=it.big.dataset.src;var nx=items[(n+1)%items.length].big;if(!nx.src)nx.src=nx.dataset.src;
+    var cur=-1,show=function(n){n=(n+items.length)%items.length;if(n===cur)return;var it=items[n];if(!it.big.src){it.big.loading='eager';it.big.src=it.big.dataset.src}var nx=items[(n+1)%items.length].big;if(!nx.src)nx.src=nx.dataset.src;
       items.forEach(function(x,i){x.big.classList.toggle('is-on',i===n);x.cap.classList.toggle('is-on',i===n);x.b.setAttribute('aria-current',i===n?'true':'false');x.b.tabIndex=i===n?0:-1});
       cnt.textContent=String(n+1).padStart(2,'0')+' / '+String(items.length).padStart(2,'0');to.href=it.href;cur=n;
       var tb=it.b;th.scrollTo({left:tb.offsetLeft-th.clientWidth/2+tb.offsetWidth/2,behavior:RM?'auto':'smooth'})};
@@ -299,7 +301,7 @@ var init=function(){
 
   /* 6) Joy-Herz: Text ausblenden, rund, Gold (nur Stil im Shadow DOM, Logik bleibt bei Joy) */
   var CSS='.Joy-Wishlist__Button{width:46px!important;min-width:46px!important;height:46px!important;padding:0!important;border-radius:50%!important;border:1px solid rgba(200,164,92,.7)!important;background:rgba(255,255,255,.9)!important;justify-content:center!important;gap:0!important;transition:background-color .25s,border-color .25s!important}.Joy-Wishlist__Button:hover{background:#141414!important;border-color:#141414!important}.Joy-Wishlist__Button:hover svg path{stroke:#fff!important}.Joy-Wishlist-WishlistButton__Text{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}.Joy-Wishlist-WishlistButton__Icon{margin:0!important}.Joy-Wishlist-WishlistButton__Icon svg{width:20px!important;height:20px!important}';
-  var styleJoy=function(){[].slice.call(document.querySelectorAll('.product__info-container joy-wishlist-button')).forEach(function(b){var sr=b.shadowRoot;if(sr&&!sr.querySelector('#cpl-joy')){var s=document.createElement('style');s.id='cpl-joy';s.textContent=CSS;sr.appendChild(s)}})};
+  var styleJoy=function(){[].slice.call(document.querySelectorAll('.product__info-container joy-wishlist-button')).forEach(function(b){var sr=b.shadowRoot;if(sr&&!sr.querySelector('#cpl-joy')){var s=document.createElement('style');s.id='cpl-joy';s.textContent=CSS;sr.appendChild(s)}if(sr&&sr.querySelector('button'))b.setAttribute('data-cpl','')})};
   var jw=document.querySelector('.product__info-container .Joy-Wishlist-ButtonWrapper');
   var burst=function(){var n=0,iv=setInterval(function(){styleJoy();if(++n>12)clearInterval(iv)},250)};
   if(jw){styleJoy();if('MutationObserver' in window)new MutationObserver(burst).observe(jw,{childList:true,subtree:true});burst()}
