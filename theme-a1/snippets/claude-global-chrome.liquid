@@ -202,6 +202,8 @@
   html body sticky-secondary-header .logo__image.has-two-child .logo__image-item--transparent{position:absolute;left:0;top:0;opacity:0}
   /* dunkler Ton */
   #shopify-section-secondary-header[data-bx-tone="dark"]{--bx-hbg:linear-gradient(180deg,rgba(8,9,12,.48),rgba(8,9,12,.3));--bx-hln:rgba(241,222,168,.5)}
+  /* angeheftet (beim Hochscrollen eingeblendet) liegt sie über beliebigem Inhalt, auch hellen Karten in dunklen Sektionen: kräftigere Tönung, Schrift bleibt mind. 4,5:1 */
+  #shopify-section-secondary-header.shopify-section-header-sticky[data-bx-tone="dark"]{--bx-hbg:rgba(8,9,12,.62)}
   #shopify-section-secondary-header[data-bx-tone="dark"] :is(.header,.header__content,.miscellaneous-container,.menu__list--header>.menu__item>.menu__item-title,.miscellaneous__subblock){--layout-text-color:255,255,255;color:#fff;text-shadow:0 0 8px rgba(0,0,0,.55)}
   #shopify-section-secondary-header[data-bx-tone="dark"] :is(.menu__list--header>.menu__item>.menu__item-title,.miscellaneous__subblock) :is(a,span,button,div){color:#fff!important}
   #shopify-section-secondary-header[data-bx-tone="dark"] :is(.menu__list--header>.menu__item>.menu__item-title,.miscellaneous__subblock) :is(svg,path){fill:#fff!important}
@@ -226,6 +228,7 @@
     html body #shopify-section-mobile-header{--logo-height:44px;--vertical-paddings:0px;box-shadow:none}
     #shopify-section-mobile-header::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:rgba(14,15,18,.8);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:inset 0 -1px 0 rgba(241,222,168,.45);transition:background-color .35s ease}
     #shopify-section-mobile-header[data-bx-tone="dark"]::before{background:linear-gradient(180deg,rgba(8,9,12,.48),rgba(8,9,12,.3))}
+    #shopify-section-mobile-header.shopify-section-mobile-header-sticky[data-bx-tone="dark"]::before{background:rgba(8,9,12,.62)}
     html body #shopify-section-mobile-header :is(.mobile-header-section,.mobile-header){background:transparent!important}
     html body #shopify-section-mobile-header .mobile-header__content{position:relative;height:56px;padding:0 4px!important;gap:0;flex-wrap:nowrap}
     html body #shopify-section-mobile-header .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:0;border:0;z-index:1}
