@@ -224,6 +224,6 @@
       if (!sw && el >= SWT && el < DUR - 6000 && o && o.bs.length > 1 && !o.touched && o.mv.loaded && o.sT < 0) { sw = 1; pick(o, o.i + 1); }
       if (el >= DUR) show(si + 1);
     }, 250);
-    go();
+    enter(boxes.filter(function (o) { return o.sl === slides[0]; })[0] || null); go();
   })();
 </script>
