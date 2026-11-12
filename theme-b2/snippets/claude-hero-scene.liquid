@@ -406,7 +406,7 @@
       var tmax = cr.top - 16 - 40 * k - th, ty = innerWidth <= 860 ? tmax : Math.min(r.top + r.height * .78, tmax);
       o.box.style.setProperty('--gy', ((ty - b.top) / k).toFixed(1) + 'px'); o.box.classList.add('is-set');
       var hh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bx-hh')) || 0;
-      var top = innerWidth <= 860 ? (tx ? tx.getBoundingClientRect().bottom + 14 : r.top + 60) : Math.max(b.top + 10 * k, r.top + hh + 14);
+      var top = innerWidth <= 860 ? (tx ? tx.getBoundingClientRect().bottom + 14 : r.top + 60) : Math.max(b.top + 10 * k, r.top + hh + 32);
       if (o.tag) top += 46;
       var hr = curIt.obj.userData.h / HW, want = curIt.K.px * k * (innerWidth <= 860 ? 1.1 : 1), P = Math.min(want, (ty - top) / hr); // P = längste Kante, Höhe = P·hr
       if (innerWidth <= 860 && P < want * .8 && !h.style.minHeight) { h.style.minHeight = Math.min(980, h.offsetHeight + Math.ceil(want * .8 - P)) + 'px'; return layout(force); }
