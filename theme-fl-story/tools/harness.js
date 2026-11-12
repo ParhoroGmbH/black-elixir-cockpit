@@ -16,11 +16,15 @@
  // Kapitel i (1..4) prüfen: Produktfläche
  window.__chk=i=>{const ch=chs()[i],p=ch.querySelector('.fls-prod'),mv=ch.querySelector('model-viewer'),st=ch.querySelector('.fls-stage'),b=ch.querySelector('[data-fls-add]'),a=ch.querySelector('.fls-btns>a'),info=ch.querySelector('.fls-info');
   const texts=[...info.querySelectorAll('*')].filter(e=>e.children.length===0&&e.textContent.trim());const minfs=Math.min(...texts.map(e=>parseFloat(getComputedStyle(e).fontSize)));
-  const fx=__fixed();const els=[['stage',st],['info',info],['add',b],['zum',a]];const ov=[];els.forEach(([n,e])=>fx.forEach(f=>{if(hit(R(e),f.r))ov.push(n+'×'+f.c)}));
+  const els=[['stage',st],['name',ch.querySelector('.fls-name')],['notes',ch.querySelector('.fls-notes')],['price',ch.querySelector('.fls-price')],['add',b],['zum',a]];const ov=[];
+  // echte Verdeckung: was liegt an 9 Punkten je Element zuoberst? (nur Punkte im Bild)
+  els.forEach(([n,e])=>{const r=e.getBoundingClientRect();[.04,.5,.96].forEach(fx=>[.04,.5,.96].forEach(fy=>{const x=r.left+r.width*fx,y=r.top+r.height*fy;if(x<0||y<0||x>=innerWidth||y>=innerHeight)return;const t=document.elementFromPoint(x,y);if(t&&!t.closest('.fls')){const k=n+'×'+((t.id||t.className+'')+'').trim().slice(0,28)+'@'+Math.round(y);if(ov.indexOf(k)<0)ov.push(k)}}))});
   const sb=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fl-sbw'))||0;
   const clip=els.filter(([n,e])=>{const r=R(e);return r[0]<sb-1||r[2]>p.getBoundingClientRect().right+1}).map(x=>x[0]);
   return {name:ch.querySelector('.fls-name').textContent,sub:ch.querySelector('.fls-sub').textContent,glb:(mv.src||'').split('/').pop(),ld:!!mv.loaded,set:st.className.replace('fls-stage','').trim(),vid:b.getAttribute('data-fls-add'),href:a.getAttribute('href'),price:ch.querySelector('.fls-price').firstChild.textContent.trim(),notes:ch.querySelectorAll('.fls-notes dd').length,bg:getComputedStyle(p).backgroundColor,ink:getComputedStyle(ch.querySelector('.fls-name')).color,stage:R(st),info:R(info),btn:[b.offsetWidth,b.offsetHeight,a.offsetWidth,a.offsetHeight],minfs,ov,clip,sw:[document.documentElement.scrollWidth,document.documentElement.clientWidth],lit:document.documentElement.className.match(/fls-light|fl-dark/g)}};
  window.__vid=i=>{const v=chs()[i].querySelector('video');return {src:(v.currentSrc||'').split('/').pop().slice(-34),paused:v.paused,t:+v.currentTime.toFixed(2),on:v.classList.contains('on'),pre:v.preload,poster:!!v.poster,rs:v.readyState}};
  window.__add=async i=>{window.__cart.length=0;const b=chs()[i].querySelector('[data-fls-add]');b.click();await W(700);const e=chs()[i].querySelector('.fls-err');const out={req:window.__cart.map(c=>c.url.replace(location.origin,'')+' '+(c.body||'')),err:e.textContent,btn:b.textContent,dis:b.disabled};e.textContent='';return out};
+ window.__up=async()=>{for(let k=0;k<8;k++){scrollBy({top:-30,behavior:'instant'});await W(150)}};
+ window.__hdr=()=>[...document.querySelectorAll('body *')].filter(e=>{if(e.closest('.fls'))return false;const c=getComputedStyle(e);const r=e.getBoundingClientRect();return (c.position==='fixed'||c.position==='sticky')&&r.width>innerWidth*.6&&r.height>20&&r.top<=2&&r.bottom>0&&r.bottom<innerHeight*.5&&c.visibility!=='hidden'&&+c.opacity>0}).map(e=>Math.round(e.getBoundingClientRect().bottom)).sort((a,b)=>b-a)[0]||0;
  return 'ok';
 })()
