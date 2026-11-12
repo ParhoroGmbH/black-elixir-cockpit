@@ -1,0 +1,134 @@
+{%- comment -%}
+  BLACK ELIXIR 21.10.2026 – FAQ aus den vorhandenen Avada-Metafeldern (Ersatz fuer den Avada-FAQ-Block).
+  Datenquelle: Metafeld faqs.settings (JSON: status, isAppBlockInUse, questions[{question, answer, answerHTML}]).
+  Fremdsprachen: faqs.settings_<locale> (z. B. settings_en), falls vorhanden und aktiv, sonst faqs.settings
+  (so verhaelt sich Avada heute).
+  Anzeige nur wenn status = true UND isAppBlockInUse = true (wie der Avada-Block live).
+  Sichtbares Akkordeon (<details>/<summary>) + FAQPage-JSON-LD aus denselben Daten.
+  Aufruf: {% render 'be-faq', resource: product, heading: '...', section_id: section.id %}
+{%- endcomment -%}
+{%- liquid
+  assign be_faq = resource.metafields.faqs.settings.value
+  if request.locale.primary == false
+    assign be_lkey = 'settings_' | append: request.locale.iso_code
+    assign be_loc = resource.metafields.faqs[be_lkey].value
+    if be_loc.questions.size > 0
+      assign be_faq = be_loc
+    endif
+  endif
+  assign be_show = false
+  if be_faq.questions.size > 0
+    assign be_st = be_faq.status | append: ''
+    assign be_ab = be_faq.isAppBlockInUse | append: ''
+    if be_st == 'true' and be_ab == 'true'
+      assign be_show = true
+    endif
+  endif
+  if heading == blank
+    case request.locale.iso_code
+      when 'de'
+        assign heading = 'Häufige Fragen'
+      when 'fr'
+        assign heading = 'Questions fréquentes'
+      when 'ar'
+        assign heading = 'الأسئلة الشائعة'
+      else
+        assign heading = 'Frequently asked questions'
+    endcase
+  endif
+-%}
+{%- if be_show -%}
+  <div class="be-faq page-width page-width--{{ settings.max_page_width }} section-padding--{{ settings.white_space }}" id="be-faq-{{ section_id }}">
+    <h2 class="be-faq__heading custom-heading heading--{{ settings.typography_preset }}">{{ heading | escape }}</h2>
+    <div class="be-faq__list">
+      {%- for q in be_faq.questions -%}
+        {%- if q.question != blank -%}
+          {%- liquid
+            assign be_qq = q.question
+            assign be_ah = q.answerHTML
+            assign be_at = q.answer
+            comment
+              BE KW45-2 (CEO 02.11.2026 18:50): Versand-FAQ der Kollektion luxus-adventskalender an die echten Versandbedingungen angepasst
+              (Versandrichtlinie + Versandeinstellungen, read-only geprueft). Avada-Metafeld bleibt unveraendert; Override nur im Theme.
+            endcomment
+            if resource.id == 642295824726 and q.question contains 'Versand wirklich kostenlos'
+              assign be_qq = 'Wie schnell wird der Adventskalender geliefert und was kostet der Versand?'
+              assign be_ah = '<p>Innerhalb Deutschlands liefern wir mit DHL Paket ohne Versandkosten, in der Regel innerhalb von 1–3 Werktagen. Gegen Aufpreis ist auch Expressversand möglich.</p><p>Bei Lieferungen ins Ausland richten sich die Versandkosten nach dem Lieferland und werden im Bestellprozess angezeigt. Die Lieferzeit beträgt dort in der Regel 5–9 Werktage. Alle Details findest du unter <a href="/policies/shipping-policy">Zahlung und Versand</a>.</p>'
+              assign be_at = 'Innerhalb Deutschlands liefern wir mit DHL Paket ohne Versandkosten, in der Regel innerhalb von 1–3 Werktagen. Gegen Aufpreis ist auch Expressversand möglich. Bei Lieferungen ins Ausland richten sich die Versandkosten nach dem Lieferland und werden im Bestellprozess angezeigt. Die Lieferzeit beträgt dort in der Regel 5–9 Werktage. Alle Details findest du unter Zahlung und Versand.'
+            endif
+            comment
+              BE KW45-3 (02.11.2026 19:18): Zahlungs-FAQ nur mit oeffentlich belegten Zahlungsarten
+              (Quelle: /policies/shipping-policy "Akzeptierte Zahlungsmoeglichkeiten" + Footer-Zahlungsicons). Avada-Metafeld unveraendert.
+            endcomment
+            if resource.id == 642295824726 and q.question contains 'Welche Zahlungsmöglichkeiten'
+              assign be_ah = '<p>Du kannst bei BLACK ELIXIR unter anderem mit PayPal, Kreditkarte (z. B. Visa oder Mastercard), Apple Pay, Google Pay, Shop Pay und Klarna bezahlen. Alle verfügbaren Zahlungsarten siehst du im Bestellprozess.</p>'
+              assign be_at = 'Du kannst bei BLACK ELIXIR unter anderem mit PayPal, Kreditkarte (z. B. Visa oder Mastercard), Apple Pay, Google Pay, Shop Pay und Klarna bezahlen. Alle verfügbaren Zahlungsarten siehst du im Bestellprozess.'
+            endif
+          -%}
+          <details class="be-faq__item"{% if forloop.first %} open{% endif %}>
+            <summary class="be-faq__question body-text--{{ settings.typography_preset }}">
+              <span>{{ be_qq | escape }}</span>
+              <span class="be-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="be-faq__answer richtext body-text--{{ settings.typography_preset }}">
+              {%- if be_ah != blank -%}
+                {{ be_ah }}
+              {%- else -%}
+                <p>{{ be_at | escape | newline_to_br }}</p>
+              {%- endif -%}
+            </div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {%- assign be_first = true -%}
+      {%- for q in be_faq.questions -%}
+        {%- if q.question != blank -%}
+          {%- liquid
+            assign be_qq = q.question
+            assign be_ah = q.answerHTML
+            assign be_at = q.answer
+            comment
+              BE KW45-2 (CEO 02.11.2026 18:50): Versand-FAQ der Kollektion luxus-adventskalender an die echten Versandbedingungen angepasst
+              (Versandrichtlinie + Versandeinstellungen, read-only geprueft). Avada-Metafeld bleibt unveraendert; Override nur im Theme.
+            endcomment
+            if resource.id == 642295824726 and q.question contains 'Versand wirklich kostenlos'
+              assign be_qq = 'Wie schnell wird der Adventskalender geliefert und was kostet der Versand?'
+              assign be_ah = '<p>Innerhalb Deutschlands liefern wir mit DHL Paket ohne Versandkosten, in der Regel innerhalb von 1–3 Werktagen. Gegen Aufpreis ist auch Expressversand möglich.</p><p>Bei Lieferungen ins Ausland richten sich die Versandkosten nach dem Lieferland und werden im Bestellprozess angezeigt. Die Lieferzeit beträgt dort in der Regel 5–9 Werktage. Alle Details findest du unter <a href="/policies/shipping-policy">Zahlung und Versand</a>.</p>'
+              assign be_at = 'Innerhalb Deutschlands liefern wir mit DHL Paket ohne Versandkosten, in der Regel innerhalb von 1–3 Werktagen. Gegen Aufpreis ist auch Expressversand möglich. Bei Lieferungen ins Ausland richten sich die Versandkosten nach dem Lieferland und werden im Bestellprozess angezeigt. Die Lieferzeit beträgt dort in der Regel 5–9 Werktage. Alle Details findest du unter Zahlung und Versand.'
+            endif
+            comment
+              BE KW45-3 (02.11.2026 19:18): Zahlungs-FAQ nur mit oeffentlich belegten Zahlungsarten
+              (Quelle: /policies/shipping-policy "Akzeptierte Zahlungsmoeglichkeiten" + Footer-Zahlungsicons). Avada-Metafeld unveraendert.
+            endcomment
+            if resource.id == 642295824726 and q.question contains 'Welche Zahlungsmöglichkeiten'
+              assign be_ah = '<p>Du kannst bei BLACK ELIXIR unter anderem mit PayPal, Kreditkarte (z. B. Visa oder Mastercard), Apple Pay, Google Pay, Shop Pay und Klarna bezahlen. Alle verfügbaren Zahlungsarten siehst du im Bestellprozess.</p>'
+              assign be_at = 'Du kannst bei BLACK ELIXIR unter anderem mit PayPal, Kreditkarte (z. B. Visa oder Mastercard), Apple Pay, Google Pay, Shop Pay und Klarna bezahlen. Alle verfügbaren Zahlungsarten siehst du im Bestellprozess.'
+            endif
+          -%}
+          {%- liquid
+            if be_at != blank
+              assign be_ans = be_at | strip_html | split: ' ' | join: ' ' | strip
+            else
+              assign be_ans = be_ah | replace: '<', ' <' | strip_html | replace: '&amp;', '&' | replace: '&uuml;', 'ü' | replace: '&ouml;', 'ö' | replace: '&auml;', 'ä' | replace: '&Uuml;', 'Ü' | replace: '&Ouml;', 'Ö' | replace: '&Auml;', 'Ä' | replace: '&szlig;', 'ß' | replace: '&ndash;', '–' | replace: '&nbsp;', ' ' | split: ' ' | join: ' ' | strip
+            endif
+          -%}
+          {%- unless be_first %},{% endunless %}
+      {
+        "@type": "Question",
+        "name": {{ be_qq | strip | json }},
+        "acceptedAnswer": { "@type": "Answer", "text": {{ be_ans | json }} }
+      }
+          {%- assign be_first = false -%}
+        {%- endif -%}
+      {%- endfor %}
+    ]
+  }
+  </script>
+{%- endif -%}
