@@ -90,6 +90,8 @@
 .flb-ov .flb-x:hover{background:rgba(29,23,16,.18)}
 .flb-ov .flb-x svg{width:18px;height:18px;display:block}
 .flb-ov :focus-visible{outline:2px solid #8a6a26;outline-offset:3px}
+/* solange ein Buch offen ist, tritt die Chat-Blase zurück (sie läge sonst über dem Blatt) */
+html.flb-open .chatty-ai-mode.state-resting{opacity:0!important;pointer-events:none!important}
 @media (max-width:760px){
 .flb-ov{padding:0;place-items:stretch}
 .flb-bk{grid-template-columns:minmax(0,1fr);align-content:start;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:inset 0 0 0 6px var(--c,#2a2a2a);overflow-y:auto;overscroll-behavior:contain;transform:translateY(40px) scale(.96)}
@@ -97,9 +99,13 @@
 .flb-bk::before,.flb-bk::after{display:none}
 .flb-pg{padding:20px 22px}
 .flb-l{padding-top:54px;padding-bottom:0}
-.flb-l .flb-box{height:36vh;min-height:220px}
+.flb-l .flb-box{height:30vh;min-height:200px}
 .flb-r::before,.flb-r::after{display:none}
-.flb-r{overflow:visible;padding-inline-start:22px;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.flb-r{overflow:visible;padding-inline-start:22px;padding-bottom:0}
+/* Kaufknöpfe bleiben unten am Blatt stehen */
+.flb-acts{position:sticky;bottom:0;z-index:2;flex-wrap:nowrap;margin:16px -22px 0;padding:12px 22px calc(12px + env(safe-area-inset-bottom,0px));background:#f1e4c3;box-shadow:0 -1px 0 var(--rule),0 -12px 16px -10px rgba(60,40,12,.25)}
+.flb-ov .flb-btn{padding:12px 10px;font-size:12px;letter-spacing:.12em}
+.flb-err{padding-bottom:10px}
 .flb-ov .flb-x{position:fixed;top:14px;background:rgba(241,228,195,.92);box-shadow:0 0 0 1px var(--rule)}
 .flb-toc dl>div{grid-template-columns:minmax(0,1fr)}
 }
@@ -154,7 +160,7 @@ function wood(e){if(!e)return;if(!('IntersectionObserver' in window)){e.classLis
 var cur=null;
 function close(){
   if(!cur)return;var c=cur;cur=null;c.ov.classList.remove('is-on');document.removeEventListener('keydown',c.key,true);
-  var de=document.documentElement;de.style.overflow=c.of;de.style.paddingRight=c.pr;
+  var de=document.documentElement;de.style.overflow=c.of;de.style.paddingRight=c.pr;de.classList.remove('flb-open');
   setTimeout(function(){if(c.ov.parentNode)c.ov.parentNode.removeChild(c.ov);if(c.from){c.from.classList.remove('out');dust(c.from);try{c.from.focus({preventScroll:true})}catch(e){}}},still?0:420);
 }
 function open(o,from){
@@ -188,7 +194,7 @@ function open(o,from){
     var f=[].filter.call(bk.querySelectorAll('button,a[href]'),function(n){return !n.disabled&&n.offsetParent!==null});if(!f.length)return;
     var a0=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a0){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a0.focus()}
   };
-  var sw=innerWidth-de.clientWidth;de.style.overflow='hidden';if(sw>0)de.style.paddingRight=sw+'px';
+  var sw=innerWidth-de.clientWidth;de.classList.add('flb-open');de.style.overflow='hidden';if(sw>0)de.style.paddingRight=sw+'px';
   document.body.appendChild(ov);cur=c;document.addEventListener('keydown',c.key,true);
   bg.addEventListener('click',close);x.addEventListener('click',close);
   ov.addEventListener('click',function(e){if(e.target===ov)close()});
