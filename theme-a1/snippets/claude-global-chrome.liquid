@@ -228,7 +228,7 @@
     html body #shopify-section-mobile-header{--logo-height:36px;--vertical-paddings:0px;box-shadow:none}
     /* Glas (::before) bleibt auf die Kopfzeile begrenzt: die Sektion ist immer positioniert (sonst wäre sie auf Seiten ohne Überlagerung static und das Glas läge über der ganzen Seite) */
     html body #shopify-section-mobile-header:not(.shopify-section-mobile-header-sticky){position:relative}
-    html body #shopify-section-mobile-header{isolation:isolate;overflow:clip}
+    html body #shopify-section-mobile-header{isolation:isolate}
     #shopify-section-mobile-header::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:rgba(14,15,18,.8);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:inset 0 -1px 0 rgba(241,222,168,.45);transition:background-color .35s ease}
     #shopify-section-mobile-header[data-bx-tone="dark"]::before{background:linear-gradient(180deg,rgba(8,9,12,.48),rgba(8,9,12,.3))}
     #shopify-section-mobile-header.shopify-section-mobile-header-sticky[data-bx-tone="dark"]::before{background:rgba(8,9,12,.62)}
