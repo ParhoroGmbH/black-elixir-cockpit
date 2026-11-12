@@ -172,7 +172,7 @@
   </div>
   <script type="application/json" data-hsc-cfg>{"lib":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/+esm","orbit":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/controls/OrbitControls.js/+esm","gltf":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/loaders/GLTFLoader.js/+esm"},
   "fov":40,"fovM":48,"crop":0.3,"polar":[1.22,1.42,1.53],"spin":0.17,"flat":1.22,"flatDrift":0.85,"resume":3000,"exposure":1.08,
-  "kinds":{"flat":{"px":400,"key":2.0,"fill":1.3},"soap":{"px":250,"key":2.0,"fill":1.2},"bottle":{"px":370,"key":1.6,"fill":0.9},"bust":{"px":400,"key":2.2,"fill":1.2}},
+  "kinds":{"flat":{"px":400,"key":2.0,"fill":1.3},"soap":{"px":330,"key":2.0,"fill":1.2},"bottle":{"px":370,"key":1.6,"fill":0.9},"bust":{"px":400,"key":2.2,"fill":1.2}},
   "places":{ {{- hsc_places | remove_last: ',' -}} },
   "slides":[{{ hsc_items }}]}</script>
 </div>
@@ -300,12 +300,12 @@
       return c.p;
     }
     function prep(obj) {
-      var box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3()), ce = box.getCenter(new THREE.Vector3()), s = HW / size.y;
+      var box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3()), ce = box.getCenter(new THREE.Vector3()), s = HW / Math.max(size.x, size.y, size.z); // längste Kante = HW (Seifen liegen flach)
       var g = new THREE.Group(); obj.position.set(-ce.x, -box.min.y, -ce.z); g.add(obj); g.scale.setScalar(s);
       // schwaches Spiegelbild im polierten Boden: gespiegelte Kopie, direkt auf den Boden gezeichnet
       var mir = obj.clone(true); mir.traverse(function (o) { if (o.isMesh) { o.material = o.material.clone(); o.material.transparent = true; o.material.depthWrite = false; o.renderOrder = -4; o.userData.mir = 1; } });
       var mg = new THREE.Group(); mg.add(mir); mg.scale.set(s, -s, s);
-      var w = new THREE.Group(); w.add(mg, g); w.userData.foot = [size.x * s, size.z * s]; w.userData.mir = mir;
+      var w = new THREE.Group(); w.add(mg, g); w.userData.foot = [size.x * s, size.z * s]; w.userData.mir = mir; w.userData.h = size.y * s;
       return w;
     }
     function free(o) { o.traverse(function (n) { if (n.isMesh) { n.geometry.dispose(); [].concat(n.material).forEach(function (mt) { for (var k in mt) if (mt[k] && mt[k].isTexture) mt[k].dispose(); mt.dispose(); }); } }); }
@@ -372,9 +372,9 @@
       else requestAnimationFrame(function () { snap.style.transition = 'opacity .7s ease'; snap.style.opacity = 0; });
       kick();
     }
-    function dist() { var f = camera.fov * Math.PI / 180, Vh = canvas.clientHeight || 1; return HW * Vh / (2 * view.P * Math.tan(f / 2)) * 1.06; }
+    function dist() { var f = camera.fov * Math.PI / 180, Vh = canvas.clientHeight || 1; return HW * Vh / (2 * view.P * Math.tan(f / 2)) * 1.06; } // P = Bildschirmgröße der längsten Kante
     function place(a, pol) {
-      target.set(0, HW * 0.5, 0); controls.target.copy(target);
+      target.set(0, (curIt ? curIt.obj.userData.h : HW) * 0.5, 0); controls.target.copy(target);
       camera.position.setFromSpherical(new THREE.Spherical(dist(), pol, a)).add(target); controls.update();
     }
 
@@ -408,10 +408,10 @@
       var hh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bx-hh')) || 0;
       var top = innerWidth <= 860 ? (tx ? tx.getBoundingClientRect().bottom + 14 : r.top + 60) : Math.max(b.top + 10 * k, r.top + hh + 14);
       if (o.tag) top += 46;
-      var want = curIt.K.px * k * (innerWidth <= 860 ? 1.25 : 1), P = Math.min(want, ty - top);
+      var hr = curIt.obj.userData.h / HW, want = curIt.K.px * k * (innerWidth <= 860 ? 1.25 : 1), P = Math.min(want, (ty - top) / hr); // P = längste Kante, Höhe = P·hr
       if (innerWidth <= 860 && P < want * .8 && !h.style.minHeight) { h.style.minHeight = Math.min(980, h.offsetHeight + Math.ceil(want * .8 - P)) + 'px'; return layout(force); }
       P = Math.max(P, 120);
-      view.cx = b.left + b.width / 2 - r.left; view.cy = ty - P * 0.5 - r.top; view.P = P;
+      view.cx = b.left + b.width / 2 - r.left; view.cy = ty - P * hr * 0.5 - r.top; view.P = P;
       var W = canvas.clientWidth, Hc = canvas.clientHeight;
       camera.fov = innerWidth <= 860 ? cfg.fovM : cfg.fov; camera.aspect = W / Hc;
       camera.setViewOffset(W, Hc, W / 2 - view.cx, Hc / 2 - view.cy, W, Hc); camera.updateProjectionMatrix();
@@ -422,7 +422,7 @@
     var tv = new THREE.Vector3();
     function tagPos(o, b, k) { // Badge „Ab 59 € geschenkt“ direkt über der Seife
       if (!o.tag) return; var r = h.getBoundingClientRect();
-      tv.set(0, HW * 1.02, 0).project(camera);
+      tv.set(0, curIt.obj.userData.h * 1.05, 0).project(camera);
       var sx = (tv.x + 1) / 2 * canvas.clientWidth + r.left, sy = (1 - tv.y) / 2 * canvas.clientHeight + r.top;
       o.tag.style.left = ((sx - b.left) / k).toFixed(1) + 'px'; o.tag.style.top = ((sy - b.top - 12) / k).toFixed(1) + 'px';
     }
