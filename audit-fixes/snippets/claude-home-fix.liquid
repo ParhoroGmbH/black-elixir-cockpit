@@ -45,8 +45,8 @@
   @keyframes beSweep{from{background-position:100% 0}to{background-position:0 0}}
   @media (prefers-reduced-motion:reduce){.be-foilwrap a.be-foil.be-foil{animation:none!important;background-position:50% 0!important}}
   @media (min-width:861px){.shopify-section-footer .hb-widerruf-wrapper{display:none!important}}
-  /* 12.11.2026 Audit: bei 1280/1366 px (Inhalt nur ~800–880 px breit) keine 3+1-Reihe mehr – Kacheln stehen 4 nebeneinander oder 2×2; Geschenk-Sektion und Duft-Finder bleiben zweispaltig */
-  @media (min-width:861px){.ch .ch-grid{grid-template-columns:repeat(auto-fit,minmax(clamp(calc(25% - 14px),calc((934px - 100%) * 999),calc(50% - 9px)),1fr))}.ch .ch-gift{gap:clamp(28px,4vw,60px)}.ch .ch-gift>div{flex:1 1 360px}.ch .ch-finder{gap:clamp(28px,4vw,56px)}.ch .ch-finder>div{flex:1 1 340px}}
+  /* 12.11.2026 Audit: bei 1280/1366 px (Inhalt nur ~800–880 px breit) keine 3+1-Reihe mehr – Kacheln stehen 4 nebeneinander oder 2×2; Geschenk-Sektion und Duft-Finder bleiben zweispaltig, Journal 3 nebeneinander statt 2+1 */
+  @media (min-width:861px){.ch .ch-grid{grid-template-columns:repeat(auto-fit,minmax(clamp(calc(25% - 14px),calc((934px - 100%) * 999),calc(50% - 9px)),1fr))}.ch .ch-gift{gap:clamp(28px,4vw,60px)}.ch .ch-gift>div{flex:1 1 360px}.ch .ch-finder{gap:clamp(28px,4vw,56px)}.ch .ch-finder>div{flex:1 1 340px}.ch .ch-journal{grid-template-columns:repeat(auto-fit,minmax(clamp(calc(33.333% - 16px),calc((760px - 100%) * 999),calc(50% - 12px)),1fr))}}
   @media (max-width:860px){
     .shopify-section-mobile-header{position:relative;z-index:6}
     .claude-home-section{margin-top:calc(-1 * var(--ch-mh, 98px));position:relative;z-index:0}
