@@ -219,6 +219,9 @@
         var gs = getComputedStyle(document.documentElement), sbw = parseFloat(gs.getPropertyValue('--bx-sbw')) || 0, rsw = parseFloat(gs.getPropertyValue('--bx-rsw')) || 0; /* Glas-Leisten links/rechts: Produktgruppe bleibt im sichtbaren Bereich dazwischen */
         var dl = c0 - Math.min(bl, c0 - 150 * k), want = Math.max(r.left + sbw + (r.width - sbw - rsw) * .635, txr(o.sl) + 32 + dl);
         nx = Math.min(want, Math.max(c0, r.right - rsw - 20 - b.width / 2)) - c0;
+        /* Chips enden mind. 56 px vor der rechten Leiste (dort sitzt das Chat-Symbol) – solange die Gruppe dadurch nicht in den Text rückt */
+        var brr = -1e9; [].forEach.call(o.bs, function (x) { brr = Math.max(brr, x.getBoundingClientRect().right - sh); });
+        nx = Math.max(Math.min(nx, r.right - rsw - 56 - brr), Math.min(nx, txr(o.sl) + 32 + dl - c0));
         if (document.documentElement.dir === 'rtl') { /* Arabisch: gespiegelt – Leiste rechts, Text rechts, Produktgruppe Richtung ~36,5 % (nie in den Text) */
           var br = -1e9; [].forEach.call(o.bs, function (x) { br = Math.max(br, x.getBoundingClientRect().right - sh); });
           var dr = Math.max(br, c0 + 150 * k) - c0; want = Math.min(r.right - sbw - (r.width - sbw - rsw) * .635, txr(o.sl, 1) - 32 - dr);
