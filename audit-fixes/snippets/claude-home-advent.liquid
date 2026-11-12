@@ -1,0 +1,129 @@
+{%- comment -%} Teil der Section claude-home – Adventskalender interaktiv: Kalender wählen, Türchen öffnen, Doppelklick öffnet den Kalender. Inhalte aus den Produktbeschreibungen (11.11.2026). Claude – nicht anfassen. 12.11.2026: echte Kartontürchen (Perforation, Papierstruktur, Goldfolien-Zahl, 3D-Scharnier) + festlicher Hintergrund. {%- endcomment -%}
+{%- assign c_adv = collections[sec.settings.col_advent] -%}
+{%- assign bg_adv = images['be-advent-bg-2026-11-12.jpg'] -%}
+{%- liquid
+  assign inh_wfs = 'Sensai Total Lip Treatment – 5 ml;Artdeco Angel Eye Mascara – 10 ml;Shiseido Vital Perfection Uplifting and Firming Advanced Cream Enriched – 15 ml;Held Guard Broke Man Body Lift Meers Duschcreme – 75 ml;Giorgio Armani C Eau de Parfum – 7 ml;Biotherm Blue Peptides Uplift Creme – 15 ml;Le Destination Handcreme + Duftfiole – 10 ml + 1,5 ml;Declare Hyaluron Ampulle – 2,5 ml;Accentra Schafmilchseife – 25 g;CC Red Correct Creme – 5 ml;Miro Joy Eau de Parfum – 50 ml;Charlotte Menzen Wintercreme – 20 ml;Marlies Möller Marine Moisture Conditioner – 30 ml;Ultra Sun Face SPF 30 Sonnenschutzgel – 30 ml;Azaro For Women Wanted Damen Parfum – 10 ml;Charlotte Menzen Natur Pur Balance Duschgel – 50 ml;Annemarie Börlind Hyaluron Augenpads – 2 Stück;Dr. Grandel Hyaluron Ampulle – 3 ml;Elizabeth Arden Ceramide Kapseln – 7 Stück;Versace Eros Energy Eau de Parfum – 5 ml;M2 Beauty Eyeson Pflegeserum – 2 ml;Lacoste L.12.12 Rose Body Lotion – 100 ml;Ahava Hyaluronic Acid 24 Creme – 15 ml;Gut Gerb Blush Elixir Eau de Parfum – 7 ml'
+  assign inh_artdeco = 'Blush Couture – Limited Edition;Double Finish inkl. Schwämmchen;Double Finish Refill;Natural Skin Foundation;High Performance Eyeshadow Stylo;Soft Eye Liner Waterproof oder Kajal Liner;Angel Eyes Mascara;Eyeshadow;Eyeshadow;Eyeshadow;Smooth Eyeshadow Stick;Natural Brow Pencil;Lash and Brow Power Serum;Beauty Box Trio;Lip Jewels oder Metallic Lip Jewels;Pretty Lips Lipstick;Invisible Soft Lip Liner;Collagen Booster Caps;Art Couture Nail Lacquer;Straßsteinchen + Kleber;Art Couture Nail Lacquer – Mini;Hydra Lip Booster – Mini;Micellar Water – Mini;Eyeshadow Base – Probe'
+  assign inh_babor = 'Hydra Plus;Lift Express;Nutri Restore;Perfect Glow;Active Night;Lift Express;Nutri Restore;SOS Calming;Hydra Plus;Lift Express;Nutri Restore;Perfect Glow;Hydra Plus;Lift Express;Nutri Restore;Perfect Glow;Active Night;Lift Express;Nutri Restore;SOS Calming;Hydra Plus;Lift Express;Nutri Restore;Perfect Glow'
+  assign inh_mb = 'Fiery Pink Pepper Eau de Parfum – 30 ml;Tea Ceremony – 7,5 ml;Duschgel – 100 ml;Mesmerising Oudh Accord & Gold – 7,5 ml;Körpercreme – 50 ml;Liquid Hand Wash – 100 ml;Coastal Cypress & Sea Fennel – 7,5 ml;Duftkerze – 65 g;Duschgel – 100 ml;Rose Dunes – 7,5 ml;Hand Lotion – 100 ml;Haarpflege – 100 ml;Sunlit Clementine & Vetiver – 7,5 ml;Duschgel – 100 ml;Hand Cream – 40 ml;Re-charge Black Pepper – 7,5 ml;Körpercreme – 50 ml;Liquid Hand Wash – 100 ml;Neon Amber – 7,5 ml;Haarpflege – 100 ml;Duschgel – 100 ml;Vitamin Lipsaver – 10 ml;Duftkerze – 65 g;Gunmetal Fragrance Travel Case'
+-%}
+{%- if c_adv.products.size > 0 -%}
+<style>
+  /* Adventskalender – festlicher Hintergrund, echte Kartontürchen mit 3D-Scharnier (Claude 12.11.2026) */
+  .ch .ca{background:radial-gradient(ellipse 70% 60% at 50% 45%,rgba(6,10,7,.55),rgba(4,6,5,.86) 80%),url({{ bg_adv | image_url: width: 2200 }}) 50% 50%/cover no-repeat,#07100b!important;color:#fff}
+  .ca .ch-h2{color:#fff}
+  .ca .ch-eyebrow{color:var(--acc)}
+  .ca .ch-lead{color:#e9dfc8}
+  .ca-steps{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0 0 26px;padding:0;list-style:none;font-size:13px;letter-spacing:.08em;color:#e9dfc8}
+  .ca-steps b{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;border-radius:50%;background:var(--acc);color:#000;font-size:12px}
+  .ca-picks{display:flex;gap:14px;overflow-x:auto;padding:6px 4px 18px;scroll-snap-type:x mandatory}
+  .ca-pick{position:relative;isolation:isolate;flex:0 0 230px;scroll-snap-align:start;display:flex;gap:12px;align-items:center;padding:12px;border-radius:22px;cursor:pointer;font:inherit;text-align:left;color:#000;background:rgba(255,250,240,.92)!important;border:1px solid rgba(241,222,168,.6);transition:transform .4s,box-shadow .4s}
+  .ca-pick::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:linear-gradient(135deg,var(--accL),var(--acc) 55%,var(--accD));transform:scaleX(0);transform-origin:0 50%;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+  .ca-pick.on::before{transform:scaleX(1)}
+  .ca-pick.on{box-shadow:0 18px 40px rgba(0,0,0,.45),0 0 0 1px var(--accL)}
+  .ca-pick:hover{transform:translateY(-3px)}
+  .ca-pick::after{content:"";position:absolute;left:0;right:0;top:100%;height:5px}
+  .ca-pick:focus-visible{outline:2px solid var(--accL);outline-offset:3px}
+  .ca-pick img{flex:0 0 72px;width:72px;height:72px;object-fit:contain;background:#fff;border-radius:14px}
+  .ca-pick small{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accD)}
+  .ca-pick.on small{color:#3d2c0c}
+  .ca-pick b{display:block;font-size:14px;font-weight:600;line-height:1.25;margin:2px 0}
+  .ca-pick span{font-size:13px}
+  /* Kalender-Tafel: bedruckter Karton */
+  .ca-box{--paper:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .15 0 0 0 0 .08 0 0 0 -1.1 .62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");position:relative;margin-top:10px;padding:clamp(14px,3vw,34px);border-radius:18px;background:var(--paper),radial-gradient(circle at 50% 0,rgba(241,222,168,.16),transparent 60%),repeating-linear-gradient(45deg,rgba(200,164,92,.05) 0 1px,transparent 1px 14px),linear-gradient(160deg,#16261c,#0a130e 70%);border:1px solid rgba(200,164,92,.7);box-shadow:inset 0 0 0 7px #0b130e,inset 0 0 0 8px rgba(200,164,92,.55),inset 0 2px 18px rgba(0,0,0,.6),0 50px 90px rgba(0,0,0,.55)}
+  .ca-name{margin:0 0 18px;text-align:center;font-family:"Cormorant Garamond","Bodoni Moda",Georgia,serif;font-size:clamp(20px,2.6vw,30px);letter-spacing:.14em;color:var(--accL)}
+  .ca-doors{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;align-items:end}
+  .ca-door{--c1:#efe5cf;--c2:#d9c9a6;--ink:#7d5f25;position:relative;height:150px;border:0;padding:0;border-radius:6px;background:none;cursor:pointer;perspective:700px;font:inherit;touch-action:manipulation;animation:caIn .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 30ms)}
+  .ca-door:nth-child(4n+2){--c1:#1f4a35;--c2:#12301f;--ink:#c8a45c}
+  .ca-door:nth-child(4n+3){--c1:#6b1d27;--c2:#43101a;--ink:#c8a45c}
+  .ca-door:nth-child(4n){--c1:#231d16;--c2:#110d09;--ink:#c8a45c}
+  .ca-door:nth-child(5n),.ca-door:nth-child(24){height:180px}
+  @keyframes caIn{from{opacity:0;transform:translateY(16px)}}
+  /* Fach hinter dem Türchen: Prägung in der Tafel */
+  .ca-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px 8px;border-radius:6px;text-align:center;color:#f3e9d2;background:radial-gradient(ellipse at 50% 35%,#2c2215,#0b0805 75%);box-shadow:inset 0 6px 14px rgba(0,0,0,.85),inset 0 -1px 0 rgba(241,222,168,.25),0 0 0 1px rgba(0,0,0,.6)}
+  .ca-in::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgba(0,0,0,.65),transparent 45%);opacity:0;transition:opacity .9s .2s;pointer-events:none}
+  .ca-door.open .ca-in::after{opacity:1}
+  .ca-in small{font-size:10px;letter-spacing:.2em;color:var(--acc)}
+  .ca-in b{font-size:12px;line-height:1.3;font-weight:600;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  /* Perforation rund um das Türchen */
+  .ca-door::before{content:"";position:absolute;inset:-4px;border-radius:9px;border:1.5px dashed rgba(241,222,168,.55);pointer-events:none}
+  /* Kartontür mit Scharnier links */
+  .ca-lid{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:0 50%;transition:transform 1.1s cubic-bezier(.2,.75,.2,1)}
+  .ca-lid>span{position:absolute;inset:0;border-radius:6px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+  .ca-face{display:flex;align-items:center;justify-content:center;background:var(--paper),radial-gradient(circle at 50% 50%,transparent 55%,rgba(0,0,0,.18)),radial-gradient(circle,var(--ink) 0 1px,transparent 1.6px) 0 0/16px 16px,linear-gradient(155deg,var(--c1),var(--c2));background-blend-mode:multiply,normal,soft-light,normal;box-shadow:inset 0 0 0 5px transparent,inset 0 0 0 6px rgba(200,164,92,.7),inset 1px 1px 0 7px rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.25),0 1px 0 rgba(255,255,255,.1),0 6px 12px rgba(0,0,0,.45)}
+  .ca-face::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,rgba(255,255,255,.22),transparent 40%,transparent 70%,rgba(0,0,0,.2));pointer-events:none}
+  .ca-num{font-family:"Cormorant Garamond","Bodoni Moda",Georgia,serif;font-size:42px;font-weight:400;line-height:1;background:linear-gradient(100deg,#7d5f25 0%,#c8a45c 22%,#fff3cf 40%,#d9b86c 52%,#8a6a2c 70%,#f1dea8 88%,#7d5f25 100%) 0 0/220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(0,0,0,.55)) drop-shadow(0 -1px 0 rgba(255,255,255,.18));transition:background-position 1.4s}
+  .ca-door:hover .ca-num,.ca-door:focus-visible .ca-num{background-position:100% 0}
+  .ca-back{transform:rotateY(180deg);background:var(--paper),linear-gradient(90deg,#b7a68a,#cdbd9f 60%,#a8977a);background-blend-mode:multiply,normal;box-shadow:inset 0 0 12px rgba(0,0,0,.25),0 10px 18px rgba(0,0,0,.45)}
+  .ca-door:hover .ca-lid,.ca-door:focus-visible .ca-lid{transform:rotateY(-18deg)}
+  .ca-door.open{z-index:3}
+  .ca-door:nth-child(4n+1) .ca-num{background-image:linear-gradient(100deg,#5a4214 0%,#9c7a35 25%,#e8cf8e 42%,#a8853e 55%,#5e4518 75%,#b8934a 90%,#5a4214 100%);filter:drop-shadow(0 1px 0 rgba(255,255,255,.6)) drop-shadow(0 -1px 0 rgba(0,0,0,.25))}
+  .ca-door.open .ca-lid{transform:rotateY(-128deg)}
+  .ca-door:focus-visible{outline:2px solid var(--accL);outline-offset:6px}
+  .ca-info{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px;margin-top:22px;color:#e9dfc8;font-size:15px}
+  .ca-note{margin:10px 0 0;font-size:12px;color:#b9ae98}
+  @media (max-width:860px){.ca-doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 10px}.ca-door{height:118px}.ca-door:nth-child(5n),.ca-door:nth-child(24){height:138px}.ca-num{font-size:32px}.ca-in b{font-size:11px;-webkit-line-clamp:5}.ca-in{padding:8px 5px}.ca-door.open .ca-lid{transform:rotateY(-122deg)}}
+  @media (prefers-reduced-motion:reduce){.ca-door.open .ca-lid{transform:rotateY(-122deg)!important}}
+</style>
+<section class="ch-sec ca" id="ch-advent">
+  <div class="ch-wrap">
+    <div class="ch-head"><div><p class="ch-eyebrow">Winter &amp; Advent</p><h2 class="ch-h2">Kleine Rituale bis zum Fest</h2><p class="ch-lead">Wähle einen Kalender und schau hinter die Türchen.</p></div><a class="ch-btn ch-btn--gold" href="{{ c_adv.url }}">Alle Adventskalender</a></div>
+    <ol class="ca-steps"><li><b>1</b>Kalender wählen</li><li><b>2</b>Türchen antippen</li><li><b>3</b>Zweimal tippen öffnet den Kalender</li></ol>
+    <div class="ca-picks" role="tablist" aria-label="Adventskalender">
+      {%- assign k = 0 -%}
+      {%- for p in c_adv.products -%}
+        {%- unless p.available -%}{%- continue -%}{%- endunless -%}
+        {%- liquid
+          assign inh = ''
+          if p.handle contains 'wir-fur-sie'
+            assign inh = inh_wfs
+          elsif p.handle contains 'artdeco'
+            assign inh = inh_artdeco
+          elsif p.handle contains 'babor'
+            assign inh = inh_babor
+          elsif p.handle contains 'molton-brown'
+            assign inh = inh_mb
+          endif
+          assign short = p.title | split: ' – ' | first | remove: ' Luxus Adventskalender Multi-Marken' | remove: ' Ampoule Concentrates' | truncate: 34
+        -%}
+        <button type="button" role="tab" class="ca-pick{% if k == 0 %} on{% endif %}" aria-selected="{% if k == 0 %}true{% else %}false{% endif %}" data-u="{{ p.url }}" data-n="{{ p.title | split: ' – ' | first | escape }}" data-x="{{ inh | escape }}" data-pr="{{ p.price | money | strip_html | escape }}">
+          {{ p.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
+          <span><small>{{ p.vendor }}</small><b>{{ short }}</b><span>{{ p.price | money }} · 24 Türchen</span></span>
+        </button>
+        {%- assign k = k | plus: 1 -%}
+      {%- endfor -%}
+    </div>
+    <div class="ca-box">
+      <p class="ca-name" data-ca-name></p>
+      <div class="ca-doors" data-ca-doors>
+        {%- for d in (1..24) -%}
+          <button type="button" class="ca-door" style="--i:{{ d }}" aria-label="Türchen {{ d }} öffnen" aria-expanded="false"><span class="ca-in"><small>TÜRCHEN {{ d }}</small><b></b></span><span class="ca-lid" aria-hidden="true"><span class="ca-face"><span class="ca-num">{{ d }}</span></span><span class="ca-back"></span></span></button>
+        {%- endfor -%}
+      </div>
+      <div class="ca-info"><span data-ca-info aria-live="polite">Tippe auf ein Türchen.</span><a class="ch-btn ch-btn--gold" data-ca-go href="{{ c_adv.url }}">Zum Kalender</a></div>
+      <p class="ca-note">Inhalt laut Hersteller. Die Reihenfolge hinter den Türchen kann abweichen.</p>
+    </div>
+  </div>
+</section>
+<script>
+  (function () {
+    var s = document.currentScript.previousElementSibling, picks = s.querySelectorAll('.ca-pick'), wrap = s.querySelector('[data-ca-doors]'), doors = wrap.querySelectorAll('.ca-door'), nm = s.querySelector('[data-ca-name]'), info = s.querySelector('[data-ca-info]'), go = s.querySelector('[data-ca-go]'), url = '', items = [], last = 0, lastD = null;
+    function pick(b) {
+      picks.forEach(function (x) { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b); });
+      url = b.dataset.u; items = b.dataset.x ? b.dataset.x.split(';') : []; nm.textContent = b.dataset.n; go.href = url; go.textContent = 'Zum Kalender · ' + b.dataset.pr;
+      doors.forEach(function (d, i) { d.classList.remove('open'); d.setAttribute('aria-expanded', 'false'); d.querySelector('b').textContent = items[i] || 'Überraschung'; d.style.animation = 'none'; d.offsetWidth; d.style.animation = ''; });
+      info.textContent = 'Tippe auf ein Türchen.';
+    }
+    picks.forEach(function (b) { b.addEventListener('click', function () { pick(b); }); });
+    doors.forEach(function (d, i) {
+      d.addEventListener('click', function () {
+        var now = Date.now();
+        if (lastD === d && now - last < 450) { location.href = url; return; }
+        last = now; lastD = d; d.classList.toggle('open'); d.setAttribute('aria-expanded', d.classList.contains('open'));
+        info.textContent = d.classList.contains('open') ? 'Türchen ' + (i + 1) + ': ' + (items[i] || 'Überraschung') : 'Tippe auf ein Türchen.';
+      });
+    });
+    if (picks[0]) pick(picks[0]);
+  })();
+</script>
+{%- endif -%}

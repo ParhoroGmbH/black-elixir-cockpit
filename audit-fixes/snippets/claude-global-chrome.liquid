@@ -1,0 +1,284 @@
+{%- comment -%} Claude · 12.11.2026 – Globales "Chrome" (Header, Sidebars, Footer) für alle Seiten. Nur Optik, keine Links/Texte geändert. Gerendert einmal aus layout/theme.liquid vor </body>. {%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{%- unless template.name == 'index' -%}<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap">{%- endunless -%}{%- comment -%} Startseite: 500/600 kommen gebündelt aus claude-home-style (Perf 12.11.2026) {%- endcomment -%}
+<style>
+  :root{--bx-gold:#c8a45c;--bx-gold-l:#f1dea8;--bx-gold-d:#7d5f25;--bx-ink:#141414;--bx-serif:"Cormorant Garamond",Georgia,serif}
+
+  /* ---------- 1) FOOTER: dunkles Glas + Wasser (Canvas per JS) ---------- */
+  html body .shopify-section-footer .footer.color-custom.color-custom,
+  html body .shopify-section-footer .overlapping-container-js{
+    background:
+      radial-gradient(120% 55% at 12% 0%,rgba(255,255,255,.075),transparent 60%),
+      radial-gradient(70% 45% at 92% 100%,rgba(200,164,92,.11),transparent 70%),
+      linear-gradient(118deg,transparent 0 22%,rgba(255,255,255,.035) 22% 30%,transparent 30% 31%,rgba(255,255,255,.025) 31% 33%,transparent 33%),
+      linear-gradient(180deg,#14151a 0%,#08090b 55%,#0e0f13 100%)!important;
+  }
+  html body .shopify-section-footer .overlapping-container-js{overflow:hidden}
+  html body .shopify-section-footer .overlapping-container-js::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;z-index:1;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28) 30%,rgba(241,222,168,.45) 50%,rgba(255,255,255,.28) 70%,transparent);pointer-events:none}
+  .bx-water{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.95;filter:blur(1px)}
+  .shopify-section-footer .footer__content{position:relative;z-index:3}
+  /* Spaltentitel + Newsletter-Titel */
+  html body .shopify-section-footer .menus__item-title,
+  html body .shopify-section-footer .newsletter__title.newsletter__title{font-family:var(--bx-serif)!important;font-weight:600;font-size:20px;letter-spacing:.14em;text-transform:uppercase;color:var(--bx-gold-l)!important}
+  /* Links: wie Startseite (Gold + Einrücken) */
+  .shopify-section-footer .menu__item-link-title{transition:color .3s,padding .3s}
+  .shopify-section-footer a:hover .menu__item-link-title,.shopify-section-footer a:focus-visible .menu__item-link-title{color:var(--bx-gold-l);padding-left:6px}
+  /* Newsletter als Glas-Pille (bisher nur Startseite) */
+  .shopify-section-footer .newsletter__form{display:flex;align-items:center;gap:8px;padding:5px 5px 5px 20px;border-radius:999px;background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.03));backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .shopify-section-footer .newsletter__field{flex:1;min-width:0;min-height:44px;border:0!important;background:transparent!important;color:#fff}
+  .shopify-section-footer .newsletter__field-icon{position:static!important;flex:0 0 46px;width:46px;height:46px;border-radius:50%;background:var(--bx-gold)!important;display:grid;place-items:center;transition:transform .3s}
+  .shopify-section-footer .newsletter__field-icon svg{fill:#000;transition:transform .3s}
+  .shopify-section-footer .newsletter__field-icon:hover svg{transform:translateX(3px)}
+  html body .shopify-section-footer .menus__item-title{white-space:nowrap;overflow:visible;text-overflow:clip;max-width:none}
+
+  /* Footer-Unterkante: Widerruf zentriert unter den Menüs (auf allen Seiten sichtbar), dann Linie, dann Zahlarten links + App rechts in einer Zeile */
+  html body .shopify-section-footer .hb-widerruf-wrapper.hb-widerruf-wrapper{display:flex!important;margin:0;padding:0;border:0}
+  .shopify-section-footer .footer__content>.custom-liquid:has(.hb-widerruf-wrapper){grid-column:1/-1}
+  .shopify-section-footer .footer__content>.line-container{order:1}
+  .shopify-section-footer .footer__content>.payment-block{order:2;align-self:center}
+  .shopify-section-footer .footer__content>.custom-liquid:has(.be-app-badges){order:3;align-self:center}
+  .shopify-section-footer .footer__content>.legal-container{order:4}
+  html body .shopify-section-footer .be-app-badges{padding:0;height:auto;min-height:0}
+  .shopify-section-footer .payment__list{justify-content:flex-start}
+  .shopify-section-footer .payment__list-item{opacity:.85;filter:grayscale(.85);transition:opacity .3s,filter .3s}
+  .shopify-section-footer .payment__list-item:hover{opacity:1;filter:none}
+
+  /* Footer-Logo: graviert ins Glas + weißes Neon (überschreibt Folien-Effekt der Startseite) */
+  html body .shopify-section-footer .be-foilwrap.be-foilwrap,html body .shopify-section-footer .bx-engrave-wrap{filter:none!important}
+  html body .shopify-section-footer a.bx-engrave.bx-engrave{position:relative;-webkit-mask:none!important;mask:none!important;background:none!important;animation:none!important;transform:none!important;overflow:visible}
+  html body .shopify-section-footer a.bx-engrave.bx-engrave img,html body .shopify-section-footer a.bx-engrave.bx-engrave figure{opacity:1!important}
+  html body .shopify-section-footer a.bx-engrave img{filter:drop-shadow(0 -1px 0 rgba(0,0,0,.95)) drop-shadow(0 1px 0 rgba(255,255,255,.22)) brightness(.86)}
+  .bx-neon{position:absolute;inset:0;z-index:2;pointer-events:none;filter:blur(5px);opacity:1;animation:bxNeon 7.5s linear infinite}
+  .bx-neon i,.bx-neon b{position:absolute;inset:0;background:#fff;-webkit-mask:var(--bx-logo) center/cover no-repeat;mask:var(--bx-logo) center/cover no-repeat}
+  .bx-neon b{inset:0;filter:blur(10px);opacity:.7}
+  .bx-neon--core{filter:none;mix-blend-mode:screen;opacity:.0;animation:bxNeonCore 7.5s linear infinite}
+  .bx-neon--core i{background:#fff}
+  @keyframes bxNeon{0%,40%,44%,47%,72%,100%{opacity:.95}41%,43%,46%{opacity:.08}42%{opacity:.6}73%,78%{opacity:.12}75%{opacity:.7}}
+  /* Perf 12.11.2026: Footer-Effekte pausieren, solange der Footer nicht sichtbar ist (bx-off per IntersectionObserver) */
+  .bx-off *,.bx-off *::before,.bx-off *::after{animation-play-state:paused!important}
+  @keyframes bxNeonCore{0%,40%,44%,47%,72%,100%{opacity:.55}41%,43%,46%,73%,78%{opacity:0}42%,75%{opacity:.3}}
+
+  /* ---------- 2) RECHTE SIDEBAR: gleiches dunkles Glas + Neon ---------- */
+  html body .secondary-sidebar.secondary-sidebar{
+    background:
+      radial-gradient(160% 30% at 0% 0%,rgba(255,255,255,.08),transparent 60%),
+      radial-gradient(160% 25% at 100% 100%,rgba(200,164,92,.12),transparent 70%),
+      linear-gradient(180deg,rgba(20,21,26,.82),rgba(8,9,11,.88))!important;
+    backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);
+    box-shadow:inset 1px 0 0 rgba(255,255,255,.14),inset 2px 0 0 rgba(0,0,0,.6);
+  }
+  .secondary-sidebar .menu__item-link .link-animation--underline span{background-size:0 0!important}
+  .secondary-sidebar .menu__item-link,.secondary-sidebar .menu__item-link *{color:rgba(255,255,255,.78)!important;transition:color .25s,text-shadow .25s}
+  .secondary-sidebar .menu__item-link.bx-near *,.secondary-sidebar .underline-active *{color:#fff!important;text-shadow:0 0 3px rgba(255,255,255,.45),0 0 9px rgba(255,255,255,.2)}
+  .secondary-sidebar .menu__item-link:hover *,.secondary-sidebar .menu__item-link:focus-visible *{color:#fff!important;text-shadow:0 0 1px #fff,0 0 4px rgba(255,255,255,.85),0 0 10px rgba(255,255,255,.5),0 0 20px rgba(255,255,255,.25)}
+  .secondary-sidebar .menu__item-link:hover .menu__item-link-title,.secondary-sidebar .menu__item-link:focus-visible .menu__item-link-title{animation:bxFlick .8s linear 1}
+  @keyframes bxFlick{0%{opacity:.3}8%{opacity:1}14%{opacity:.25}22%{opacity:1}30%{opacity:.5}36%,100%{opacity:1}}
+  .secondary-sidebar a:focus-visible,.main-sidebar a:focus-visible,.main-sidebar button:focus-visible,.shopify-section-footer a:focus-visible{outline:1px solid var(--bx-gold);outline-offset:3px}
+
+  /* ---------- 3) HEADER: klassisch-luxuriös ---------- */
+  sticky-secondary-header.header-section{box-shadow:inset 0 -1px 0 rgba(200,164,92,.35)}
+  sticky-secondary-header .menu-container--header .menu__item-link{font-family:Jost,sans-serif;font-size:11.5px!important;font-weight:500;letter-spacing:.2em!important;text-transform:uppercase}
+  sticky-secondary-header .menu-container--header .menu__item-link .link-animation--underline span{background-size:0 0!important}
+  sticky-secondary-header .menu-container--header .menu__item-link-title{position:relative}
+  sticky-secondary-header .menu-container--header .menu__item-link-title::after{content:"";position:absolute;left:0;right:.2em;bottom:-5px;height:1px;background:linear-gradient(90deg,var(--bx-gold-d),var(--bx-gold-l),var(--bx-gold-d));transform:scaleX(0);transform-origin:50% 50%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+  sticky-secondary-header .menu-container--header .menu__item-link:hover .menu__item-link-title::after,
+  sticky-secondary-header .menu-container--header .menu__item-link:focus-visible .menu__item-link-title::after,
+  sticky-secondary-header .menu-container--header .underline-active::after{transform:scaleX(1)}
+  sticky-secondary-header .menu-container--header .menu__item-link:hover{color:var(--bx-gold-d)}
+  sticky-secondary-header .menu-container--header .menu__dropdown-child-item-link{letter-spacing:.08em}
+  sticky-secondary-header .miscellaneous__subblock svg,.shopify-section-mobile-header .miscellaneous__subblock svg{width:20px!important;height:20px!important}
+  sticky-secondary-header .cart--icon_with_text{letter-spacing:.18em;font-size:11.5px}
+  sticky-secondary-header a:focus-visible,sticky-secondary-header button:focus-visible,sticky-secondary-header summary:focus-visible,.shopify-section-mobile-header a:focus-visible,.shopify-section-mobile-header button:focus-visible{outline:1px solid var(--bx-gold);outline-offset:4px}
+  /* Logo: scharf, mit Goldglanz der gelegentlich darüber zieht */
+  .logo__image.bx-glint{position:relative;isolation:isolate}
+  .logo__image.bx-glint::after{content:"";position:absolute;inset:var(--bx-li,0);pointer-events:none;-webkit-mask:var(--bx-hlogo) center/contain no-repeat;mask:var(--bx-hlogo) center/contain no-repeat;background:linear-gradient(100deg,transparent 35%,var(--bx-gold-d) 44%,var(--bx-gold-l) 50%,var(--bx-gold-d) 56%,transparent 65%) 0 0/300% 100%;animation:bxGlint 9s ease-in-out infinite}
+  @keyframes bxGlint{0%,62%{background-position:100% 0}88%,100%{background-position:0 0}}
+  .shopify-section-mobile-header{box-shadow:inset 0 -1px 0 rgba(200,164,92,.35)}
+
+  /* ---------- 4) LINKE SIDEBAR: helles Milchglas ---------- */
+  html body .main-sidebar.main-sidebar{
+    /* --bx-ft = Abstand Sidebar-Oberkante → Footer-Oberkante (per JS); darunter dunkles statt helles Glas */
+    background:linear-gradient(180deg,rgba(255,255,255,.3) 0 var(--bx-ft,200vh),rgba(14,15,19,.42) var(--bx-ft,200vh) 100%)!important;
+    backdrop-filter:blur(8px) saturate(150%);-webkit-backdrop-filter:blur(8px) saturate(150%);
+    box-shadow:inset -1px 0 0 rgba(200,164,92,.35),inset -2px 0 0 rgba(255,255,255,.35);
+  }
+  html body .main-sidebar.main-sidebar :is(a,span,p,button,summary,h2,h3,h4){text-shadow:0 0 6px rgba(255,255,255,.75)}
+  /* Text immer gut lesbar (auch wenn das Theme die Schrift über dem Footer invertiert) */
+  html body .main-sidebar.main-sidebar :is(a,span,div,p,button,summary,li){color:var(--bx-ink)!important;-webkit-text-fill-color:var(--bx-ink)!important}
+  html body .main-sidebar.main-sidebar .social-media__link{color:var(--bx-ink)!important;-webkit-text-fill-color:var(--bx-ink)!important}
+  html body .main-sidebar.main-sidebar .social-media__link :is(svg,path),html body .main-sidebar.main-sidebar .disclosure__button svg{fill:var(--bx-ink)!important}
+  html body .main-sidebar .link-animation--slide span::before{display:none}
+  .main-sidebar .menu__item-link{letter-spacing:.16em}
+  .main-sidebar .menu__item-link .link-animation--underline span{background-image:linear-gradient(var(--bx-gold),var(--bx-gold))!important}
+  html body .main-sidebar.main-sidebar .menu__item-link:hover *{color:var(--bx-gold-d)!important;-webkit-text-fill-color:var(--bx-gold-d)!important}
+  /* Über dem dunklen Footer: helle Schrift */
+  html body .main-sidebar.main-sidebar .bx-ondark,html body .main-sidebar.main-sidebar .bx-ondark *{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 0 6px rgba(0,0,0,.7)}
+  html body .main-sidebar.main-sidebar .bx-ondark :is(svg,path){fill:#fff!important}
+  html body .main-sidebar.main-sidebar .bx-ondark.menu__item-link:hover *{color:var(--bx-gold-l)!important;-webkit-text-fill-color:var(--bx-gold-l)!important}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    html body .main-sidebar.main-sidebar{background:rgba(255,255,255,.94)!important}
+    html body .secondary-sidebar.secondary-sidebar{background:#0d0e11!important}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .bx-neon,.bx-neon--core,.logo__image.bx-glint::after,.secondary-sidebar .menu__item-link-title{animation:none!important}
+    .bx-neon{opacity:.8}.bx-neon--core{opacity:.4}
+    .logo__image.bx-glint::after{display:none}
+  }
+  @media (max-width:860px){
+    html body .shopify-section-footer .menus__item-title{font-size:15px;letter-spacing:.06em;word-break:normal;overflow-wrap:normal}
+    .bx-neon{filter:blur(4px)}
+    /* Mobil: App-Block, darunter Zahlarten – zentriert */
+    .shopify-section-footer .footer__content>.custom-liquid:has(.be-app-badges){order:2}
+    .shopify-section-footer .footer__content>.payment-block{order:3}
+    .shopify-section-footer .payment__list{justify-content:center}
+    html body .shopify-section-footer .be-app-badges{justify-content:center}
+  }
+  /* Schmale Handys: Entdecken | Mitglieder nebeneinander, Über uns volle Breite – ganze Wörter, keine Trennung mitten im Wort */
+  @media (max-width:480px){
+    html body .shopify-section-footer .menus .menus__item{flex:1 1 calc(50% - 16px);max-width:none}
+    html body .shopify-section-footer .menus .menus__item:nth-child(3n){flex-basis:100%}
+    html body .shopify-section-footer .menus :is(.menu__item-link,.menu__item-link-title){word-break:normal;overflow-wrap:normal;hyphens:manual}
+  }
+  @media (max-width:380px){
+    html body .shopify-section-footer .menus .menu__item-link-title{font-size:11px;letter-spacing:0}
+  }
+</style>
+<script>
+(function () {
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function srcOf(img) {
+    var s = img.currentSrc || '';
+    if (!s || s.indexOf('data:') === 0) s = (img.getAttribute('data-srcset') || img.getAttribute('srcset') || '').split(' ')[0] || img.getAttribute('data-src') || img.src;
+    return s && s.indexOf('data:') !== 0 ? s : '';
+  }
+
+  /* Footer-Logo: Gravur + Neon */
+  function engrave() {
+    var img = document.querySelector('.shopify-section-footer a.image img, .shopify-section-footer img.image__item');
+    if (!img) return;
+    var src = srcOf(img); if (!src) return;
+    var a = img.closest('a') || img.parentElement;
+    if (a.querySelector('.bx-neon')) return;
+    a.classList.add('bx-engrave');
+    a.style.setProperty('--bx-logo', 'url("' + src.replace(/width=[0-9]+/, 'width=1200') + '")');
+    a.insertAdjacentHTML('beforeend', '<span class="bx-neon" aria-hidden="true"><b></b><i></i></span><span class="bx-neon bx-neon--core" aria-hidden="true"><i></i></span>');
+  }
+
+  /* Header-Logo: Goldglanz-Maske */
+  function glint() {
+    document.querySelectorAll('sticky-secondary-header .logo__image').forEach(function (a) {
+      var img = [].slice.call(a.querySelectorAll('img')).filter(function (i) { return i.offsetWidth; })[0];
+      if (!img) return; var src = srcOf(img); if (!src) return;
+      a.style.setProperty('--bx-hlogo', 'url("' + src + '")');
+      a.classList.add('bx-glint');
+    });
+  }
+
+  /* Rechte Sidebar: Links leuchten auf, wenn die Maus in die Nähe kommt */
+  function proximity() {
+    var bar = document.querySelector('.secondary-sidebar'); if (!bar) return;
+    var links = [].slice.call(bar.querySelectorAll('.menu__item-link'));
+    var raf = 0, mx = 0, my = 0;
+    function upd() {
+      raf = 0;
+      links.forEach(function (l) {
+        var r = l.getBoundingClientRect();
+        var dx = Math.max(r.left - mx, 0, mx - r.right), dy = Math.max(r.top - my, 0, my - r.bottom);
+        l.classList.toggle('bx-near', dx * dx + dy * dy < 1600);
+      });
+    }
+    window.addEventListener('pointermove', function (e) {
+      if (e.clientX < innerWidth - 220) { if (bar.dataset.bxN) { bar.dataset.bxN = ''; links.forEach(function (l) { l.classList.remove('bx-near'); }); } return; }
+      bar.dataset.bxN = '1'; mx = e.clientX; my = e.clientY; if (!raf) raf = requestAnimationFrame(upd);
+    }, { passive: true });
+  }
+
+  /* Footer-Wasser: leichte 2D-Wellensimulation auf kleinem Canvas (hochskaliert), pausiert außerhalb des Sichtbereichs */
+  function water() {
+    var host = document.querySelector('.shopify-section-footer .overlapping-container-js') || document.querySelector('.shopify-section-footer .footer');
+    if (!host || RM || host.querySelector('.bx-water')) return;
+    var cv = document.createElement('canvas'); cv.className = 'bx-water'; cv.setAttribute('aria-hidden', 'true');
+    var ctx = cv.getContext && cv.getContext('2d'); if (!ctx) return;
+    if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    host.insertBefore(cv, host.firstChild);
+    var coarse = matchMedia('(pointer: coarse)').matches || innerWidth < 861;
+    var S = coarse ? 8 : 5, W, H, A, B, img, vis = false, run = false, lastX = -99, lastY = -99, timer;
+    function size() {
+      var r = host.getBoundingClientRect();
+      W = Math.max(4, Math.ceil(r.width / S)); H = Math.max(4, Math.ceil(r.height / S));
+      cv.width = W; cv.height = H; A = new Float32Array(W * H); B = new Float32Array(W * H); img = ctx.createImageData(W, H);
+    }
+    function drop(x, y, rad, s) {
+      x = x | 0; y = y | 0;
+      for (var j = -rad; j <= rad; j++) for (var i = -rad; i <= rad; i++) {
+        if (i * i + j * j > rad * rad) continue;
+        var X = x + i, Y = y + j;
+        if (X > 0 && Y > 0 && X < W - 1 && Y < H - 1) A[Y * W + X] += s;
+      }
+      if (!run && vis) { run = true; requestAnimationFrame(loop); }
+    }
+    function loop() {
+      var e = 0, d = img.data, y, x, i, v, s, p;
+      for (y = 1; y < H - 1; y++) for (x = 1, i = y * W + 1; x < W - 1; x++, i++) {
+        v = ((A[i - 1] + A[i + 1] + A[i - W] + A[i + W]) * 0.5 - B[i]) * 0.968;
+        B[i] = v; e += v < 0 ? -v : v;
+      }
+      var t = A; A = B; B = t;
+      for (y = 1; y < H - 1; y++) for (x = 1, i = y * W + 1; x < W - 1; x++, i++) {
+        s = (A[i - 1] - A[i + 1]) + (A[i - W] - A[i + W]) * 0.7; p = i << 2;
+        if (s > 0) { d[p] = d[p + 1] = d[p + 2] = 255; d[p + 3] = s * 3 > 140 ? 140 : s * 3; }
+        else { d[p] = d[p + 1] = d[p + 2] = 0; d[p + 3] = -s * 1.6 > 60 ? 60 : -s * 1.6; }
+      }
+      ctx.putImageData(img, 0, 0);
+      if (vis && e > W * H * 0.004) requestAnimationFrame(loop);
+      else { run = false; if (!vis || e <= W * H * 0.004) { A.fill(0); B.fill(0); ctx.clearRect(0, 0, W, H); } }
+    }
+    size();
+    if ('ResizeObserver' in window) new ResizeObserver(function () { var r = host.getBoundingClientRect(); if (Math.ceil(r.width / S) !== W || Math.ceil(r.height / S) !== H) size(); }).observe(host);
+    new IntersectionObserver(function (en) {
+      vis = en[0].isIntersecting; (host.closest('.shopify-section-footer') || host).classList.toggle('bx-off', !vis);
+      clearInterval(timer);
+      if (vis) timer = setInterval(function () { drop(Math.random() * W, Math.random() * H, 3, 16); }, coarse ? 1300 : 2600);
+    }).observe(host);
+    window.addEventListener('pointermove', function (e) {
+      if (!vis) return;
+      var r = host.getBoundingClientRect(), x = (e.clientX - r.left) / S, y = (e.clientY - r.top) / S;
+      if (x < 0 || y < 0 || x >= W || y >= H) return;
+      if (Math.abs(x - lastX) + Math.abs(y - lastY) < 1.5) return;
+      lastX = x; lastY = y; drop(x, y, 2, 12);
+    }, { passive: true });
+    window.addEventListener('pointerdown', function (e) {
+      if (!vis) return; var r = host.getBoundingClientRect();
+      drop((e.clientX - r.left) / S, (e.clientY - r.top) / S, 3, 26);
+    }, { passive: true });
+  }
+
+  /* Footer-Spaltentitel: Einstellung lautet "MITGLIEDE" (Tippfehler in footer-group.json) – Anzeige korrigieren */
+  function titles() {
+    document.querySelectorAll('.shopify-section-footer .menus__item-title').forEach(function (t) {
+      if (t.textContent.trim() === 'MITGLIEDE') t.textContent = 'MITGLIEDER';
+    });
+  }
+
+  /* Linke Sidebar: Teil über dem dunklen Footer bekommt dunkles Glas + helle Schrift */
+  function sidebarTone() {
+    var bar = document.querySelector('.main-sidebar'), ft = document.querySelector('.shopify-section-footer .footer') || document.querySelector('.shopify-section-footer');
+    if (!bar || !ft) return;
+    var els = [].slice.call(bar.querySelectorAll('a,button,summary,p,h2,h3,h4')), raf = 0;
+    function upd() {
+      raf = 0;
+      var top = ft.getBoundingClientRect().top, b = bar.getBoundingClientRect();
+      if (top > b.bottom && !bar.bxD) return; bar.bxD = top <= b.bottom; /* Perf: Footer weit weg -> nichts zu tun */
+      bar.style.setProperty('--bx-ft', Math.max(0, top - b.top) + 'px');
+      els.forEach(function (e) { var r = e.getBoundingClientRect(); e.classList.toggle('bx-ondark', r.height > 0 && (r.top + r.bottom) / 2 > top); });
+    }
+    function q() { if (!raf) raf = requestAnimationFrame(upd); }
+    window.addEventListener('scroll', q, { passive: true }); window.addEventListener('resize', q); upd();
+  }
+
+  function init() { engrave(); glint(); proximity(); water(); titles(); sidebarTone(); }
+  if (document.readyState === 'complete') init(); else window.addEventListener('load', init);
+})();
+</script>
