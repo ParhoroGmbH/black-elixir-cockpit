@@ -1,0 +1,359 @@
+{%- comment -%}
+  Claude · 12.11.2026 – Paket I: Neuigkeiten-Fenster (sections/news-drawer, Gruppe more-header-sections) als dunkles Glas.
+  Gerendert einmal aus layout/theme.liquid direkt nach claude-global-overlays.
+  - Bild oben kommt weiter aus dem Theme-Block (more-header-sections.json, Block promo_code_Bbw7Pz).
+  - Die Neuigkeiten-Liste steht hier als <template> und wird per JS in .news-drawer__content gehängt.
+  - Texte: nur belegte Fakten (Startseiten-/Locale-Texte, Seite /pages/geschenk, Lagerbestand, Footer-App-Links).
+    Übersetzungen inline je request.locale.iso_code (Locale-Dateien bewusst nicht angefasst).
+  - Adventskalender: Marken werden beim Rendern aus den verfügbaren Produkten der Kollektion gelesen.
+  - Journal: immer der neueste veröffentlichte Artikel aus blogs.news.
+{%- endcomment -%}
+{%- liquid
+  assign L = request.locale.iso_code
+  case L
+    when 'en'
+      assign t_title = 'News & offers'
+      assign t_l1 = 'Until 31 Dec 2026'
+      assign t_h1 = 'A gift instead of a discount'
+      assign t_x1 = 'From €59, choose an Italian soap as our gift; from €99, two soaps and a fragrance sample – no code needed. While stocks last.'
+      assign t_c1 = 'How it works'
+      assign t_l2 = 'Advent calendars'
+      assign t_h2 = 'Skincare and fragrance behind every door'
+      assign t_x2 = 'Available now:'
+      assign t_and = ' and '
+      assign t_sep = ', '
+      assign t_c2 = 'View calendars'
+      assign t_h3 = 'Seven warriors, seven fragrances'
+      assign t_x3 = 'Each flacon is a bust with a metallic finish – gold, silver, bronze or black. Choose your fighter.'
+      assign t_c3 = 'Enter the arena'
+      assign t_h4 = 'Every fragrance a novel'
+      assign t_x4 = 'Pull a book from the shelf – the library of fragrances.'
+      assign t_c4 = 'Enter the library'
+      assign t_l5 = 'From our fragrance journal'
+      assign t_c5 = 'Read article'
+      assign t_app = 'For iOS and Android'
+    when 'fr'
+      assign t_title = 'Actualités & offres'
+      assign t_l1 = 'Jusqu’au 31/12/2026'
+      assign t_h1 = 'Un cadeau plutôt qu’une remise'
+      assign t_x1 = 'Dès 59 € d’achat, un savon italien de votre choix ; dès 99 €, deux savons et un échantillon de parfum – sans aucun code. Dans la limite des stocks disponibles.'
+      assign t_c1 = 'Comment ça marche'
+      assign t_l2 = 'Calendriers de l’Avent'
+      assign t_h2 = 'Soins et parfums, porte après porte'
+      assign t_x2 = 'Disponibles maintenant :'
+      assign t_and = ' et '
+      assign t_sep = ', '
+      assign t_c2 = 'Voir les calendriers'
+      assign t_h3 = 'Sept guerriers, sept parfums'
+      assign t_x3 = 'Chaque flacon est un buste à l’aspect métal – or, argent, bronze ou noir. Choisissez votre combattant.'
+      assign t_c3 = 'Entrer dans l’arène'
+      assign t_h4 = 'Chaque parfum est un roman'
+      assign t_x4 = 'Tirez un livre de l’étagère – la bibliothèque des parfums.'
+      assign t_c4 = 'Entrer dans la bibliothèque'
+      assign t_l5 = 'Extrait de notre journal olfactif'
+      assign t_c5 = 'Lire l’article'
+      assign t_app = 'Pour iOS et Android'
+    when 'it'
+      assign t_title = 'Novità e offerte'
+      assign t_l1 = 'Fino al 31/12/2026'
+      assign t_h1 = 'Un regalo al posto dello sconto'
+      assign t_x1 = 'Da 59 € un sapone italiano a tua scelta, da 99 € due saponi e un campioncino di profumo – senza alcun codice. Fino a esaurimento scorte.'
+      assign t_c1 = 'Come funziona'
+      assign t_l2 = 'Calendari dell’Avvento'
+      assign t_h2 = 'Cura e profumo, finestrella dopo finestrella'
+      assign t_x2 = 'Disponibili ora:'
+      assign t_and = ' e '
+      assign t_sep = ', '
+      assign t_c2 = 'Vedi i calendari'
+      assign t_h3 = 'Sette guerrieri, sette fragranze'
+      assign t_x3 = 'Ogni flacone è un busto dall’effetto metallico – oro, argento, bronzo o nero. Scegli il tuo combattente.'
+      assign t_c3 = 'Entra nell’arena'
+      assign t_h4 = 'Ogni fragranza è un romanzo'
+      assign t_x4 = 'Sfila un libro dallo scaffale – la biblioteca dei profumi.'
+      assign t_c4 = 'Entra nella biblioteca'
+      assign t_l5 = 'Dal nostro journal dei profumi'
+      assign t_c5 = 'Leggi l’articolo'
+      assign t_app = 'Per iOS e Android'
+    when 'da'
+      assign t_title = 'Nyheder & tilbud'
+      assign t_l1 = 'Til 31.12.2026'
+      assign t_h1 = 'En gave i stedet for rabat'
+      assign t_x1 = 'Fra 59 € får du en italiensk sæbe efter eget valg, fra 99 € to sæber og en duftprøve – helt uden kode. Så længe lager haves.'
+      assign t_c1 = 'Sådan fungerer det'
+      assign t_l2 = 'Julekalendere'
+      assign t_h2 = 'Pleje og duft bag hver låge'
+      assign t_x2 = 'Fås nu:'
+      assign t_and = ' og '
+      assign t_sep = ', '
+      assign t_c2 = 'Se julekalendere'
+      assign t_h3 = 'Syv krigere, syv dufte'
+      assign t_x3 = 'Hver flakon er en buste med metallisk finish – guld, sølv, bronze eller sort. Vælg din kriger.'
+      assign t_c3 = 'Træd ind i arenaen'
+      assign t_h4 = 'Hver duft en roman'
+      assign t_x4 = 'Træk en bog ud af reolen – dufternes bibliotek.'
+      assign t_c4 = 'Gå til biblioteket'
+      assign t_l5 = 'Fra vores duftjournal'
+      assign t_c5 = 'Læs artiklen'
+      assign t_app = 'Til iOS og Android'
+    when 'ar'
+      assign t_title = 'الأخبار والعروض'
+      assign t_l1 = 'حتى 31.12.2026'
+      assign t_h1 = 'هدية بدلاً من الخصم'
+      assign t_x1 = 'عند الشراء بقيمة 59 € تحصل على صابونة إيطالية من اختيارك، ومن 99 € صابونتان وعيّنة عطر – دون أي رمز. حتى نفاد الكمية.'
+      assign t_c1 = 'كيف يعمل'
+      assign t_l2 = 'تقاويم المجيء'
+      assign t_h2 = 'عناية وعطر خلف كل نافذة'
+      assign t_x2 = 'متوفر الآن:'
+      assign t_and = ' و '
+      assign t_sep = '، '
+      assign t_c2 = 'عرض التقاويم'
+      assign t_h3 = 'سبعة محاربين، سبعة عطور'
+      assign t_x3 = 'كل قارورة تمثال نصفي بلمسة معدنية – ذهبي أو فضي أو برونزي أو أسود. اختر مقاتلك.'
+      assign t_c3 = 'ادخل الحلبة'
+      assign t_h4 = 'كل عطر رواية'
+      assign t_x4 = 'اسحب كتاباً من الرف – مكتبة العطور.'
+      assign t_c4 = 'إلى المكتبة'
+      assign t_l5 = 'من مجلّة العطور'
+      assign t_c5 = 'اقرأ المقال'
+      assign t_app = 'لنظامي iOS و Android'
+    else
+      assign t_title = 'Neuigkeiten & Angebote'
+      assign t_l1 = 'Bis 31.12.2026'
+      assign t_h1 = 'Geschenk statt Rabatt'
+      assign t_x1 = 'Ab 59 € eine italienische Seife deiner Wahl, ab 99 € zwei Seifen und eine Duftprobe – ganz ohne Code. Solange der Vorrat reicht.'
+      assign t_c1 = 'So funktioniert’s'
+      assign t_l2 = 'Adventskalender'
+      assign t_h2 = 'Tür für Tür Pflege und Duft'
+      assign t_x2 = 'Jetzt verfügbar:'
+      assign t_and = ' und '
+      assign t_sep = ', '
+      assign t_c2 = 'Kalender ansehen'
+      assign t_h3 = 'Sieben Krieger, sieben Düfte'
+      assign t_x3 = 'Jeder Flakon eine Büste aus Metall-Optik – gold, silber, bronze oder schwarz. Wähle deinen Kämpfer.'
+      assign t_c3 = 'Die Arena betreten'
+      assign t_h4 = 'Jeder Duft ein Roman'
+      assign t_x4 = 'Ziehe ein Buch aus dem Regal – die Bibliothek der Düfte.'
+      assign t_c4 = 'Zur Bibliothek'
+      assign t_l5 = 'Aus unserem Duft-Journal'
+      assign t_c5 = 'Artikel lesen'
+      assign t_app = 'Für iOS und Android'
+  endcase
+
+  assign p_gift = pages['geschenk']
+  assign c_adv = collections['luxus-adventskalender']
+  assign c_dumo = collections['dumo']
+  assign c_fl = collections['fragrance-library']
+  assign art = blogs['news'].articles.first
+  assign be_now = 'now' | date: '%s' | plus: 0
+
+  comment
+    Adventskalender: verfügbare Marken in fester Reihenfolge (Anzeige-Namen wie auf der Startseite)
+  endcomment
+  assign adv_v = ''
+  for p in c_adv.products limit: 50
+    if p.available
+      assign adv_v = adv_v | append: '|' | append: p.vendor | upcase
+    endif
+  endfor
+  assign adv_names = ''
+  if adv_v contains 'BABOR'
+    assign adv_names = adv_names | append: '#BABOR'
+  endif
+  if adv_v contains 'ARTDECO'
+    assign adv_names = adv_names | append: '#ARTDECO'
+  endif
+  if adv_v contains 'MOLTON BROWN'
+    assign adv_names = adv_names | append: '#Molton Brown'
+  endif
+  if adv_v contains 'WIR-FÜR-SIE' or adv_v contains 'WIR FÜR SIE'
+    assign adv_names = adv_names | append: '#Wir für Sie'
+  endif
+  if adv_v contains 'RITUALS'
+    assign adv_names = adv_names | append: '#Rituals'
+  endif
+  assign adv_list = adv_names | remove_first: '#' | split: '#'
+  assign adv_text = ''
+  for n in adv_list
+    if forloop.first
+      assign adv_text = n
+    elsif forloop.last
+      assign adv_text = adv_text | append: t_and | append: n
+    else
+      assign adv_text = adv_text | append: t_sep | append: n
+    endif
+  endfor
+
+  assign i = 0
+-%}
+<template id="bxnd-tpl">
+  <div class="bxnd" data-title="{{ t_title | escape }}">
+    <ul class="bxnd-list" role="list">
+      {%- if p_gift.url != blank and be_now <= 1798757999 -%}
+        {%- assign i = i | plus: 1 -%}
+        <li style="--i:{{ i }}"><a class="bxnd-item" href="{{ p_gift.url }}">
+          <span class="bxnd-thumb">{%- assign im = images['be-seife-ambra-vaniglia-2026-11-12.jpg'] -%}{%- if im -%}<img src="{{ im | image_url: width: 160, height: 160, crop: 'center' }}" alt="" width="80" height="80" loading="lazy">{%- endif -%}</span>
+          <span class="bxnd-body"><span class="bxnd-label">{{ t_l1 }}</span><h3 class="bxnd-h">{{ t_h1 }}</h3><span class="bxnd-x">{{ t_x1 }}</span><span class="bxnd-cta">{{ t_c1 }}<i aria-hidden="true">→</i></span></span>
+        </a></li>
+      {%- endif -%}
+      {%- if adv_text != blank -%}
+        {%- assign i = i | plus: 1 -%}
+        <li style="--i:{{ i }}"><a class="bxnd-item" href="{{ c_adv.url }}">
+          <span class="bxnd-thumb">{%- assign im = images['be-advent-bg-2026-11-12.jpg'] -%}{%- if im -%}<img src="{{ im | image_url: width: 160, height: 160, crop: 'center' }}" alt="" width="80" height="80" loading="lazy">{%- endif -%}</span>
+          <span class="bxnd-body"><span class="bxnd-label">{{ t_l2 }}</span><h3 class="bxnd-h">{{ t_h2 }}</h3><span class="bxnd-x">{{ t_x2 }} <bdi>{{ adv_text }}</bdi>.</span><span class="bxnd-cta">{{ t_c2 }}<i aria-hidden="true">→</i></span></span>
+        </a></li>
+      {%- endif -%}
+      {%- if c_dumo.products_count > 0 -%}
+        {%- assign i = i | plus: 1 -%}
+        <li style="--i:{{ i }}"><a class="bxnd-item" href="{{ c_dumo.url }}">
+          <span class="bxnd-thumb">{%- if c_dumo.image -%}<img src="{{ c_dumo.image | image_url: width: 160, height: 160, crop: 'center' }}" alt="" width="80" height="80" loading="lazy">{%- endif -%}</span>
+          <span class="bxnd-body"><span class="bxnd-label">DUMO</span><h3 class="bxnd-h">{{ t_h3 }}</h3><span class="bxnd-x">{{ t_x3 }}</span><span class="bxnd-cta">{{ t_c3 }}<i aria-hidden="true">→</i></span></span>
+        </a></li>
+      {%- endif -%}
+      {%- if c_fl.products_count > 0 -%}
+        {%- assign i = i | plus: 1 -%}
+        <li style="--i:{{ i }}"><a class="bxnd-item" href="{{ c_fl.url }}">
+          <span class="bxnd-thumb">{%- assign im = images['be-fl-story-library-v2-2026-11-12.jpg'] -%}{%- if im -%}<img src="{{ im | image_url: width: 160, height: 160, crop: 'center' }}" alt="" width="80" height="80" loading="lazy">{%- endif -%}</span>
+          <span class="bxnd-body"><span class="bxnd-label">Fragrance Library</span><h3 class="bxnd-h">{{ t_h4 }}</h3><span class="bxnd-x">{{ t_x4 }}</span><span class="bxnd-cta">{{ t_c4 }}<i aria-hidden="true">→</i></span></span>
+        </a></li>
+      {%- endif -%}
+      {%- if art -%}
+        {%- assign i = i | plus: 1 -%}
+        {%- assign art_x = art.excerpt | default: art.content | strip_html | strip_newlines | truncate: 120 -%}
+        <li style="--i:{{ i }}"><a class="bxnd-item" href="{{ art.url }}">
+          <span class="bxnd-thumb">{%- if art.image -%}<img src="{{ art.image | image_url: width: 160, height: 160, crop: 'center' }}" alt="" width="80" height="80" loading="lazy">{%- endif -%}</span>
+          <span class="bxnd-body"><span class="bxnd-label">{{ t_l5 }}</span><h3 class="bxnd-h">{{ art.title | escape }}</h3>{%- if art_x != blank -%}<span class="bxnd-x">{{ art_x }}</span>{%- endif -%}<span class="bxnd-cta">{{ t_c5 }}<i aria-hidden="true">→</i></span></span>
+        </a></li>
+      {%- endif -%}
+    </ul>
+    {%- comment -%} App-Links = dieselben wie die Badges in sections/footer-group.json {%- endcomment -%}
+    <div class="bxnd-app" style="--i:{{ i | plus: 1 }}">
+      <span class="bxnd-app__ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M10.5 18.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+      <span class="bxnd-app__t"><b>BLACK ELIXIR App</b><span>{{ t_app }}</span></span>
+      <span class="bxnd-app__links"><a href="https://apps.apple.com/de/app/black-elixir/id6752920215" target="_blank" rel="noopener">App Store</a><a href="https://play.google.com/store/apps/details?id=io.onemobile.blackelixir" target="_blank" rel="noopener">Google Play</a></span>
+    </div>
+  </div>
+</template>
+<style>
+  /* ---------- Neuigkeiten-Fenster: dunkles Glas ---------- */
+  html body news-drawer.drawer .news-drawer{
+    background:rgba(12,10,8,.46)!important;color:#fff!important;
+    -webkit-backdrop-filter:blur(22px) saturate(1.5) brightness(.55);backdrop-filter:blur(22px) saturate(1.5) brightness(.55);
+    border-inline-start:1px solid rgba(241,222,168,.34);
+    box-shadow:inset 1px 0 0 rgba(255,255,255,.05),-32px 0 80px -24px rgba(0,0,0,.6);
+  }
+  html[dir="rtl"] body news-drawer.drawer .news-drawer{box-shadow:inset -1px 0 0 rgba(255,255,255,.05),32px 0 80px -24px rgba(0,0,0,.6)}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    html body news-drawer.drawer .news-drawer{background:rgba(14,12,10,.94)!important}
+  }
+  /* Seite bleibt sichtbar: nur leicht abdunkeln */
+  html body:has(news-drawer.active) > .overlay.open{opacity:.2!important}
+  /* sanftes Einfahren / Ausfahren */
+  html body news-drawer.drawer.active .news-drawer{animation:bxndIn .5s cubic-bezier(.2,.75,.2,1) both!important}
+  html[dir="rtl"] body news-drawer.drawer.active .news-drawer{animation-name:bxndInR!important}
+  html body news-drawer.drawer.active.bxnd-out .news-drawer{animation:bxndOut .24s cubic-bezier(.4,0,.7,.2) both!important}
+  html[dir="rtl"] body news-drawer.drawer.active.bxnd-out .news-drawer{animation-name:bxndOutR!important}
+  @keyframes bxndIn{from{transform:translateX(100%);opacity:.3}to{transform:none;opacity:1}}
+  @keyframes bxndInR{from{transform:translateX(-100%);opacity:.3}to{transform:none;opacity:1}}
+  @keyframes bxndOut{to{transform:translateX(100%);opacity:0}}
+  @keyframes bxndOutR{to{transform:translateX(-100%);opacity:0}}
+
+  /* Kopf: Titel im Label-Stil, Schliessen als Glaskreis */
+  news-drawer .news-drawer .drawer__heading.drawer__heading{font-family:Jost,sans-serif!important;font-size:12px!important;font-weight:500!important;letter-spacing:.22em!important;text-transform:uppercase;color:var(--bx-gold-l,#f1dea8)!important;min-height:76px}
+  html[dir="rtl"] news-drawer .news-drawer .drawer__heading.drawer__heading{letter-spacing:0!important;font-size:15px!important}
+  news-drawer .news-drawer .drawer__close.drawer__close{background:rgba(255,255,255,.1)!important;border:1px solid rgba(241,222,168,.42)!important;border-radius:50%!important;color:#fff!important;-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 22px -10px rgba(0,0,0,.6);transition:background .25s,transform .25s,border-color .25s!important}
+  news-drawer .news-drawer .drawer__close svg,news-drawer .news-drawer .drawer__close path{fill:#fff!important}
+  news-drawer .news-drawer .drawer__close:hover{background:rgba(200,164,92,.28)!important;border-color:var(--bx-gold-l,#f1dea8)!important;transform:rotate(90deg)}
+  news-drawer .news-drawer :focus-visible{outline:2px solid var(--bx-gold-l,#f1dea8)!important;outline-offset:3px}
+
+  /* Bild oben (Theme-Block) */
+  news-drawer .news-drawer .news-drawer__image-container{aspect-ratio:16/10;border-radius:18px!important;border:1px solid rgba(241,222,168,.26);box-shadow:0 18px 40px -20px rgba(0,0,0,.7)}
+  news-drawer .news-drawer .news-drawer__image-container .news-drawer__image{width:100%;height:100%;object-fit:cover;object-position:50% 58%!important}
+  news-drawer .news-drawer .news-drawer__content > .news-drawer__block > .news-drawer__block-elem{margin-top:4px}
+  news-drawer .news-drawer .line-container{display:none}
+
+  /* Liste */
+  .bxnd{margin-top:18px}
+  .bxnd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .bxnd-item{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;align-items:start;padding:14px;margin:0 -14px;border-radius:18px;border:1px solid transparent;color:#fff!important;text-decoration:none!important;transition:background .3s,border-color .3s,transform .3s}
+  .bxnd-item:hover{background:rgba(255,255,255,.06);border-color:rgba(241,222,168,.22)}
+  .bxnd-thumb{display:block;width:72px;height:72px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(241,222,168,.28)}
+  .bxnd-thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+  .bxnd-item:hover .bxnd-thumb img{transform:scale(1.07)}
+  .bxnd-body{display:flex;flex-direction:column;min-width:0}
+  .bxnd-label{font-family:Jost,sans-serif;font-size:10.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--bx-gold-l,#f1dea8)}
+  .bxnd-h.bxnd-h{margin:4px 0 4px;font-family:var(--bx-serif,"Cormorant Garamond",Georgia,serif)!important;font-size:21px;font-weight:600;line-height:1.15;letter-spacing:.01em;text-transform:none!important;color:#fff!important}
+  .bxnd-x{font-family:Jost,sans-serif;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.86);text-transform:none}
+  .bxnd-cta{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 14px;border-radius:999px;border:1px solid rgba(200,164,92,.75);font-family:Jost,sans-serif;font-size:12px;letter-spacing:.06em;color:var(--bx-gold-l,#f1dea8);transition:background .3s,color .3s}
+  .bxnd-cta i{font-style:normal;transition:transform .3s}
+  .bxnd-item:hover .bxnd-cta{background:var(--bx-gold,#c8a45c);color:#141414}
+  .bxnd-item:hover .bxnd-cta i{transform:translateX(3px)}
+  .bxnd-app{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;margin-top:22px;padding:16px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.02));border:1px solid rgba(241,222,168,.24)}
+  .bxnd-app__ic{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;color:var(--bx-gold-l,#f1dea8);border:1px solid rgba(241,222,168,.4)}
+  .bxnd-app__t{display:flex;flex-direction:column;flex:1 1 140px;font-family:Jost,sans-serif;font-size:13px;color:rgba(255,255,255,.86)}
+  .bxnd-app__t b{font-family:var(--bx-serif,"Cormorant Garamond",Georgia,serif);font-size:19px;font-weight:600;color:#fff}
+  .bxnd-app__links{display:flex;gap:8px;flex-wrap:wrap}
+  .bxnd-app__links a{display:inline-flex;align-items:center;min-height:36px;padding:6px 14px;border-radius:999px;border:1px solid rgba(200,164,92,.75);font-family:Jost,sans-serif;font-size:12px;letter-spacing:.06em;color:var(--bx-gold-l,#f1dea8)!important;text-decoration:none!important;transition:background .3s,color .3s}
+  .bxnd-app__links a:hover{background:var(--bx-gold,#c8a45c);color:#141414!important}
+  html[dir="rtl"] .bxnd-label,html[dir="rtl"] .bxnd-cta,html[dir="rtl"] .bxnd-app__links a{letter-spacing:0}
+  html[dir="rtl"] .bxnd-label{font-size:12px}
+  html[dir="rtl"] .bxnd-cta i{transform:scaleX(-1)}
+  html[dir="rtl"] .bxnd-item:hover .bxnd-cta i{transform:scaleX(-1) translateX(3px)}
+  /* gestaffeltes Einblenden */
+  news-drawer.active .bxnd-list > li,news-drawer.active .bxnd-app{animation:bxndItem .55s cubic-bezier(.2,.75,.2,1) both;animation-delay:calc(var(--i) * 55ms + 140ms)}
+  @keyframes bxndItem{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (max-width:500px){
+    .bxnd-item{grid-template-columns:60px minmax(0,1fr);gap:13px}
+    .bxnd-thumb{width:60px;height:60px;border-radius:12px}
+    .bxnd-h.bxnd-h{font-size:19px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html body news-drawer.drawer.active .news-drawer,news-drawer.active .bxnd-list > li,news-drawer.active .bxnd-app{animation:none!important}
+  }
+</style>
+<script>
+(function () {
+  var tpl = document.getElementById('bxnd-tpl'), nd = document.querySelector('news-drawer');
+  if (!tpl || !nd || nd.querySelector('.bxnd')) return;
+  var frag = tpl.content.cloneNode(true), box = frag.querySelector('.bxnd'), title = box.getAttribute('data-title');
+  var host = nd.querySelector('.news-drawer__content') || nd.querySelector('.drawer__inner-wrapper');
+  if (!host) return;
+  host.appendChild(frag);
+  var head = nd.querySelector('.drawer__heading'), dlg = nd.querySelector('.news-drawer__inner');
+  if (head) head.textContent = title;
+  if (dlg) dlg.setAttribute('aria-label', title);
+  /* neue Inhalte als "ungelesen" melden */
+  nd.dataset.newsVersion = (nd.dataset.newsVersion || '') + '-bxnd1';
+  nd.currentVersion = nd.dataset.newsVersion;
+  if (nd.updateUnreadIndicator) nd.updateUnreadIndicator();
+
+  /* Tastatur: Fokus im Fenster halten, Esc schliesst, Fokus zurück zum Auslöser */
+  function shown(el) {
+    if (!el || !el.isConnected || !el.getClientRects().length || getComputedStyle(el).visibility === 'hidden') return false;
+    var r = el.getBoundingClientRect(); return r.right > 0 && r.left < innerWidth && r.bottom > 0 && r.top < innerHeight;
+  }
+  var openFn = nd.open, closeFn = nd.close, panel = nd.querySelector('#NewsDrawer'), trigger = null;
+  nd.open = function (by) {
+    trigger = (by && by !== nd) ? by : document.activeElement;
+    openFn.call(nd, by);
+    setTimeout(function () {
+      if (window.trapFocus && panel) window.trapFocus(panel, panel.querySelector('.bxnd-item') || panel.querySelector('.drawer__close'));
+    }, 40);
+  };
+  nd.close = function () {
+    if (!nd.classList.contains('active') || nd.classList.contains('bxnd-out')) { if (!nd.classList.contains('bxnd-out')) closeFn.call(nd); return; }
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    nd.classList.add('bxnd-out');
+    setTimeout(function () {
+      nd.classList.remove('bxnd-out');
+      closeFn.call(nd);
+      var back = trigger;
+      if (!shown(back)) back = document.querySelector('#shopify-section-mobile-header .burger-menu') || null;
+      if (window.removeTrapFocus) window.removeTrapFocus(back); else if (back) back.focus();
+      trigger = null;
+    }, reduce ? 0 : 230);
+  };
+  document.addEventListener('keydown', function (e) {
+    if ((e.key === 'Escape' || e.key === 'Esc') && nd.classList.contains('active')) { e.preventDefault(); nd.close(); }
+  });
+})();
+</script>

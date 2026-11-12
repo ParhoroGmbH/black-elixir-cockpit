@@ -1,0 +1,50 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "More header sections",
+  "sections": {
+    "news_drawer_KCCH4G": {
+      "type": "news-drawer",
+      "blocks": {
+        "promo_code_Bbw7Pz": {
+          "type": "promo_code",
+          "settings": {
+            "image": "shopify://shop_images/be-geschenkbox-seifen-2026-11-12.jpg",
+            "image_ratio": "landscape",
+            "image_radius": "default",
+            "heading": "",
+            "heading_size": "default",
+            "text": "",
+            "dim_text": true,
+            "text_size": "default",
+            "promo_code": "",
+            "top_spacing": 0,
+            "mobile_top_spacing": 0
+          }
+        }
+      },
+      "block_order": [
+        "promo_code_Bbw7Pz"
+      ],
+      "name": "t:sections.news-drawer.name",
+      "settings": {
+        "heading": "Neuigkeiten & Angebote",
+        "heading_size": "default",
+        "color_type": "invert",
+        "background_color": "#ffffff",
+        "text_color": "#000000"
+      }
+    }
+  },
+  "order": [
+    "news_drawer_KCCH4G"
+  ]
+}
