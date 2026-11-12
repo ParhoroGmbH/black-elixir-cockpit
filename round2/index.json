@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "claude_home": {
+      "type": "claude-home",
+      "settings": {
+        "hero1_link": "shopify://collections/luxus-adventskalender",
+        "hero2_link": "shopify://collections/geschenk-seifen",
+        "hero3_link": "/#ch-finder",
+        "col_best": "best-selling-perfumes",
+        "col_damen": "damenduefte",
+        "video_collections": "tom-ford-private-blend-dufte-tabacco-vanille:Tom Ford|https://cdn.shopify.com/videos/c/vp/7eb8ff5d02aa48578f8346fd0fa85194/7eb8ff5d02aa48578f8346fd0fa85194.HD-720p-1.6Mbps-100943055.mp4,dumo-commodus-the-scent-of-war-eau-de-parfum:DUMO,nuhi-paris-oud-eau-de-parfum-100-ml:Nuhi Paris,paco-rabanne-lady-million-eau-de-parfum:Rabanne|https://cdn.shopify.com/videos/c/vp/c9a30755dcbb4f1ea078b04d10b04ed3/c9a30755dcbb4f1ea078b04d10b04ed3.HD-720p-1.6Mbps-100943054.mp4,fragrance-library-the-age-of-innocense:Fragrance Library,fragrance-library-anna-karenina-eau-de-parfum:Fragrance Library"
+      }
+    }
+  },
+  "order": [
+    "claude_home"
+  ]
+}

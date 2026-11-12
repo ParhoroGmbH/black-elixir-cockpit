@@ -1,0 +1,176 @@
+{%- comment -%} Teil der Section claude-home (Claude · Neue Homepage 11.11.2026 – nicht anfassen). 12.11.2026: Video-Lounge je Karte eigenes Produktvideo, Geschenke-Karten als echte Geschenke mit Satinschleife, Geschenkbox-Film + echte Seifenbilder + Marmor/Samt-Hintergrund. Runde 2: part 'gifts' (Advent, Budget, Rabatt) wird aus claude-home-b vor DUMO gerendert, ohne part nur Video-Lounge + Journal; Seifenkarten mit be-seife-*-2026-11-12.jpg (echtes Produktfoto auf Marmor). {%- endcomment -%}
+{%- liquid
+  assign s = sec.settings
+  assign c_soap = collections[s.col_soaps]
+  assign bg_lounge = images['be-videolounge-bg-2026-11-12.jpg']
+  assign bg_marmor = images['be-geschenk-marmor-bg-2026-11-12.jpg']
+  assign img_bow = images['be-schleife-gold-2026-11-12.png']
+  assign img_box = images['be-geschenkbox-seifen-2026-11-12.jpg']
+-%}
+{%- if part == 'gifts' -%}
+<style>
+  /* Video-Lounge: neuer Premium-Hintergrund */
+  .ch .cv-sec.cv-sec{background:linear-gradient(180deg,rgba(5,4,3,.82),rgba(5,4,3,.42) 38%,rgba(5,4,3,.55) 70%,rgba(5,4,3,.9)),url({{ bg_lounge | image_url: width: 2200 }}) 50% 50%/cover no-repeat,#070504!important}
+  .cv-sec .ch-lead{color:#e9dfc8}
+  .ch .cv-sec .ch-vid{border:1px solid rgba(200,164,92,.45);box-shadow:0 30px 60px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.06)}
+  .ch .cv-sec .ch-vid a{background:linear-gradient(145deg,rgba(10,8,6,.72),rgba(10,8,6,.45))}
+  .ch .cv-sec .ch-vid a:focus-visible,.ch .cv-sec .ch-vid button:focus-visible,.ch .cv-nav:focus-visible{outline:2px solid var(--accL);outline-offset:3px}
+  @media (max-width:860px){.ch .cv-sec.cv-sec{background-size:cover!important;background-position:30% 50%!important}}
+
+  /* Geschenke nach Budget: jede Karte ein verpacktes Geschenk */
+  .ch .cg.cg{background:radial-gradient(ellipse 60% 45% at 50% 0,rgba(200,164,92,.16),transparent 70%),radial-gradient(ellipse at 50% 60%,#1a130b,#050403 75%)!important}
+  .cg-gift{--rib:linear-gradient(90deg,#5e4518 0%,#a8823c 10%,#f6e3b0 24%,#c9a256 36%,#8c6a2a 50%,#e8cd8a 63%,#fff4d2 72%,#b48d45 86%,#5e4518 100%);position:relative;isolation:isolate;display:block;min-height:380px;border-radius:200px 200px 28px 28px;overflow:hidden;perspective:1100px;color:#fff;box-shadow:0 30px 60px rgba(0,0,0,.5);transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .6s}
+  .cg-gift:focus-visible{outline:2px solid var(--accL);outline-offset:4px}
+  .cg-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:60px 22px 30px;text-align:center;border-radius:inherit;background:radial-gradient(ellipse at 50% 30%,rgba(241,222,168,.18),transparent 60%),linear-gradient(180deg,#2b2115,#0c0906);box-shadow:inset 0 0 0 1px rgba(241,222,168,.45),inset 0 18px 40px rgba(0,0,0,.7)}
+  .cg-in small{font-size:11px;letter-spacing:.3em;color:var(--accL)}
+  .cg-t{font-family:"Cormorant Garamond","Bodoni Moda",Georgia,serif;font-size:clamp(28px,2.4vw,36px);line-height:1.08;text-wrap:balance;background:linear-gradient(100deg,#b8913f,#f1dea8 35%,#fff6dc 50%,#d8b66a 65%,#a07d33) 0 0/220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cg-d{font-size:15px;line-height:1.45;color:#efe6d2;max-width:220px}
+  .cg-cta{margin-top:8px;padding:10px 18px;border-radius:999px;border:1px solid rgba(241,222,168,.6);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accL)}
+  .cg-in>*{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .cg-w{position:absolute;inset:0;z-index:2;pointer-events:none}
+  .cg-flap{position:absolute;top:0;bottom:0;width:50.5%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .7 0 0 0 -1.2 .6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(115deg,transparent 30%,rgba(255,240,200,.1) 45%,transparent 60%),radial-gradient(circle,rgba(200,164,92,.35) 0 1.2px,transparent 1.8px) 0 0/22px 22px,repeating-linear-gradient(45deg,rgba(200,164,92,.08) 0 1px,transparent 1px 11px),linear-gradient(160deg,#1d1710,#090705);transition:transform 1s cubic-bezier(.3,.7,.2,1) .35s,opacity .6s .75s;backface-visibility:hidden}
+  .cg-flap--l{left:0;transform-origin:0 50%;box-shadow:inset -8px 0 18px rgba(0,0,0,.35)}
+  .cg-flap--r{right:0;transform-origin:100% 50%;box-shadow:inset 8px 0 18px rgba(0,0,0,.35)}
+  .cg-rib{position:absolute;background:var(--rib);box-shadow:0 0 0 1px rgba(60,40,10,.35),0 3px 8px rgba(0,0,0,.55);transition:transform .7s cubic-bezier(.5,0,.2,1) .12s,opacity .5s .3s}
+  .cg-rib::after{content:"";position:absolute;inset:0;background:linear-gradient(var(--fold),rgba(0,0,0,.18),transparent 18%,transparent 46%,rgba(0,0,0,.14) 52%,transparent 58%,transparent 82%,rgba(0,0,0,.18)),linear-gradient(var(--fold),transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%) 0 0/100% 300%;mix-blend-mode:overlay;animation:cgSheen 5s ease-in-out infinite}
+  @keyframes cgSheen{0%,100%{background-position:0 0,0 100%}50%{background-position:0 0,0 0}}
+  .cg-gift:focus-visible .cg-w{outline:0}
+  .cg-rib--v{--fold:180deg;top:0;bottom:0;left:50%;width:34px;margin-left:-17px}
+  .cg-rib--h{--fold:90deg;left:0;right:0;top:40%;height:30px;margin-top:-15px;background:linear-gradient(180deg,#5e4518 0%,#a8823c 10%,#f6e3b0 24%,#c9a256 36%,#8c6a2a 50%,#e8cd8a 63%,#fff4d2 72%,#b48d45 86%,#5e4518 100%)}
+  .cg-bowimg{position:absolute;left:50%;top:40%;width:150px;height:auto;margin:-82px 0 0 -75px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.6)) drop-shadow(0 2px 2px rgba(0,0,0,.4));transition:transform .75s cubic-bezier(.5,-.3,.3,1),opacity .5s .25s}
+  .cg-tag{position:absolute;left:50%;bottom:34px;transform:translateX(-50%) rotate(-3deg);padding:10px 18px 10px 26px;border-radius:4px 14px 14px 4px;background:linear-gradient(160deg,#f6ecd6,#e0cfa9);color:#2a1f0c;font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;white-space:nowrap;box-shadow:0 8px 16px rgba(0,0,0,.5);transition:opacity .4s,transform .6s}
+  .cg-tag::before{content:"";position:absolute;left:9px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#1a130b;box-shadow:0 0 0 2px #c8a45c}
+  /* Öffnen: Schleife löst sich, Bänder gleiten ab, Papier klappt auf */
+  .cg-gift.is-open .cg-bowimg{transform:translateY(-170px) rotate(-28deg) scale(.7);opacity:0}
+  .cg-gift.is-open .cg-rib--v{transform:translateY(-105%);opacity:0}
+  .cg-gift.is-open .cg-rib--h{transform:translateX(105%);opacity:0}
+  .cg-gift.is-open .cg-tag{opacity:0;transform:translateX(-50%) translateY(30px) rotate(6deg)}
+  .cg-gift.is-open .cg-flap--l{transform:rotateY(-115deg);opacity:0}
+  .cg-gift.is-open .cg-flap--r{transform:rotateY(115deg);opacity:0}
+  .cg-gift.is-open .cg-in>*{opacity:1;transform:none;transition-delay:.75s}
+  .cg-gift.is-open .cg-in>*+*{transition-delay:.85s}
+  .cg-gift.is-open{box-shadow:0 0 0 1px var(--accL),0 30px 70px rgba(200,164,92,.3)}
+  @media (hover:hover){.cg-gift:hover .cg-bowimg,.cg-gift:focus-visible .cg-bowimg{transform:translateY(-170px) rotate(-28deg) scale(.7);opacity:0}.cg-gift:hover .cg-rib--v,.cg-gift:focus-visible .cg-rib--v{transform:translateY(-105%);opacity:0}.cg-gift:hover .cg-rib--h,.cg-gift:focus-visible .cg-rib--h{transform:translateX(105%);opacity:0}.cg-gift:hover .cg-tag,.cg-gift:focus-visible .cg-tag{opacity:0}.cg-gift:hover .cg-flap--l,.cg-gift:focus-visible .cg-flap--l{transform:rotateY(-115deg);opacity:0}.cg-gift:hover .cg-flap--r,.cg-gift:focus-visible .cg-flap--r{transform:rotateY(115deg);opacity:0}.cg-gift:hover .cg-in>*,.cg-gift:focus-visible .cg-in>*{opacity:1;transform:none;transition-delay:.7s}.cg-gift:hover{transform:translateY(-6px);box-shadow:0 0 0 1px var(--accL),0 30px 70px rgba(200,164,92,.3)}}
+  @media (max-width:860px){.cg-gift{min-height:320px}.cg-bowimg{width:120px;margin:-66px 0 0 -60px}.cg-tag{font-size:19px}}
+  @media (max-width:520px){.cg .ch-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cg-gift{min-height:270px;border-radius:120px 120px 20px 20px}.cg-bowimg{width:92px;margin:-50px 0 0 -46px}.cg-rib--v{width:24px;margin-left:-12px}.cg-rib--h{height:22px;margin-top:-11px}.cg-tag{font-size:16px;bottom:20px;padding:8px 12px 8px 22px}.cg-t{font-size:23px}.cg-d{font-size:13px}.cg-in{padding:44px 12px 18px;gap:6px}.cg-cta{padding:8px 12px;font-size:10px}}
+
+  /* Ein Geschenk statt Rabatt: Marmor, Samt, warmes Licht */
+  .ch .cr.cr{background:linear-gradient(90deg,rgba(6,4,3,.86),rgba(6,4,3,.55) 55%,rgba(6,4,3,.35)),url({{ bg_marmor | image_url: width: 2200 }}) 50% 50%/cover no-repeat,#0a0705!important;color:#f3e9d2}
+  .cr .ch-h2{color:#fff}
+  .cr .ch-eyebrow{color:var(--acc)}
+  .cr .ch-lead{color:#e9dfc8}
+  .ch .cr .ch-meter{background:linear-gradient(145deg,rgba(20,15,9,.78),rgba(20,15,9,.55));border:1px solid rgba(200,164,92,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 24px 50px rgba(0,0,0,.45);color:#f3e9d2}
+  .ch .cr .ch-bar{background:#2c241a}
+  .ch .cr input[type=range]{accent-color:var(--acc)}
+  .ch .cr input[type=range]:focus-visible{outline:2px solid var(--accL);outline-offset:4px}
+  .ch .cr .cr-stage.cr-film{height:auto;padding:0;margin:0 auto 18px;max-width:420px;display:block;perspective:1200px}
+  .cr-frame{position:relative;display:block;aspect-ratio:3/4;border-radius:26px;overflow:hidden;background:#000 url({{ img_box | image_url: width: 900 }}) 50% 50%/cover;box-shadow:0 0 0 1px rgba(200,164,92,.55),0 40px 80px rgba(0,0,0,.6),0 0 90px rgba(200,164,92,.18);transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .cr-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .cr-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,240,200,.14) 50%,transparent 60%);pointer-events:none}
+  .ch .cr .cr-film .cr-glow{top:auto;bottom:-20px;width:80%;margin-left:-40%;height:80px;z-index:-1}
+  .ch .cr .ch-soap{background:linear-gradient(160deg,rgba(255,252,245,.96),rgba(234,223,201,.92))!important;border:1px solid rgba(241,222,168,.7)!important;color:#1a130b}
+  .cr-sim{display:block;width:100%;max-width:170px;height:104px;overflow:hidden;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px rgba(200,164,92,.35),0 8px 18px rgba(0,0,0,.12)}
+  .ch .cr .cr-sim img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.85)}
+  .ch .cr .cr-sim.cr-sim--n{background:#0d0a07;box-shadow:inset 0 0 0 1px rgba(200,164,92,.45),0 8px 18px rgba(0,0,0,.25)}
+  .ch .cr .cr-sim.cr-sim--n{height:auto;aspect-ratio:4/3}
+  .ch .cr .cr-sim--n img{transform:none;object-position:50% 45%}
+  .ch .cr .ch-soap small{font-weight:600}
+  .ch .cr .ch-soap:focus-visible{outline:2px solid var(--accL);outline-offset:3px}
+  @media (max-width:860px){.ch .cr.cr{background:linear-gradient(180deg,rgba(6,4,3,.82),rgba(6,4,3,.6)),url({{ bg_marmor | image_url: width: 1200 }}) 35% 50%/cover no-repeat,#0a0705!important}.ch .cr .cr-stage.cr-film{max-width:300px}}
+</style>
+{%- endif -%}
+{%- unless part == 'gifts' -%}
+  {%- comment -%} 11 · VIDEO-LOUNGE (echte Produktvideos, Karussell mit Pfeilen) {%- endcomment -%}
+  {%- assign vcount = 0 -%}
+  {%- capture vids -%}
+    {%- assign vlist = s.video_collections | split: ',' -%}
+    {%- for entry in vlist -%}
+      {%- assign ep = entry | split: '|' -%}{%- assign cp = ep[0] | strip | split: ':' -%}
+      {%- assign vp = all_products[cp[0]] -%}
+      {%- if vp.id == blank or vcount >= 10 -%}{%- continue -%}{%- endif -%}
+      {%- assign vm = vp.media | where: 'media_type', 'video' | first -%}{%- assign vurl = ep[1] | strip -%}
+      {%- if vm == blank and vurl == blank -%}{%- continue -%}{%- endif -%}
+      {%- assign vcount = vcount | plus: 1 -%}{%- assign vlab = cp[1] | default: vp.vendor -%}
+          <div class="ch-vid">
+            {%- if vurl != blank -%}
+            <video loop muted playsinline preload="none" poster="{{ vp.featured_image | image_url: width: 720 }}" aria-label="Video: {{ vp.title | escape }}"><source src="{{ vurl }}" type="video/mp4"></video>
+            {%- else -%}
+            {{ vm | video_tag: loop: true, muted: true, controls: false, playsinline: true, preload: 'none', image_size: '720x' }}
+            {%- endif -%}
+            <button type="button" data-ch-sound aria-label="Ton an">🔈</button>
+            <a href="{{ vp.url }}" class="ch-glassD"><small>{{ vlab | upcase }}</small><span>{{ vp.title | truncate: 40 }}</span><b style="font-weight:600">{{ vp.price | money }}</b></a>
+          </div>
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if vcount > 0 -%}
+  <section class="ch-sec ch-dark cv-sec">
+    <div class="ch-wrap">
+      <div class="ch-head"><div><p class="ch-eyebrow">Video-Lounge</p><h2 class="ch-h2">Düfte in Bewegung</h2></div><p class="ch-lead" style="max-width:360px">Die Videos laufen lautlos – tippe auf den Lautsprecher für Ton.</p></div>
+      <div class="cv-wrap"><button type="button" class="cv-nav p" data-cv="-1" aria-label="Vorherige Videos">←</button><div class="ch-vids" data-cv-row>{{ vids }}</div><button type="button" class="cv-nav x" data-cv="1" aria-label="Weitere Videos">→</button></div>
+      <script>(function () { var w = document.currentScript.previousElementSibling, r = w.querySelector('[data-cv-row]'); w.querySelectorAll('[data-cv]').forEach(function (b) { b.addEventListener('click', function () { r.scrollBy({ left: +b.dataset.cv * r.clientWidth * .85, behavior: 'smooth' }); }); }); })();</script>
+    </div>
+  </section>
+  {%- endif -%}
+{%- endunless -%}
+{%- if part == 'gifts' -%}
+  {%- comment -%} 12 · ADVENTSKALENDER interaktiv {%- endcomment -%}
+  {%- render 'claude-home-advent', sec: sec -%}
+
+  {%- comment -%} 13 · GESCHENKE NACH BUDGET {%- endcomment -%}
+  <section class="ch-sec cg">
+    <div class="ch-wrap">
+      <div class="ch-head"><div><p class="ch-eyebrow">Geschenke finden</p><h2 class="ch-h2">Das richtige Geschenk – für jedes Budget</h2></div></div>
+      <div class="ch-grid" data-cg>
+        <a class="cg-gift" href="{{ routes.collections_url }}/geschenke-unter-50"><span class="cg-in"><small>GESCHENKE</small><span class="cg-t">Geschenke unter 50 €</span><span class="cg-d">Kleine Gesten mit großer Wirkung</span><span class="cg-cta" aria-hidden="true">Entdecken</span></span><span class="cg-w" aria-hidden="true"><span class="cg-flap cg-flap--l"></span><span class="cg-flap cg-flap--r"></span><span class="cg-rib cg-rib--v"></span><span class="cg-rib cg-rib--h"></span>{%- if img_bow -%}<img class="cg-bowimg" src="{{ img_bow | image_url: width: 320 }}" alt="" width="160" height="160" loading="lazy">{%- endif -%}<span class="cg-tag">unter 50 €</span></span></a>
+        <a class="cg-gift" href="{{ routes.collections_url }}/geschenk-bis-zu-100"><span class="cg-in"><small>GESCHENKE</small><span class="cg-t">Geschenke bis 100 €</span><span class="cg-d">Für die Menschen, die zählen</span><span class="cg-cta" aria-hidden="true">Entdecken</span></span><span class="cg-w" aria-hidden="true"><span class="cg-flap cg-flap--l"></span><span class="cg-flap cg-flap--r"></span><span class="cg-rib cg-rib--v"></span><span class="cg-rib cg-rib--h"></span>{%- if img_bow -%}<img class="cg-bowimg" src="{{ img_bow | image_url: width: 320 }}" alt="" width="160" height="160" loading="lazy">{%- endif -%}<span class="cg-tag">bis 100 €</span></span></a>
+        <a class="cg-gift" href="{{ routes.collections_url }}/dein-weg-zum-geschenk"><span class="cg-in"><small>STÖBERN</small><span class="cg-t">Geschenk-Finder</span><span class="cg-d">Dein Weg zum Geschenk</span><span class="cg-cta" aria-hidden="true">Entdecken</span></span><span class="cg-w" aria-hidden="true"><span class="cg-flap cg-flap--l"></span><span class="cg-flap cg-flap--r"></span><span class="cg-rib cg-rib--v"></span><span class="cg-rib cg-rib--h"></span>{%- if img_bow -%}<img class="cg-bowimg" src="{{ img_bow | image_url: width: 320 }}" alt="" width="160" height="160" loading="lazy">{%- endif -%}<span class="cg-tag">Geschenk-Finder</span></span></a>
+        <a class="cg-gift" href="{{ routes.collections_url }}/rituals"><span class="cg-in"><small>RITUALS</small><span class="cg-t">Pflegesets</span><span class="cg-d">Fertig verpackt zum Verschenken</span><span class="cg-cta" aria-hidden="true">Entdecken</span></span><span class="cg-w" aria-hidden="true"><span class="cg-flap cg-flap--l"></span><span class="cg-flap cg-flap--r"></span><span class="cg-rib cg-rib--v"></span><span class="cg-rib cg-rib--h"></span>{%- if img_bow -%}<img class="cg-bowimg" src="{{ img_bow | image_url: width: 320 }}" alt="" width="160" height="160" loading="lazy">{%- endif -%}<span class="cg-tag">Pflegesets</span></span></a>
+      <script>(function () { var g = document.currentScript.parentElement, cs = g.querySelectorAll('.cg-gift'); if (matchMedia('(hover:hover)').matches || !('IntersectionObserver' in window)) { if (!matchMedia('(hover:hover)').matches) cs.forEach(function (c) { c.classList.add('is-open'); }); return; } cs.forEach(function (c) { c.addEventListener('click', function (e) { if (!c.classList.contains('is-open')) { e.preventDefault(); c.classList.add('is-open'); } }); }); var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { var k = [].indexOf.call(cs, e.target); setTimeout(function () { e.target.classList.add('is-open'); }, 250 + (k % 2) * 300); io.unobserve(e.target); } }); }, { threshold: .6 }); cs.forEach(function (c) { io.observe(c); }); })();</script>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} 14 · EIN GESCHENK STATT RABATT – wächst mit {%- endcomment -%}
+  <section class="ch-sec ch-light cr" id="ch-geschenk" data-cr>
+    <div class="ch-wrap ch-gift">
+      <div>
+        <p class="ch-eyebrow">Nur bis 31.12.2026 · nur im Onlineshop</p>
+        <h2 class="ch-h2">Ein Geschenk statt Rabatt.</h2>
+        <p class="ch-lead">Ab 59 € eine italienische Seife von Saponificio Aquaviva nach Wahl, ab 99 € zwei Seifen – die Duftprobe legen wir automatisch dazu. Ganz ohne Code.</p>
+        <div class="ch-meter ch-glassL" style="margin-top:24px">
+          <label for="ch-basket-{{ sec.id }}" style="display:flex;justify-content:space-between;font-size:13px;letter-spacing:.12em"><span>DEIN WARENKORB</span><b data-ch-bv>{{ cart.total_price | money }}</b></label>
+          <input id="ch-basket-{{ sec.id }}" type="range" min="0" max="140" step="1" value="{{ cart.total_price | divided_by: 100 | at_most: 140 }}" data-ch-basket>
+          <div class="ch-bar"><span data-ch-bar></span><i style="position:absolute;left:42%;top:-4px;width:2px;height:20px;background:var(--accL)"></i><i style="position:absolute;left:70.7%;top:-4px;width:2px;height:20px;background:var(--accL)"></i></div>
+          <span data-ch-bm style="font-size:15px"></span>
+        </div>
+        <a class="ch-btn ch-btn--gold" style="margin-top:20px" href="{{ c_soap.url | default: '/collections/geschenk-seifen' }}">Seife wählen</a>
+      </div>
+      <div>
+        <div class="cr-stage cr-film" data-cr-film><span class="cr-frame"><video muted loop playsinline preload="metadata" poster="{{ img_box | image_url: width: 900 }}" aria-label="Geöffnete Geschenkbox mit italienischen Seifen, langsam drehend"><source src="https://cdn.shopify.com/videos/c/vp/3ee217f087b44ca8b30078dc186878c6/3ee217f087b44ca8b30078dc186878c6.HD-720p-1.6Mbps-100943056.mp4" type="video/mp4"></video></span><span class="cr-glow" aria-hidden="true"></span></div>
+        <script>(function () { var st = document.currentScript.previousElementSibling, v = st.querySelector('video'), f = st.querySelector('.cr-frame'), rm = matchMedia('(prefers-reduced-motion:reduce)').matches; if (rm) return; if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) v.play().catch(function () {}); else v.pause(); }); }, { rootMargin: '150px' }).observe(st); if (matchMedia('(hover:hover)').matches) { st.addEventListener('pointermove', function (e) { var r = st.getBoundingClientRect(); f.style.setProperty('--ry', ((e.clientX - r.left) / r.width - .5) * 14 + 'deg'); f.style.setProperty('--rx', -((e.clientY - r.top) / r.height - .5) * 10 + 'deg'); }); st.addEventListener('pointerleave', function () { f.style.setProperty('--ry', '0deg'); f.style.setProperty('--rx', '0deg'); }); } })();</script>
+        <div class="ch-soaps" data-ch-soaps data-level="0">
+          {%- for p in c_soap.products limit: 4 -%}
+            <a class="ch-soap ch-glassL ch-sheen" href="{{ p.url }}">{%- assign simg = p.featured_image -%}{%- if p.media.size > 1 -%}{%- assign simg = p.media[1].preview_image -%}{%- endif -%}{%- assign sk = p.handle | remove: 'saponifico-aquaviva-' | replace: 'mandarinoface', 'mandarino-face' | remove: '-face-body-soap' | remove: '-body-soap' | remove: '-hand-seife' -%}{%- assign snew = 'be-seife-' | append: sk | append: '-2026-11-12.jpg' -%}{%- assign snimg = images[snew] -%}{%- if snimg -%}{%- assign simg = snimg -%}{%- endif -%}{%- if simg -%}<span class="cr-sim{% if snimg %} cr-sim--n{% endif %}">{{ simg | image_url: width: 400 | image_tag: loading: 'lazy', alt: p.title }}</span>{%- endif -%}<small>{{ p.title | remove: 'Saponificio Aquaviva ' | truncate: 30 }}</small></a>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </section>
+
+{%- endif -%}
+{%- unless part == 'gifts' -%}
+  {%- comment -%} 15 · DUFT-JOURNAL {%- endcomment -%}
+  {%- assign blog = blogs.news -%}
+  {%- if blog.articles_count > 0 -%}
+  <section class="ch-sec">
+    <div class="ch-wrap">
+      <div class="ch-head"><div><p class="ch-eyebrow">Aus unserem Duft-Journal</p><h2 class="ch-h2">Wissen rund um Duft</h2></div><a class="ch-btn ch-btn--line" href="{{ blog.url }}">Zum Journal</a></div>
+      <div class="ch-journal">
+        {%- for a in blog.articles limit: 3 -%}
+          <a class="ch-art ch-glassL ch-tilt" href="{{ a.url }}">{%- if a.image -%}{{ a.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: a.title }}{%- endif -%}<div><small>{{ a.published_at | date: '%d.%m.%Y' }}</small><b>{{ a.title }}</b><span style="font-size:14px;color:#55504a">{{ a.excerpt_or_content | strip_html | truncate: 120 }}</span></div></a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+{%- endunless -%}
