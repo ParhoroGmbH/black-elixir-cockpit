@@ -183,6 +183,12 @@
       var sc = Math.max(r.width / IW, r.height / IH), ih = IH * sc, cy = r.top + r.height / 2, fl = innerWidth <= 860 ? +o.sl.dataset.floorM || .8 : +o.sl.dataset.floor || .75;
       var ty = cy + (r.top + (r.height - ih) / 2 + fl * ih - cy) * 1.04, fy = f.top + f.height / 2 - (parseFloat(o.mv.style.getPropertyValue('--sy')) || 0) * k;
       var tabs = o.box.querySelector('.m3-tabs'), ctl = h.querySelector('.ch-ctrl');
+      // Text links (Headline/CTA) bei niedrigem Hero etwas anheben, damit die CTA nie in die Pfeil-Zeile ragt
+      var tx = o.sl.querySelector('.h3-text'), cr = ctl && ctl.getBoundingClientRect();
+      if (tx && cr && innerWidth > 860) { var t0 = parseFloat(tx.style.top) || 0, xb = 0, xr = 0;
+        [].forEach.call(tx.querySelectorAll('.h3-btns a'), function (a) { var q = a.getBoundingClientRect(); xb = Math.max(xb, q.bottom - t0); xr = Math.max(xr, q.right); });
+        var lift = xr > cr.left - 16 ? Math.max(0, Math.min(xb - (cr.top - 16), tx.getBoundingClientRect().top - t0 - r.top - 16)) : 0;
+        if (Math.abs(lift + t0) > .5) tx.style.top = (-lift).toFixed(0) + 'px'; } else if (tx) tx.style.top = '';
       if (tabs && ctl) ty = Math.min(ty, ctl.getBoundingClientRect().top - 16 - 40 * k - tabs.getBoundingClientRect().height);
       var er = ty - fy; o.dy = Math.max(-400, Math.min(700, o.dy + er / k));
       o.mv.style.setProperty('--dy', o.dy.toFixed(1) + 'px');
