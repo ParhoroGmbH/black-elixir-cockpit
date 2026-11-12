@@ -56,7 +56,7 @@
   }
   html body > .search-modal #content-predictive-search-collections .predictive-search__list-item{border:0!important;padding:0!important;margin:0!important;width:auto!important;max-width:none!important}
   html body > .search-modal .card-collection{
-    position:relative;display:flex;flex-direction:column;gap:12px;height:100%;box-sizing:border-box;
+    position:relative;display:flex!important;flex-direction:column!important;gap:12px;height:100%;box-sizing:border-box;
     padding:12px 12px 14px;border-radius:16px;text-align:center;text-decoration:none;
     background:rgba(255,255,255,.5);
   }
@@ -104,6 +104,9 @@
   html body > .search-modal .predictive-search__list-item .card.card-js:focus-visible{outline:0}
   @media (max-width:600px){
     html body > .search-modal #content-predictive-search-collections .predictive-search__results-list{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;padding:8px 16px 20px}
+    /* alle drei Tabs passen ohne seitliches Scrollen auf das Handy */
+    html body > .search-modal .component-tabs{display:flex!important;justify-content:center;padding-inline:8px!important;margin-inline:auto!important;gap:0!important}
+    html body > .search-modal .component-tabs__tab{padding-left:10px!important;padding-right:10px!important;margin:0!important;min-width:0!important;flex:0 1 auto!important;letter-spacing:.03em!important;font-size:12px!important}
   }
 
   /* ---------- 3) CHATTY: nur ein kleiner, ruhiger Launcher; Chat öffnet erst per Klick ---------- */
@@ -144,7 +147,6 @@
   }
   @media (max-width:920px){
     html{--a2-chat-r:12px;--a2-chat-b:14px}
-    html.a2-home{--a2-chat-b:76px}
     html body .chatty-ai-mode.state-resting .aimode-sbar-dock{width:40px!important}
     html body .chatty-ai-mode.state-resting .aimode-sbar-container{width:40px!important;height:40px!important}
     html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle img{width:25px!important;height:25px!important}
@@ -168,6 +170,9 @@
     c.querySelectorAll('[id]').forEach(function(n){n.removeAttribute('id')});
     document.body.appendChild(c);
     setTimeout(function(){c.remove()},260);
+    /* Fokus zurück auf das Such-Symbol (das Theme lässt ihn sonst auf <body>) */
+    var t=[].filter.call(document.querySelectorAll('search-modal summary'),function(x){return x.offsetParent})[0];
+    if(t) setTimeout(function(){t.focus({preventScroll:true})},0);
   });
 })();
 </script>
