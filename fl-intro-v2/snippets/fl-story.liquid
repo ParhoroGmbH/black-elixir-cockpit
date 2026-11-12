@@ -1,0 +1,379 @@
+{%- comment -%} fl-story – Scroll-Story der Fragrance-Library-Landingpage: "Die Bibliothek bei Nacht" + vier Welten (The Alchemist, Romeo and Juliet, Rebecca, Hard Times). Claude · 12.11.2026 (v2: helle Produktflächen in den Markenfarben, Hard Times als 3D-Modell).
+  Einbau in sections/fragrance-library-landing.liquid: {% render 'fl-story' %} direkt nach <div class="fl-land">. Eigenständig, alle Klassen .fls-.
+  Aufbau je Kapitel: Szene (Video, dunkel, bleibt beim Scrollen stehen) -> helle Produktfläche schiebt sich mit weichem Schleier darüber (Flakon in 3D, Noten, Preis, Kauf). Die Produktfläche ist NICHT angeheftet (scrollt normal) – so verdeckt die mobile Kopfleiste nie dauerhaft den Flakon.
+  Videos (Shopify-Dateien be-fl-story-<szene>-2026-11-12.mp4) sind KI-Szenen OHNE Flakon; der Flakon ist immer echt: 3D-Modell (GLB, 50-ml-Form). Hard Times hat zusätzlich das freigestellte Produktfoto als Ersatz, falls das Modell nicht lädt.
+  Produktdaten (Preis, Variante, Noten) kommen live aus Shopify; ein nicht lieferbares Produkt blendet sein Kapitel aus. Warenkorb: window.beLandAdd (snippets/be-landing-cart) wenn vorhanden, sonst <add-to-cart> des Themes.
+  Die Flächen laufen unter der linken Glas-Seitenleiste durch (--fl-sbw, setzt die Landing-Sektion; Inhalte halten diesen Abstand). Über hellen Flächen stellt das Skript die Navigation dort per html.fls-light auf Schwarz (die Landing-Sektion setzt sie über dunklen Flächen per html.fl-dark auf Weiß). {%- endcomment -%}
+<style>
+.fls{--ink:#111;--mut:#5d584f;--paper:#f8f6f1;--dark:#0b0a09;--gold:#b8934a;--cream:#f1eadb;--serif:"Cormorant Garamond",Georgia,serif;--sans:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;container:fls/inline-size;position:relative;width:100%;background:var(--dark);color:var(--ink);font-family:var(--sans);font-size:16px;-webkit-font-smoothing:antialiased;line-height:1.5}
+.fls *,.fls *::before,.fls *::after{box-sizing:border-box;margin:0}
+.fls-ch{position:relative}
+.fls-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--dark)}
+.fls-gap{height:80vh;height:80svh}.fls-ch--intro .fls-gap{height:50vh;height:50svh}
+.fls-media,.fls-media img,.fls-media video,.fls-shade{position:absolute;inset:0;width:100%;height:100%}
+.fls-media img,.fls-media video{object-fit:cover;display:block}
+.fls-media video{opacity:0;transition:opacity .6s linear}.fls-media video.on{opacity:1}
+.fls-shade{background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,0) 26%,rgba(0,0,0,0) 42%,rgba(0,0,0,.86));pointer-events:none}
+/* heller Schleier: oben an einem Kapitel, das auf eine helle Fläche folgt (hebt sich vom Video), und über jeder hellen Fläche (legt sich aufs Video) */
+.fls-ch--lit::before,.fls-prod::before{content:"";position:absolute;left:0;right:0;pointer-events:none}
+.fls-ch--lit::before{z-index:3;top:-1px;height:34vh;height:34svh;background:linear-gradient(180deg,rgba(248,246,241,1) 0%,rgba(248,246,241,0.98) 6%,rgba(248,246,241,0.92) 14%,rgba(248,246,241,0.78) 26%,rgba(248,246,241,0.55) 40%,rgba(248,246,241,0.3) 55%,rgba(248,246,241,0.12) 70%,rgba(248,246,241,0.03) 85%,rgba(248,246,241,0) 100%)}
+.fls-prod::before{bottom:calc(100% - 1px);height:38vh;height:38svh;background:linear-gradient(180deg,rgba(248,246,241,0) 0%,rgba(248,246,241,0.03) 15%,rgba(248,246,241,0.12) 30%,rgba(248,246,241,0.3) 45%,rgba(248,246,241,0.55) 60%,rgba(248,246,241,0.78) 74%,rgba(248,246,241,0.92) 86%,rgba(248,246,241,0.98) 94%,rgba(248,246,241,1) 100%)}
+.fls-eye{display:flex;align-items:center;gap:12px;font-size:12px;line-height:1.4;letter-spacing:.3em;text-transform:uppercase;color:var(--ink)}
+.fls-eye::before{content:"";flex:none;width:28px;height:1px;background:var(--gold)}
+.fls-h{font-family:var(--serif);font-weight:500;line-height:1.02;text-wrap:balance;font-size:clamp(2.4rem,7cqw,5.5rem);margin-top:10px;letter-spacing:0;text-transform:none}
+.fls-cap{position:absolute;left:0;right:0;bottom:9vh;bottom:9svh;padding:0 clamp(16px,6cqw,80px) 0 calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px));color:var(--cream);text-shadow:0 1px 18px rgba(0,0,0,.65)}
+.fls-cap .fls-eye,.fls-cap .fls-h{color:var(--cream)}
+.fls-cap p{max-width:40ch;margin-top:14px;color:#e4dcc9;font-size:17px}
+.fls-cue{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#d2c8b2}
+.fls-cue i{display:block;width:1px;height:34px;background:linear-gradient(180deg,var(--gold),transparent)}
+/* Intro v2: sobald das Buch offen ist (.is-open), blenden Dachzeile, Überschrift und Text aus und der Verlauf wird heller – die Titelseite mit Flakon-Stich bleibt frei lesbar, nur der Scroll-Hinweis bleibt. Hochformat: Bildausschnitt auf die rechte Buchseite. */
+.fls-ch--intro .fls-cap>*,.fls-ch--intro .fls-shade{transition:opacity .9s ease}
+.fls-ch--intro.is-open .fls-cap>:not(.fls-cue){opacity:0}
+.fls-ch--intro.is-open .fls-shade{opacity:.35}
+@media (max-aspect-ratio:1/1){.fls-ch--intro .fls-media img,.fls-ch--intro .fls-media video{object-position:68% 50%}}
+.fls-prod{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:clamp(16px,4cqw,64px);padding:clamp(40px,8vh,96px) clamp(16px,6cqw,96px) clamp(64px,10vh,110px) calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px));background:var(--paper)}
+.fls-stage{position:relative;container-type:size;height:min(72vh,640px);min-height:0}
+.fls-stage::before{content:"";position:absolute;inset:-4% -6%;background:radial-gradient(ellipse 52% 46% at 50% 52%,#fff,rgba(255,255,255,0) 72%);pointer-events:none}
+.fls-stage model-viewer{position:absolute;inset:0;z-index:1;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;transition:opacity .7s}
+.fls-stage.is-set model-viewer{opacity:1}.fls-stage.is-ph model-viewer{opacity:0;pointer-events:none}
+.fls-stage model-viewer::part(default-progress-bar){display:none}
+.fls-stage [slot^=hotspot]{width:1px;height:1px;opacity:0;pointer-events:none}
+/* heller Steinsockel genau unter dem Fuß des Flakons (--gy setzt das Skript), feine Goldkante, weicher Schatten */
+.fls-floor{position:absolute;z-index:0;left:50%;top:var(--gy,84%);width:min(74cqh,94cqw);aspect-ratio:5.4;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;opacity:0;transition:opacity .9s;background:radial-gradient(ellipse at 50% 28%,#fff,#f4f0e8 52%,#e7e1d5);box-shadow:0 1px 0 rgba(184,147,74,.6),0 3px 0 #ded7c9,0 20px 28px -14px rgba(70,52,24,.4)}
+.fls-stage.is-set .fls-floor{opacity:1}
+.fls-photo{position:absolute;z-index:2;left:50%;bottom:16%;height:68%;width:auto;max-width:90%;object-fit:contain;object-position:bottom;transform:translateX(-50%);opacity:0;visibility:hidden;transition:opacity .5s,visibility 0s .5s;filter:drop-shadow(0 10px 14px rgba(40,30,10,.28))}
+.fls-stage.is-ph .fls-photo{opacity:1;visibility:visible;transition:opacity .5s}
+.fls-info{max-width:520px}
+.fls-name{font-family:var(--serif);font-weight:500;line-height:1.02;color:var(--ink);font-size:clamp(2.1rem,5cqw,3.9rem);margin-top:10px;letter-spacing:0;text-transform:none}
+.fls-sub{margin-top:8px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.fls-line{margin-top:14px;font-family:var(--serif);font-weight:500;font-size:clamp(1.15rem,1.7cqw,1.4rem);line-height:1.4;color:var(--ink)}
+.fls-notes{margin-top:20px;padding-top:18px;border-top:1px solid var(--gold);display:grid;gap:10px}
+.fls-notes div{display:grid;grid-template-columns:104px minmax(0,1fr);gap:12px;align-items:baseline}
+.fls-notes dt{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
+.fls-notes dd{font-family:var(--serif);font-weight:500;font-size:1.15rem;line-height:1.3;color:var(--ink)}
+.fls-price{margin-top:20px;padding-top:18px;border-top:1px solid rgba(17,17,17,.12);font-family:var(--serif);font-weight:600;font-size:1.9rem;color:var(--ink);line-height:1.1}
+.fls-legal,.fls-ship{display:block;font-family:var(--sans);font-weight:400;font-size:13px;line-height:1.45;color:var(--mut)}.fls-legal{margin-top:6px}
+.fls-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.fls .fls-btns add-to-cart{display:inline-flex;position:static;width:auto;height:auto;min-width:0;min-height:0;margin:0;padding:0;background:none;border:0;border-radius:0}
+.fls .fls-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 28px;border:1px solid var(--ink);border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;white-space:nowrap;cursor:pointer;touch-action:manipulation;transition:background-color .25s,color .25s;box-shadow:none;width:auto;height:auto;opacity:1}
+.fls .fls-btn--pri{background:var(--ink);color:#fff}
+.fls .fls-btn:hover{background:var(--ink);color:#fff}.fls .fls-btn--pri:hover{background:#3a3a3a;color:#fff}
+.fls .fls-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.fls .fls-btn:disabled,.fls add-to-cart.loading .fls-btn{opacity:.7;cursor:progress}
+.fls-err{margin-top:10px;font-size:13px;color:#a23b2a}.fls-err:empty{display:none}
+.fls-end{position:relative;z-index:2;margin-top:-1px;padding:12vh clamp(16px,6cqw,80px) 46vh calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px));text-align:center;background:linear-gradient(0deg,var(--dark),#2c1f12 11vh,#8d7658 24vh,#d9cfbd 34vh,var(--paper) 44vh)}
+.fls-end .fls-eye{justify-content:center}.fls-end .fls-eye::after{content:"";flex:none;width:28px;height:1px;background:var(--gold)}
+.fls-end .fls-h{font-size:clamp(2.2rem,6cqw,4.5rem);color:var(--ink)}.fls-end p{max-width:46ch;margin:14px auto 0;color:var(--mut);font-size:17px}
+.fls-end i{display:block;width:1px;height:56px;margin:26px auto 0;background:linear-gradient(180deg,var(--gold),rgba(184,147,74,0))}
+/* Seitenleiste über hellen Flächen: schwarze Schrift (stärker als html.fl-dark der Landing-Sektion) */
+html.fls-light.fl-dark .main-sidebar,html.fls-light.fl-dark .main-sidebar a,html.fls-light.fl-dark .main-sidebar span,html.fls-light.fl-dark .main-sidebar button,html.fls-light.fl-dark .main-sidebar p,html.fls-light.fl-dark .main-sidebar div{color:#111!important}
+html.fls-light.fl-dark .main-sidebar svg,html.fls-light.fl-dark .main-sidebar svg *{fill:#111!important;color:#111!important}
+/* schmalere Desktop-Breiten (Landing bis ca. 1366 px Fenster): Textspalte breiter, damit Name und beide Knöpfe in einer Zeile bleiben */
+@container fls (max-width:1300px){
+.fls-prod{grid-template-columns:minmax(0,.78fr) minmax(0,1fr);gap:28px;padding-right:40px;padding-left:calc(var(--fl-sbw,0px) + 40px)}
+.fls-name{font-size:clamp(2.1rem,4.4cqw,2.7rem)}
+}
+@container fls (max-width:860px){
+.fls-prod{grid-template-columns:minmax(0,1fr);align-content:center;gap:4px;padding:36px 16px 72px calc(var(--fl-sbw,0px) + 16px)}
+.fls-stage{height:clamp(250px,44vh,400px)}.fls-info{max-width:none}
+.fls-name{font-size:clamp(1.9rem,9cqw,2.5rem);margin-top:8px}
+.fls-line{margin-top:10px;font-size:1.12rem;line-height:1.32}
+.fls-notes{margin-top:14px;padding-top:14px;gap:7px}.fls-notes div{grid-template-columns:92px minmax(0,1fr);gap:8px}.fls-notes dd{font-size:1.05rem;line-height:1.25}
+.fls-price{margin-top:14px;padding-top:14px;font-size:1.6rem}
+.fls-btns{margin-top:16px;gap:8px;flex-wrap:nowrap}.fls-btns add-to-cart{flex:1.5 1 0}.fls-btns>a{flex:1 1 0}
+.fls .fls-btn{width:100%;padding:10px 8px;font-size:12px;letter-spacing:.1em;text-align:center}
+.fls-cap p{font-size:16px}
+.fls-gap{height:60vh;height:60svh}.fls-ch--intro .fls-gap{height:30vh;height:30svh}
+.fls-end{padding-top:9vh}
+}
+@media (prefers-reduced-motion:reduce){.fls *{transition:none!important}}
+</style>
+<div class="fls" data-fls>
+{%- assign fls_scenes = 'library,desert,verona,manderley,hardtimes' | split: ',' -%}
+{%- assign fls_first = true -%}
+{%- assign fls_rom = 'I,II,III,IV,V' | split: ',' -%}
+{%- assign fls_n = 0 -%}
+{%- for sc in fls_scenes -%}
+  {%- liquid
+    assign fp = blank
+    assign fv = blank
+    assign glb = blank
+    assign photo = blank
+    assign pref = 0
+    case sc
+      when 'library'
+        assign vid = '86b01ca52e1c47619bf8447b81816f42|7.2|4.5|1.5|101099500'
+        assign alt = 'claude.fl.alt_lib_html' | t
+      when 'desert'
+        assign fp = all_products['fragrance-library-the-alchemist-eau-de-parfum']
+        assign glb = '726d6965c7f4d746/be4-fl-red.glb'
+        assign pref = 50
+        assign name = 'The Alchemist'
+        assign place = 'claude.fl.place_desert_html' | t
+        assign line = 'claude.fl.line_desert_html' | t
+        assign vid = '81097779915c4c85b627c9e591d52225|3.3|2.1|1.0|101080931'
+        assign alt = 'claude.fl.alt_desert_html' | t
+      when 'verona'
+        assign fp = all_products['fragrance-library-romeo-and-juliet']
+        assign glb = 'ce3b708a28188d20/be4-fl-romeo.glb'
+        assign pref = 50
+        assign name = 'Romeo and Juliet'
+        assign place = 'Verona'
+        assign line = 'claude.fl.line_verona_html' | t
+        assign vid = '12ab98822b434da79b30ceafd6d0ef00|7.2|4.5|1.5|101080932'
+        assign alt = 'claude.fl.alt_verona_html' | t
+      when 'manderley'
+        assign fp = all_products['fragrance-library-rebecca']
+        assign glb = '13a61eafefe41e40/be4-fl-white.glb'
+        assign pref = 50
+        assign name = 'Rebecca'
+        assign place = 'Manderley'
+        assign line = 'claude.fl.line_manderley_html' | t
+        assign vid = 'c0be0e76e5cd4023937a4a82387351ec|4.8|3.0|1.2|101080933'
+        assign alt = 'claude.fl.alt_manderley_html' | t
+      when 'hardtimes'
+        assign fp = all_products['fragrance-library-hard-times-eau-de-parfum']
+        assign glb = '3e91251fba23d183/be4-fl-hardtimes.glb'
+        assign photo = 'be-fl-story-hardtimes-flakon-2026-11-12.png'
+        assign pref = 50
+        assign name = 'Hard Times'
+        assign place = 'Coketown'
+        assign line = 'claude.fl.line_hard_html' | t
+        assign vid = '36c32cfc17cf45e281601626a08efb3c|3.3|2.1|1.0|101080934'
+        assign alt = 'claude.fl.alt_hard_html' | t
+    endcase
+    if sc != 'library'
+      comment
+        größte lieferbare Größe vorwählen (nie die 3-ml-Probe). pref = Größe, die das gezeigte 3D-Modell abbildet (alle be4-Modelle = 50-ml-Flakon): ist sie lieferbar, wird sie gewählt, damit Bild, Preis und Warenkorb zusammenpassen.
+      endcomment
+      assign best = 0
+      for v in fp.variants
+        assign ml = v.title | plus: 0
+        if v.available and ml > 3
+          if ml == pref
+            assign best = 9999
+            assign fv = v
+          elsif ml > best
+            assign best = ml
+            assign fv = v
+          endif
+        endif
+      endfor
+      if fv == blank
+        continue
+      endif
+      assign d = fp.description | replace: '</p>', '|~|' | replace: '</li>', '|~|' | replace: '<br', '|~|<br' | replace: '</h', '|~|</h' | strip_html
+      assign kop = ''
+      assign her = ''
+      assign bas = ''
+      if d contains 'Kopfnote:'
+        assign kop = d | split: 'Kopfnote:' | last | split: '|~|' | first | strip
+      endif
+      if d contains 'Herznote:'
+        assign her = d | split: 'Herznote:' | last | split: '|~|' | first | strip
+      endif
+      if d contains 'Basisnote:'
+        assign bas = d | split: 'Basisnote:' | last | split: '|~|' | first | strip
+      endif
+      assign fl_chap = 'claude.fl.chapter_html' | t
+      assign eye = fl_chap | append: ' ' | append: fls_rom[fls_n] | append: ' · ' | append: place
+      assign fls_n = fls_n | plus: 1
+      assign kind = 'Eau de Parfum'
+      if fp.title contains 'Extrait' or fv.title contains 'xtrait'
+        assign kind = 'Extrait de Parfum'
+      endif
+    endif
+    assign vp = vid | split: '|'
+    assign vbase = 'https://cdn.shopify.com/videos/c/vp/' | append: vp[0] | append: '/' | append: vp[0]
+    assign v_l = vbase | append: '.HD-1080p-' | append: vp[1] | append: 'Mbps-' | append: vp[4] | append: '.mp4'
+    assign v_m = vbase | append: '.HD-720p-' | append: vp[2] | append: 'Mbps-' | append: vp[4] | append: '.mp4'
+    assign v_s = vbase | append: '.SD-480p-' | append: vp[3] | append: 'Mbps-' | append: vp[4] | append: '.mp4'
+    assign poster = 'be-fl-story-' | append: sc | append: '-2026-11-12.jpg' | file_url
+    if sc == 'library'
+      comment
+        Intro v2 (12.11.2026): Buch schlägt sich frei auf (Kerzen stehen hinten außen), Standbild = geschlossenes Buch, Endbild = aufgeschlagene Titelseite "Fragrance Library" mit Flakon-Stich.
+      endcomment
+      assign poster = 'be-fl-story-library-v2-2026-11-12.jpg' | file_url
+      assign poster_end = 'be-fl-story-library-v2-end-2026-11-12.jpg' | file_url
+    endif
+  -%}
+  <section class="fls-ch{% if sc == 'library' %} fls-ch--intro{% elsif fls_n > 1 %} fls-ch--lit{% endif %}" data-fls-ch aria-label="{% if sc == 'library' %}Fragrance Library{% else %}{{ name }}{% endif %}">
+    <div class="fls-pin">
+      <div class="fls-media">
+        <img src="{{ poster }}&width=1280" srcset="{{ poster }}&width=640 640w, {{ poster }}&width=1280 1280w, {{ poster }}&width=1920 1920w" sizes="100vw" width="1920" height="1080" alt="{{ alt }}" decoding="async"{% if sc == 'library' %} data-end="{{ poster_end }}"{% endif %}{% if fls_first %} loading="eager" fetchpriority="high"{% else %} loading="lazy"{% endif %}>
+        <video muted playsinline preload="none" poster="{{ poster }}&width=1280"{% if sc == 'library' %} data-once data-open="3.4"{% endif %} disablepictureinpicture aria-hidden="true" tabindex="-1" data-l="{{ v_l }}" data-m="{{ v_m }}" data-s="{{ v_s }}"></video>
+      </div>
+      <div class="fls-shade"></div>
+      <div class="fls-cap">
+      {%- if sc == 'library' -%}
+        <div class="fls-eye">Fragrance Library</div>
+        <h2 class="fls-h">{{ 'claude.fl.intro_h_html' | t }}</h2>
+        <p>{{ 'claude.fl.intro_p_html' | t }}</p>
+        <span class="fls-cue" aria-hidden="true"><i></i>{{ 'claude.fl.scroll_html' | t }}</span>
+      {%- else -%}
+        <div class="fls-eye">{{ eye }}</div>
+        <h2 class="fls-h">{{ name }}</h2>
+        <p>{{ line }}</p>
+      {%- endif -%}
+      </div>
+    </div>
+    <div class="fls-gap" aria-hidden="true"></div>
+    {%- if sc != 'library' -%}
+    <div class="fls-prod">
+      <div class="fls-stage" data-fls-stage>
+        <span class="fls-floor" aria-hidden="true"></span>
+        <model-viewer data-src="https://cdn.shopify.com/3d/models/o/{{ glb }}" alt="{{ 'claude.fl.alt_3d_html' | t: name: name }}" camera-orbit="20deg 80deg auto" field-of-view="22deg" min-camera-orbit="auto 45deg auto" max-camera-orbit="auto 110deg auto" camera-controls disable-zoom disable-pan interaction-prompt="none" tone-mapping="neutral" environment-image="neutral" exposure="1.05" shadow-intensity="1.3" shadow-softness=".8" loading="eager"><div slot="hotspot-foot" data-fls-foot data-position="0m 0m 0m" data-normal="0m 1m 0m"></div></model-viewer>
+        {%- if photo != blank -%}
+        <img class="fls-photo" data-fls-photo data-src="{{ photo | file_url }}" alt="" width="307" height="693" decoding="async">
+        {%- endif -%}
+      </div>
+      <div class="fls-info">
+        <div class="fls-eye">Fragrance Library</div>
+        <h3 class="fls-name">{{ name }}</h3>
+        <p class="fls-sub">{{ kind }} · {{ fv.title | split: ' ml' | first }} ml</p>
+        <p class="fls-line">{{ line }}</p>
+        {%- if kop != '' or her != '' or bas != '' -%}
+        <dl class="fls-notes">
+          {%- if kop != '' -%}<div><dt>{{ 'claude.n.top_html' | t }}</dt><dd>{{ kop }}</dd></div>{%- endif -%}
+          {%- if her != '' -%}<div><dt>{{ 'claude.n.heart_html' | t }}</dt><dd>{{ her }}</dd></div>{%- endif -%}
+          {%- if bas != '' -%}<div><dt>{{ 'claude.n.base_html' | t }}</dt><dd>{{ bas }}</dd></div>{%- endif -%}
+        </dl>
+        {%- endif -%}
+        <div class="fls-price">{{ fv.price | money }}<small class="fls-legal">{{ 'claude.fl.legal_html' | t }}{% if fv.unit_price_measurement %} · {% if fv.unit_price_measurement.reference_unit == 'l' and fv.unit_price_measurement.reference_value == 1 %}{{ fv.unit_price | divided_by: 10 | money }}/100 ml{% else %}{{ fv.unit_price | money }}/{% if fv.unit_price_measurement.reference_value != 1 %}{{ fv.unit_price_measurement.reference_value }} {% endif %}{{ fv.unit_price_measurement.reference_unit }}{% endif %}{% endif %}</small><small class="fls-ship">{{ 'claude.fl.ship_html' | t }}</small></div>
+        <div class="fls-btns">
+          <add-to-cart class="cart-drawer" data-variant-id="{{ fv.id }}"><button type="submit" name="add" class="fls-btn fls-btn--pri" data-fls-add="{{ fv.id }}" aria-label="{%- capture fl_nt -%}{{ name }} {{ fv.title }}{%- endcapture -%}{{ 'claude.fl.atc_aria_html' | t: name: fl_nt }}">{{ 'claude.c.atc_html' | t }}</button></add-to-cart>
+          <a class="fls-btn" href="{{ fp.url }}?variant={{ fv.id }}" aria-label="{{ 'claude.fl.to_aria_html' | t: name: name }}">{{ 'claude.c.to_scent_html' | t }}</a>
+        </div>
+        <p class="fls-err" role="status"></p>
+      </div>
+    </div>
+    {%- endif -%}
+  </section>
+  {%- assign fls_first = false -%}
+{%- endfor -%}
+  <div class="fls-end">
+    <div class="fls-eye">{{ 'claude.fl.end_e_html' | t }}</div>
+    <h2 class="fls-h">{{ 'claude.fl.end_h_html' | t }}</h2>
+    <p>{{ 'claude.fl.end_p_html' | t }}</p>
+    <i aria-hidden="true"></i>
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.currentScript.previousElementSibling;
+  if (!root || !root.hasAttribute('data-fls') || root.flsOn) return; root.flsOn = 1;
+  var still = matchMedia('(prefers-reduced-motion:reduce)').matches, SPEED = 360 / 28, run = 0, n = 0;
+  var chs = [].map.call(root.querySelectorAll('[data-fls-ch]'), function (el) {
+    var o = { el: el, pin: el.querySelector('.fls-pin'), prod: el.querySelector('.fls-prod'), v: el.querySelector('video'), mv: el.querySelector('model-viewer'), ph: el.querySelector('[data-fls-photo]'), stage: el.querySelector('[data-fls-stage]'), foot: el.querySelector('[data-fls-foot]'), vis: 0, cov: 0, sv: 0, t0: 0, base: 20, touched: 0 };
+    var v = o.v;
+    if (v && !still) {
+      // weicher Loop: kurz vor dem Ende auf das Standbild (= erstes Bild) zurückblenden, dann von vorn
+      v.addEventListener('playing', function () { v.classList.add('on'); });
+      // Intro (data-once): läuft einmal und bleibt auf dem offenen Buch stehen; beim Wiederkommen von vorn
+      o.once = v.hasAttribute('data-once');
+      v.addEventListener('timeupdate', function () { if (o.once) el.classList.toggle('is-open', v.currentTime > (+v.getAttribute('data-open') || 3)); else if (v.duration && v.duration - v.currentTime < .75) v.classList.remove('on'); });
+      v.addEventListener('ended', function () { if (o.once) { o.done = 1; return; } v.currentTime = 0; play(o); });
+    } else if (v && v.hasAttribute('data-once')) {
+      // ohne Bewegung (prefers-reduced-motion): gleich das Endbild (offenes Buch) zeigen
+      var im = el.querySelector('.fls-media img'), e = im && im.getAttribute('data-end');
+      if (e) { im.srcset = [640, 1280, 1920].map(function (w) { return e + '&width=' + w + ' ' + w + 'w'; }).join(', '); im.src = e + '&width=1280'; el.classList.add('is-open'); }
+    }
+    if (o.mv) {
+      o.mv.addEventListener('load', function () {
+        var c = o.mv.getBoundingBoxCenter(), d = o.mv.getDimensions();
+        o.mv.updateHotspot({ name: 'hotspot-foot', position: c.x + 'm ' + (c.y - d.y / 2) + 'm ' + c.z + 'm' });
+        o.ld = 1; o.tries = 0; clearTimeout(o.phT); o.stage.classList.remove('is-ph', 'is-set');
+      });
+      o.mv.addEventListener('error', function () { photo(o); });
+      o.mv.addEventListener('camera-change', function (e) { if (e.detail && e.detail.source === 'user-interaction') o.touched = performance.now(); });
+    }
+    return o;
+  });
+  function play(o) { if (o.v && !still && o.vis && !o.cov) o.v.play().catch(function () {}); }
+  function src(v) {
+    var c = navigator.connection || {}, w = root.clientWidth * Math.min(devicePixelRatio || 1, 2);
+    return (c.saveData || /2g|3g/.test(c.effectiveType || '')) ? v.dataset.s : w > 1500 ? v.dataset.l : v.dataset.m;
+  }
+  // Ersatz (nur Hard Times): echtes Produktfoto, wenn das 3D-Modell ausfällt oder nach 4 s noch nicht da ist
+  function photo(o) {
+    if (!o.ph || o.ld) return;
+    var set = function () { if (!o.ld) { o.stage.style.removeProperty('--gy'); o.stage.classList.add('is-ph', 'is-set'); } };
+    if (o.ph.complete && o.ph.naturalWidth) return set();
+    o.ph.addEventListener('load', set); o.ph.src = o.ph.dataset.src;
+  }
+  function near(o) {
+    if (o.nr) return; o.nr = 1;
+    if (o.v && !still) { o.v.src = src(o.v); }
+    if (o.mv) {
+      o.mv.src = o.mv.dataset.src; o.phT = setTimeout(function () { photo(o); }, 4000);
+      if (!customElements.get('model-viewer') && !window.__flsMV) { window.__flsMV = 1; var s = document.createElement('script'); s.type = 'module'; s.src = 'https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js'; s.onerror = function () { chs.forEach(photo); }; document.head.appendChild(s); }
+    }
+  }
+  // Sockel genau unter den Fuß des Flakons legen; erst danach werden Flakon und Sockel eingeblendet
+  function place(o) {
+    var f = o.foot.getBoundingClientRect(), s = o.stage.getBoundingClientRect();
+    if (!s.height || (!f.width && !f.height && !f.top)) return;
+    var gy = f.top + f.height / 2 - s.top;
+    if (gy < s.height * .3 || gy > s.height * 1.1) return;
+    o.stage.style.setProperty('--gy', gy.toFixed(1) + 'px'); o.stage.classList.add('is-set');
+  }
+  var lights = [].slice.call(root.querySelectorAll('.fls-prod,.fls-end')), de = document.documentElement, lit = -1;
+  // Seitenleiste: schwarz, sobald hinter ihrem Inhalt (3–85 % der Höhe) mehr als ein schmaler Rest hell ist
+  function side(H) {
+    var a = H * .03, b = H * .85, c = 0;
+    lights.forEach(function (el) {
+      var r = el.getBoundingClientRect(), end = el.classList.contains('fls-end');
+      c += Math.max(0, Math.min(b, end ? r.bottom - H * .3 : r.bottom + H * .12) - Math.max(a, end ? r.top : r.top - H * .19));
+    });
+    var l = c > (b - a) * .08 ? 1 : 0;
+    if (l !== lit) { lit = l; de.classList.toggle('fls-light', !!l); }
+  }
+  function tick(t) {
+    run = 0; var any = 0, H = innerHeight; n++; side(H);
+    chs.forEach(function (o) {
+      if (!o.vis && !o.sv && !o.near) return;
+      if (o.vis) any = 1;
+      if (o.prod) {
+        // Szene pausiert, sobald die helle Fläche sie ganz verdeckt
+        var cov = o.prod.getBoundingClientRect().top < 2 ? 1 : 0;
+        if (cov !== o.cov) { o.cov = cov; if (o.v && !still) { if (cov) o.v.pause(); else play(o); } }
+      }
+      if (!o.stage) return;
+      var r = o.stage.getBoundingClientRect(), sv = r.bottom > 0 && r.top < H ? 1 : 0;
+      if (sv !== o.sv) { o.sv = sv; if (sv) { o.t0 = t; o.touched = 0; } }
+      if (!sv) return; any = 1;
+      if (!o.mv || !o.ld) return;
+      if (!still) {
+        if (o.touched && t - o.touched < 5000) { /* Besucher dreht selbst */ }
+        else {
+          if (o.touched) { o.touched = 0; o.base = o.mv.getCameraOrbit().theta * 180 / Math.PI; o.t0 = t; }
+          o.mv.cameraOrbit = (o.base + SPEED * (t - o.t0) / 1000).toFixed(2) + 'deg 80deg auto';
+        }
+      }
+      if (n % 20 === 0 || o.tries++ < 40) place(o);
+    });
+    if (any) run = requestAnimationFrame(tick);
+  }
+  function go() { if (!run) run = requestAnimationFrame(tick); }
+  // Warenkorb: auf der Landingpage derselbe Weg wie der Kaufknopf im Regal (window.beLandAdd), sonst <add-to-cart> des Themes
+  root.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-fls-add]');
+    if (!b || !window.beLandAdd) return;
+    e.preventDefault(); e.stopPropagation();
+    var er = b.closest('.fls-info').querySelector('.fls-err');
+    window.beLandAdd([b.getAttribute('data-fls-add')], b, function (m) { er.textContent = m; });
+  }, true);
+  if (!('IntersectionObserver' in window)) { chs.forEach(function (o) { near(o); o.vis = o.near = 1; }); go(); return; }
+  var ioN = new IntersectionObserver(function (es) { es.forEach(function (e) { var o = chs.filter(function (x) { return x.el === e.target; })[0]; o.near = e.isIntersecting ? 1 : 0; if (o.near) near(o); }); go(); }, { rootMargin: '120% 0px' });
+  var ioV = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      var o = chs.filter(function (x) { return x.pin === e.target; })[0]; o.vis = e.isIntersecting ? 1 : 0;
+      if (o.v && !still) { if (o.vis) { near(o); if (o.done) { o.done = 0; o.v.currentTime = 0; } play(o); } else o.v.pause(); }
+    });
+    go();
+  }, { threshold: .2 });
+  chs.forEach(function (o) { ioN.observe(o.el); ioV.observe(o.pin); });
+  addEventListener('scroll', go, { passive: true });
+  addEventListener('resize', function () { chs.forEach(function (o) { o.tries = 0; }); go(); });
+})();
+</script>
