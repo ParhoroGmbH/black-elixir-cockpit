@@ -35,7 +35,7 @@
 .flb-bot.flb-bot:hover img.flb-cut{transform:translateX(-50%) rotate(-2.2deg) translateY(-3px)}
 .flb-sh{left:50%;bottom:6.5%;width:46%;height:7%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(24,14,4,.55),rgba(24,14,4,.2) 60%,rgba(24,14,4,0));filter:blur(2px);opacity:0;transition:opacity .5s}
 .flb-bot.is-in .flb-sh{opacity:1}
-.flb-bot.flb-bot.is-3d img.flb-cut,.flb-bot.is-3d .flb-sh,.flb-bot.is-3d .flb-fr{opacity:0}
+.flb-bot.flb-bot.is-3d img.flb-cut,.flb-bot.flb-bot.is-3d .flb-sh,.flb-bot.flb-bot.is-3d .flb-fr{opacity:0}
 /* Ersatz: Originalfoto auf papierfarbener Tafel mit feiner Linie (Weiß verschmilzt mit dem Papier) */
 .flb-fr{left:50%;top:50%;height:86%;aspect-ratio:1;max-width:92%;transform:translate(-50%,-50%);background:#efe2c4;outline:1px solid rgba(120,92,44,.55);outline-offset:-7px;opacity:0;transition:opacity .5s;overflow:hidden;border-radius:2px}
 .flb-bot.flb-bot .flb-fr img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:0;background:none;object-fit:cover;mix-blend-mode:multiply;display:block}
@@ -45,7 +45,7 @@
 .flb-ov *,.flb-ov *::before,.flb-ov *::after{box-sizing:border-box;margin:0}
 .flb-bg{position:absolute;inset:0;background:rgba(8,5,3,.74);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;transition:opacity .35s}
 .flb-ov.is-on .flb-bg{opacity:1}
-.flb-bk{--ink:#1d1710;--mut:#5a4b35;--rule:rgba(110,84,40,.5);position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);width:min(1000px,100%);max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);color:var(--ink);background:#f1e4c3;border-radius:5px;box-shadow:0 0 0 9px var(--c,#2a2a2a),0 0 0 10px rgba(0,0,0,.55),0 2px 0 12px rgba(0,0,0,.35),0 50px 90px -10px rgba(0,0,0,.8);opacity:0;transform:translate(var(--ox,0px),var(--oy,0px)) scale(.16);transition:transform .6s cubic-bezier(.2,.85,.25,1),opacity .3s;transform-origin:50% 50%}
+.flb-bk{--ink:#1d1710;--mut:#5a4b35;--rule:rgba(110,84,40,.5);position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);width:min(1040px,100%);max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);color:var(--ink);background:#f1e4c3;border-radius:5px;box-shadow:0 0 0 9px var(--c,#2a2a2a),0 0 0 10px rgba(0,0,0,.55),0 2px 0 12px rgba(0,0,0,.35),0 50px 90px -10px rgba(0,0,0,.8);opacity:0;transform:translate(var(--ox,0px),var(--oy,0px)) scale(.16);transition:transform .6s cubic-bezier(.2,.85,.25,1),opacity .3s;transform-origin:50% 50%}
 .flb-bk.has-tex{background:url({{ 'be-fl-papier.jpg' | file_url }}) center/100% 100% no-repeat,#f1e4c3}
 .flb-ov.is-on .flb-bk{opacity:1;transform:none}
 .flb-bk::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:64px;transform:translateX(-50%);background:linear-gradient(90deg,rgba(60,40,12,0),rgba(60,40,12,.2) 46%,rgba(40,24,6,.42) 50%,rgba(60,40,12,.2) 54%,rgba(60,40,12,0));pointer-events:none}
@@ -57,7 +57,8 @@
 .flb-l .flb-box{width:100%;height:min(54vh,460px);min-height:240px}
 .flb-fig{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);text-align:center}
 .flb-fig:empty{display:none}
-.flb-r{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;justify-content:center}
+.flb-r{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;justify-content:center;padding-inline-start:clamp(30px,4.4vw,60px)}
+.flb-r>*{flex:0 0 auto}
 .flb-eye{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--mut)}
 .flb-t{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(2rem,3.6vw,3.1rem);line-height:1.04;margin-top:8px;color:var(--ink);letter-spacing:0;text-transform:none;text-wrap:balance}
 .flb-sub{margin-top:8px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
@@ -94,7 +95,7 @@
 .flb-pg{padding:20px 22px}
 .flb-l{padding-top:54px;padding-bottom:0}
 .flb-l .flb-box{height:36vh;min-height:220px}
-.flb-r{overflow:visible;justify-content:flex-start;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.flb-r{overflow:visible;justify-content:flex-start;padding-inline-start:22px;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .flb-ov .flb-x{position:fixed;top:14px;background:rgba(241,228,195,.92);box-shadow:0 0 0 1px var(--rule)}
 .flb-toc dl>div{grid-template-columns:minmax(0,1fr)}
 }
