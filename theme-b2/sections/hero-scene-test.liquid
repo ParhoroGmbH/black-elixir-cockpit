@@ -2,6 +2,7 @@
 {%- render 'claude-home-style', sec: section -%}
 {%- render 'claude-home-style2', sec: section -%}
 {%- render 'claude-home-fix', sec: section -%}
+{%- render 'claude-home-hero3d-css' -%}
 <style>/* Perf 12.11.2026: Hintergrundbilder tieferer Sektionen erst laden, wenn die Sektion naht (Klasse bg-in aus claude-home-js); Animationen außerhalb des Sichtbereichs pausieren (ch-off) */
 .js .ch .ca:not(.bg-in),.js .ch .cl:not(.bg-in),.js .ch .cr.cr:not(.bg-in),.js .ch .cv-sec.cv-sec:not(.bg-in),.js .ch .cr:not(.bg-in) .cr-frame{background-image:none!important}
 .ch .ch-off,.ch .ch-off::before,.ch .ch-off::after,.ch .ch-off *,.ch .ch-off *::before,.ch .ch-off *::after{animation-play-state:paused!important}
