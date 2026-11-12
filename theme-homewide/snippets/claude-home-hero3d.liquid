@@ -214,6 +214,7 @@
         var sbw = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bx-sbw')) || 0;
         var dl = c0 - Math.min(bl, c0 - 150 * k), want = Math.max(r.left + sbw + (r.width - sbw) * .635, txr(o.sl) + 32 + dl);
         nx = Math.min(want, Math.max(c0, r.right - 20 - b.width / 2)) - c0;
+        if (document.documentElement.dir === 'rtl') nx = Math.min(0, nx); /* RTL: altes Layout (Leiste rechts, Hero in der Inhaltsspalte) – Gruppe bleibt, wo sie war */
       }
       if (Math.abs(nx - sh) > .5) { o.box.style.left = nx.toFixed(1) + 'px'; b = o.box.getBoundingClientRect(); }
       var f = o.foot.getBoundingClientRect();

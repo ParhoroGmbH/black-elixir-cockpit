@@ -300,23 +300,23 @@
   }
 
   /* Linke Sidebar (eine Logik für alle Seiten, 12.11.2026): liegt sie über einer dunklen Fläche, bekommt dieser Abschnitt dunkles Glas + helle Schrift – je Element, pro Scroll.
-     Dunkle Flächen: Footer, Fragrance-Library-Landing (.fl-land, außer wenn deren Skript html.fls-light setzt), DUMO-Szenen (.dh/.dv/.dg), [data-bx-dark]
-     und auf der Startseite jede Sektion von .ch mit dunklem Grund (automatisch erkannt). Gezählt wird nur, was wirklich unter der Leiste durchläuft. */
+     Dunkle Flächen: Footer, Fragrance-Library-Landing (.fl-land), DUMO-Szenen (.dh/.dv/.dg), [data-bx-dark] und auf der Startseite jede Sektion von .ch mit dunklem Grund (automatisch erkannt).
+     Helle Inseln darin (weiße Produktflächen der Fragrance-Library-Geschichte .fls-prod/.fls-end, [data-bx-light]) werden wieder abgezogen. Gezählt wird nur, was wirklich unter der Leiste durchläuft. */
   function sidebarTone() {
     var bar = document.querySelector('.main-sidebar'); if (!bar) return;
-    var de = document.documentElement, L = 'rgba(255,255,255,.3)', D = 'rgba(14,15,19,.42)', zones = [], last = '';
+    var L = 'rgba(255,255,255,.3)', D = 'rgba(14,15,19,.42)', zones = [], lights = [], last = '';
     var els = [].slice.call(bar.querySelectorAll('a,button,summary,p,h2,h3,h4'));
     function lum(c) { var m = /rgba?\(([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)(?:[,/ ]+([\d.]+))?/.exec(c || ''); return !m || +m[4] === 0 ? -1 : (.2126 * m[1] + .7152 * m[2] + .0722 * m[3]) / 255; }
     function scan() {
       zones = [].slice.call(document.querySelectorAll('.shopify-section-footer .footer,.shopify-section-footer .overlapping-container-js,.fl-land,.dh,.dv,.dg,[data-bx-dark]'));
+      lights = [].slice.call(document.querySelectorAll('.fls-prod,.fls-end,[data-bx-light]'));
       if (!document.querySelector('.shopify-section-footer .footer')) { var f = document.querySelector('.shopify-section-footer'); if (f) zones.push(f); }
       [].forEach.call(document.querySelectorAll('.ch>div,.ch>section'), function (e) { var c = getComputedStyle(e), b = lum(c.backgroundColor); if (b < 0 ? lum(c.color) > .6 : b < .25) zones.push(e); });
     }
     function upd() {
       var b = bar.getBoundingClientRect(); if (!b.width || !b.height) return;
-      var lit = de.classList.contains('fls-light'), iv = [];
+      var iv = [];
       zones.forEach(function (z) {
-        if (lit && z.classList.contains('fl-land')) return;
         var r = z.getBoundingClientRect();
         if (!r.height || r.bottom <= b.top || r.top >= b.bottom || r.right <= b.left + 1 || r.left >= b.right - 1) return;
         iv.push([Math.max(0, r.top - b.top), Math.min(b.height, r.bottom - b.top)]);
@@ -324,6 +324,12 @@
       iv.sort(function (x, y) { return x[0] - y[0]; });
       var m = [], g = [], p = 0;
       iv.forEach(function (v) { var l = m[m.length - 1]; if (l && v[0] <= l[1] + 1) l[1] = Math.max(l[1], v[1]); else m.push(v); });
+      lights.forEach(function (z) {
+        var r = z.getBoundingClientRect(), a = r.top - b.top, e = r.bottom - b.top - (z.classList.contains('fls-end') ? innerHeight * .3 : 0), n = [];
+        if (!r.height || e <= 0 || a >= b.height || e <= a || r.right <= b.left + 1 || r.left >= b.right - 1) return;
+        m.forEach(function (v) { if (v[1] <= a || v[0] >= e) n.push(v); else { if (v[0] < a) n.push([v[0], a]); if (v[1] > e) n.push([e, v[1]]); } });
+        m = n;
+      });
       m.forEach(function (v) { if (v[0] > p) g.push(L + ' ' + p.toFixed(0) + 'px ' + v[0].toFixed(0) + 'px'); g.push(D + ' ' + v[0].toFixed(0) + 'px ' + v[1].toFixed(0) + 'px'); p = v[1]; });
       if (m.length && p < b.height) g.push(L + ' ' + p.toFixed(0) + 'px 100%');
       var s = m.length ? 'linear-gradient(180deg,' + g.join(',') + ')' : '';
@@ -337,7 +343,6 @@
     scan(); upd();
     window.addEventListener('scroll', q, { passive: true }); window.addEventListener('resize', q);
     window.addEventListener('load', function () { scan(); q(); });
-    if ('MutationObserver' in window) new MutationObserver(q).observe(de, { attributes: true, attributeFilter: ['class'] });
     if ('ResizeObserver' in window) new ResizeObserver(q).observe(document.body);
   }
 
