@@ -408,7 +408,7 @@
       var hh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bx-hh')) || 0;
       var top = innerWidth <= 860 ? (tx ? tx.getBoundingClientRect().bottom + 14 : r.top + 60) : Math.max(b.top + 10 * k, r.top + hh + 14);
       if (o.tag) top += 46;
-      var hr = curIt.obj.userData.h / HW, want = curIt.K.px * k * (innerWidth <= 860 ? 1.25 : 1), P = Math.min(want, (ty - top) / hr); // P = längste Kante, Höhe = P·hr
+      var hr = curIt.obj.userData.h / HW, want = curIt.K.px * k * (innerWidth <= 860 ? 1.1 : 1), P = Math.min(want, (ty - top) / hr); // P = längste Kante, Höhe = P·hr
       if (innerWidth <= 860 && P < want * .8 && !h.style.minHeight) { h.style.minHeight = Math.min(980, h.offsetHeight + Math.ceil(want * .8 - P)) + 'px'; return layout(force); }
       P = Math.max(P, 120);
       view.cx = b.left + b.width / 2 - r.left; view.cy = ty - P * hr * 0.5 - r.top; view.P = P;
