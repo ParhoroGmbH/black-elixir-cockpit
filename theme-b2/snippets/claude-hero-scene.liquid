@@ -11,7 +11,7 @@
   comment
     Ort je Produkt: Schlüssel → Dateien be-hsc-<key>.webp (Desktop 3840) und be-hsc-<key>-m.webp (Mobil 2048). Parameter je Ort: rot (Drehung Panorama, rad), h (Projektionshöhe), ei (Umgebungslicht), rf (Spiegelung im Boden)
   endcomment
-  assign hsc_place = 'babor|1.57|2.2|1.1|0.16,artdeco|1.57|2.2|1.1|0.16,mb|1.57|2.2|1.1|0.16,wfs|1.57|2.2|1.1|0.16,soap|1.57|2.2|1.1|0.16,alchemist|1.57|2.2|1.1|0.12,mirth|1.57|2.2|1.1|0.16,orlando|1.57|2.2|1.1|0.16,cities|1.57|2.2|1.1|0.16,beloved|1.57|2.2|1.1|0.10,romeo|1.57|2.2|1.1|0.16,rebecca|1.57|2.2|1.1|0.14,hardtimes|1.57|2.2|1.1|0.12,commodus|1.57|2.2|1.1|0.10,spartacus|1.57|2.2|1.1|0.10,crixus|1.57|2.2|1.1|0.10,marcus|1.57|2.2|1.1|0.10,rexor|1.57|2.2|1.1|0.10,priscus|1.57|2.2|1.1|0.10,verus|1.57|2.2|1.1|0.10' | split: ','
+  assign hsc_place = 'babor|1.57|2.2|1.1|0.16,artdeco|1.57|2.2|1.1|0.16,mb|1.57|2.2|1.1|0.16,wfs|1.57|2.2|1.1|0.16,soap|1.57|2.2|1.1|0.16,alchemist|1.57|2.2|1.1|0.04,mirth|1.57|2.2|1.1|0.16,orlando|1.57|2.2|1.1|0.16,cities|1.57|2.2|1.1|0.16,beloved|1.57|2.2|1.1|0,romeo|1.57|2.2|1.1|0.16,rebecca|1.57|2.2|1.1|0.14,hardtimes|1.57|2.2|1.1|0.12,commodus|1.57|2.2|1.1|0.10,spartacus|1.57|2.2|1.1|0.03,crixus|1.57|2.2|1.1|0.03,marcus|1.57|2.2|1.1|0.10,rexor|1.57|2.2|1.1|0.10,priscus|1.57|2.2|1.1|0.10,verus|1.57|2.2|1.1|0.10' | split: ','
 -%}
 {%- capture hsc_places -%}{%- for p in hsc_place -%}{%- assign q = p | split: '|' -%}{%- assign fd = 'be-hsc-' | append: q[0] | append: '.webp' -%}{%- assign fm = 'be-hsc-' | append: q[0] | append: '-m.webp' -%}{%- assign imd = images[fd] -%}{%- assign imm = images[fm] -%}{%- if imd.id != blank -%}{%- unless imm.id != blank -%}{%- assign imm = imd -%}{%- endunless -%}{{ q[0] | json }}:{"env":{{ imd | image_url: width: imd.width | json }},"envM":{{ imm | image_url: width: imm.width | json }},"rot":{{ q[1] }},"h":{{ q[2] }},"ei":{{ q[3] }},"rf":{{ q[4] }}},{%- endif -%}{%- endfor -%}{%- endcapture -%}
 <style>
@@ -316,11 +316,12 @@
       });
     }
 
-    function shadowTex(fx, fz) {
+    function shadowTex(fx, fz, round) { // weicher Kontaktschatten; Flakons/Büsten rund, Kalender/Seifen eckig
       var Sz = 256, pad = 0.12, W = fx + pad * 2, D = fz + pad * 2, cv = document.createElement('canvas'); cv.width = cv.height = Sz;
       var x = cv.getContext('2d'), sx = Sz / W, sz = Sz / D;
-      x.filter = 'blur(' + (0.035 * sx) + 'px)'; x.fillStyle = 'rgba(0,0,0,.6)'; x.fillRect((pad - 0.02) * sx, (pad - 0.02) * sz, (fx + 0.04) * sx, (fz + 0.04) * sz);
-      x.filter = 'blur(' + (0.006 * sx) + 'px)'; x.fillStyle = 'rgba(0,0,0,.85)'; x.fillRect(pad * sx, pad * sz, fx * sx, fz * sz);
+      if (round) { x.filter = 'blur(' + (0.03 * sx) + 'px)'; x.fillStyle = 'rgba(0,0,0,.5)'; x.beginPath(); x.ellipse(Sz / 2, Sz / 2, fx * sx * 0.42, fz * sz * 0.42, 0, 0, 7); x.fill(); }
+      else { x.filter = 'blur(' + (0.035 * sx) + 'px)'; x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect((pad - 0.02) * sx, (pad - 0.02) * sz, (fx + 0.04) * sx, (fz + 0.04) * sz);
+        x.filter = 'blur(' + (0.008 * sx) + 'px)'; x.fillStyle = 'rgba(0,0,0,.6)'; x.fillRect(pad * sx, pad * sz, fx * sx, fz * sz); }
       var t = new THREE.CanvasTexture(cv); shadow.scale.set(W, D, 1); return t;
     }
 
@@ -355,9 +356,9 @@
       scene.environment = pl.env.texture; scene.environmentIntensity = P.ei; scene.environmentRotation.y = P.rot;
       key.intensity = K.key; fill.intensity = K.fill; key.position.set(Math.sin(P.rot - 2.2) * 3, 2.4, Math.cos(P.rot - 2.2) * 3);
       slot.clear(); slot.add(md.obj);
-      md.obj.userData.mir.traverse(function (o) { if (o.isMesh) o.material.opacity = P.rf; });
+      md.obj.userData.mir.traverse(function (o) { if (o.isMesh) o.material.opacity = P.rf; }); md.obj.userData.mir.parent.visible = P.rf > 0;
       if (shadow.material.map) shadow.material.map.dispose();
-      shadow.material.map = shadowTex(md.obj.userData.foot[0], md.obj.userData.foot[1]); shadow.material.opacity = 1; shadow.material.needsUpdate = true;
+      shadow.material.map = shadowTex(md.obj.userData.foot[0], md.obj.userData.foot[1], it.kind === 'bust' || it.kind === 'bottle'); shadow.material.opacity = 1; shadow.material.needsUpdate = true;
       curIt = { it: it, obj: md.obj, tex: pl.tex, K: K };
       // Kamera: Kalender nur ±70° um die Vorderseite (nie hochkant), Flakons/Büsten volle 360°
       flat = it.kind === 'flat'; az0 = 0; az = (it.az || 0) * Math.PI / 180; ph = flat ? Math.asin(Math.max(-1, Math.min(1, az / cfg.flatDrift))) : 0; dir = 1;
