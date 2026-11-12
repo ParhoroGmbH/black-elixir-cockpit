@@ -234,6 +234,11 @@
   if (pv) pv.addEventListener('click', function () { hold(); show(si - 1, 1); });
   if (nx) nx.addEventListener('click', function () { hold(); show(si + 1, 1); });
   dots.forEach(function (x, k) { x.addEventListener('click', function () { hold(); show(k, 1); }); });
+  // Perf 13.11.2026: Pfeile/Punkte laden ihr Ziel schon beim Drueberfahren/Antippen an (wie die Chips), damit der Klick kaum wartet
+  function wz(k) { if (S && !S.dead) { k = (k + slides.length) % slides.length; S.warm(k, boxes[k].i); } }
+  dots.forEach(function (x, k) { ['pointerenter', 'pointerdown', 'focus'].forEach(function (ev) { x.addEventListener(ev, function () { wz(k); }); }); });
+  if (pv) ['pointerenter', 'pointerdown', 'focus'].forEach(function (ev) { pv.addEventListener(ev, function () { wz(si - 1); }); });
+  if (nx) ['pointerenter', 'pointerdown', 'focus'].forEach(function (ev) { nx.addEventListener(ev, function () { wz(si + 1); }); });
   h.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hov = 1; });
   h.addEventListener('pointerleave', function () { hov = 0; });
   // 20 s je Motiv, bei 10 s ein Produktwechsel im Motiv; jede Bedienung (Pfeil, Punkt, Chip, Ziehen) stoppt den Automatismus für diesen Besuch; Maus über dem Hero pausiert.
