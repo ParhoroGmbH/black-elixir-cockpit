@@ -178,6 +178,11 @@
           {%- endif -%}
         {%- endfor -%}
       </div>
+      {%- if cpd_has -%}
+        <button type="button" class="cpd-pill cpd-pill--side" data-cpd-less tabindex="-1" aria-controls="cpd-desc-{{ section.id }}">
+          <svg aria-hidden="true" viewBox="0 0 12 12"><path d="M2 7.5l4-4 4 4"/></svg>{%- render 'claude-pdp-t', k: 'less' -%}
+        </button>
+      {%- endif -%}
     </div>
   </div>
 
@@ -272,7 +277,7 @@
   }catch(e){}
   /* 5) Ein-/Ausklappen */
   if(box&&btn){
-    var COL=parseFloat(getComputedStyle(box).maxHeight)||132,lab=btn.querySelector('[data-cpd-label]'),pill=root.querySelector('[data-cpd-less]');
+    var COL=parseFloat(getComputedStyle(box).maxHeight)||132,lab=btn.querySelector('[data-cpd-label]'),pills=[].slice.call(root.querySelectorAll('[data-cpd-less]'));
     if(inner.scrollHeight<=COL+48){box.classList.remove('is-collapsed');box.style.maxHeight='none';btn.hidden=true}
     var set=function(open){
       var full=inner.scrollHeight;
@@ -280,12 +285,12 @@
       box.classList.toggle('is-collapsed',!open);box.classList.toggle('is-open',open);
       box.style.maxHeight=(open?full:COL)+'px';
       btn.setAttribute('aria-expanded',open?'true':'false');lab.textContent=btn.getAttribute(open?'data-less':'data-more');
-      if(pill)pill.tabIndex=open?0:-1;
+      root.classList.toggle('is-reading',open);pills.forEach(function(p){p.tabIndex=open?0:-1});
       if(!open){var top=root.getBoundingClientRect().top;if(top<0)window.scrollTo({top:window.pageYOffset+top-90,behavior:'smooth'})}
     };
     box.addEventListener('transitionend',function(e){if(e.target===box&&box.classList.contains('is-open'))box.style.maxHeight='none'});
     btn.addEventListener('click',function(){set(btn.getAttribute('aria-expanded')!=='true')});
-    if(pill)pill.addEventListener('click',function(){set(false);btn.focus({preventScroll:true})});
+    pills.forEach(function(p){p.addEventListener('click',function(){set(false);btn.focus({preventScroll:true})})});
     root.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.cpd-jump');if(!a)return;var t=document.getElementById(a.getAttribute('href').slice(1));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}});
   }
   /* 6) Akkordeon: nur eines offen (Fallback für Browser ohne <details name>) */
