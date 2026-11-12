@@ -19,7 +19,7 @@
 .ch .ch-marq::before{content:"";position:absolute;z-index:1;left:0;top:0;bottom:0;width:var(--bx-sbw,0px);background:#000}</style>
 <script>(function(){var de=document.documentElement,me=document.currentScript.parentNode,sb=document.querySelector('.main-sidebar-section');
 function w(){de.style.setProperty('--bx-sbw',(sb&&de.dir!=='rtl'&&getComputedStyle(sb).display!=='none'?sb.offsetWidth:0)+'px');de.style.setProperty('--ch-top',Math.max(0,Math.round(me.getBoundingClientRect().top+(window.pageYOffset||0)))+'px')}
-w();addEventListener('resize',w);addEventListener('load',w)})();</script>
+w();addEventListener('resize',w);addEventListener('load',w);if('ResizeObserver' in window)new ResizeObserver(w).observe(document.body)})();</script>
 <div class="ch" id="ch-{{ section.id }}">
   {%- render 'claude-home-a', sec: section -%}
   {%- render 'claude-home-b', sec: section -%}

@@ -19,6 +19,7 @@
   .ch .m3{--m3s:.62;scale:var(--m3s)}
   .ch .m3-tabs{width:calc((100vw - 24px) / var(--m3s));flex-wrap:nowrap;justify-content:flex-start;justify-content:safe center;gap:calc(6px / var(--m3s));overflow-x:auto;scrollbar-width:none;padding:0 calc(26px / var(--m3s)) 0 0;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px / var(--m3s)),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px / var(--m3s)),transparent)}
   .ch .m3-tabs::-webkit-scrollbar{display:none}
+  .ch .ch-h3 .ch-ctrl{gap:8px}.ch .ch-h3 .ch-ctrl>button{width:44px;height:44px}.ch .ch-h3 .ch-dots button{width:18px}.ch .ch-h3 .ch-dots button.is-on{width:40px}
   .ch .m3-tabs button{flex:0 0 auto;min-height:calc(36px / var(--m3s));padding:0 calc(14px / var(--m3s));font-size:calc(12px / var(--m3s));letter-spacing:.08em}
 }
 @media (max-width:400px){.ch .m3{--m3s:.56}}</style>
@@ -108,7 +109,7 @@
             {%- assign c_dumo = collections[s.col_dumo] -%}
             <div class="m3 m3-dumo" data-m3 data-slam>
               <span class="dm3-ring" aria-hidden="true"></span>
-              <span class="m3-glint" aria-hidden="true"></span><model-viewer data-m3-mv data-base="0" alt="{{ 'claude.hero.alt_dumo_html' | t }}" camera-orbit="0deg 80deg 105%" field-of-view="22deg" min-camera-orbit="auto 50deg auto" max-camera-orbit="auto 110deg auto" camera-controls disable-zoom disable-pan interaction-prompt="none" tone-mapping="neutral" environment-image="neutral" exposure="1.2" shadow-intensity="1" shadow-softness=".55" loading="lazy"><div slot="hotspot-foot" data-m3-foot data-position="0m 0m 0m" data-normal="0m 1m 0m"></div></model-viewer><canvas class="m3-dust" data-m3-dust aria-hidden="true"></canvas>
+              <span class="m3-glint" aria-hidden="true"></span><model-viewer data-m3-mv data-base="0" alt="{{ 'claude.hero.alt_dumo_html' | t }}" camera-orbit="0deg 80deg 105%" field-of-view="22deg" min-camera-orbit="auto 50deg auto" max-camera-orbit="auto 110deg auto" camera-controls disable-zoom disable-pan interaction-prompt="none" tone-mapping="neutral" environment-image="neutral" exposure="1.2" shadow-intensity="1" shadow-softness=".55" loading="lazy"><div slot="hotspot-foot" data-m3-foot data-position="0m 0m 0m" data-normal="0m 1m 0m"></div><div slot="hotspot-top" data-m3-top data-position="0m 0m 0m" data-normal="0m 1m 0m"></div></model-viewer><canvas class="m3-dust" data-m3-dust aria-hidden="true"></canvas>
               <div class="ca3-tabs m3-tabs" role="group" aria-label="{{ 'claude.hero.aria_warrior_html' | t }}">
                 {%- for p in c_dumo.products limit: 7 -%}
                   {%- assign nm = p.title | remove: 'DUMO ' | split: ' ' | first -%}{%- assign low = nm | downcase -%}
@@ -120,7 +121,7 @@
           {%- else -%}
             {%- assign m0 = mlist[0] | split: '|' -%}
             <div class="m3{% if n == 2 %} m3-soap{% endif %}" data-m3>
-              <span class="m3-glint" aria-hidden="true"></span><model-viewer data-m3-mv data-base="{{ m0[2] }}" {% if n == 1 %}src{% else %}data-src{% endif %}="https://cdn.shopify.com/3d/models/o/{{ m0[1] }}" alt="{{ 'claude.hero.alt_3d_html' | t: name: m0[0] }}" camera-orbit="{{ m0[2] }}deg 80deg auto" field-of-view="22deg" min-camera-orbit="auto 45deg auto" max-camera-orbit="auto 110deg auto" camera-controls disable-zoom disable-pan interaction-prompt="none" tone-mapping="neutral" environment-image="neutral" exposure="1.15" shadow-intensity="1" shadow-softness=".55" loading="{% if n == 1 %}eager{% else %}lazy{% endif %}"><div slot="hotspot-foot" data-m3-foot data-position="0m 0m 0m" data-normal="0m 1m 0m"></div>{% if n == 2 %}<div slot="hotspot-top" data-m3-top data-position="0m 0m 0m" data-normal="0m 1m 0m"></div>{% endif %}</model-viewer>
+              <span class="m3-glint" aria-hidden="true"></span><model-viewer data-m3-mv data-base="{{ m0[2] }}" {% if n == 1 %}src{% else %}data-src{% endif %}="https://cdn.shopify.com/3d/models/o/{{ m0[1] }}" alt="{{ 'claude.hero.alt_3d_html' | t: name: m0[0] }}" camera-orbit="{{ m0[2] }}deg 80deg auto" field-of-view="22deg" min-camera-orbit="auto 45deg auto" max-camera-orbit="auto 110deg auto" camera-controls disable-zoom disable-pan interaction-prompt="none" tone-mapping="neutral" environment-image="neutral" exposure="1.15" shadow-intensity="1" shadow-softness=".55" loading="{% if n == 1 %}eager{% else %}lazy{% endif %}"><div slot="hotspot-foot" data-m3-foot data-position="0m 0m 0m" data-normal="0m 1m 0m"></div><div slot="hotspot-top" data-m3-top data-position="0m 0m 0m" data-normal="0m 1m 0m"></div></model-viewer>
               {%- if mlist.size > 1 -%}
               <div class="ca3-tabs m3-tabs" role="group" aria-label="{{ 'claude.hero.aria_pick_html' | t }}">{%- for it in mlist -%}{%- assign ip = it | split: '|' -%}<button type="button" data-m3-go data-src="https://cdn.shopify.com/3d/models/o/{{ ip[1] }}" data-base="{{ ip[2] }}"{% if forloop.first %} class="on"{% endif %}>{{ ip[0] }}</button>{%- endfor -%}</div>
               {%- endif -%}{%- if n == 2 -%}<span class="sp3-tag">{{ 'claude.hero.tag59_html' | t }}</span>{%- endif -%}
@@ -229,6 +230,9 @@
       if (tabs && ctl) { var tmax = ctl.getBoundingClientRect().top - 16 - 40 * k - tabs.getBoundingClientRect().height;
         // mobil: Gruppe so tief wie möglich (direkt über der Pfeil-Zeile), damit das Produkt nicht in Text/CTA ragt
         ty = innerWidth <= 860 ? tmax : Math.min(ty, tmax); }
+      // Mobil: reicht der Platz zwischen Text/CTA und Chips nicht für das Produkt (kleine Höhe, hoher Kopfbereich), wächst der Hero um das fehlende Stück – das Produkt ragt nie in den Text
+      if (innerWidth <= 860 && o.top && tx) { var pt = o.top.getBoundingClientRect(), need = tx.getBoundingClientRect().bottom + 10 - (pt.top - (parseFloat(o.mv.style.getPropertyValue('--sy')) || 0) * k + ty - fy);
+        if (pt.top && need > 1) h.style.minHeight = Math.min(980, h.offsetHeight + Math.ceil(need)) + 'px'; }
       var er = ty - fy; o.dy = Math.max(-400, Math.min(700, o.dy + er / k));
       o.mv.style.setProperty('--dy', o.dy.toFixed(1) + 'px');
       o.box.style.setProperty('--gx', ((f.left + f.width / 2 - b.left) / k).toFixed(1) + 'px');
@@ -297,7 +301,7 @@
     }
     function go() { if (!run && vis) run = requestAnimationFrame(tick); }
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting ? 1 : 0; go(); }).observe(h);
-    addEventListener('resize', function () { boxes.forEach(function (o) { o.n = 0; }); });
+    addEventListener('resize', function () { h.style.minHeight = ''; boxes.forEach(function (o) { o.n = 0; }); });
     setInterval(function () {
       var t = Date.now(), dt = t - last; last = t;
       if (stop || hov || !vis || document.hidden || slides.length < 2) return;
