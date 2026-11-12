@@ -1,0 +1,316 @@
+{%- comment -%} fl-story – Scroll-Story der Fragrance-Library-Landingpage: "Die Bibliothek bei Nacht" + vier Welten (The Alchemist, Romeo and Juliet, Rebecca, Hard Times). Claude · 12.11.2026.
+  Einbau: {% render 'fl-story' %} (ersetzt den alten Block <section class="scene">…</section>). Eigenständig, alle Klassen .fls-.
+  Videos (Shopify-Dateien be-fl-story-<szene>-2026-11-12.mp4) sind KI-Szenen OHNE Flakon; der Flakon ist immer echt: 3D-Modell (GLB) des Produkts oder, ohne Modell (Hard Times), das freigestellte echte Produktfoto.
+  Produktdaten (Preis, Variante, Noten) kommen live aus Shopify; ein nicht lieferbares Produkt blendet sein Kapitel aus. {%- endcomment -%}
+<style>
+.fls{--bg:#0b0a09;--fg:#f1eadb;--mut:#b8ae98;--gold:#c9a45c;--serif:"Cormorant Garamond",Georgia,serif;container:fls/inline-size;position:relative;width:100%;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+.fls *,.fls *::before,.fls *::after{box-sizing:border-box;margin:0}
+.fls-ch{position:relative;height:230vh;height:230svh}.fls-ch--intro{height:150vh;height:150svh}
+.fls-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--bg)}
+.fls-media,.fls-media img,.fls-media video,.fls-shade,.fls-dim{position:absolute;inset:0;width:100%;height:100%}
+.fls-media img,.fls-media video{object-fit:cover;display:block}
+.fls-media video{opacity:0;transition:opacity .6s linear}.fls-media video.on{opacity:1}
+.fls-shade{background:linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,0) 28%,rgba(0,0,0,0) 48%,rgba(0,0,0,.82));pointer-events:none}
+.fls-dim{background:radial-gradient(ellipse 70% 80% at 32% 58%,rgba(8,6,4,.62),rgba(8,6,4,.92) 75%);opacity:0;transition:opacity .8s;pointer-events:none}
+.fls-ch.is-b .fls-dim{opacity:1}
+.fls-eye{font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}
+.fls-h{font-family:var(--serif);font-weight:400;line-height:1.02;text-wrap:balance;color:var(--fg);font-size:clamp(2.4rem,7cqw,5.5rem);margin-top:10px;letter-spacing:0;text-transform:none}
+.fls-cap{position:absolute;left:0;right:0;bottom:9vh;bottom:9svh;padding:0 clamp(16px,6cqw,80px);transition:opacity .6s,transform .6s}
+.fls-cap p{max-width:40ch;margin-top:14px;color:#d8cfbb;font-size:1.05rem}
+.fls-ch.is-b .fls-cap{opacity:0;transform:translateY(-14px);pointer-events:none}
+.fls-cue{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:.75rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mut)}
+.fls-cue i{display:block;width:1px;height:34px;background:linear-gradient(180deg,var(--gold),transparent)}
+.fls-prod{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:clamp(16px,4cqw,64px);padding:clamp(76px,11vh,120px) clamp(16px,6cqw,80px) clamp(24px,6vh,60px);opacity:0;visibility:hidden;transition:opacity .7s,visibility 0s .7s}
+.fls-ch.is-b .fls-prod{opacity:1;visibility:visible;transition:opacity .7s .15s,visibility 0s}
+.fls-stage{position:relative;height:min(74vh,660px);min-height:0}
+.fls-stage model-viewer{position:absolute;inset:0;z-index:1;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;transition:opacity .7s}
+.fls-stage.is-set model-viewer{opacity:1}
+.fls-stage model-viewer::part(default-progress-bar){display:none}
+.fls-stage [slot^=hotspot]{width:1px;height:1px;opacity:0;pointer-events:none}
+.fls-floor{position:absolute;z-index:0;left:-6%;right:-6%;top:var(--gy,84%);height:130px;pointer-events:none;opacity:0;transition:opacity .9s;background:radial-gradient(ellipse 42% 62% at 50% 0,rgba(255,214,150,.26),rgba(255,200,130,.07) 55%,transparent 72%)}
+.fls-floor::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,164,92,.6) 30%,rgba(255,226,170,.85) 50%,rgba(201,164,92,.6) 70%,transparent)}
+.fls-stage.is-set .fls-floor{opacity:1}
+.fls-photo{position:absolute;z-index:2;left:50%;bottom:16%;height:70%;width:auto;max-width:90%;object-fit:contain;object-position:bottom;transform:translateX(-50%);opacity:0;transition:opacity .7s}
+.fls-stage.is-set .fls-photo{opacity:1}
+.fls-shadow{position:absolute;z-index:1;left:50%;top:84%;width:min(46%,300px);height:30px;transform:translate(-50%,-45%);background:radial-gradient(ellipse at center,rgba(0,0,0,.85),rgba(0,0,0,.35) 45%,transparent 70%);opacity:0;transition:opacity .9s;pointer-events:none}
+.fls-stage.is-set .fls-shadow{opacity:1}
+.fls-ship{display:block;margin-top:2px;font-size:.8rem;color:var(--mut)}
+.fls-info{max-width:500px}
+.fls-name{font-family:var(--serif);font-weight:400;line-height:1.02;color:var(--fg);font-size:clamp(2rem,5cqw,3.7rem);margin-top:8px;letter-spacing:0;text-transform:none}
+.fls-sub{margin-top:6px;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+.fls-line{margin-top:14px;font-family:var(--serif);font-size:clamp(1.1rem,1.7cqw,1.35rem);line-height:1.4;color:#e6dcc6}
+.fls-notes{margin-top:18px;padding-top:16px;border-top:1px solid rgba(201,164,92,.28);display:grid;gap:10px}
+.fls-notes div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:baseline}
+.fls-notes dt{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.fls-notes dd{font-family:var(--serif);font-size:1.12rem;line-height:1.3;color:var(--fg)}
+.fls-price{margin-top:18px;font-family:var(--serif);font-size:1.8rem;color:var(--gold);line-height:1.1}
+.fls-legal{display:block;margin-top:4px;font-size:.8rem;color:var(--mut)}
+.fls-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.fls-btns add-to-cart{display:inline-flex}
+.fls .fls-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 26px;border:1px solid var(--gold);border-radius:0;background:rgba(0,0,0,.4);color:var(--fg);font:inherit;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer;touch-action:manipulation;transition:background-color .25s,color .25s;box-shadow:none;width:auto;height:auto}
+.fls .fls-btn--gold{background:var(--gold);color:#14110c}
+.fls .fls-btn:hover{background:rgba(201,164,92,.24);color:var(--fg)}.fls .fls-btn--gold:hover{background:#e2c383;color:#14110c}
+.fls .fls-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.fls add-to-cart.loading .fls-btn{opacity:.6;cursor:progress}
+.fls-end{padding:14vh clamp(16px,6cqw,80px) 5vh;text-align:center;background:linear-gradient(180deg,#000,var(--bg))}
+.fls-end .fls-h{font-size:clamp(2.2rem,6cqw,4.5rem)}.fls-end p{max-width:46ch;margin:14px auto 0;color:#d8cfbb}
+.fls-end i{display:block;width:1px;height:56px;margin:26px auto 0;background:linear-gradient(180deg,var(--gold),transparent)}
+@container fls (max-width:860px){
+.fls-prod{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;align-items:stretch;gap:6px;padding:68px 16px 18px}
+.fls-stage{height:auto}.fls-info{max-width:none}
+.fls-name{font-size:clamp(1.7rem,8.4cqw,2.4rem);margin-top:4px}.fls-sub{font-size:.7rem;margin-top:2px}
+.fls-line{margin-top:8px;font-size:1.02rem;line-height:1.3}
+.fls-notes{margin-top:10px;padding-top:10px;gap:5px}.fls-notes div{grid-template-columns:78px minmax(0,1fr);gap:8px}.fls-notes dt{font-size:.62rem;letter-spacing:.18em}.fls-notes dd{font-size:.98rem;line-height:1.22}
+.fls-price{margin-top:10px;font-size:1.5rem}.fls-legal,.fls-ship{font-size:.74rem}
+.fls-btns{margin-top:12px;gap:8px;flex-wrap:nowrap}.fls-btns add-to-cart{flex:1.5 1 0}.fls-btns>a{flex:1 1 0}
+.fls .fls-btn{width:100%;padding:10px 8px;font-size:.72rem;letter-spacing:.1em;text-align:center}
+.fls-cap p{font-size:1rem}
+.fls-ch{height:210vh;height:210svh}.fls-ch--intro{height:130vh;height:130svh}
+}
+@media (prefers-reduced-motion:reduce){.fls *{transition:none!important}}
+</style>
+<div class="fls" data-fls>
+{%- assign fls_scenes = 'library,desert,verona,manderley,hardtimes' | split: ',' -%}
+{%- assign fls_first = true -%}
+{%- assign fls_rom = 'I,II,III,IV,V' | split: ',' -%}
+{%- assign fls_n = 0 -%}
+{%- for sc in fls_scenes -%}
+  {%- liquid
+    assign fp = blank
+    assign fv = blank
+    assign glb = blank
+    assign photo = blank
+    assign pref = 0
+    case sc
+      when 'library'
+        assign vid = 'bfddd18e017e4c289c544d4042153200|4.8|3.0|1.2|101080930'
+        assign alt = 'Alte Bibliothek bei Nacht im Kerzenlicht, ein Buch öffnet sich'
+      when 'desert'
+        assign fp = all_products['fragrance-library-the-alchemist-eau-de-parfum']
+        assign glb = '726d6965c7f4d746/be4-fl-red.glb'
+        assign name = 'The Alchemist'
+        assign place = 'Die Wüste'
+        assign line = 'Folge deinem Traum durch die Wüste – dorthin, wo das erste Licht den Sand zu Gold macht.'
+        assign vid = '81097779915c4c85b627c9e591d52225|3.3|2.1|1.0|101080931'
+        assign alt = 'Karawanenzelt in der Wüste bei Sonnenaufgang'
+      when 'verona'
+        assign fp = all_products['fragrance-library-romeo-and-juliet']
+        assign glb = 'ce3b708a28188d20/be4-fl-romeo.glb'
+        assign name = 'Romeo and Juliet'
+        assign place = 'Verona'
+        assign line = 'Eine Nacht in Verona, Rosen am kalten Stein – und ein Versprechen, das du nicht vergisst.'
+        assign vid = '12ab98822b434da79b30ceafd6d0ef00|7.2|4.5|1.5|101080932'
+        assign alt = 'Steinbalkon mit Rosen im Mondlicht'
+      when 'manderley'
+        assign fp = all_products['fragrance-library-rebecca']
+        assign glb = '13a61eafefe41e40/be4-fl-white.glb'
+        assign name = 'Rebecca'
+        assign place = 'Manderley'
+        assign line = 'Manderley im Nebel: Du kommst an, und das Haus hat dich längst erwartet.'
+        assign vid = 'c0be0e76e5cd4023937a4a82387351ec|4.8|3.0|1.2|101080933'
+        assign alt = 'Herrenhaus auf Klippen über dem Meer im Nebel'
+      when 'hardtimes'
+        assign fp = all_products['fragrance-library-hard-times-eau-de-parfum']
+        assign photo = 'be-fl-story-hardtimes-flakon-2026-11-12.png'
+        assign pref = 100
+        assign name = 'Hard Times'
+        assign place = 'Coketown'
+        assign line = 'Kohlenrauch, nasses Pflaster, Gaslicht – und in einem Fenster brennt eine Kerze, die auf dich wartet.'
+        assign vid = '36c32cfc17cf45e281601626a08efb3c|3.3|2.1|1.0|101080934'
+        assign alt = 'Viktorianische Industriestadt in der Dämmerung mit Gaslaternen'
+    endcase
+    if sc != 'library'
+      comment
+        größte lieferbare Größe vorwählen (nie die 3-ml-Probe). pref = Größe, die das gezeigte Modell/Foto abbildet: ist sie lieferbar, wird sie gewählt.
+      endcomment
+      assign best = 0
+      for v in fp.variants
+        assign ml = v.title | plus: 0
+        if v.available and ml > 3
+          if ml == pref
+            assign best = 9999
+            assign fv = v
+          elsif ml > best
+            assign best = ml
+            assign fv = v
+          endif
+        endif
+      endfor
+      if photo != blank and best != 9999
+        assign fv = blank
+      endif
+      if fv == blank
+        continue
+      endif
+      assign d = fp.description | replace: '</p>', '|~|' | replace: '</li>', '|~|' | replace: '<br', '|~|<br' | replace: '</h', '|~|</h' | strip_html
+      assign kop = ''
+      assign her = ''
+      assign bas = ''
+      if d contains 'Kopfnote:'
+        assign kop = d | split: 'Kopfnote:' | last | split: '|~|' | first | strip
+      endif
+      if d contains 'Herznote:'
+        assign her = d | split: 'Herznote:' | last | split: '|~|' | first | strip
+      endif
+      if d contains 'Basisnote:'
+        assign bas = d | split: 'Basisnote:' | last | split: '|~|' | first | strip
+      endif
+      assign eye = 'Kapitel ' | append: fls_rom[fls_n] | append: ' · ' | append: place
+      assign fls_n = fls_n | plus: 1
+      assign kind = 'Eau de Parfum'
+      if fp.title contains 'Extrait' or fv.title contains 'xtrait'
+        assign kind = 'Extrait de Parfum'
+      endif
+    endif
+    assign vp = vid | split: '|'
+    assign vbase = 'https://cdn.shopify.com/videos/c/vp/' | append: vp[0] | append: '/' | append: vp[0]
+    assign v_l = vbase | append: '.HD-1080p-' | append: vp[1] | append: 'Mbps-' | append: vp[4] | append: '.mp4'
+    assign v_m = vbase | append: '.HD-720p-' | append: vp[2] | append: 'Mbps-' | append: vp[4] | append: '.mp4'
+    assign v_s = vbase | append: '.SD-480p-' | append: vp[3] | append: 'Mbps-' | append: vp[4] | append: '.mp4'
+    assign poster = 'be-fl-story-' | append: sc | append: '-2026-11-12.jpg' | file_url
+  -%}
+  <section class="fls-ch{% if sc == 'library' %} fls-ch--intro{% endif %}" data-fls-ch aria-label="{% if sc == 'library' %}Fragrance Library{% else %}{{ name }}{% endif %}">
+    <div class="fls-pin">
+      <div class="fls-media">
+        <img src="{{ poster }}&width=1280" srcset="{{ poster }}&width=640 640w, {{ poster }}&width=1280 1280w, {{ poster }}&width=1920 1920w" sizes="100vw" width="1920" height="1080" alt="{{ alt }}" decoding="async"{% if fls_first %} loading="eager" fetchpriority="high"{% else %} loading="lazy"{% endif %}>
+        <video muted playsinline preload="none"{% if sc == 'library' %} data-once{% endif %} disablepictureinpicture aria-hidden="true" tabindex="-1" data-l="{{ v_l }}" data-m="{{ v_m }}" data-s="{{ v_s }}"></video>
+      </div>
+      <div class="fls-shade"></div>
+      {%- if sc == 'library' -%}
+        <div class="fls-cap">
+          <div class="fls-eye">Fragrance Library</div>
+          <h2 class="fls-h">Jeder Duft ist ein Buch.</h2>
+          <p>Schlag es auf. Vier Geschichten warten auf dich – und zu jeder gehört ein Duft.</p>
+          <span class="fls-cue" aria-hidden="true"><i></i>Scrollen</span>
+        </div>
+      {%- else -%}
+        <div class="fls-dim"></div>
+        <div class="fls-cap">
+          <div class="fls-eye">{{ eye }}</div>
+          <h2 class="fls-h">{{ name }}</h2>
+          <p>{{ line }}</p>
+        </div>
+        <div class="fls-prod">
+          <div class="fls-stage" data-fls-stage>
+            <span class="fls-floor" aria-hidden="true"></span>
+{%- if glb != blank -%}
+            <model-viewer data-src="https://cdn.shopify.com/3d/models/o/{{ glb }}" alt="Flakon {{ name }} in 3D – zum Drehen ziehen" camera-orbit="20deg 80deg auto" field-of-view="22deg" min-camera-orbit="auto 45deg auto" max-camera-orbit="auto 110deg auto" camera-controls disable-zoom disable-pan interaction-prompt="none" tone-mapping="neutral" environment-image="neutral" exposure="1.15" shadow-intensity="1" shadow-softness=".55" loading="eager"><div slot="hotspot-foot" data-fls-foot data-position="0m 0m 0m" data-normal="0m 1m 0m"></div></model-viewer>
+            {%- else -%}
+            <span class="fls-shadow" aria-hidden="true"></span>
+            <img class="fls-photo" data-fls-photo data-src="{{ photo | file_url }}" alt="Flakon {{ name }} {{ fv.title }}" width="307" height="693" decoding="async">
+            {%- endif -%}
+          </div>
+          <div class="fls-info">
+            <div class="fls-eye">Fragrance Library</div>
+            <h3 class="fls-name">{{ name }}</h3>
+            <p class="fls-sub">{{ kind }} · {{ fv.title | split: ' ml' | first }} ml</p>
+            <p class="fls-line">{{ line }}</p>
+            {%- if kop != '' or her != '' or bas != '' -%}
+            <dl class="fls-notes">
+              {%- if kop != '' -%}<div><dt>Kopfnote</dt><dd>{{ kop }}</dd></div>{%- endif -%}
+              {%- if her != '' -%}<div><dt>Herznote</dt><dd>{{ her }}</dd></div>{%- endif -%}
+              {%- if bas != '' -%}<div><dt>Basisnote</dt><dd>{{ bas }}</dd></div>{%- endif -%}
+            </dl>
+            {%- endif -%}
+            <div class="fls-price">{{ fv.price | money }}<small class="fls-legal">inkl. MwSt., zzgl. Versand{% if fv.unit_price_measurement %} · {% if fv.unit_price_measurement.reference_unit == 'l' and fv.unit_price_measurement.reference_value == 1 %}{{ fv.unit_price | divided_by: 10 | money }}/100 ml{% else %}{{ fv.unit_price | money }}/{% if fv.unit_price_measurement.reference_value != 1 %}{{ fv.unit_price_measurement.reference_value }} {% endif %}{{ fv.unit_price_measurement.reference_unit }}{% endif %}{% endif %}</small><small class="fls-ship">Lieferzeit 1–3 Werktage · Kostenloser Versand innerhalb Deutschlands</small></div>
+            <div class="fls-btns">
+              <add-to-cart class="cart-drawer" data-variant-id="{{ fv.id }}"><button type="submit" name="add" class="fls-btn fls-btn--gold" aria-label="{{ name }} {{ fv.title }} in den Warenkorb">In den Warenkorb</button></add-to-cart>
+              <a class="fls-btn" href="{{ fp.url }}?variant={{ fv.id }}" aria-label="Zum Duft {{ name }}">Zum Duft</a>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+  {%- assign fls_first = false -%}
+{%- endfor -%}
+  <div class="fls-end">
+    <div class="fls-eye">Die Bibliothek</div>
+    <h2 class="fls-h">Wähle dein Buch</h2>
+    <p>Alle Düfte der Fragrance Library stehen im Regal. Zieh eines heraus.</p>
+    <i aria-hidden="true"></i>
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.currentScript.previousElementSibling;
+  if (!root || !root.hasAttribute('data-fls') || root.flsOn) return; root.flsOn = 1;
+  var still = matchMedia('(prefers-reduced-motion:reduce)').matches, SPEED = 360 / 28, run = 0, n = 0;
+  var chs = [].map.call(root.querySelectorAll('[data-fls-ch]'), function (el) {
+    var o = { el: el, pin: el.querySelector('.fls-pin'), v: el.querySelector('video'), mv: el.querySelector('model-viewer'), ph: el.querySelector('[data-fls-photo]'), stage: el.querySelector('[data-fls-stage]'), foot: el.querySelector('[data-fls-foot]'), vis: 0, b: 0, t0: 0, base: 20, touched: 0 };
+    var v = o.v;
+    if (v && !still) {
+      // weicher Loop: kurz vor dem Ende auf das Standbild (= erstes Bild) zurückblenden, dann von vorn
+      v.addEventListener('playing', function () { v.classList.add('on'); });
+      // Intro (data-once): läuft einmal und bleibt auf dem offenen Buch stehen; beim Wiederkommen von vorn
+      o.once = v.hasAttribute('data-once');
+      v.addEventListener('timeupdate', function () { if (!o.once && v.duration && v.duration - v.currentTime < .75) v.classList.remove('on'); });
+      v.addEventListener('ended', function () { if (o.once) { o.done = 1; return; } v.currentTime = 0; if (o.vis) v.play().catch(function () {}); });
+    }
+    if (o.mv) {
+      o.mv.addEventListener('load', function () {
+        var c = o.mv.getBoundingBoxCenter(), d = o.mv.getDimensions();
+        o.mv.updateHotspot({ name: 'hotspot-foot', position: c.x + 'm ' + (c.y - d.y / 2) + 'm ' + c.z + 'm' });
+        o.ld = 1; o.tries = 0;
+      });
+      o.mv.addEventListener('camera-change', function (e) { if (e.detail && e.detail.source === 'user-interaction') o.touched = performance.now(); });
+    }
+    return o;
+  });
+  function src(v) {
+    var c = navigator.connection || {}, w = root.clientWidth * Math.min(devicePixelRatio || 1, 2);
+    return (c.saveData || /2g|3g/.test(c.effectiveType || '')) ? v.dataset.s : w > 1500 ? v.dataset.l : v.dataset.m;
+  }
+  function near(o) {
+    if (o.nr) return; o.nr = 1;
+    if (o.v && !still) { o.v.src = src(o.v); }
+    if (o.ph) {
+      var set = function () { o.stage.classList.add('is-set'); };
+      o.ph.addEventListener('load', set); o.ph.src = o.ph.dataset.src; if (o.ph.complete && o.ph.naturalWidth) set();
+    }
+    if (o.mv) {
+      o.mv.src = o.mv.dataset.src;
+      if (!customElements.get('model-viewer') && !window.__flsMV) { window.__flsMV = 1; var s = document.createElement('script'); s.type = 'module'; s.src = 'https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js'; document.head.appendChild(s); }
+    }
+  }
+  // Boden (Lichtkante + Glanz) genau unter den Fuß des Flakons legen; erst danach wird der Flakon eingeblendet
+  function place(o) {
+    var f = o.foot.getBoundingClientRect(), s = o.stage.getBoundingClientRect();
+    if (!s.height || (!f.width && !f.height && !f.top)) return;
+    var gy = f.top + f.height / 2 - s.top;
+    if (gy < s.height * .3 || gy > s.height * 1.1) return;
+    o.stage.style.setProperty('--gy', gy.toFixed(1) + 'px'); o.stage.classList.add('is-set');
+  }
+  function tick(t) {
+    run = 0; var any = 0; n++;
+    chs.forEach(function (o) {
+      if (!o.vis) return; any = 1;
+      var r = o.el.getBoundingClientRect(), p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight)));
+      var b = o.stage && p > .4 ? 1 : 0;
+      if (b !== o.b) { o.b = b; o.el.classList.toggle('is-b', !!b); if (b) { o.t0 = t; o.touched = 0; } }
+      if (!o.mv || !o.ld) return;
+      if (!still && b) {
+        if (o.touched && t - o.touched < 5000) { /* Besucher dreht selbst */ }
+        else {
+          if (o.touched) { o.touched = 0; o.base = o.mv.getCameraOrbit().theta * 180 / Math.PI; o.t0 = t; }
+          o.mv.cameraOrbit = (o.base + SPEED * (t - o.t0) / 1000).toFixed(2) + 'deg 80deg auto';
+        }
+      }
+      if (n % 20 === 0 || o.tries++ < 40) place(o);
+    });
+    if (any) run = requestAnimationFrame(tick);
+  }
+  function go() { if (!run) run = requestAnimationFrame(tick); }
+  if (!('IntersectionObserver' in window)) { chs.forEach(function (o) { near(o); o.vis = 1; }); go(); return; }
+  var ioN = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { near(chs.filter(function (o) { return o.el === e.target; })[0]); ioN.unobserve(e.target); } }); }, { rootMargin: '120% 0px' });
+  var ioV = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      var o = chs.filter(function (x) { return x.pin === e.target; })[0]; o.vis = e.isIntersecting ? 1 : 0;
+      if (o.v && !still) { if (o.vis) { near(o); if (o.done) { o.done = 0; o.v.currentTime = 0; } o.v.play().catch(function () {}); } else o.v.pause(); }
+    });
+    go();
+  }, { threshold: .2 });
+  chs.forEach(function (o) { ioN.observe(o.el); ioV.observe(o.pin); });
+  addEventListener('resize', function () { chs.forEach(function (o) { o.tries = 0; }); go(); });
+})();
+</script>
