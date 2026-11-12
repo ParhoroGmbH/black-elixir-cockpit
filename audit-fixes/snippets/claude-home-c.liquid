@@ -98,7 +98,7 @@
             {{ vm | video_tag: loop: true, muted: true, controls: false, playsinline: true, preload: 'none', image_size: '720x' }}
             {%- endif -%}
             <button type="button" data-ch-sound aria-label="Ton an">🔈</button>
-            <a href="{{ vp.url }}" class="ch-glassD"><small>{{ vlab | upcase }}</small><span>{{ vp.title | truncate: 40 }}</span><b style="font-weight:600">{{ vp.price | money }}</b></a>
+            <a href="{{ vp.url }}" class="ch-glassD"><small>{{ vlab | upcase }}</small><span>{{ vp.title | truncate: 64 }}</span><b style="font-weight:600">{{ vp.price | money }}</b></a>
           </div>
     {%- endfor -%}
   {%- endcapture -%}
@@ -139,7 +139,7 @@
         <p class="ch-lead">Ab 59 € eine italienische Seife von Saponificio Aquaviva nach Wahl, ab 99 € zwei Seifen – die Duftprobe legen wir automatisch dazu. Ganz ohne Code.</p>
         <div class="ch-meter ch-glassL" style="margin-top:24px">
           <label for="ch-basket-{{ sec.id }}" style="display:flex;justify-content:space-between;font-size:13px;letter-spacing:.12em"><span>DEIN WARENKORB</span><b data-ch-bv>{{ cart.total_price | money }}</b></label>
-          <input id="ch-basket-{{ sec.id }}" type="range" min="0" max="140" step="1" value="{{ cart.total_price | divided_by: 100 | at_most: 140 }}" data-ch-basket>
+          <input id="ch-basket-{{ sec.id }}" type="range" min="0" max="140" step="1" value="{{ cart.total_price | divided_by: 100 | at_most: 140 }}" data-cents="{{ cart.total_price }}" data-real="{{ cart.total_price | money | strip_html | escape }}" data-ch-basket>
           <div class="ch-bar"><span data-ch-bar></span><i style="position:absolute;left:42%;top:-4px;width:2px;height:20px;background:var(--accL)"></i><i style="position:absolute;left:70.7%;top:-4px;width:2px;height:20px;background:var(--accL)"></i></div>
           <span data-ch-bm style="font-size:15px"></span>
         </div>
@@ -162,7 +162,7 @@
                 assign simg = snimg
               endif
             -%}
-            <a class="ch-soap ch-glassL ch-sheen{% if snimg %} ch-soap--w{% endif %}" href="{{ p.url }}">{%- if simg -%}<span class="cr-sim{% if snimg %} cr-sim--w{% endif %}">{{ simg | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title }}</span>{%- endif -%}<small>{{ p.title | remove: 'Saponificio Aquaviva ' | truncate: 30 }}</small></a>
+            <a class="ch-soap ch-glassL ch-sheen{% if snimg %} ch-soap--w{% endif %}" href="{{ p.url }}">{%- if simg -%}<span class="cr-sim{% if snimg %} cr-sim--w{% endif %}">{{ simg | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title }}</span>{%- endif -%}<small>{{ p.title | remove: 'Saponificio Aquaviva ' | remove: ' Face & Body Soap' | remove: ' Body Soap' | truncate: 40 }}</small></a>
           {%- endfor -%}
         </div>
       </div>
