@@ -1,0 +1,13 @@
+{%- comment -%} Landingpages (DUMO, Fragrance Library): legt Varianten per AJAX in den Warenkorb, bleibt auf der Seite und oeffnet den Warenkorb-Drawer des Themes (gleicher Weg wie <add-to-cart class="cart-drawer">). Knopf zeigt kurz "Hinzugefügt ✓"; seine Breite bleibt dabei fest. Ohne Drawer: Weiterleitung zum Warenkorb. Claude 12.11.2026 {%- endcomment -%}
+<script>
+window.beLandAdd=window.beLandAdd||function(ids,btn,fail){
+var items=[].concat(ids).filter(Boolean).map(function(i){return{id:Number(i),quantity:1}});if(!items.length||btn.disabled)return;
+var d=document.querySelector('cart-drawer'),secs=d&&d.getSectionsToRender?d.getSectionsToRender().map(function(s){return s.id}):[];
+var R=window.routes||{},lab=btn.innerHTML;btn.style.minWidth=btn.offsetWidth+'px';btn.disabled=true;
+fetch((R.cart_add_url||'/cart/add')+'.js',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({items:items,sections:secs,sections_url:location.pathname})})
+.then(function(r){return r.json().then(function(j){if(!r.ok||j.status===422)throw j;return j})})
+.then(function(j){btn.innerHTML='Hinzugefügt ✓';setTimeout(function(){btn.innerHTML=lab;btn.disabled=false},1800);if(fail)fail('');
+var ok=false;try{if(d&&d.renderContents&&j.sections){d.renderContents(j);if(!/open-after-adding/.test(d.className))d.open(btn);ok=true}}catch(e){}
+if(!ok)location.href=R.cart_url||'/cart'})
+.catch(function(e){btn.disabled=false;btn.innerHTML=lab;if(fail)fail((e&&e.description)||'Das hat nicht geklappt. Bitte versuche es erneut.')})};
+</script>
