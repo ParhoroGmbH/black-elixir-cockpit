@@ -30,6 +30,8 @@
 .fls-ch--intro .fls-cap>*,.fls-ch--intro .fls-shade{transition:opacity .9s ease}
 .fls-ch--intro.is-open .fls-cap>:not(.fls-cue){opacity:0}
 .fls-ch--intro.is-open .fls-shade{opacity:.35}
+/* Querformat mit Seitenleiste: Bild linksbündig, damit das ganze Buch neben der Leiste frei liegt (ohne Leiste bleibt es mittig) */
+.fls-ch--intro .fls-media img,.fls-ch--intro .fls-media video{object-position:min(0px,calc(50% + var(--fl-sbw,0px))) 50%}
 @media (max-aspect-ratio:1/1){.fls-ch--intro .fls-media img,.fls-ch--intro .fls-media video{object-position:68% 50%}}
 .fls-prod{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:clamp(16px,4cqw,64px);padding:clamp(40px,8vh,96px) clamp(16px,6cqw,96px) clamp(64px,10vh,110px) calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px));background:var(--paper)}
 .fls-stage{position:relative;container-type:size;height:min(72vh,640px);min-height:0}
