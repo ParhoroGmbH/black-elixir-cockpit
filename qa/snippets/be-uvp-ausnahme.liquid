@@ -1,0 +1,16 @@
+{%- comment -%}
+  12.11.2026 (Owner): "Fragrance Library" ist KEINE Ausnahme mehr -> dort kein UVP, kein Streichpreis, keine SALE-Badge (Daten unveraendert).
+  BE UVP-Ausnahmen 03.11.2026 (CEO-Freigabe): Marken, bei denen der Streichpreis (compare_at_price > price) inkl. UVP-Label und Badge SICHTBAR bleibt.
+  Alle anderen Produkte: kein Streichpreis, kein SALE-/Unter-UVP-Badge. compare_at-Daten bleiben unveraendert.
+  Liste bearbeiten: Hersteller (Shopify "Vendor") klein geschrieben, durch | getrennt. Vergleich: vendor | downcase | strip.
+  Exakte Vendor-Strings in Shopify: "Collection Prestige", "NUHI PARIS" (= "Nuit Paris"), "Signature Royale", "Lattafa".
+  Zusaetzliche Schreibweisen (aktuell ohne Produkte, harmlos): collection prestige absoluta, nuhi, nuit paris, latafa.
+  Aufruf: {%- capture x -%}{%- render 'be-uvp-ausnahme', vendor: product.vendor -%}{%- endcapture -%} -> x == 'ja'
+{%- endcomment -%}
+{%- liquid
+  assign be_uvp_marken = 'collection prestige|collection prestige absoluta|nuhi paris|nuhi|nuit paris|signature royale|lattafa|latafa' | split: '|'
+  assign be_v = vendor | downcase | strip
+  if be_v != blank and be_uvp_marken contains be_v
+    echo 'ja'
+  endif
+-%}
