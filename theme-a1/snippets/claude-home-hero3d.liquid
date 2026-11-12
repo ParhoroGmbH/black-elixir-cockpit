@@ -9,7 +9,7 @@
   .ch .ch-hero.ch-h3{height:clamp(560px,calc(100vh - var(--ch-top,32px)),1200px)}
   .ch .h3-slide{padding-block:calc(var(--bx-hh,0px) + clamp(4px,1.5vh,20px)) 88px;padding-inline:calc(var(--bx-sbw,0px) + clamp(20px,5vw,80px)) clamp(20px,5vw,80px);gap:clamp(20px,3vw,40px)}
   .ch .h3-bgl::after{background:linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.5) calc(var(--bx-sbw,0px) * .7),rgba(0,0,0,.84) calc(var(--bx-sbw,0px) + 5%),rgba(0,0,0,.62) 38%,rgba(0,0,0,.12) 72%,rgba(0,0,0,.25))}
-  html[dir="rtl"] .ch .h3-bgl::after{background:linear-gradient(270deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.5) calc(var(--bx-sbw,0px) * .7),rgba(0,0,0,.84) calc(var(--bx-sbw,0px) + 5%),rgba(0,0,0,.62) 38%,rgba(0,0,0,.12) 72%,rgba(0,0,0,.25))}
+  html[dir="rtl"] .ch .h3-bgl{transform:translate3d(var(--px,0px),0,0) scale(-1.04,1.04)}/* Arabisch: Hintergrund samt Abdunklung gespiegelt – Boden/Tisch liegt unter dem Produkt (links), Text rechts */
   .ch .h3-text{flex:1 0 380px;gap:clamp(8px,1.9vh,18px)}
   .ch .h3-stage{min-width:0;height:min(72vh,620px,100%)}
   .ch .h3-title{font-size:clamp(30px,min(4.2vw,6vh),64px)}
