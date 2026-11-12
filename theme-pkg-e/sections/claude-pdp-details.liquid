@@ -198,11 +198,21 @@
     <div class="cpd-video">
       <h2 class="cpd-h">{%- render 'claude-pdp-t', k: 'video' -%}</h2>
       <div class="cpd-video__frame" style="--ar:{{ cpd_video.aspect_ratio | default: cpd_xvideo.aspect_ratio | default: 1.777 }}">
-        {%- if cpd_video -%}
-          {{ cpd_video | video_tag: controls: true, preload: 'none', playsinline: true, image_size: '1200x' }}
-        {%- else -%}
-          {{ cpd_xvideo | external_video_tag: loading: 'lazy' }}
-        {%- endif -%}
+        {%- comment -%} Video wird erst nach Klick eingesetzt: kein Autoplay, kein Vorladen {%- endcomment -%}
+        {%- assign cpd_vm = cpd_video | default: cpd_xvideo -%}
+        <button type="button" class="cpd-video__play" data-cpd-play aria-label="{% render 'claude-pdp-t', k: 'video' %}: {{ product.title | escape }}">
+          {%- if cpd_vm.preview_image -%}
+            <img src="{{ cpd_vm.preview_image | image_url: width: 900 }}" alt="" width="{{ cpd_vm.preview_image.width }}" height="{{ cpd_vm.preview_image.height }}" loading="lazy" decoding="async">
+          {%- endif -%}
+          <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6.5v11l9-5.5z"/></svg></span>
+        </button>
+        <template>
+          {%- if cpd_video -%}
+            {{ cpd_video | video_tag: controls: true, preload: 'metadata', playsinline: true, image_size: '900x' }}
+          {%- else -%}
+            {{ cpd_xvideo | external_video_tag }}
+          {%- endif -%}
+        </template>
       </div>
     </div>
   {%- endif -%}
@@ -293,6 +303,8 @@
     pills.forEach(function(p){p.addEventListener('click',function(){set(false);btn.focus({preventScroll:true})})});
     root.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.cpd-jump');if(!a)return;var t=document.getElementById(a.getAttribute('href').slice(1));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}});
   }
+  root.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-cpd-play]');if(!b)return;var fr=b.parentNode,tp=fr.querySelector('template');if(!tp)return;
+    fr.appendChild(tp.content.cloneNode(true));b.remove();var v=fr.querySelector('video');if(v){v.focus();var p=v.play();if(p&&p.catch)p.catch(function(){})}});
   /* 6) Akkordeon: nur eines offen (Fallback für Browser ohne <details name>) */
   root.addEventListener('toggle',function(e){var d=e.target;if(!d.open||!d.matches('.cpd-acc__item'))return;
     [].slice.call(root.querySelectorAll('.cpd-acc__item[open]')).forEach(function(o){if(o!==d)o.open=false})},true);
