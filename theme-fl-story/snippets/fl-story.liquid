@@ -63,6 +63,11 @@
 /* Seitenleiste über hellen Flächen: schwarze Schrift (stärker als html.fl-dark der Landing-Sektion) */
 html.fls-light.fl-dark .main-sidebar,html.fls-light.fl-dark .main-sidebar a,html.fls-light.fl-dark .main-sidebar span,html.fls-light.fl-dark .main-sidebar button,html.fls-light.fl-dark .main-sidebar p,html.fls-light.fl-dark .main-sidebar div{color:#111!important}
 html.fls-light.fl-dark .main-sidebar svg,html.fls-light.fl-dark .main-sidebar svg *{fill:#111!important;color:#111!important}
+/* schmalere Desktop-Breiten (Landing bis ca. 1366 px Fenster): Textspalte breiter, damit Name und beide Knöpfe in einer Zeile bleiben */
+@container fls (max-width:1300px){
+.fls-prod{grid-template-columns:minmax(0,.78fr) minmax(0,1fr);gap:28px;padding-right:40px;padding-left:calc(var(--fl-sbw,0px) + 40px)}
+.fls-name{font-size:clamp(2.1rem,4.4cqw,2.7rem)}
+}
 @container fls (max-width:860px){
 .fls-prod{grid-template-columns:minmax(0,1fr);align-content:center;gap:4px;padding:36px 16px 72px calc(var(--fl-sbw,0px) + 16px)}
 .fls-stage{height:clamp(250px,44vh,400px)}.fls-info{max-width:none}
