@@ -165,7 +165,7 @@
       o.box.style.setProperty('--gy', ((ty - b.top) / k).toFixed(1) + 'px');
       o.box.classList.add('is-set');
       // Badge („Ab 59 € geschenkt“) knapp über der Oberkante des Produkts
-      if (o.tag && o.top) { var tp = o.top.getBoundingClientRect(); if (tp.top) { o.tag.style.left = ((tp.left - b.left) / k).toFixed(1) + 'px'; o.tag.style.top = ((tp.top - b.top) / k - 20).toFixed(1) + 'px'; } }
+      if (o.tag && o.top) { var tp = o.top.getBoundingClientRect(); if (tp.top) { o.tag.style.left = ((tp.left - b.left) / k).toFixed(1) + 'px'; o.tag.style.top = ((tp.top - b.top - 22) / k).toFixed(1) + 'px'; } }
       if (o === cur) nav(o);
       return Math.abs(er);
     }
