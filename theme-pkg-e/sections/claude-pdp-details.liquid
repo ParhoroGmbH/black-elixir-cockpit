@@ -192,7 +192,7 @@
   {%- if cpd_video or cpd_xvideo -%}
     <div class="cpd-video">
       <h2 class="cpd-h">{%- render 'claude-pdp-t', k: 'video' -%}</h2>
-      <div class="cpd-video__frame">
+      <div class="cpd-video__frame" style="--ar:{{ cpd_video.aspect_ratio | default: cpd_xvideo.aspect_ratio | default: 1.777 }}">
         {%- if cpd_video -%}
           {{ cpd_video | video_tag: controls: true, preload: 'none', playsinline: true, image_size: '1200x' }}
         {%- else -%}
