@@ -238,7 +238,7 @@
     size();
     if ('ResizeObserver' in window) new ResizeObserver(function () { var r = host.getBoundingClientRect(); if (Math.ceil(r.width / S) !== W || Math.ceil(r.height / S) !== H) size(); }).observe(host);
     new IntersectionObserver(function (en) {
-      vis = en[0].isIntersecting; host.classList.toggle('bx-off', !vis);
+      vis = en[0].isIntersecting; (host.closest('.shopify-section-footer') || host).classList.toggle('bx-off', !vis);
       clearInterval(timer);
       if (vis) timer = setInterval(function () { drop(Math.random() * W, Math.random() * H, 3, 16); }, coarse ? 1300 : 2600);
     }).observe(host);
