@@ -137,7 +137,9 @@ if(per===k.per)return;k.per=per;
 for(var i=0;i<n;i+=per){var sh=mk('div','sh flb-rueck'),row=mk('div','row'),br=mk('div','brett');br.appendChild(mk('span','flb-brett'));br.appendChild(mk('span','flb-kante'));k.books.slice(i,i+per).forEach(function(b){row.appendChild(b)});sh.appendChild(row);sh.appendChild(br);k.body.insertBefore(sh,k.body.lastChild)}
 })}
 function fit(){lay();document.querySelectorAll('.fl-land .book .n').forEach(function(n){n.style.fontSize='';var fs=parseFloat(getComputedStyle(n).fontSize);var mn=innerWidth<=700?12:9;while((n.scrollHeight>n.clientHeight+1||n.scrollWidth>n.clientWidth+1)&&fs>mn){fs-=.5;n.style.fontSize=fs+'px'}})}
-fit();addEventListener('resize',function(){clearTimeout(fit.t);fit.t=setTimeout(fit,120)});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+/* neu verteilen, sobald sich die Breite des Regals ändert (Fenster, Seitenleiste) */
+function later(){clearTimeout(fit.t);fit.t=setTimeout(fit,120)}
+fit();if('ResizeObserver' in window){var lw=0;new ResizeObserver(function(){var w=c.clientWidth;if(w!==lw){lw=w;later()}}).observe(c)}else addEventListener('resize',later);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
 F.wood(c);
 })();
 </script>

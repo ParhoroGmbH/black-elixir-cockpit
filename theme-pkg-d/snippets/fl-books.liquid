@@ -17,7 +17,7 @@
 .flb-wood .flb-kante,.flb-wood.flb-kante{background:linear-gradient(180deg,rgba(255,214,160,.34) 0,rgba(255,214,160,.08) 3px,rgba(0,0,0,0) 9px,rgba(0,0,0,0) 62%,rgba(0,0,0,.62)),url({{ 'be-fl-holz2-kante.jpg' | file_url }}) center/100% 100% no-repeat,#2e190d}
 .flb-wood .flb-brett,.flb-wood.flb-brett{background:linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,0) 70%,rgba(255,226,180,.22)),url({{ 'be-fl-holz2-brett.jpg' | file_url }}) center/100% 100% no-repeat,#4a2c18}
 .flb-wood .flb-pfosten,.flb-wood.flb-pfosten{background:linear-gradient(90deg,rgba(0,0,0,.6),rgba(0,0,0,0) 30%,rgba(255,206,150,.12) 56%,rgba(0,0,0,.55)),url({{ 'be-fl-holz2-pfosten.jpg' | file_url }}) center/100% 100% no-repeat,#28150b}
-.flb-wood .flb-rueck,.flb-wood.flb-rueck{background:linear-gradient(180deg,rgba(0,0,0,.82),rgba(0,0,0,.3) 26%,rgba(0,0,0,.2) 60%,rgba(0,0,0,.5)),url({{ 'be-fl-holz2-rueck.jpg' | file_url }}) center/cover no-repeat,#170e08}
+.flb-wood .flb-rueck,.flb-wood.flb-rueck{background:linear-gradient(180deg,rgba(0,0,0,.78),rgba(0,0,0,.22) 26%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.42)),url({{ 'be-fl-holz2-rueck.jpg' | file_url }}) center/cover no-repeat,#170e08}
 /* Staub */
 .flb-dust{position:fixed;inset:0;z-index:60;pointer-events:none;overflow:hidden}
 .flb-dust i{position:absolute;display:block;border-radius:50%;background:rgba(236,220,188,.85);opacity:0;animation:flbSpeck var(--d,900ms) ease-out forwards;will-change:transform,opacity}
@@ -187,7 +187,7 @@ function open(o,from){
   document.body.appendChild(ov);cur=c;document.addEventListener('keydown',c.key,true);
   bg.addEventListener('click',close);x.addEventListener('click',close);
   ov.addEventListener('click',function(e){if(e.target===ov)close()});
-  void bk.offsetWidth;requestAnimationFrame(function(){ov.classList.add('is-on');try{x.focus({preventScroll:true})}catch(e){}});
+  void bk.offsetWidth;setTimeout(function(){ov.classList.add('is-on');try{x.focus({preventScroll:true})}catch(e){}},30);
 }
 return {T:T,dust:dust,bottle:bottle,open:open,close:close,money:money,gp:gp,wood:wood,key:key};
 })();
