@@ -100,7 +100,8 @@ function nm(p){var t=p.t.replace(/^\s*Fragrance Library\s*/i,'').replace(/\s*(ea
 /* zwei Schränke: Extrait de Parfum (50 und 100 ml zusammen, jedes Buch einmal) und Eau de Parfum. Die Größe wird im aufgeschlagenen Buch gewählt. */
 var Cab=[[X,[]],[E,[]]];
 D.forEach(function(p){
-var ext=/extrait/i.test(p.t);var vs=p.v.filter(function(v){return v.a}).map(function(v){return{ml:parseInt(v.t,10),ext:ext||/extrait/i.test(v.t),p:v.p,c:v.c,i:v.i,up:v.up,ur:v.ur,uu:v.uu}});
+/* Extrait erkennen – auch in übersetzten Variantentiteln (z. B. "100 ml PERFUME EXTRACT") */
+var XR=/extrait|extract|estratto|ekstrakt|extracto|مستخلص|خلاصة/i,ext=XR.test(p.t);var vs=p.v.filter(function(v){return v.a}).map(function(v){return{ml:parseInt(v.t,10),ext:ext||XR.test(v.t),p:v.p,c:v.c,i:v.i,up:v.up,ur:v.ur,uu:v.uu}});
 if(!vs.length)return;
 var m=/placeholder/i.test(p.m||'')?'':p.m;
 function cn(s){s=String(s||'').split(/(?:Kopf|Herz|Basis|Duft)noten?\s*:/i)[0].trim();return s.length>160?'':s}var pn=p.n.map(cn);
