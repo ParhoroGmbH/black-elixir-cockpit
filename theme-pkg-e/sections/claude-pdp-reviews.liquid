@@ -1,0 +1,26 @@
+{%- comment -%}
+  Claude Paket E 12.11.2026 – Produktseite: Überschrift für den Judge.me-Bewertungsbereich (steht direkt VOR der Apps-Sektion
+  mit dem Judge.me-Widget). Bewertungen selbst kommen ausschließlich aus dem Judge.me-Widget (nur CSS-Overrides, siehe claude-pdp-style).
+  Ohne Bewertungen: ruhige Einladung statt leerer Fläche.
+{%- endcomment -%}
+{%- liquid
+  assign cpr_n = product.metafields.reviews.rating_count.value | default: 0 | plus: 0
+-%}
+<div class="cpd cpd-rev page-width page-width--{{ settings.max_page_width }}" id="cpd-reviews">
+  <p class="cpd-eyebrow">{%- render 'claude-pdp-t', k: 'rev_e' -%}</p>
+  <h2 class="cpd-h">{%- render 'claude-pdp-t', k: 'rev_h' -%}</h2>
+  {%- if cpr_n == 0 -%}
+    <p class="cpd-rev__empty">{%- render 'claude-pdp-t', k: 'rev_empty' -%}</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Claude PDP Bewertungen",
+  "tag": "section",
+  "class": "section-claude-pdp-reviews",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [],
+  "presets": [ { "name": "Claude PDP Bewertungen" } ]
+}
+{% endschema %}

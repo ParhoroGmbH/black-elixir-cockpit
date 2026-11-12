@@ -1,0 +1,676 @@
+{%- comment -%}
+  Claude Paket E 12.11.2026 – Produktseite: Inline-Uebersetzungen (keine Aenderung an locales/*.json).
+  Aufruf: {%- render 'claude-pdp-t', k: 'more' -%}  ·  Platzhalter [[ship]] [[refund]] [[contact]] werden hier ersetzt, [[v]] vom Aufrufer.
+  Generiert aus scratchpad/E/gen_t.py – Texte dort pflegen.
+{%- endcomment -%}
+{%- liquid
+  assign cpl = request.locale.iso_code | slice: 0, 2
+  assign cpr = routes.root_url | append: '/' | replace: '//', '/'
+  assign cps = ''
+  case k
+    when 'scent'
+      case cpl
+        when 'de'
+          assign cps = "Der Duft"
+        when 'fr'
+          assign cps = "Le parfum"
+        when 'it'
+          assign cps = "La fragranza"
+        when 'da'
+          assign cps = "Duften"
+        when 'ar'
+          assign cps = "العطر"
+        else
+          assign cps = "The fragrance"
+      endcase
+    when 'desc'
+      case cpl
+        when 'de'
+          assign cps = "Beschreibung"
+        when 'fr'
+          assign cps = "Description"
+        when 'it'
+          assign cps = "Descrizione"
+        when 'da'
+          assign cps = "Beskrivelse"
+        when 'ar'
+          assign cps = "الوصف"
+        else
+          assign cps = "Description"
+      endcase
+    when 'more'
+      case cpl
+        when 'de'
+          assign cps = "Mehr lesen"
+        when 'fr'
+          assign cps = "Lire la suite"
+        when 'it'
+          assign cps = "Leggi di più"
+        when 'da'
+          assign cps = "Læs mere"
+        when 'ar'
+          assign cps = "اقرأ المزيد"
+        else
+          assign cps = "Read more"
+      endcase
+    when 'less'
+      case cpl
+        when 'de'
+          assign cps = "Weniger anzeigen"
+        when 'fr'
+          assign cps = "Afficher moins"
+        when 'it'
+          assign cps = "Mostra meno"
+        when 'da'
+          assign cps = "Vis mindre"
+        when 'ar'
+          assign cps = "عرض أقل"
+        else
+          assign cps = "Show less"
+      endcase
+    when 'notes'
+      case cpl
+        when 'de'
+          assign cps = "Duftnoten"
+        when 'fr'
+          assign cps = "Notes olfactives"
+        when 'it'
+          assign cps = "Note olfattive"
+        when 'da'
+          assign cps = "Duftnoter"
+        when 'ar'
+          assign cps = "نفحات العطر"
+        else
+          assign cps = "Fragrance notes"
+      endcase
+    when 'top'
+      case cpl
+        when 'de'
+          assign cps = "Kopfnote"
+        when 'fr'
+          assign cps = "Note de tête"
+        when 'it'
+          assign cps = "Nota di testa"
+        when 'da'
+          assign cps = "Topnote"
+        when 'ar'
+          assign cps = "المقدمة"
+        else
+          assign cps = "Top note"
+      endcase
+    when 'heart'
+      case cpl
+        when 'de'
+          assign cps = "Herznote"
+        when 'fr'
+          assign cps = "Note de cœur"
+        when 'it'
+          assign cps = "Nota di cuore"
+        when 'da'
+          assign cps = "Hjertenote"
+        when 'ar'
+          assign cps = "القلب"
+        else
+          assign cps = "Heart note"
+      endcase
+    when 'base'
+      case cpl
+        when 'de'
+          assign cps = "Basisnote"
+        when 'fr'
+          assign cps = "Note de fond"
+        when 'it'
+          assign cps = "Nota di fondo"
+        when 'da'
+          assign cps = "Basenote"
+        when 'ar'
+          assign cps = "القاعدة"
+        else
+          assign cps = "Base note"
+      endcase
+    when 'acc_use'
+      case cpl
+        when 'de'
+          assign cps = "Anwendung & Inhaltsstoffe"
+        when 'fr'
+          assign cps = "Utilisation & ingrédients"
+        when 'it'
+          assign cps = "Utilizzo e ingredienti"
+        when 'da'
+          assign cps = "Anvendelse & ingredienser"
+        when 'ar'
+          assign cps = "طريقة الاستخدام والمكوّنات"
+        else
+          assign cps = "Application & ingredients"
+      endcase
+    when 'acc_maker'
+      case cpl
+        when 'de'
+          assign cps = "Hersteller & Sicherheit"
+        when 'fr'
+          assign cps = "Fabricant & sécurité"
+        when 'it'
+          assign cps = "Produttore e sicurezza"
+        when 'da'
+          assign cps = "Producent & sikkerhed"
+        when 'ar'
+          assign cps = "الشركة المصنّعة والسلامة"
+        else
+          assign cps = "Manufacturer & safety"
+      endcase
+    when 'acc_ship'
+      case cpl
+        when 'de'
+          assign cps = "Versand & Lieferung"
+        when 'fr'
+          assign cps = "Expédition & livraison"
+        when 'it'
+          assign cps = "Spedizione e consegna"
+        when 'da'
+          assign cps = "Forsendelse & levering"
+        when 'ar'
+          assign cps = "الشحن والتوصيل"
+        else
+          assign cps = "Shipping & delivery"
+      endcase
+    when 'ship_body'
+      case cpl
+        when 'de'
+          assign cps = "<p>Lieferzeit: 1–3 Werktage innerhalb Deutschlands. Bei Lieferungen ins Ausland in der Regel 5–9 Werktage.</p><p>Innerhalb Deutschlands berechnen wir keine Versandkosten. Bei Lieferungen ins Ausland richten sich die Versandkosten nach dem Lieferland und werden im Bestellprozess angezeigt.</p><p><a href='[[ship]]'>Zahlung und Versand</a></p>"
+        when 'fr'
+          assign cps = "<p>Délai de livraison : 1 à 3 jours ouvrés en Allemagne. Pour les livraisons à l’étranger, en général 5 à 9 jours ouvrés.</p><p>Nous ne facturons pas de frais de port en Allemagne. Pour les livraisons à l’étranger, les frais de port dépendent du pays de destination et sont affichés pendant la commande.</p><p><a href='[[ship]]'>Paiement et livraison</a></p>"
+        when 'it'
+          assign cps = "<p>Tempi di consegna: 1–3 giorni lavorativi in Germania. Per le consegne all’estero di norma 5–9 giorni lavorativi.</p><p>In Germania non addebitiamo spese di spedizione. Per le consegne all’estero le spese di spedizione dipendono dal paese di destinazione e vengono mostrate durante l’ordine.</p><p><a href='[[ship]]'>Pagamento e spedizione</a></p>"
+        when 'da'
+          assign cps = "<p>Leveringstid: 1–3 hverdage inden for Tyskland. Ved levering til udlandet som regel 5–9 hverdage.</p><p>Vi opkræver ingen fragt inden for Tyskland. Ved levering til udlandet afhænger fragten af leveringslandet og vises under bestillingen.</p><p><a href='[[ship]]'>Betaling og forsendelse</a></p>"
+        when 'ar'
+          assign cps = "<p>مدة التوصيل: من 1 إلى 3 أيام عمل داخل ألمانيا. للشحنات إلى خارج ألمانيا عادةً من 5 إلى 9 أيام عمل.</p><p>لا نحتسب تكاليف شحن داخل ألمانيا. للشحنات إلى خارج ألمانيا تعتمد تكاليف الشحن على بلد التسليم وتظهر أثناء إتمام الطلب.</p><p><a href='[[ship]]'>الدفع والشحن</a></p>"
+        else
+          assign cps = "<p>Delivery time: 1–3 working days within Germany. Deliveries abroad usually take 5–9 working days.</p><p>We do not charge shipping costs within Germany. For deliveries abroad, shipping costs depend on the destination country and are shown during checkout.</p><p><a href='[[ship]]'>Payment and shipping</a></p>"
+      endcase
+    when 't_delivery'
+      case cpl
+        when 'de'
+          assign cps = "Lieferzeit 1–3 Werktage in Deutschland"
+        when 'fr'
+          assign cps = "Livraison en 1 à 3 jours ouvrés en Allemagne"
+        when 'it'
+          assign cps = "Consegna in 1–3 giorni lavorativi in Germania"
+        when 'da'
+          assign cps = "Levering på 1–3 hverdage i Tyskland"
+        when 'ar'
+          assign cps = "التوصيل خلال 1–3 أيام عمل داخل ألمانيا"
+        else
+          assign cps = "Delivery in 1–3 working days within Germany"
+      endcase
+    when 't_ship'
+      case cpl
+        when 'de'
+          assign cps = "Kostenloser Versand in Deutschland"
+        when 'fr'
+          assign cps = "Livraison gratuite en Allemagne"
+        when 'it'
+          assign cps = "Spedizione gratuita in Germania"
+        when 'da'
+          assign cps = "Gratis fragt i Tyskland"
+        when 'ar'
+          assign cps = "شحن مجاني داخل ألمانيا"
+        else
+          assign cps = "Free shipping within Germany"
+      endcase
+    when 't_return'
+      case cpl
+        when 'de'
+          assign cps = "14 Tage Widerrufsrecht"
+        when 'fr'
+          assign cps = "Droit de rétractation de 14 jours"
+        when 'it'
+          assign cps = "Diritto di recesso di 14 giorni"
+        when 'da'
+          assign cps = "14 dages fortrydelsesret"
+        when 'ar'
+          assign cps = "حق التراجع خلال 14 يومًا"
+        else
+          assign cps = "14-day right of withdrawal"
+      endcase
+    when 't_abroad'
+      case cpl
+        when 'de'
+          assign cps = "Ausland: in der Regel 5–9 Werktage · Versandkosten im Bestellprozess"
+        when 'fr'
+          assign cps = "Étranger : en général 5 à 9 jours ouvrés · frais de port affichés pendant la commande"
+        when 'it'
+          assign cps = "Estero: di norma 5–9 giorni lavorativi · spese di spedizione mostrate durante l’ordine"
+        when 'da'
+          assign cps = "Udlandet: som regel 5–9 hverdage · fragt vises under bestillingen"
+        when 'ar'
+          assign cps = "خارج ألمانيا: عادةً 5–9 أيام عمل · تكاليف الشحن تظهر أثناء إتمام الطلب"
+        else
+          assign cps = "Abroad: usually 5–9 working days · shipping costs shown at checkout"
+      endcase
+    when 'rev_e'
+      case cpl
+        when 'de'
+          assign cps = "Bewertungen"
+        when 'fr'
+          assign cps = "Avis"
+        when 'it'
+          assign cps = "Recensioni"
+        when 'da'
+          assign cps = "Anmeldelser"
+        when 'ar'
+          assign cps = "التقييمات"
+        else
+          assign cps = "Reviews"
+      endcase
+    when 'rev_h'
+      case cpl
+        when 'de'
+          assign cps = "Das sagen unsere Kundinnen und Kunden"
+        when 'fr'
+          assign cps = "Ce que disent nos clientes et clients"
+        when 'it'
+          assign cps = "Cosa dicono le nostre clienti e i nostri clienti"
+        when 'da'
+          assign cps = "Det siger vores kunder"
+        when 'ar'
+          assign cps = "ماذا يقول عملاؤنا"
+        else
+          assign cps = "What our customers say"
+      endcase
+    when 'rev_empty'
+      case cpl
+        when 'de'
+          assign cps = "Für diesen Artikel gibt es noch keine Bewertung. Wenn du ihn schon kennst, freuen wir uns über deine Erfahrung."
+        when 'fr'
+          assign cps = "Cet article n’a pas encore d’avis. Si tu le connais déjà, ton expérience nous intéresse."
+        when 'it'
+          assign cps = "Questo articolo non ha ancora recensioni. Se lo conosci già, saremo felici di leggere la tua esperienza."
+        when 'da'
+          assign cps = "Der er endnu ingen anmeldelser af denne vare. Hvis du allerede kender den, vil vi gerne høre om din oplevelse."
+        when 'ar'
+          assign cps = "لا توجد تقييمات لهذا المنتج بعد. إذا كنت تعرفه، يسعدنا أن تشاركنا تجربتك."
+        else
+          assign cps = "There are no reviews for this item yet. If you already know it, we would love to hear about your experience."
+      endcase
+    when 'rev_write'
+      case cpl
+        when 'de'
+          assign cps = "Bewertung schreiben"
+        when 'fr'
+          assign cps = "Écrire un avis"
+        when 'it'
+          assign cps = "Scrivi una recensione"
+        when 'da'
+          assign cps = "Skriv en anmeldelse"
+        when 'ar'
+          assign cps = "اكتب تقييمًا"
+        else
+          assign cps = "Write a review"
+      endcase
+    when 'faq_h'
+      case cpl
+        when 'de'
+          assign cps = "Häufige Fragen"
+        when 'fr'
+          assign cps = "Questions fréquentes"
+        when 'it'
+          assign cps = "Domande frequenti"
+        when 'da'
+          assign cps = "Ofte stillede spørgsmål"
+        when 'ar'
+          assign cps = "الأسئلة الشائعة"
+        else
+          assign cps = "Frequently asked questions"
+      endcase
+    when 'faq_sub'
+      case cpl
+        when 'de'
+          assign cps = "Bestellung & Versand"
+        when 'fr'
+          assign cps = "Commande & livraison"
+        when 'it'
+          assign cps = "Ordine e spedizione"
+        when 'da'
+          assign cps = "Bestilling & levering"
+        when 'ar'
+          assign cps = "الطلب والشحن"
+        else
+          assign cps = "Ordering & shipping"
+      endcase
+    when 'q_time'
+      case cpl
+        when 'de'
+          assign cps = "Wie lange dauert die Lieferung?"
+        when 'fr'
+          assign cps = "Quel est le délai de livraison ?"
+        when 'it'
+          assign cps = "Quanto tempo richiede la consegna?"
+        when 'da'
+          assign cps = "Hvor lang er leveringstiden?"
+        when 'ar'
+          assign cps = "كم تستغرق مدة التوصيل؟"
+        else
+          assign cps = "How long does delivery take?"
+      endcase
+    when 'a_time'
+      case cpl
+        when 'de'
+          assign cps = "<p>Innerhalb Deutschlands liefern wir in 1–3 Werktagen. Bei Lieferungen ins Ausland beträgt die Lieferzeit in der Regel 5–9 Werktage. An Sonn- und Feiertagen erfolgt keine Zustellung.</p>"
+        when 'fr'
+          assign cps = "<p>En Allemagne, nous livrons en 1 à 3 jours ouvrés. Pour l’étranger, le délai est en général de 5 à 9 jours ouvrés. Aucune livraison n’a lieu les dimanches et jours fériés.</p>"
+        when 'it'
+          assign cps = "<p>In Germania consegniamo in 1–3 giorni lavorativi. Per l’estero i tempi sono di norma di 5–9 giorni lavorativi. La domenica e nei giorni festivi non vengono effettuate consegne.</p>"
+        when 'da'
+          assign cps = "<p>Inden for Tyskland leverer vi på 1–3 hverdage. Ved levering til udlandet er leveringstiden som regel 5–9 hverdage. Der leveres ikke på søn- og helligdage.</p>"
+        when 'ar'
+          assign cps = "<p>داخل ألمانيا نوصّل خلال 1–3 أيام عمل. للشحنات إلى خارج ألمانيا تكون مدة التوصيل عادةً 5–9 أيام عمل. لا يتم التوصيل أيام الأحد والعطل الرسمية.</p>"
+        else
+          assign cps = "<p>Within Germany we deliver in 1–3 working days. Deliveries abroad usually take 5–9 working days. There is no delivery on Sundays and public holidays.</p>"
+      endcase
+    when 'q_cost'
+      case cpl
+        when 'de'
+          assign cps = "Was kostet der Versand?"
+        when 'fr'
+          assign cps = "Combien coûte la livraison ?"
+        when 'it'
+          assign cps = "Quanto costa la spedizione?"
+        when 'da'
+          assign cps = "Hvad koster fragten?"
+        when 'ar'
+          assign cps = "كم تبلغ تكلفة الشحن؟"
+        else
+          assign cps = "How much does shipping cost?"
+      endcase
+    when 'a_cost'
+      case cpl
+        when 'de'
+          assign cps = "<p>Innerhalb Deutschlands berechnen wir keine Versandkosten. Bei Lieferungen ins Ausland richten sich die Versandkosten nach dem Lieferland und werden im Bestellprozess angezeigt. Alle Details findest du unter <a href='[[ship]]'>Zahlung und Versand</a>.</p>"
+        when 'fr'
+          assign cps = "<p>Nous ne facturons pas de frais de port en Allemagne. Pour l’étranger, les frais de port dépendent du pays de destination et sont affichés pendant la commande. Tous les détails se trouvent sous <a href='[[ship]]'>Paiement et livraison</a>.</p>"
+        when 'it'
+          assign cps = "<p>In Germania non addebitiamo spese di spedizione. Per l’estero le spese di spedizione dipendono dal paese di destinazione e vengono mostrate durante l’ordine. Trovi tutti i dettagli in <a href='[[ship]]'>Pagamento e spedizione</a>.</p>"
+        when 'da'
+          assign cps = "<p>Vi opkræver ingen fragt inden for Tyskland. Ved levering til udlandet afhænger fragten af leveringslandet og vises under bestillingen. Du finder alle detaljer under <a href='[[ship]]'>Betaling og forsendelse</a>.</p>"
+        when 'ar'
+          assign cps = "<p>لا نحتسب تكاليف شحن داخل ألمانيا. للشحنات إلى خارج ألمانيا تعتمد تكاليف الشحن على بلد التسليم وتظهر أثناء إتمام الطلب. تجد كل التفاصيل في <a href='[[ship]]'>الدفع والشحن</a>.</p>"
+        else
+          assign cps = "<p>We do not charge shipping costs within Germany. For deliveries abroad, shipping costs depend on the destination country and are shown during checkout. You can find all details under <a href='[[ship]]'>Payment and shipping</a>.</p>"
+      endcase
+    when 'q_return'
+      case cpl
+        when 'de'
+          assign cps = "Kann ich meine Bestellung zurückgeben?"
+        when 'fr'
+          assign cps = "Puis-je retourner ma commande ?"
+        when 'it'
+          assign cps = "Posso restituire il mio ordine?"
+        when 'da'
+          assign cps = "Kan jeg returnere min ordre?"
+        when 'ar'
+          assign cps = "هل يمكنني إرجاع طلبي؟"
+        else
+          assign cps = "Can I return my order?"
+      endcase
+    when 'a_return'
+      case cpl
+        when 'de'
+          assign cps = "<p>Du kannst den Vertrag innerhalb von 14 Tagen ab Erhalt der Ware widerrufen. Wir tragen die Kosten der Rücksendung. Parfums und Kosmetikprodukte, deren Siegel bzw. Folie entfernt wurde, sind vom Widerruf ausgeschlossen. Maßgeblich ist unsere <a href='[[refund]]'>Widerrufsbelehrung</a>.</p>"
+        when 'fr'
+          assign cps = "<p>Tu peux te rétracter du contrat dans un délai de 14 jours à compter de la réception de la marchandise. Nous prenons en charge les frais de retour. Les parfums et produits cosmétiques dont le scellé ou le film a été retiré sont exclus de la rétractation. Notre <a href='[[refund]]'>information sur le droit de rétractation</a> fait foi.</p>"
+        when 'it'
+          assign cps = "<p>Puoi recedere dal contratto entro 14 giorni dal ricevimento della merce. Le spese di restituzione sono a nostro carico. Profumi e prodotti cosmetici il cui sigillo o la cui pellicola sono stati rimossi sono esclusi dal recesso. Fa fede la nostra <a href='[[refund]]'>informativa sul diritto di recesso</a>.</p>"
+        when 'da'
+          assign cps = "<p>Du kan fortryde aftalen inden for 14 dage efter modtagelsen af varen. Vi betaler returfragten. Parfumer og kosmetikprodukter, hvor forseglingen eller folien er fjernet, er undtaget fra fortrydelsesretten. Vores <a href='[[refund]]'>oplysninger om fortrydelsesret</a> er gældende.</p>"
+        when 'ar'
+          assign cps = "<p>يمكنك التراجع عن العقد خلال 14 يومًا من استلام البضاعة. نتحمّل نحن تكاليف الإرجاع. العطور ومستحضرات التجميل التي أُزيل ختمها أو غلافها مستثناة من حق التراجع. المرجع هو <a href='[[refund]]'>سياسة التراجع</a> لدينا.</p>"
+        else
+          assign cps = "<p>You can withdraw from the contract within 14 days of receiving the goods. We bear the cost of the return shipment. Perfumes and cosmetic products whose seal or foil has been removed are excluded from withdrawal. Our <a href='[[refund]]'>cancellation policy</a> is authoritative.</p>"
+      endcase
+    when 'q_gift'
+      case cpl
+        when 'de'
+          assign cps = "Wie bekomme ich die Seife als Geschenk?"
+        when 'fr'
+          assign cps = "Comment recevoir le savon en cadeau ?"
+        when 'it'
+          assign cps = "Come ricevo il sapone in regalo?"
+        when 'da'
+          assign cps = "Hvordan får jeg sæben som gave?"
+        when 'ar'
+          assign cps = "كيف أحصل على الصابونة كهدية؟"
+        else
+          assign cps = "How do I get the soap as a gift?"
+      endcase
+    when 'a_gift_more'
+      case cpl
+        when 'de'
+          assign cps = "Deine Sorte wählst du direkt hier auf der Produktseite oder im Warenkorb."
+        when 'fr'
+          assign cps = "Tu choisis ta variété directement ici, sur la page produit, ou dans le panier."
+        when 'it'
+          assign cps = "Scegli la tua varietà direttamente qui nella pagina prodotto o nel carrello."
+        when 'da'
+          assign cps = "Du vælger din variant direkte her på produktsiden eller i kurven."
+        when 'ar'
+          assign cps = "تختار النوع الذي تريده هنا في صفحة المنتج أو في سلة التسوق."
+        else
+          assign cps = "You choose your variety right here on the product page or in the cart."
+      endcase
+    when 'q_pay'
+      case cpl
+        when 'de'
+          assign cps = "Welche Zahlungsarten gibt es?"
+        when 'fr'
+          assign cps = "Quels sont les moyens de paiement ?"
+        when 'it'
+          assign cps = "Quali metodi di pagamento sono disponibili?"
+        when 'da'
+          assign cps = "Hvilke betalingsmetoder findes der?"
+        when 'ar'
+          assign cps = "ما طرق الدفع المتاحة؟"
+        else
+          assign cps = "Which payment methods are available?"
+      endcase
+    when 'a_pay'
+      case cpl
+        when 'de'
+          assign cps = "<p>Du kannst unter anderem mit PayPal, Kreditkarte, Apple Pay, Google Pay, Shop Pay und Klarna bezahlen. Alle verfügbaren Zahlungsarten siehst du im Bestellprozess.</p>"
+        when 'fr'
+          assign cps = "<p>Tu peux payer notamment par PayPal, carte bancaire, Apple Pay, Google Pay, Shop Pay et Klarna. Tous les moyens de paiement disponibles s’affichent pendant la commande.</p>"
+        when 'it'
+          assign cps = "<p>Puoi pagare, tra l’altro, con PayPal, carta di credito, Apple Pay, Google Pay, Shop Pay e Klarna. Tutti i metodi di pagamento disponibili sono mostrati durante l’ordine.</p>"
+        when 'da'
+          assign cps = "<p>Du kan blandt andet betale med PayPal, kreditkort, Apple Pay, Google Pay, Shop Pay og Klarna. Du ser alle tilgængelige betalingsmetoder under bestillingen.</p>"
+        when 'ar'
+          assign cps = "<p>يمكنك الدفع عبر PayPal أو بطاقة الائتمان أو Apple Pay أو Google Pay أو Shop Pay أو Klarna وغيرها. تظهر لك جميع طرق الدفع المتاحة أثناء إتمام الطلب.</p>"
+        else
+          assign cps = "<p>You can pay with PayPal, credit card, Apple Pay, Google Pay, Shop Pay and Klarna, among others. You will see all available payment methods during checkout.</p>"
+      endcase
+    when 'q_help'
+      case cpl
+        when 'de'
+          assign cps = "Wie erreiche ich den Kundenservice?"
+        when 'fr'
+          assign cps = "Comment joindre le service client ?"
+        when 'it'
+          assign cps = "Come posso contattare il servizio clienti?"
+        when 'da'
+          assign cps = "Hvordan kontakter jeg kundeservice?"
+        when 'ar'
+          assign cps = "كيف أتواصل مع خدمة العملاء؟"
+        else
+          assign cps = "How can I reach customer service?"
+      endcase
+    when 'a_help'
+      case cpl
+        when 'de'
+          assign cps = "<p>Bei Fragen zu einem Produkt oder zu deiner Bestellung hilft dir unser Kundenservice gern weiter. Schreib uns über die Seite <a href='[[contact]]'>Kontakt</a>.</p>"
+        when 'fr'
+          assign cps = "<p>Pour toute question sur un produit ou ta commande, notre service client t’aide volontiers. Écris-nous via la page <a href='[[contact]]'>Contact</a>.</p>"
+        when 'it'
+          assign cps = "<p>Per domande su un prodotto o sul tuo ordine, il nostro servizio clienti ti aiuta volentieri. Scrivici tramite la pagina <a href='[[contact]]'>Contatto</a>.</p>"
+        when 'da'
+          assign cps = "<p>Har du spørgsmål til et produkt eller din ordre, hjælper vores kundeservice gerne. Skriv til os via siden <a href='[[contact]]'>Kontakt</a>.</p>"
+        when 'ar'
+          assign cps = "<p>إذا كانت لديك أسئلة عن منتج أو عن طلبك، يسعد خدمة العملاء لدينا بمساعدتك. راسلنا عبر صفحة <a href='[[contact]]'>اتصل بنا</a>.</p>"
+        else
+          assign cps = "<p>If you have questions about a product or your order, our customer service will be happy to help. Write to us via the <a href='[[contact]]'>contact</a> page.</p>"
+      endcase
+    when 'brand_e'
+      case cpl
+        when 'de'
+          assign cps = "Aus dem Haus"
+        when 'fr'
+          assign cps = "De la maison"
+        when 'it'
+          assign cps = "Dalla maison"
+        when 'da'
+          assign cps = "Fra huset"
+        when 'ar'
+          assign cps = "من دار"
+        else
+          assign cps = "From the house of"
+      endcase
+    when 'brand_all'
+      case cpl
+        when 'de'
+          assign cps = "Alles von [[v]] entdecken"
+        when 'fr'
+          assign cps = "Découvrir tout l’univers [[v]]"
+        when 'it'
+          assign cps = "Scopri tutto di [[v]]"
+        when 'da'
+          assign cps = "Se alt fra [[v]]"
+        when 'ar'
+          assign cps = "اكتشف كل منتجات [[v]]"
+        else
+          assign cps = "Discover everything from [[v]]"
+      endcase
+    when 'video'
+      case cpl
+        when 'de'
+          assign cps = "Video"
+        when 'fr'
+          assign cps = "Vidéo"
+        when 'it'
+          assign cps = "Video"
+        when 'da'
+          assign cps = "Video"
+        when 'ar'
+          assign cps = "فيديو"
+        else
+          assign cps = "Video"
+      endcase
+    when 'advent_h'
+      case cpl
+        when 'de'
+          assign cps = "Hinter den Türchen"
+        when 'fr'
+          assign cps = "Derrière les portes"
+        when 'it'
+          assign cps = "Dietro le finestrelle"
+        when 'da'
+          assign cps = "Bag lågerne"
+        when 'ar'
+          assign cps = "خلف الأبواب"
+        else
+          assign cps = "Behind the doors"
+      endcase
+    when 'advent_link'
+      case cpl
+        when 'de'
+          assign cps = "Inhalt ansehen: Hinter den Türchen"
+        when 'fr'
+          assign cps = "Voir le contenu : derrière les portes"
+        when 'it'
+          assign cps = "Vedi il contenuto: dietro le finestrelle"
+        when 'da'
+          assign cps = "Se indholdet: bag lågerne"
+        when 'ar'
+          assign cps = "عرض المحتوى: خلف الأبواب"
+        else
+          assign cps = "View the contents: behind the doors"
+      endcase
+    when 'fl_p'
+      case cpl
+        when 'de'
+          assign cps = "Die Fragrance Library erzählt jeden Duft wie ein Buch. Entdecke die ganze Bibliothek."
+        when 'fr'
+          assign cps = "La Fragrance Library raconte chaque parfum comme un livre. Découvre toute la bibliothèque."
+        when 'it'
+          assign cps = "La Fragrance Library racconta ogni profumo come un libro. Scopri l’intera biblioteca."
+        when 'da'
+          assign cps = "Fragrance Library fortæller hver duft som en bog. Oplev hele biblioteket."
+        when 'ar'
+          assign cps = "تروي Fragrance Library كل عطر كأنه كتاب. اكتشف المكتبة كاملة."
+        else
+          assign cps = "The Fragrance Library tells every scent like a book. Discover the whole library."
+      endcase
+    when 'dumo_h'
+      case cpl
+        when 'de'
+          assign cps = "DUMO – Die Gladiatoren"
+        when 'fr'
+          assign cps = "DUMO – Les Gladiateurs"
+        when 'it'
+          assign cps = "DUMO – I Gladiatori"
+        when 'da'
+          assign cps = "DUMO – Gladiatorerne"
+        when 'ar'
+          assign cps = "DUMO – المصارعون"
+        else
+          assign cps = "DUMO – The Gladiators"
+      endcase
+    when 'dumo_cta'
+      case cpl
+        when 'de'
+          assign cps = "Alle DUMO Düfte entdecken"
+        when 'fr'
+          assign cps = "Découvrir tous les parfums DUMO"
+        when 'it'
+          assign cps = "Scopri tutte le fragranze DUMO"
+        when 'da'
+          assign cps = "Se alle DUMO dufte"
+        when 'ar'
+          assign cps = "اكتشف كل عطور DUMO"
+        else
+          assign cps = "Discover all DUMO fragrances"
+      endcase
+    when 'sold'
+      case cpl
+        when 'de'
+          assign cps = "Derzeit ausverkauft. Lass dich benachrichtigen, sobald der Artikel wieder verfügbar ist"
+        when 'fr'
+          assign cps = "Actuellement épuisé. Sois informé dès que l’article est de nouveau disponible"
+        when 'it'
+          assign cps = "Attualmente esaurito. Ricevi un avviso non appena l’articolo sarà di nuovo disponibile"
+        when 'da'
+          assign cps = "Udsolgt i øjeblikket. Få besked, så snart varen er på lager igen"
+        when 'ar'
+          assign cps = "غير متوفر حاليًا. سنبلغك فور توفر المنتج من جديد"
+        else
+          assign cps = "Currently sold out. Get notified as soon as the item is available again"
+      endcase
+    when 'sold_more'
+      case cpl
+        when 'de'
+          assign cps = "oder entdecke weitere Produkte von"
+        when 'fr'
+          assign cps = "ou découvre d’autres produits de"
+        when 'it'
+          assign cps = "oppure scopri altri prodotti di"
+        when 'da'
+          assign cps = "eller se flere produkter fra"
+        when 'ar'
+          assign cps = "أو اكتشف منتجات أخرى من"
+        else
+          assign cps = "or discover more from"
+      endcase
+  endcase
+  assign cp_ship = cpr | append: 'policies/shipping-policy'
+  assign cp_refund = cpr | append: 'policies/refund-policy'
+  assign cp_contact = cpr | append: 'pages/contact'
+  echo cps | replace: '[[ship]]', cp_ship | replace: '[[refund]]', cp_refund | replace: '[[contact]]', cp_contact
+-%}

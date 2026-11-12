@@ -1,0 +1,41 @@
+{%- comment -%}
+  Claude Paket E 12.11.2026 – Produktseite: Vertrauenszeile unter den Kauf-Buttons.
+  Ersetzt den Inhalt des Blocks custom_liquid_lieferzeit (vorher: claude.a.trust3_html + claude.pdp.delivery_html
+  = "Lieferzeit: 2–4 Werktage (Deutschland) · EU: 2–8 Werktage · Weitere Länder: siehe Checkout").
+  Neu: "Lieferzeit 1–3 Werktage in Deutschland" (CEO 12.11.2026), Ausland 5–9 Werktage laut /policies/shipping-policy.
+  Partner-Artikel (Shopify Collective): wie bisher nur die Zeile aus be-partner-versand, kein "kostenloser Versand".
+  mode: 'soldout' -> Hinweis für ausverkaufte Artikel (ersetzt den deutschen Inline-Text im Block custom_liquid_soldout).
+{%- endcomment -%}
+{%- liquid
+  assign cpt_partner = false
+  if product.tags contains 'Shopify Collective'
+    assign cpt_partner = true
+  endif
+-%}
+{%- if mode == 'soldout' -%}
+  {%- unless product.available -%}
+    {%- assign cpt_bh = product.vendor | handleize -%}
+    {%- assign cpt_bc = collections[cpt_bh] -%}
+    <p class="be-soldout-note cpd-soldout">{%- render 'claude-pdp-t', k: 'sold' -%}
+      {%- if cpt_bc.url and cpt_partner == false %} – {% render 'claude-pdp-t', k: 'sold_more' %} <a href="{{ cpt_bc.url }}">{{ product.vendor | escape }}</a>{% endif -%}.</p>
+  {%- endunless -%}
+{%- elsif product.available -%}
+  {%- capture cpt_pv -%}{%- render 'be-partner-versand', mode: 'zeile', vendor_product: product -%}{%- endcapture -%}
+  {%- assign cpt_pv = cpt_pv | strip -%}
+  {%- capture cpt_refund -%}{{ routes.root_url | append: '/policies/refund-policy' | replace: '//', '/' }}{%- endcapture -%}
+  <ul class="cpd-trust be-lieferzeit" role="list">
+    {%- if cpt_pv != blank -%}
+      <li><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2.5 6.5h11v10h-11zM13.5 10h4l3 3v3.5h-7M7 19a1.7 1.7 0 1 0 0-3.4A1.7 1.7 0 0 0 7 19zm10 0a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4z"/></svg><span>{{ cpt_pv }}</span></li>
+    {%- elsif product.gift_card? -%}
+    {%- else -%}
+      <li><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2.5 6.5h11v10h-11zM13.5 10h4l3 3v3.5h-7M7 19a1.7 1.7 0 1 0 0-3.4A1.7 1.7 0 0 0 7 19zm10 0a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4z"/></svg><span>{%- render 'claude-pdp-t', k: 't_delivery' -%}</span></li>
+      <li><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3l8.5 4.5v9L12 21l-8.5-4.5v-9zM3.5 7.5L12 12l8.5-4.5M12 12v9"/></svg><span>{%- render 'claude-pdp-t', k: 't_ship' -%}</span></li>
+    {%- endif -%}
+    {%- unless product.gift_card? -%}
+      <li><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.6-5.9M4 4.5v4h4"/></svg><span><a href="{{ cpt_refund }}">{%- render 'claude-pdp-t', k: 't_return' -%}</a></span></li>
+    {%- endunless -%}
+  </ul>
+  {%- if cpt_pv == blank -%}{%- unless product.gift_card? -%}
+    <p class="cpd-trust__sub">{%- render 'claude-pdp-t', k: 't_abroad' -%}</p>
+  {%- endunless -%}{%- endif -%}
+{%- endif -%}

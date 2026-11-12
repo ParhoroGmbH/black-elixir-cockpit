@@ -1,0 +1,77 @@
+{%- comment -%}
+  Claude Paket E 12.11.2026 – Produktseite: "Aus dem Haus {{ vendor }}" (4 weitere Produkte der Marke, ohne Preise) +
+  Teaser zur Fragrance-Library- bzw. DUMO-Landingpage. Jeder Baustein erscheint nur, wenn es die Daten gibt.
+  Partner-Artikel (Shopify Collective): Lieferantenname wird nie ausgegeben -> kein Marken-Block (wie be-hide-collective-vendor).
+{%- endcomment -%}
+{%- liquid
+  assign cps_partner = false
+  if product.tags contains 'Shopify Collective'
+    assign cps_partner = true
+  endif
+  assign cps_bh = product.vendor | handleize
+  assign cps_bc = collections[cps_bh]
+  assign cps_vd = product.vendor | downcase
+  assign cps_n = 0
+-%}
+{%- capture cps_cards -%}
+  {%- unless cps_partner or cps_bc == blank -%}
+    {%- for cps_p in cps_bc.products limit: 12 -%}
+      {%- if cps_p.id == product.id or cps_p.available == false or cps_p.featured_image == blank -%}{%- continue -%}{%- endif -%}
+      {%- if cps_n >= 4 -%}{%- break -%}{%- endif -%}
+      {%- assign cps_n = cps_n | plus: 1 -%}
+      <a class="cpd-card" href="{{ cps_p.url }}">
+        <span class="cpd-card__img"><img src="{{ cps_p.featured_image | image_url: width: 480 }}" srcset="{{ cps_p.featured_image | image_url: width: 320 }} 320w, {{ cps_p.featured_image | image_url: width: 480 }} 480w, {{ cps_p.featured_image | image_url: width: 720 }} 720w" sizes="(max-width: 989px) 46vw, 220px" alt="{{ cps_p.featured_image.alt | default: cps_p.title | escape }}" width="480" height="480" loading="lazy" decoding="async"></span>
+        <span class="cpd-card__t">{{ cps_p.title | escape }}</span>
+      </a>
+    {%- endfor -%}
+  {%- endunless -%}
+{%- endcapture -%}
+{%- assign cps_fl = false -%}
+{%- assign cps_dm = false -%}
+{%- if cps_vd contains 'fragrance library' and collections['fragrance-library'].url -%}{%- assign cps_fl = true -%}{%- endif -%}
+{%- if cps_vd contains 'dumo' and collections['dumo'].url -%}{%- assign cps_dm = true -%}{%- endif -%}
+{%- if cps_n >= 2 or cps_fl or cps_dm -%}
+<div class="cpd cpd-story page-width page-width--{{ settings.max_page_width }}">
+  {%- if cps_n >= 2 -%}
+    <div class="cpd-story__head">
+      <div>
+        <p class="cpd-eyebrow">{%- render 'claude-pdp-t', k: 'brand_e' -%}</p>
+        <h2 class="cpd-h">{{ product.vendor | escape }}</h2>
+      </div>
+      {%- capture cps_all -%}{%- render 'claude-pdp-t', k: 'brand_all' -%}{%- endcapture -%}
+      <a class="cpd-btn" href="{{ cps_bc.url }}">{{ cps_all | replace: '[[v]]', product.vendor | escape }}</a>
+    </div>
+    <div class="cpd-story__grid">{{ cps_cards }}</div>
+  {%- endif -%}
+  {%- if cps_fl -%}
+    <div class="cpd-teaser">
+      <div>
+        <p class="cpd-eyebrow">Fragrance Library</p>
+        <p class="cpd-teaser__h">{{ 'claude.fl.intro_h_html' | t }}</p>
+        <p>{%- render 'claude-pdp-t', k: 'fl_p' -%}</p>
+      </div>
+      <a class="cpd-btn" href="{{ collections['fragrance-library'].url }}">{{ 'claude.l.all_html' | t }}</a>
+    </div>
+  {%- elsif cps_dm -%}
+    <div class="cpd-teaser">
+      <div>
+        <p class="cpd-eyebrow">DUMO</p>
+        <p class="cpd-teaser__h">{%- render 'claude-pdp-t', k: 'dumo_h' -%}</p>
+        <p>{{ 'claude.dm.subtitle_html' | t }}</p>
+      </div>
+      <a class="cpd-btn" href="{{ collections['dumo'].url }}">{%- render 'claude-pdp-t', k: 'dumo_cta' -%}</a>
+    </div>
+  {%- endif -%}
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Claude PDP Marke",
+  "tag": "section",
+  "class": "section-claude-pdp-story",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [],
+  "presets": [ { "name": "Claude PDP Marke" } ]
+}
+{% endschema %}

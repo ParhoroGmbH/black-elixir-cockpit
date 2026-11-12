@@ -1,0 +1,320 @@
+{%- comment -%}
+  Claude Paket E 12.11.2026 – Produktseite: "Der Duft" (einklappbare Beschreibung) + Akkordeons.
+  Ersetzt in templates/product*.json die Sektion main-product-details (Riesentitel "{{ product.title }}" in
+  heading_xl_uppercase + "Info"-Akkordeon). Block-IDs der Reiter (collapsible_tab) bleiben gleich, Texte unverändert.
+  Produktdaten werden NICHT geändert: Zierlinien (====, ----), doppelte Titelzeile und H1 werden nur bei der Ausgabe bereinigt.
+  Voller Text bleibt im DOM (SEO). Duftnoten-Karte / Akkordeon-Inhalte sortiert das Skript unten aus demselben Text um.
+{%- endcomment -%}
+{%- liquid
+  assign cpd = product.description
+  assign cpd_has = false
+  if cpd != blank
+    assign cpd_has = true
+  endif
+  assign cpd_m = '§§'
+  assign cpd_mm = cpd_m | append: cpd_m
+  assign cpd = cpd | replace: '<h1', '<h2' | replace: '</h1>', '</h2>' | replace: '<br />', '<br>' | replace: '<br/>', '<br>'
+  if cpd contains '====' or cpd contains '----' or cpd contains '____'
+    assign cpd = cpd | replace: '====', cpd_m | replace: '----', cpd_m | replace: '____', cpd_m
+    for i in (1..7)
+      assign cpd = cpd | replace: cpd_mm, cpd_m
+    endfor
+    assign cpd_k = cpd_m | append: '==='
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    assign cpd_k = cpd_m | append: '=='
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    assign cpd_k = cpd_m | append: '='
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    assign cpd_k = cpd_m | append: '---'
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    assign cpd_k = cpd_m | append: '--'
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    assign cpd_k = cpd_m | append: '-'
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    assign cpd_k = cpd_m | append: '___'
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    assign cpd_k = cpd_m | append: '__'
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    assign cpd_k = cpd_m | append: '_'
+    assign cpd = cpd | replace: cpd_k, cpd_m
+    comment
+      "<p>Titel<br>-----</p>" -> "<h3>Titel</h3>"
+    endcomment
+    assign cpd_key = '<br>' | append: cpd_m | append: '</p>'
+    if cpd contains cpd_key
+      assign cpd_parts = cpd | append: '<!--cpd-->' | split: cpd_key
+      assign cpd_out = ''
+      for cpd_part in cpd_parts
+        if forloop.last
+          assign cpd_out = cpd_out | append: cpd_part
+        else
+          assign cpd_segs = cpd_part | split: '<p>'
+          if cpd_segs.size > 1
+            assign cpd_head = cpd_segs | last
+            assign cpd_cut = cpd_part.size | minus: cpd_head.size | minus: 3
+            assign cpd_body = cpd_part | slice: 0, cpd_cut
+            assign cpd_out = cpd_out | append: cpd_body | append: '<h3>' | append: cpd_head | append: '</h3>'
+          else
+            assign cpd_out = cpd_out | append: cpd_part | append: '</p>'
+          endif
+        endif
+      endfor
+      assign cpd = cpd_out | remove: '<!--cpd-->'
+    endif
+    assign cpd_k = '<p>' | append: cpd_m | append: '</p>'
+    assign cpd = cpd | remove: cpd_k | remove: cpd_m
+  endif
+  comment
+    Erste Zeile = exakt der Produkttitel -> nicht doppelt zeigen (H1 steht oben)
+  endcomment
+  assign cpd = cpd | strip
+  assign cpd_t = product.title | escape | downcase | strip
+  assign cpd_first = cpd | split: '</' | first
+  assign cpd_first_txt = cpd_first | strip_html | strip | downcase
+  if cpd_first_txt == cpd_t and cpd_first.size < 400
+    assign cpd = cpd | remove_first: cpd_first
+    for i in (1..3)
+      assign cpd = cpd | strip
+      assign cpd_lead = cpd | slice: 0, 2
+      if cpd_lead == '</'
+        assign cpd_closer = cpd | split: '>' | first | append: '>'
+        assign cpd = cpd | remove_first: cpd_closer
+      endif
+    endfor
+  endif
+  comment
+    Adventskalender: nummerierte Inhaltsliste als eigener Block "Hinter den Türchen"
+  endcomment
+  assign cpd_advent = ''
+  assign cpd_th = product.handle | append: ' ' | append: product.type | downcase
+  if cpd_th contains 'advent' and cpd contains '<ol>'
+    assign cpd_a = cpd | split: '<ol>'
+    assign cpd_ol = cpd_a[1] | split: '</ol>' | first
+    assign cpd_lis = cpd_ol | split: '<li>'
+    if cpd_lis.size > 12
+      assign cpd_advent = cpd_ol
+      assign cpd_whole = '<ol>' | append: cpd_ol | append: '</ol>'
+      capture cpd_link
+        echo '<p><a class="cpd-jump" href="#cpd-advent-'
+        echo section.id
+        echo '">'
+        render 'claude-pdp-t', k: 'advent_link'
+        echo '</a></p>'
+      endcapture
+      assign cpd = cpd | replace_first: cpd_whole, cpd_link
+    endif
+  endif
+  capture cpd_isp
+    render 'be-ist-parfum', p: product
+  endcapture
+  assign cpd_partner = false
+  if product.tags contains 'Shopify Collective'
+    assign cpd_partner = true
+  endif
+  assign cpd_video = product.media | where: 'media_type', 'video' | first
+  assign cpd_xvideo = product.media | where: 'media_type', 'external_video' | first
+-%}
+<div class="cpd cpd-details page-width page-width--{{ settings.max_page_width }}" data-cpd data-title="{{ product.title | escape }}">
+  <div class="cpd-grid">
+    <div class="cpd-main">
+      {%- if cpd_has -%}
+        <p class="cpd-eyebrow">{% unless cpd_partner %}{{ product.vendor | escape }}{% endunless %}</p>
+        <h2 class="cpd-h">{%- if cpd_isp contains 'ja' -%}{%- render 'claude-pdp-t', k: 'scent' -%}{%- else -%}{%- render 'claude-pdp-t', k: 'desc' -%}{%- endif -%}</h2>
+        <div class="cpd-notes" data-cpd-notes hidden
+          data-l-top="{% render 'claude-pdp-t', k: 'top' %}" data-l-heart="{% render 'claude-pdp-t', k: 'heart' %}" data-l-base="{% render 'claude-pdp-t', k: 'base' %}">
+          <p class="cpd-notes__h">{%- render 'claude-pdp-t', k: 'notes' -%}</p>
+          <dl class="cpd-notes__list"></dl>
+        </div>
+        <div class="cpd-desc is-collapsed" id="cpd-desc-{{ section.id }}" data-cpd-desc>
+          <button type="button" class="cpd-pill" data-cpd-less tabindex="-1" aria-controls="cpd-desc-{{ section.id }}">
+            <svg aria-hidden="true" viewBox="0 0 12 12"><path d="M2 7.5l4-4 4 4"/></svg>{%- render 'claude-pdp-t', k: 'less' -%}
+          </button>
+          <div class="cpd-desc__inner richtext" data-cpd-inner>{{ cpd }}</div>
+        </div>
+        <button type="button" class="cpd-btn cpd-more" data-cpd-toggle aria-expanded="false" aria-controls="cpd-desc-{{ section.id }}"
+          data-more="{% render 'claude-pdp-t', k: 'more' %}" data-less="{% render 'claude-pdp-t', k: 'less' %}">
+          <span data-cpd-label>{%- render 'claude-pdp-t', k: 'more' -%}</span><svg aria-hidden="true" viewBox="0 0 12 12"><path d="M2 4.5l4 4 4-4"/></svg>
+        </button>
+        <noscript><style>.cpd-desc.is-collapsed{max-height:none!important}.cpd-desc.is-collapsed::after,.cpd-more,.cpd-pill{display:none!important}</style></noscript>
+      {%- endif -%}
+    </div>
+    <div class="cpd-side">
+      <div class="cpd-acc">
+        <details class="cpd-acc__item" name="cpd-acc-{{ section.id }}" data-cpd-use hidden>
+          <summary><span>{%- render 'claude-pdp-t', k: 'acc_use' -%}</span><i aria-hidden="true"></i></summary>
+          <div class="cpd-acc__body richtext"></div>
+        </details>
+        <details class="cpd-acc__item" name="cpd-acc-{{ section.id }}" data-cpd-maker hidden>
+          <summary><span>{%- render 'claude-pdp-t', k: 'acc_maker' -%}</span><i aria-hidden="true"></i></summary>
+          <div class="cpd-acc__body richtext"></div>
+        </details>
+        {%- unless product.gift_card? -%}
+          <details class="cpd-acc__item" name="cpd-acc-{{ section.id }}">
+            <summary><span>{%- render 'claude-pdp-t', k: 'acc_ship' -%}</span><i aria-hidden="true"></i></summary>
+            <div class="cpd-acc__body richtext">
+              {%- if cpd_partner -%}
+                {%- capture cpd_pv -%}{%- render 'be-partner-versand', mode: 'zeile', vendor_product: product -%}{%- endcapture -%}
+                <p>{{ cpd_pv | strip }}</p>
+                {%- capture cpd_ship -%}{{ routes.root_url | append: '/policies/shipping-policy' | replace: '//', '/' }}{%- endcapture -%}
+                <p><a href="{{ cpd_ship }}">{{ shop.shipping_policy.title | default: 'Zahlung und Versand' | escape }}</a></p>
+              {%- else -%}
+                {%- render 'claude-pdp-t', k: 'ship_body' -%}
+              {%- endif -%}
+            </div>
+          </details>
+        {%- endunless -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign cpd_bt = block.settings.text
+            if block.settings.page != blank
+              assign cpd_bt = pages[block.settings.page].content
+            endif
+          -%}
+          {%- if block.settings.heading != blank and cpd_bt != blank -%}
+            <details class="cpd-acc__item" name="cpd-acc-{{ section.id }}" {{ block.shopify_attributes }}>
+              <summary><span>{{ block.settings.heading | escape }}</span><i aria-hidden="true"></i></summary>
+              <div class="cpd-acc__body richtext">{{ cpd_bt }}</div>
+            </details>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if cpd_advent != blank -%}
+    <div class="cpd-advent" id="cpd-advent-{{ section.id }}">
+      <p class="cpd-eyebrow">{{ product.title | escape }}</p>
+      <h2 class="cpd-h">{%- render 'claude-pdp-t', k: 'advent_h' -%}</h2>
+      <ol class="cpd-advent__list">{{ cpd_advent }}</ol>
+    </div>
+  {%- endif -%}
+
+  {%- if cpd_video or cpd_xvideo -%}
+    <div class="cpd-video">
+      <h2 class="cpd-h">{%- render 'claude-pdp-t', k: 'video' -%}</h2>
+      <div class="cpd-video__frame">
+        {%- if cpd_video -%}
+          {{ cpd_video | video_tag: controls: true, preload: 'none', playsinline: true, image_size: '1200x' }}
+        {%- else -%}
+          {{ cpd_xvideo | external_video_tag: loading: 'lazy' }}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+(function(){
+  var root=document.currentScript.previousElementSibling;
+  while(root&&!(root.matches&&root.matches('[data-cpd]')))root=root.previousElementSibling;
+  if(!root)return;
+  var inner=root.querySelector('[data-cpd-inner]'),box=root.querySelector('[data-cpd-desc]'),btn=root.querySelector('[data-cpd-toggle]');
+  var txt=function(e){return (e.textContent||'').replace(/\s+/g,' ').trim()};
+  /* level: h2..h6 = 2..6, <p><strong>Kurz</strong></p> = 7, sonst 0 */
+  var lvl=function(e){
+    if(/^H[2-6]$/.test(e.tagName))return +e.tagName[1];
+    if(e.tagName==='P'&&e.children.length===1&&/^(STRONG|B)$/.test(e.children[0].tagName)&&txt(e)===txt(e.children[0])&&txt(e).length<70)return 7;
+    return 0};
+  try{
+    if(inner){
+      var kids=[].slice.call(inner.children);
+      /* 1) Titel-Präfix in der ersten Überschrift nicht wiederholen */
+      var f=kids[0],title=(root.getAttribute('data-title')||'').toLowerCase();
+      if(f&&lvl(f)&&title&&txt(f).toLowerCase().indexOf(title)===0){
+        var rest=txt(f).slice(title.length).replace(/^[\s–—\-:|·]+/,'');
+        if(rest.length>3){f.textContent=rest.charAt(0).toUpperCase()+rest.slice(1);f.classList.add('cpd-lead')}
+      }else if(f&&lvl(f)){f.classList.add('cpd-lead')}
+      /* 2) Duftpyramide -> Karte */
+      var RX=[[/^(kopfnoten?|top ?notes?|notes? de t[êe]te|not[ae] di testa|topnoter?)$/i,'top'],[/^(herznoten?|heart ?notes?|middle ?notes?|notes? de c(œ|oe)ur|not[ae] di cuore|hjertenoter?)$/i,'heart'],[/^(basisnoten?|base ?notes?|notes? de fond|not[ae] di fondo|basenoter?|bundnoter?)$/i,'base']];
+      var kind=function(s){s=s.replace(/[:：]\s*$/,'').trim();for(var i=0;i<RX.length;i++)if(RX[i][0].test(s))return RX[i][1];return ''};
+      var found={},srcs=[];
+      [].slice.call(inner.querySelectorAll('p,li')).forEach(function(el){
+        var lines=el.innerHTML.split(/<br\s*\/?>/i).map(function(h){var d=document.createElement('div');d.innerHTML=h;return txt(d)}).filter(Boolean);
+        if(!lines.length||lines.length>4)return;
+        var hit=0;
+        lines.forEach(function(l){var m=l.match(/^([^:：–—]{4,22})\s*[:：–—-]\s*(.{3,220})$/);if(!m)return;var k=kind(m[1]);if(k&&!found[k]){found[k]=m[2];hit++}else if(k){hit++}});
+        if(hit&&hit===lines.length)srcs.push(el);
+        else if(lines.length===1){var k=kind(lines[0]);var n=el.nextElementSibling;
+          if(k&&!found[k]&&n&&/^(P|UL)$/.test(n.tagName)&&!lvl(n)){var v=n.tagName==='UL'?[].slice.call(n.children).map(txt).join(', '):txt(n);
+            if(v&&v.length<220){found[k]=v;srcs.push(el,n)}}}
+      });
+      var card=root.querySelector('[data-cpd-notes]');
+      if(card&&Object.keys(found).length>=2){
+        var dl=card.querySelector('dl');
+        ['top','heart','base'].forEach(function(k){if(!found[k])return;var dt=document.createElement('dt');dt.textContent=card.getAttribute('data-l-'+k);var dd=document.createElement('dd');dd.textContent=found[k].replace(/\.$/,'');dl.appendChild(dt);dl.appendChild(dd)});
+        card.hidden=false;
+        srcs.forEach(function(el){el.classList.add('cpd-moved')});
+        [].slice.call(inner.querySelectorAll('ul,ol')).forEach(function(u){if(u.children.length&&![].slice.call(u.children).some(function(li){return !li.classList.contains('cpd-moved')}))u.classList.add('cpd-moved')});
+      }
+      /* 3) Anwendung / Inhaltsstoffe / Hersteller & Sicherheit -> Akkordeon */
+      var USE=/^(anwendung|inhaltsstoffe|application|how to use|usage|directions|ingredients|utilisation|ingr[ée]dients|utilizzo|applicazione|modo d|ingredienti|anvendelse|ingredienser)/i;
+      var MK=/^(sicherheit|gefahren|warnhinweis|hinweise?\b|achtung|hersteller|gpsr|safety|warning|hazard|manufacturer|s[ée]curit[ée]|avertissement|consignes|fabricant|sicurezza|avvertenz|produttore|fabbricante|sikkerhed|advarsel|producent)/i;
+      var useP=root.querySelector('[data-cpd-use]'),mkP=root.querySelector('[data-cpd-maker]');
+      kids=[].slice.call(inner.children);
+      for(var i=0;i<kids.length;i++){
+        var h=kids[i],L=lvl(h);if(!L)continue;
+        var t=txt(h),tgt=USE.test(t)?useP:(MK.test(t)?mkP:null);if(!tgt)continue;
+        var body=tgt.querySelector('.cpd-acc__body'),j=i+1,grp=[h];
+        while(j<kids.length){var l2=lvl(kids[j]);if(l2&&l2<=L)break;grp.push(kids[j]);j++}
+        var hh=document.createElement('h3');hh.textContent=t.replace(/[:：]\s*$/,'');body.appendChild(hh);
+        grp.slice(1).forEach(function(n){body.appendChild(n)});h.remove();
+        tgt.hidden=false;i=j-1;
+      }
+      /* 4) verwaiste Überschriften (alles darunter umsortiert) ausblenden, Detail-Listen markieren */
+      kids=[].slice.call(inner.children);
+      kids.forEach(function(h,i){var L=lvl(h);if(!L)return;var j=i+1,vis=0;
+        while(j<kids.length){var l2=lvl(kids[j]);if(l2&&l2<=L)break;if(!kids[j].classList.contains('cpd-moved')&&txt(kids[j]))vis++;j++}
+        if(!vis&&i>0)h.classList.add('cpd-moved');
+        if(/^(produktdetails|eigenschaften|details|product details|d[ée]tails du produit|dettagli|produktdetaljer)/i.test(txt(h))){var n=h.nextElementSibling;if(n&&n.tagName==='UL')n.classList.add('cpd-facts')}
+      });
+    }
+  }catch(e){}
+  /* 5) Ein-/Ausklappen */
+  if(box&&btn){
+    var COL=parseFloat(getComputedStyle(box).maxHeight)||132,lab=btn.querySelector('[data-cpd-label]'),pill=root.querySelector('[data-cpd-less]');
+    if(inner.scrollHeight<=COL+48){box.classList.remove('is-collapsed');box.style.maxHeight='none';btn.hidden=true}
+    var set=function(open){
+      var full=inner.scrollHeight;
+      box.style.maxHeight=(open?COL:full)+'px';box.offsetHeight;
+      box.classList.toggle('is-collapsed',!open);box.classList.toggle('is-open',open);
+      box.style.maxHeight=(open?full:COL)+'px';
+      btn.setAttribute('aria-expanded',open?'true':'false');lab.textContent=btn.getAttribute(open?'data-less':'data-more');
+      if(pill)pill.tabIndex=open?0:-1;
+      if(!open){var top=root.getBoundingClientRect().top;if(top<0)window.scrollTo({top:window.pageYOffset+top-90,behavior:'smooth'})}
+    };
+    box.addEventListener('transitionend',function(e){if(e.target===box&&box.classList.contains('is-open'))box.style.maxHeight='none'});
+    btn.addEventListener('click',function(){set(btn.getAttribute('aria-expanded')!=='true')});
+    if(pill)pill.addEventListener('click',function(){set(false);btn.focus({preventScroll:true})});
+    root.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.cpd-jump');if(!a)return;var t=document.getElementById(a.getAttribute('href').slice(1));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}});
+  }
+  /* 6) Akkordeon: nur eines offen (Fallback für Browser ohne <details name>) */
+  root.addEventListener('toggle',function(e){var d=e.target;if(!d.open||!d.matches('.cpd-acc__item'))return;
+    [].slice.call(root.querySelectorAll('.cpd-acc__item[open]')).forEach(function(o){if(o!==d)o.open=false})},true);
+  /* 7) Sticky-Leiste erst zeigen, wenn der Haupt-Button nach oben aus dem Bild gescrollt ist */
+  var atc=document.querySelector('.product__info-container .product-form__submit');
+  if(atc){var tick=0,upd=function(){tick=0;document.body.classList.toggle('cpd-past',atc.getBoundingClientRect().bottom<0)};
+    window.addEventListener('scroll',function(){if(!tick)tick=requestAnimationFrame(upd)},{passive:true});upd()}
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Claude PDP Beschreibung",
+  "tag": "section",
+  "class": "section-claude-pdp-details",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [],
+  "blocks": [
+    {
+      "type": "collapsible_tab",
+      "name": "Reiter",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Überschrift" },
+        { "type": "richtext", "id": "text", "label": "Text" },
+        { "type": "page", "id": "page", "label": "Oder Seite" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Claude PDP Beschreibung" } ]
+}
+{% endschema %}
