@@ -8,6 +8,7 @@
 :root{--cp-gold:#c8a45c;--cp-gold-d:#7d5f25;--cp-ink:#141414;--cp-mut:#6f6a62;--cp-hair:rgba(200,164,92,.55);--cp-soft:#faf7f1;--cp-serif:"Cormorant Garamond","cpd-serif-fb",Georgia,serif}
 @font-face{font-family:"cpd-serif-fb";src:local("Georgia");size-adjust:86%;ascent-override:96%;descent-override:28%;line-gap-override:0%}
 .section-claude-pdp-style{display:none}
+.section-claude-pdp-style + .shopify-section .product.product--lines{border-top:0!important;padding-top:0!important}
 
 /* ---------- 1) Kopfbereich (Struktur des Themes bleibt) ---------- */
 .main-product h1.product__title{font-family:var(--cp-serif)!important;font-weight:600!important;text-transform:none!important;letter-spacing:.005em!important;font-size:clamp(28px,2.45vw,38px)!important;line-height:1.12!important;color:var(--cp-ink);margin-top:10px!important;text-wrap:balance}
@@ -75,14 +76,14 @@ body:not(.cpd-past) .product-sticky-cart{translate:0 120%;opacity:0;visibility:h
 }
 
 /* ---------- 3) Eigene Bausteine ---------- */
-.cpd{padding-top:56px;padding-bottom:8px;color:var(--cp-ink)}
+.cpd.cpd{padding-top:56px;padding-bottom:8px;color:var(--cp-ink)}
 .cpd-eyebrow{margin:0 0 8px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--cp-gold-d);min-height:1em}
 .cpd-h{margin:0 0 22px;font-family:var(--cp-serif);font-weight:600;font-size:clamp(28px,2.6vw,40px);line-height:1.1;letter-spacing:.005em;text-transform:none;color:var(--cp-ink)}
 .cpd-h::after{content:"";display:block;width:56px;height:1px;margin-top:16px;background:var(--cp-gold)}
 .cpd-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);gap:56px;align-items:start}
 .cpd-main:empty{display:none}
 .cpd-desc{position:relative;max-width:68ch;transition:max-height .55s cubic-bezier(.2,.7,.2,1)}
-.cpd-desc.is-collapsed{max-height:136px;overflow:hidden;overflow:clip}
+.cpd-desc.is-collapsed{max-height:150px;overflow:hidden;overflow:clip}
 .cpd-desc.is-collapsed::after{content:"";position:absolute;left:0;right:0;bottom:0;height:76px;background:linear-gradient(rgba(255,255,255,0),#fff 88%);pointer-events:none}
 .cpd-desc:not(.is-open):not(.is-collapsed){overflow:visible}
 .cpd-desc.is-open{overflow:clip visible}
@@ -136,7 +137,8 @@ body:not(.cpd-past) .product-sticky-cart{translate:0 120%;opacity:0;visibility:h
 .cpd-advent__list li strong{font-weight:400}
 .cpd-video__frame{max-width:960px}
 .cpd-video__frame video,.cpd-video__frame iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000}
-.cpd-rev{padding-bottom:0;text-align:center}
+.cpd-rev.cpd-rev{padding-bottom:0;text-align:center}
+.section-claude-pdp-reviews + .section-apps .app{padding-top:20px!important;padding-bottom:24px!important}
 .cpd-rev .cpd-h::after{margin-inline:auto}
 .cpd-rev__empty{max-width:52ch;margin:0 auto;font-size:15px;line-height:1.7;color:#2b2925}
 .cpd-faq__list{max-width:860px}
@@ -158,7 +160,7 @@ body:not(.cpd-past) .product-sticky-cart{translate:0 120%;opacity:0;visibility:h
 .cpd-teaser .cpd-btn{margin-top:0;border-color:var(--cp-gold);color:#fff}
 .cpd-teaser .cpd-btn:hover{background:var(--cp-gold);color:var(--cp-ink)}
 @media (max-width:989px){
-  .cpd{padding-top:44px}
+  .cpd.cpd{padding-top:44px}
   .cpd-grid{grid-template-columns:minmax(0,1fr);gap:36px}
   .cpd-advent__list{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cpd-story__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px}
@@ -193,7 +195,7 @@ body:not(.cpd-past) .product-sticky-cart{translate:0 120%;opacity:0;visibility:h
 .section-be-faq .be-faq__question{min-height:60px;padding:6px 0!important;font-family:var(--cp-serif);font-weight:600;font-size:19px;line-height:1.25;text-transform:none;letter-spacing:0}
 .section-be-faq .be-faq__icon::before,.section-be-faq .be-faq__icon::after{background:var(--cp-gold-d)!important}
 .section-be-faq .be-faq__answer{font-size:14.5px;line-height:1.7;padding-bottom:22px!important}
-.section-be-faq + .section-claude-pdp-faq .cpd{padding-top:34px}
+.section-be-faq + .section-claude-pdp-faq .cpd.cpd{padding-top:34px}
 .product-recommendations .custom-heading,product-recommendations .custom-heading{font-family:var(--cp-serif)!important;font-weight:600!important;text-transform:none!important;letter-spacing:.005em!important}
 @media (prefers-reduced-motion:reduce){.cpd-desc,.cpd-acc__body,.product-sticky-cart,.cpd-card__img img{transition:none!important;animation:none!important}}
 </style>

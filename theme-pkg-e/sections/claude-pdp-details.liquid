@@ -114,7 +114,7 @@
   assign cpd_video = product.media | where: 'media_type', 'video' | first
   assign cpd_xvideo = product.media | where: 'media_type', 'external_video' | first
 -%}
-<div class="cpd cpd-details page-width page-width--{{ settings.max_page_width }}" data-cpd data-title="{{ product.title | escape }}">
+<div class="cpd cpd-details page-width page-width--{{ settings.max_page_width }} section-padding--{{ settings.white_space }}" data-cpd data-title="{{ product.title | escape }}">
   <div class="cpd-grid">
     <div class="cpd-main">
       {%- if cpd_has -%}

@@ -31,7 +31,7 @@
 {%- if cps_vd contains 'fragrance library' and collections['fragrance-library'].url -%}{%- assign cps_fl = true -%}{%- endif -%}
 {%- if cps_vd contains 'dumo' and collections['dumo'].url -%}{%- assign cps_dm = true -%}{%- endif -%}
 {%- if cps_n >= 2 or cps_fl or cps_dm -%}
-<div class="cpd cpd-story page-width page-width--{{ settings.max_page_width }}">
+<div class="cpd cpd-story page-width page-width--{{ settings.max_page_width }} section-padding--{{ settings.white_space }}">
   {%- if cps_n >= 2 -%}
     <div class="cpd-story__head">
       <div>

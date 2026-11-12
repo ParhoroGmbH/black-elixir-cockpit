@@ -43,7 +43,7 @@
   endif
   assign cpf_keys = cpf_keys | split: ','
 -%}
-<div class="cpd cpd-faq page-width page-width--{{ settings.max_page_width }}">
+<div class="cpd cpd-faq page-width page-width--{{ settings.max_page_width }} section-padding--{{ settings.white_space }}">
   {%- if cpf_be -%}
     <p class="cpd-eyebrow">{%- render 'claude-pdp-t', k: 'faq_sub' -%}</p>
   {%- else -%}

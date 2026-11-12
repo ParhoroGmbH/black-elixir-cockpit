@@ -6,7 +6,7 @@
 {%- liquid
   assign cpr_n = product.metafields.reviews.rating_count.value | default: 0 | plus: 0
 -%}
-<div class="cpd cpd-rev page-width page-width--{{ settings.max_page_width }}" id="cpd-reviews">
+<div class="cpd cpd-rev page-width page-width--{{ settings.max_page_width }} section-padding--{{ settings.white_space }}" id="cpd-reviews">
   <p class="cpd-eyebrow">{%- render 'claude-pdp-t', k: 'rev_e' -%}</p>
   <h2 class="cpd-h">{%- render 'claude-pdp-t', k: 'rev_h' -%}</h2>
   {%- if cpr_n == 0 -%}
