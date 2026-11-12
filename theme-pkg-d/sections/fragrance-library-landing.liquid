@@ -18,7 +18,7 @@ html.fl-dark .main-sidebar svg,html.fl-dark .main-sidebar svg *{fill:#fff!import
 .fl-land .intro p{margin:0 0 .6em}
 .fl-land .hint{font-size:.9rem;letter-spacing:.04em;color:var(--muted);margin:0 0 8px}
 /* Schrank */
-.fl-land .cab{--pw:clamp(16px,3.4vw,46px);--bh:300px;position:relative;margin:64px 0 0}
+.fl-land .cab{--pw:clamp(16px,3.4vw,46px);--bh:300px;position:relative;margin:64px auto 0}
 .fl-land .cab+.cab{margin-top:96px}
 .fl-land .cab-sims{position:relative;z-index:3;height:clamp(40px,5.4vw,76px);margin:0 -12px;border-radius:2px 2px 0 0;box-shadow:0 12px 18px -6px rgba(0,0,0,.9)}
 .fl-land .cab-fries{position:relative;z-index:2;height:clamp(46px,4.6vw,60px);display:grid;place-items:center;box-shadow:0 10px 16px -6px rgba(0,0,0,.85)}
@@ -128,13 +128,15 @@ b.addEventListener('click',function(){F.open(o,b)});
 return b});
 cabs.push({el:cab,body:body,books:books,per:0});c.appendChild(cab)});
 /* Bücher auf Böden verteilen: so viele je Boden, wie in die Breite passen (höchstens 12), gleichmäßig auf die Böden verteilt */
-function lay(){var bw=124;cabs.forEach(function(k){
-var cs=getComputedStyle(k.body),W=k.body.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),sm=innerWidth<=700,gap=sm?4:5;W-=sm?12:28;k.np=0;if(W<=0)return;
-var n=k.books.length,minW=W>=700?74:W>=520?66:50,cols=Math.max(4,Math.min(12,Math.floor((W+gap)/(minW+gap)))),rows=Math.ceil(n/cols);k.np=Math.ceil(n/rows);
-bw=Math.min(bw,(W-(Math.min(cols,n)-1)*gap)/Math.min(cols,n))});
+function lay(){var bw=124,Wc=c.clientWidth,sm=innerWidth<=700,gap=sm?4:5,pad=sm?12:28;cabs.forEach(function(k){
+k.pw=parseFloat(getComputedStyle(k.body).paddingLeft)||0;var W=Wc-2*k.pw-pad;k.np=0;if(W<=0)return;
+var n=k.books.length,minW=W>=700?74:W>=520?66:50,cols=Math.min(n,Math.max(4,Math.min(12,Math.floor((W+gap)/(minW+gap))))),rows=Math.ceil(n/cols);k.np=Math.ceil(n/rows);k.cols=cols;
+bw=Math.min(bw,(W-(cols-1)*gap)/cols)});
 /* alle Bücher gleich groß, in beiden Schränken */
 cabs.forEach(function(k){
 if(!k.np)return;k.el.style.setProperty('--bh',(bw*3.3).toFixed(1)+'px');
+/* sind die Böden nicht voll, wird der Schrank schmaler (statt halbleerer Böden) */
+k.el.style.maxWidth=k.np<k.cols?Math.ceil(k.np*bw+(k.np-1)*gap+pad+2*k.pw+bw*1.3)+'px':'';
 if(k.np===k.per)return;k.per=k.np;var n=k.books.length;
 [].slice.call(k.body.querySelectorAll('.sh')).forEach(function(s){k.body.removeChild(s)});
 for(var i=0;i<n;i+=k.per){var sh=mk('div','sh flb-rueck'),row=mk('div','row'),br=mk('div','brett');br.appendChild(mk('span','flb-brett'));br.appendChild(mk('span','flb-kante'));k.books.slice(i,i+k.per).forEach(function(b){row.appendChild(b)});sh.appendChild(row);sh.appendChild(br);k.body.insertBefore(sh,k.body.lastChild)}
