@@ -14,7 +14,7 @@
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
     html body > .search-modal.modal__content{background:rgba(255,255,255,.96)!important}
   }
-  html body > .search-modal.open{animation:a2SearchIn .25s cubic-bezier(.2,.7,.2,1) both!important}
+  html body > .search-modal.open{animation:a2SearchIn .25s cubic-bezier(.2,.7,.2,1)!important}
   html body > .search-modal.a2-closing{animation:a2SearchOut .25s cubic-bezier(.4,0,.6,1) both!important;pointer-events:none}
   @keyframes a2SearchIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
   @keyframes a2SearchOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-12px)}}
@@ -22,14 +22,16 @@
   html body.search-modal--open > .overlay.open{opacity:.3!important}
   /* innere Flächen des Themes waren deckend weiss */
   html body > .search-modal .button-wrapper,
-  html body > .search-modal .search-field__wrapper{background:transparent!important}
-  /* mit Ergebnissen: Kopf (Schliessen + Feld) bleibt beim Scrollen lesbar – eigenes Glas über den Karten */
-  html body > .search-modal.searching .button-wrapper,
-  html body > .search-modal.searching .search-field__wrapper{
-    background:rgba(255,255,255,.66)!important;
+  html body > .search-modal .search-field__wrapper,
+  html body > .search-modal .component-tabs,
+  html body > .search-modal .predictive-search-results-content{background:transparent!important}
+  /* mit Ergebnissen: Kopfband (Schliessen + Feld, 136 px) bleibt beim Scrollen lesbar – eigenes Glas über den Karten, unter dem Feld (z 5) */
+  html body > .search-modal.searching::before{
+    content:"";position:absolute;z-index:4;top:0;left:0;right:0;height:150px;pointer-events:none;
+    background:linear-gradient(rgba(255,255,255,.55) 80%,rgba(255,255,255,0));
     -webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);
+    -webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);
   }
-  html body > .search-modal.searching .search-field__wrapper{box-shadow:0 1px 0 rgba(20,20,20,.08)}
   html body > .search-modal .search__input::placeholder{color:rgba(28,28,28,.62);opacity:1}
   html body > .search-modal .field.search-field{border-bottom-color:rgba(28,28,28,.55)}
   html body > .search-modal .search__menu a{transition:color .2s}
@@ -59,11 +61,11 @@
     background:rgba(255,255,255,.5);
   }
   html body > .search-modal .card-collection .card__media{
-    position:relative;aspect-ratio:4/3;width:100%;height:auto!important;padding:0!important;margin:0;
+    position:relative;flex:0 0 auto!important;aspect-ratio:5/4;width:100%;height:auto!important;padding:0!important;margin:0;
     border-radius:10px;overflow:hidden;background:#fff;
   }
   html body > .search-modal .card-collection:not(:has(.card__media))::before{
-    content:"";display:block;aspect-ratio:4/3;border-radius:10px;
+    content:"";display:block;aspect-ratio:5/4;border-radius:10px;
     background:linear-gradient(135deg,#fff,#f3eee3);
   }
   html body > .search-modal .card-collection .lazy-image-container,
@@ -73,7 +75,7 @@
   html body > .search-modal .card-collection .lazy-image-container::before,
   html body > .search-modal .card-collection .lazy-image::before{display:none!important}
   html body > .search-modal .card-collection img.card__image{
-    position:absolute!important;inset:0;width:100%!important;height:100%!important;box-sizing:border-box;padding:12%;
+    position:absolute!important;inset:0;width:100%!important;height:100%!important;box-sizing:border-box;padding:4%;
     object-fit:contain!important;object-position:center!important;opacity:1!important;
     transform:none!important;transition:filter .3s!important;
   }
@@ -129,8 +131,11 @@
     box-shadow:0 0 0 1px var(--bx-gold-l,#f1dea8),inset 0 0 0 1px rgba(255,255,255,.2),0 8px 26px -6px rgba(200,164,92,.6)!important;
   }
   html body .chatty-ai-mode.state-resting .aimode-sbar-container .aimode-sbar-content{opacity:0!important;max-width:0!important;min-width:0!important;width:0!important;flex:0 0 0!important;margin:0!important;overflow:hidden!important;pointer-events:none!important}
-  html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle{width:44px!important;height:44px!important;margin:0!important;flex:0 0 44px!important;display:flex!important;align-items:center;justify-content:center}
-  html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle img{width:28px!important;height:28px!important;border-radius:999px;object-fit:cover}
+  /* App-eigene blaue Kugel + drehender Rand aus: ruhiges Symbol, mittig */
+  html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle{position:absolute!important;inset:0!important;width:auto!important;height:auto!important;margin:0!important;transform:none!important;background:transparent!important;display:flex!important;align-items:center;justify-content:center}
+  html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle::before,
+  html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle::after{display:none!important}
+  html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle img{position:static!important;width:28px!important;height:28px!important;margin:0!important;transform:none!important;border-radius:999px;object-fit:cover}
   /* Desktop mit rechter Seitenleiste (96 px): links daneben, verdeckt weder die Leiste noch "Nach oben" */
   @media (min-width:921px){
     html:has(.secondary-sidebar){--a2-chat-r:112px}
@@ -141,8 +146,7 @@
     html{--a2-chat-r:12px;--a2-chat-b:14px}
     html.a2-home{--a2-chat-b:76px}
     html body .chatty-ai-mode.state-resting .aimode-sbar-dock{width:40px!important}
-    html body .chatty-ai-mode.state-resting .aimode-sbar-container,
-    html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle{width:40px!important;height:40px!important;flex-basis:40px!important}
+    html body .chatty-ai-mode.state-resting .aimode-sbar-container{width:40px!important;height:40px!important}
     html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle img{width:25px!important;height:25px!important}
   }
   @media (prefers-reduced-motion:reduce){
