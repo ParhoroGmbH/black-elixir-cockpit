@@ -244,7 +244,10 @@
     html body #shopify-section-mobile-header .localization-container{display:none!important}
     html body #shopify-section-mobile-header .burger-menu-block{order:-2}
     html body #shopify-section-mobile-header .news-block{order:-1;margin-inline-end:auto}
-    @media (max-width:400px){html body #shopify-section-mobile-header .logo__image-item{height:32px}html body #shopify-section-mobile-header .miscellaneous__subblock>*{width:40px;min-width:0;justify-content:center}html body #shopify-section-mobile-header .miscellaneous__subblock>.cart-block{width:auto}}
+    /* Wunschlisten-Herz (App setzt es in den Warenkorb-Block): links neben die Neuigkeiten – 3 Symbole links, Logo mittig, Suche + Warenkorb rechts */
+    html body #shopify-section-mobile-header joy-wishlist-icon{position:absolute;inset-inline-start:104px;top:50%;transform:translateY(-50%);margin:0}
+    html body #shopify-section-mobile-header :is(.cart-block,.cart-container){position:static}
+    @media (max-width:400px){html body #shopify-section-mobile-header .logo__image-item{height:32px}html body #shopify-section-mobile-header .miscellaneous__subblock>*{width:40px;min-width:0;justify-content:center}html body #shopify-section-mobile-header .miscellaneous__subblock>.cart-block{width:auto}html body #shopify-section-mobile-header joy-wishlist-icon{inset-inline-start:96px;width:36px;overflow:visible}}
   }
   /* A1 12.11.2026 – Arabisch: Fragrance-Library- und DUMO-Landing gespiegelt (Glas-Leiste rechts, Inhalt hält rechts frei). Nur Seitenränder; die Dateien der Landingpages bleiben unverändert. */
   @media (min-width:921px){
