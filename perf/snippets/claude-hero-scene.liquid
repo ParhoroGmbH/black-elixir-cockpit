@@ -250,8 +250,7 @@
     if (el >= DUR) show(si + 1);
   }, 250);
   if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting ? 1 : 0; if (S) S.kick(); }).observe(h);
-  function bgAll() { setTimeout(function () { slides.forEach(function (x) { x.classList.add('bg-ok'); }); }, 2500); }
-  if (document.readyState === 'complete') bgAll(); else addEventListener('load', bgAll);
+  // Perf 13.11.2026: Poster der uebrigen Motive werden bei laufender Szene nie gezeigt (.hsc-live blendet sie aus) und deshalb nicht mehr nach 2,5 s geladen (~580 KB); nur im Ausfall-Fall (kein WebGL) holt fail() sie.
 
   // ---------- 3D: ein Renderer, ein Ort + ein Produkt zur Zeit ----------
   // Perf 13.11.2026: three.js, Panorama und GLB der ersten Folie erst holen, wenn das Poster gemalt ist (zwei Frames + Leerlauf, spaetestens nach 1,8 s); das Poster bleibt bis zur fertigen Szene stehen.
@@ -266,7 +265,7 @@
   async function boot() {
     var canvas = h.querySelector('.hsc-canvas'), snap = h.querySelector('.hsc-snap');
     var THREE, OrbitControls, GLTFLoader, renderer;
-    function fail() { h.classList.add('hsc-fail'); S = { dead: 1 }; activate(want); }
+    function fail() { h.classList.add('hsc-fail'); S = { dead: 1 }; slides.forEach(function (x) { x.classList.add('bg-ok'); }); activate(want); }
     try {
       var m = await Promise.all([import(cfg.lib.three), import(cfg.lib.orbit), import(cfg.lib.gltf)]);
       THREE = m[0]; OrbitControls = m[1].OrbitControls; GLTFLoader = m[2].GLTFLoader;
