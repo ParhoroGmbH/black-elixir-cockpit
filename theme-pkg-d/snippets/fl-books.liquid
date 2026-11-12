@@ -132,7 +132,7 @@ function photo(box,u,alt){
   if(!u){if(f)box.removeChild(f);if(!m)box.appendChild(el('span','flb-mono','F|L'));return}
   if(m)box.removeChild(m);if(!f){f=el('span','flb-fr');box.appendChild(f)}
   var i=new Image(),mine=box._u;i.alt=alt||'';i.decoding='async';i.width=600;i.height=600;
-  i.onload=function(){if(box._u!==mine){if(i.parentNode)i.parentNode.removeChild(i);return}requestAnimationFrame(function(){i.classList.add('on');[].forEach.call(f.querySelectorAll('img'),function(o){if(o!==i){o.classList.remove('on');setTimeout(function(){if(o.parentNode&&!o.classList.contains('on'))o.parentNode.removeChild(o)},500)}})})};
+  i.onload=function(){if(box._u!==mine){if(i.parentNode)i.parentNode.removeChild(i);return}setTimeout(function(){i.classList.add('on');[].forEach.call(f.querySelectorAll('img'),function(o){if(o!==i){o.classList.remove('on');setTimeout(function(){if(o.parentNode&&!o.classList.contains('on'))o.parentNode.removeChild(o)},500)}})},16)};
   i.srcset=sz(u,600)+' 1x, '+sz(u,1200)+' 2x';i.src=sz(u,600);f.appendChild(i);
 }
 /* Holztexturen erst laden, wenn el in Sichtweite kommt */
