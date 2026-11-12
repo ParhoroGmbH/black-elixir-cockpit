@@ -261,6 +261,9 @@
   news-drawer .news-drawer .drawer__heading.drawer__heading{font-family:Jost,sans-serif!important;font-size:12px!important;font-weight:500!important;letter-spacing:.22em!important;text-transform:uppercase;color:var(--bx-gold-l,#f1dea8)!important;min-height:76px}
   html[dir="rtl"] news-drawer .news-drawer .drawer__heading.drawer__heading{letter-spacing:0!important;font-size:15px!important}
   news-drawer .news-drawer .drawer__close.drawer__close{background:rgba(255,255,255,.1)!important;border:1px solid rgba(241,222,168,.42)!important;border-radius:50%!important;color:#fff!important;-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 22px -10px rgba(0,0,0,.6);transition:background .25s,transform .25s,border-color .25s!important}
+  news-drawer .news-drawer .drawer__close.drawer__close::after,news-drawer .news-drawer .drawer__close.drawer__close::before{background:transparent!important}
+  /* Chat-Knopf (App) liegt sonst über der Liste: solange das Fenster offen ist ausblenden */
+  html body:has(news-drawer.active) .chatty-ai-mode{opacity:0!important;pointer-events:none!important;transition:opacity .2s}
   news-drawer .news-drawer .drawer__close svg,news-drawer .news-drawer .drawer__close path{fill:#fff!important}
   news-drawer .news-drawer .drawer__close:hover{background:rgba(200,164,92,.28)!important;border-color:var(--bx-gold-l,#f1dea8)!important;transform:rotate(90deg)}
   news-drawer .news-drawer :focus-visible{outline:2px solid var(--bx-gold-l,#f1dea8)!important;outline-offset:3px}
@@ -339,9 +342,12 @@
   nd.open = function (by) {
     trigger = (by && by !== nd) ? by : document.activeElement;
     openFn.call(nd, by);
-    setTimeout(function () {
-      if (window.trapFocus && panel) window.trapFocus(panel, panel.querySelector('.bxnd-item') || panel.querySelector('.drawer__close'));
-    }, 40);
+    /* das Theme blendet erst im nächsten Frame ein – Fokus danach setzen */
+    var tries = 0;
+    (function focusIn() {
+      if (!nd.classList.contains('active') || !panel.getClientRects().length) { if (++tries < 60) return requestAnimationFrame(focusIn); return; }
+      setTimeout(function () { if (window.trapFocus) window.trapFocus(panel, panel.querySelector('.bxnd-item') || panel.querySelector('.drawer__close')); }, 30);
+    })();
   };
   nd.close = function () {
     if (!nd.classList.contains('active') || nd.classList.contains('bxnd-out')) { if (!nd.classList.contains('bxnd-out')) closeFn.call(nd); return; }
