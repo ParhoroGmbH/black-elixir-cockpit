@@ -174,17 +174,17 @@
      Ton (hell/dunkel) setzt tone() per data-bx-tone an der Kopfzeilen-Sektion – gleiche Zonenlogik wie die linke Leiste.
      Seiten, deren erster Abschnitt dunkel und randlos ist (Startseite .ch, Fragrance Library .fl-land, DUMO .dh): Kopfzeile liegt über dem Abschnitt (Desktop). */
   /* Ankündigungsleiste */
-  html body .announcement-bar-section.announcement-bar-section{background:#0b0b0d!important;box-shadow:inset 0 -1px 0 rgba(200,164,92,.4)}
+  html body .announcement-bar-section.announcement-bar-section{container-type:inline-size;background:#0b0b0d!important;box-shadow:inset 0 -1px 0 rgba(200,164,92,.4)}
   html body .announcement-bar-section .announcement-bar{background:transparent!important}
-  html body .announcement-bar-section .slider__viewport{padding:0!important;height:32px;container-type:inline-size}
+  html body .announcement-bar-section .slider__viewport{padding:0!important;height:32px;width:auto;max-width:none;margin:0 46px;overflow:hidden}
   html body .announcement-bar-section .slideshow__slider{height:32px;align-items:center}
   html body .announcement-bar-section .slideshow__slide{align-items:center;flex-wrap:nowrap;min-width:0;max-width:100%}
   html body .announcement-bar-section .announcement-bar__text-wrapper{min-width:0;overflow:hidden}
   html body .announcement-bar-section :is(.text-block__content,.text-block__item,.text-block__item p){color:#ece6d8!important;font-size:11px!important;line-height:32px!important;letter-spacing:.14em!important;white-space:nowrap;margin:0}
   html body .announcement-bar-section .text-block__item p{display:inline-block;vertical-align:top;animation:bxAnn 16s ease-in-out infinite}
-  @keyframes bxAnn{0%,12%{transform:translateX(0)}50%,62%{transform:translateX(min(0px,calc(100cqw - 100% - 30px)))}100%{transform:translateX(0)}}
+  @keyframes bxAnn{0%,12%{transform:translateX(0)}50%,62%{transform:translateX(min(0px,calc(100cqw - 100% - 150px)))}100%{transform:translateX(0)}}
   html[dir="rtl"] body .announcement-bar-section .text-block__item p{animation-name:bxAnnR;letter-spacing:0!important}
-  @keyframes bxAnnR{0%,12%{transform:translateX(0)}50%,62%{transform:translateX(max(0px,calc(100% + 30px - 100cqw)))}100%{transform:translateX(0)}}
+  @keyframes bxAnnR{0%,12%{transform:translateX(0)}50%,62%{transform:translateX(max(0px,calc(100% + 150px - 100cqw)))}100%{transform:translateX(0)}}
   html body .announcement-bar-section .text-block__icon :is(svg,path,g){fill:var(--bx-gold)!important}
   html body .announcement-bar-section .slideshow__controls-button{height:32px;color:var(--bx-gold-l)}
   html body .announcement-bar-section .slideshow__controls-button :is(svg,path){fill:var(--bx-gold-l)!important;stroke:var(--bx-gold-l)}
