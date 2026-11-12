@@ -8,7 +8,9 @@
 {%- render 'claude-home-fix', sec: section -%}
 <style>/* Perf 12.11.2026: Hintergrundbilder tieferer Sektionen erst laden, wenn die Sektion naht (Klasse bg-in aus claude-home-js); Animationen außerhalb des Sichtbereichs pausieren (ch-off) */
 .js .ch .ca:not(.bg-in),.js .ch .cl:not(.bg-in),.js .ch .cr.cr:not(.bg-in),.js .ch .cv-sec.cv-sec:not(.bg-in),.js .ch .cr:not(.bg-in) .cr-frame{background-image:none!important}
-.ch .ch-off,.ch .ch-off::before,.ch .ch-off::after,.ch .ch-off *,.ch .ch-off *::before,.ch .ch-off *::after{animation-play-state:paused!important}</style>
+.ch .ch-off,.ch .ch-off::before,.ch .ch-off::after,.ch .ch-off *,.ch .ch-off *::before,.ch .ch-off *::after{animation-play-state:paused!important}
+/* Mobil-Bedienbarkeit 12.11.2026: größere Tippfläche für Hero-Punkte (Optik gleich), Kartenlabels lesbar (mind. 12 px) */
+@media (max-width:860px){.ch .ch-dots button{height:44px;margin:-10px 0}.ch .ch-dots button::after{top:20px}.ch .ch-dots button::before{content:"";position:absolute;top:0;bottom:0;left:-4px;right:-4px}.ch .ch-card__tag,.ch .ch-card__vendor{font-size:12px}}</style>
 <div class="ch" id="ch-{{ section.id }}">
   {%- render 'claude-home-a', sec: section -%}
   {%- render 'claude-home-b', sec: section -%}
