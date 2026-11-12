@@ -257,7 +257,7 @@
   var booted = 0;
   function runBoot() { if (!booted) { booted = 1; boot(); } }
   (function () {
-    function idle() { requestAnimationFrame(function () { requestAnimationFrame(function () { if (window.requestIdleCallback) requestIdleCallback(runBoot, { timeout: 800 }); else setTimeout(runBoot, 120); }); }); }
+    function idle() { requestAnimationFrame(function () { requestAnimationFrame(function () { if (window.requestIdleCallback) requestIdleCallback(runBoot, { timeout: 300 }); else setTimeout(runBoot, 120); }); }); }
     var u = /url\(["']?([^"')]+)/.exec(getComputedStyle(slides[0].querySelector('.h3-bgl')).backgroundImage || ''), im;
     if (u) { im = new Image(); im.onload = im.onerror = idle; im.src = u[1]; if (im.complete) idle(); } else idle();
     setTimeout(runBoot, 1800);
@@ -302,7 +302,7 @@
       c = places[url] = { u: ++use, p: null };
       c.p = new THREE.TextureLoader().loadAsync(url).then(function (tex) {
         tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = aniso; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
-        c.tex = tex; return (tex.image.decode ? tex.image.decode().catch(function () {}) : Promise.resolve()).then(function () { return hdrEnv(tex.image); }).then(function (rt) { c.env = rt; return c; });
+        c.tex = tex; return (tex.image.decode ? Promise.race([tex.image.decode().catch(function () {}), new Promise(function (r) { setTimeout(r, 1200); })]) : Promise.resolve()).then(function () { return hdrEnv(tex.image); }).then(function (rt) { c.env = rt; return c; });
       });
       c.p.catch(function () { delete places[url]; });
       return c.p;
@@ -314,15 +314,17 @@
       var x = cv.getContext('2d', { willReadFrequently: true }), c0 = Math.round(H2 * cfg.crop); // Panorama ohne obere 30 % (nie sichtbar): oberste Zeile nach oben strecken
       x.drawImage(img, 0, 0, img.width, 1, 0, 0, W, c0 + 1); x.drawImage(img, 0, c0, W, H2 - c0);
       var d = x.getImageData(0, 0, W, H2).data, f = new Uint16Array(W * H2 * 4), th = THREE.DataUtils.toHalfFloat;
+      var one = th(1), q = Math.ceil(W * H2 / 3); // Perf 13.11.2026: sRGB->linear per Tabelle (256 Werte, gleiches Ergebnis wie lin()), Hauptthread nur 2x freigeben
       for (var i = 0; i < W * H2; i++) {
-        if (i % (W * 64) === 0 && i) await yieldMain();
-        var r = lin(d[4 * i] / 255), g = lin(d[4 * i + 1] / 255), b = lin(d[4 * i + 2] / 255), mx = Math.max(r, g, b), k = mx > 0.55 ? 1 + 9 * Math.pow((mx - 0.55) / 0.45, 2) : 1;
-        f[4 * i] = th(r * k); f[4 * i + 1] = th(g * k); f[4 * i + 2] = th(b * k); f[4 * i + 3] = th(1);
+        if (i && i % q === 0) await yieldMain();
+        var r = LIN[d[4 * i]], g = LIN[d[4 * i + 1]], b = LIN[d[4 * i + 2]], mx = Math.max(r, g, b), k = mx > 0.55 ? 1 + 9 * Math.pow((mx - 0.55) / 0.45, 2) : 1;
+        f[4 * i] = th(r * k); f[4 * i + 1] = th(g * k); f[4 * i + 2] = th(b * k); f[4 * i + 3] = one;
       }
       var dt = new THREE.DataTexture(f, W, H2, THREE.RGBAFormat, THREE.HalfFloatType);
       dt.mapping = THREE.EquirectangularReflectionMapping; dt.colorSpace = THREE.LinearSRGBColorSpace; dt.magFilter = dt.minFilter = THREE.LinearFilter; dt.needsUpdate = true;
       var rt = pmrem.fromEquirectangular(dt); dt.dispose(); return rt;
     }
+    var LIN = new Float64Array(256); for (var li = 0; li < 256; li++) LIN[li] = lin(li / 255);
     function lin(v) { return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
     function loadModel(it) {
       var c = models[it.src]; if (c) { c.u = ++use; return c.p; }
