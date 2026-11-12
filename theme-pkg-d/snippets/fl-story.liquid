@@ -3,7 +3,7 @@
   Aufbau je Kapitel: Szene (Video, bleibt beim Scrollen stehen) -> eine helle, mattierte GLASfläche schiebt sich darüber (Flakon in 3D, Noten, Preis, Kauf); die Szene bleibt dahinter weich sichtbar – kein weißer Schleier mehr (Paket D, 12.11.2026). Nur hinter der Textspalte ist das Glas dichter getönt (Lesbarkeit). Der Flakon steht auf einer Fläche in den Farben der Szene. Die Produktfläche ist NICHT angeheftet (scrollt normal) – so verdeckt die mobile Kopfleiste nie dauerhaft den Flakon.
   Videos (Shopify-Dateien be-fl-story-<szene>-2026-11-12.mp4) sind KI-Szenen OHNE Flakon; der Flakon ist immer echt: 3D-Modell (GLB, 50-ml-Form). Hard Times hat zusätzlich das freigestellte Produktfoto als Ersatz, falls das Modell nicht lädt.
   Produktdaten (Preis, Variante, Noten) kommen live aus Shopify; ein nicht lieferbares Produkt blendet sein Kapitel aus. Warenkorb: window.beLandAdd (snippets/be-landing-cart) wenn vorhanden, sonst <add-to-cart> des Themes.
-  Die Szenen laufen unter der linken Glas-Seitenleiste durch (--fl-sbw, setzt die Landing-Sektion; Inhalte und Glasflächen halten diesen Abstand). Die Seitenleiste bleibt über der ganzen Story weiß (html.fl-dark der Landing-Sektion). {%- endcomment -%}
+  Die Szenen laufen unter der linken Glas-Seitenleiste durch (--fl-sbw, setzt die Landing-Sektion; Inhalte und Glasflächen halten diesen Abstand). Die Seitenleiste bleibt über der ganzen Story hell beschriftet auf klarem Glas. Deshalb heißen die Flächen jetzt .fls-pane/.fls-fin (früher .fls-prod/.fls-end): snippets/claude-global-chrome behandelt die alten Klassennamen als "helle Inseln" und würde die Leiste dort milchig-weiß tönen. {%- endcomment -%}
 <style>
 .fls{--ink:#111;--mut:#463f33;--paper:#f8f6f1;--dark:#0b0a09;--gold:#b8934a;--cream:#f1eadb;--serif:"Cormorant Garamond",Georgia,serif;--sans:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;container:fls/inline-size;position:relative;width:100%;background:var(--dark);color:var(--ink);font-family:var(--sans);font-size:16px;-webkit-font-smoothing:antialiased;line-height:1.5}
 .fls *,.fls *::before,.fls *::after{box-sizing:border-box;margin:0}
@@ -29,7 +29,7 @@
 /* Querformat mit Seitenleiste: Bild linksbündig, damit das ganze Buch neben der Leiste frei liegt (ohne Leiste bleibt es mittig) */
 .fls-ch--intro .fls-media img,.fls-ch--intro .fls-media video{object-position:min(0px,calc(50% + var(--fl-sbw,0px))) 50%}
 @media (max-aspect-ratio:1/1){.fls-ch--intro .fls-media img,.fls-ch--intro .fls-media video{object-position:68% 50%}}
-.fls-prod{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:grid;align-items:center;padding:clamp(20px,5vh,56px) clamp(16px,4cqw,56px) clamp(28px,7vh,72px) calc(var(--fl-sbw,0px) + clamp(16px,4cqw,56px))}
+.fls-pane{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:grid;align-items:center;padding:clamp(20px,5vh,56px) clamp(16px,4cqw,56px) clamp(28px,7vh,72px) calc(var(--fl-sbw,0px) + clamp(16px,4cqw,56px))}
 /* Glas: leicht getönt + weichgezeichnet, die Szene bleibt dahinter sichtbar; ohne backdrop-filter dichter getönt */
 .fls-glass{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:clamp(16px,3cqw,48px);padding:clamp(16px,2.6cqw,36px);border-radius:22px;background:linear-gradient(145deg,rgba(252,248,240,.6),rgba(248,243,233,.46));border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 30px 70px -20px rgba(0,0,0,.55)}
 @supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))){.fls-glass{background:linear-gradient(145deg,rgba(252,248,240,.34),rgba(248,243,233,.2));-webkit-backdrop-filter:blur(16px) saturate(125%);backdrop-filter:blur(16px) saturate(125%)}}
@@ -66,20 +66,20 @@
 .fls .fls-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .fls .fls-btn:disabled,.fls add-to-cart.loading .fls-btn{opacity:.7;cursor:progress}
 .fls-err{margin-top:10px;font-size:13px;color:#a23b2a}.fls-err:empty{display:none}
-.fls-end{position:relative;z-index:2;margin-top:-1px;padding:16vh clamp(16px,6cqw,80px) 2vh calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px));text-align:center;background:radial-gradient(ellipse 46% 60% at 50% 100%,rgba(255,176,96,.14),rgba(255,176,96,0) 70%),linear-gradient(180deg,#050403,var(--dark) 40%)}
+.fls-fin{position:relative;z-index:2;margin-top:-1px;padding:16vh clamp(16px,6cqw,80px) 2vh calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px));text-align:center;background:radial-gradient(ellipse 46% 60% at 50% 100%,rgba(255,176,96,.14),rgba(255,176,96,0) 70%),linear-gradient(180deg,#050403,var(--dark) 40%)}
 /* letzte Szene läuft unten weich ins Dunkel aus – von dort geht es ohne Bruch zu den Regalen */
-.fls-end::before{content:"";position:absolute;left:0;right:0;bottom:calc(100% - 1px);height:14vh;background:linear-gradient(180deg,rgba(5,4,3,0),rgba(5,4,3,.55) 55%,#050403);pointer-events:none}
-.fls-ch:nth-last-child(2) .fls-prod{padding-bottom:max(17vh,110px)}
-.fls-end .fls-eye{justify-content:center;color:var(--cream)}.fls-end .fls-eye::after{content:"";flex:none;width:28px;height:1px;background:var(--gold)}
-.fls-end .fls-h{font-size:clamp(2.2rem,6cqw,4.5rem);color:var(--cream)}.fls-end p{max-width:46ch;margin:14px auto 0;color:#cfc6b2;font-size:17px}
-.fls-end i{display:block;width:1px;height:72px;margin:28px auto 0;background:linear-gradient(180deg,rgba(184,147,74,0),var(--gold))}
+.fls-fin::before{content:"";position:absolute;left:0;right:0;bottom:calc(100% - 1px);height:14vh;background:linear-gradient(180deg,rgba(5,4,3,0),rgba(5,4,3,.55) 55%,#050403);pointer-events:none}
+.fls-ch:nth-last-child(2) .fls-pane{padding-bottom:max(17vh,110px)}
+.fls-fin .fls-eye{justify-content:center;color:var(--cream)}.fls-fin .fls-eye::after{content:"";flex:none;width:28px;height:1px;background:var(--gold)}
+.fls-fin .fls-h{font-size:clamp(2.2rem,6cqw,4.5rem);color:var(--cream)}.fls-fin p{max-width:46ch;margin:14px auto 0;color:#cfc6b2;font-size:17px}
+.fls-fin i{display:block;width:1px;height:72px;margin:28px auto 0;background:linear-gradient(180deg,rgba(184,147,74,0),var(--gold))}
 /* schmalere Desktop-Breiten (Landing bis ca. 1366 px Fenster): Textspalte breiter, damit Name und beide Knöpfe in einer Zeile bleiben */
 @container fls (max-width:1300px){
-.fls-glass{grid-template-columns:minmax(0,.78fr) minmax(0,1fr);gap:20px}.fls-prod{padding-right:28px;padding-left:calc(var(--fl-sbw,0px) + 28px)}
+.fls-glass{grid-template-columns:minmax(0,.78fr) minmax(0,1fr);gap:20px}.fls-pane{padding-right:28px;padding-left:calc(var(--fl-sbw,0px) + 28px)}
 .fls-name{font-size:clamp(2.1rem,4.4cqw,2.7rem)}
 }
 @container fls (max-width:860px){
-.fls-glass{grid-template-columns:minmax(0,1fr);gap:4px;padding:10px;border-radius:18px}.fls-prod{padding:20px 10px 56px calc(var(--fl-sbw,0px) + 10px)}.fls-info{padding:16px 14px 18px}
+.fls-glass{grid-template-columns:minmax(0,1fr);gap:4px;padding:10px;border-radius:18px}.fls-pane{padding:20px 10px 56px calc(var(--fl-sbw,0px) + 10px)}.fls-info{padding:16px 14px 18px}
 .fls-stage{height:clamp(230px,40vh,380px)}.fls-info{max-width:none}
 .fls-name{font-size:clamp(1.9rem,9cqw,2.5rem);margin-top:8px}
 .fls-line{margin-top:10px;font-size:1.12rem;line-height:1.32}
@@ -89,7 +89,7 @@
 .fls .fls-btn{width:100%;padding:10px 8px;font-size:12px;letter-spacing:.1em;text-align:center}
 .fls-cap p{font-size:16px}
 .fls-gap{height:60vh;height:60svh}.fls-ch--intro .fls-gap{height:30vh;height:30svh}
-.fls-end{padding-top:11vh}
+.fls-fin{padding-top:11vh}
 }
 @media (prefers-reduced-motion:reduce){.fls *{transition:none!important}}
 </style>
@@ -224,7 +224,7 @@
     </div>
     <div class="fls-gap" aria-hidden="true"></div>
     {%- if sc != 'library' -%}
-    <div class="fls-prod"><div class="fls-glass">
+    <div class="fls-pane"><div class="fls-glass">
       <div class="fls-stage" data-fls-stage>
         <span class="fls-floor" aria-hidden="true"></span>
         <model-viewer data-src="https://cdn.shopify.com/3d/models/o/{{ glb }}" alt="{{ 'claude.fl.alt_3d_html' | t: name: name }}" camera-orbit="20deg 80deg auto" field-of-view="22deg" min-camera-orbit="auto 45deg auto" max-camera-orbit="auto 110deg auto" camera-controls disable-zoom disable-pan interaction-prompt="none" tone-mapping="neutral" environment-image="neutral" exposure="1.05" shadow-intensity="1.3" shadow-softness=".8" loading="eager"><div slot="hotspot-foot" data-fls-foot data-position="0m 0m 0m" data-normal="0m 1m 0m"></div></model-viewer>
@@ -256,7 +256,7 @@
   </section>
   {%- assign fls_first = false -%}
 {%- endfor -%}
-  <div class="fls-end">
+  <div class="fls-fin">
     <div class="fls-eye">{{ 'claude.fl.end_e_html' | t }}</div>
     <h2 class="fls-h">{{ 'claude.fl.end_h_html' | t }}</h2>
     <p>{{ 'claude.fl.end_p_html' | t }}</p>
@@ -269,7 +269,7 @@
   if (!root || !root.hasAttribute('data-fls') || root.flsOn) return; root.flsOn = 1;
   var still = matchMedia('(prefers-reduced-motion:reduce)').matches, SPEED = 360 / 28, run = 0, n = 0;
   var chs = [].map.call(root.querySelectorAll('[data-fls-ch]'), function (el) {
-    var o = { el: el, pin: el.querySelector('.fls-pin'), prod: el.querySelector('.fls-prod'), v: el.querySelector('video'), mv: el.querySelector('model-viewer'), ph: el.querySelector('[data-fls-photo]'), stage: el.querySelector('[data-fls-stage]'), foot: el.querySelector('[data-fls-foot]'), vis: 0, cov: 0, sv: 0, t0: 0, base: 20, touched: 0 };
+    var o = { el: el, pin: el.querySelector('.fls-pin'), prod: el.querySelector('.fls-pane'), v: el.querySelector('video'), mv: el.querySelector('model-viewer'), ph: el.querySelector('[data-fls-photo]'), stage: el.querySelector('[data-fls-stage]'), foot: el.querySelector('[data-fls-foot]'), vis: 0, cov: 0, sv: 0, t0: 0, base: 20, touched: 0 };
     var v = o.v;
     if (v && !still) {
       // weicher Loop: kurz vor dem Ende auf das Standbild (= erstes Bild) zurückblenden, dann von vorn
