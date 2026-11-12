@@ -1,0 +1,169 @@
+{%- comment -%} Claude · 12.11.2026 – Paket A2: globale Overlays (Such-Panel als Glas, Suchergebnis-Karten, Chatty-Launcher). Nur Optik + kleine Skripte, keine Texte/Links geändert. Gerendert einmal aus layout/theme.liquid NACH claude-global-chrome (überschreibt dessen Chatty-Regeln gezielt). Keine neuen Kundentexte, daher keine Übersetzungstabelle nötig. {%- endcomment -%}
+<style>
+  /* ---------- 1) SUCH-PANEL: Milchglas statt weisser Fläche ---------- */
+  /* Tönung .72 Weiss: dunkle Schrift bleibt auch über dem dunklen Hero lesbar (Kontrast > 7:1), über hellen Seiten wirkt es fast weiss. */
+  html body > .search-modal.modal__content{
+    background:rgba(255,255,255,.72)!important;
+    -webkit-backdrop-filter:blur(28px) saturate(1.7) brightness(1.08);
+    backdrop-filter:blur(28px) saturate(1.7) brightness(1.08);
+    border-bottom:1px solid rgba(255,255,255,.6);
+    border-radius:0 0 22px 22px;
+    box-shadow:0 1px 0 rgba(20,20,20,.1),0 28px 60px -22px rgba(0,0,0,.42);
+    overflow:hidden;
+  }
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    html body > .search-modal.modal__content{background:rgba(255,255,255,.96)!important}
+  }
+  html body > .search-modal.open{animation:a2SearchIn .25s cubic-bezier(.2,.7,.2,1) both!important}
+  html body > .search-modal.a2-closing{animation:a2SearchOut .25s cubic-bezier(.4,0,.6,1) both!important;pointer-events:none}
+  @keyframes a2SearchIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+  @keyframes a2SearchOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-12px)}}
+  /* Seite dahinter bleibt sichtbar: Abdunklung nur leicht */
+  html body.search-modal--open > .overlay.open{opacity:.3!important}
+  /* innere Flächen des Themes waren deckend weiss */
+  html body > .search-modal .button-wrapper,
+  html body > .search-modal .search-field__wrapper{background:transparent!important}
+  /* mit Ergebnissen: Kopf (Schliessen + Feld) bleibt beim Scrollen lesbar – eigenes Glas über den Karten */
+  html body > .search-modal.searching .button-wrapper,
+  html body > .search-modal.searching .search-field__wrapper{
+    background:rgba(255,255,255,.66)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);
+  }
+  html body > .search-modal.searching .search-field__wrapper{box-shadow:0 1px 0 rgba(20,20,20,.08)}
+  html body > .search-modal .search__input::placeholder{color:rgba(28,28,28,.62);opacity:1}
+  html body > .search-modal .field.search-field{border-bottom-color:rgba(28,28,28,.55)}
+  html body > .search-modal .search__menu a{transition:color .2s}
+  html body > .search-modal .search__menu a:hover,
+  html body > .search-modal .search__menu a:focus-visible{color:var(--bx-gold-d,#7d5f25)}
+  html body > .search-modal a:focus-visible,
+  html body > .search-modal button:focus-visible,
+  html body > .search-modal .component-tabs__tab:focus-visible{outline:1px solid var(--bx-gold-d,#7d5f25);outline-offset:3px}
+  @media (max-width:920px){
+    html body > .search-modal.modal__content{border-radius:0 0 18px 18px;width:100%;left:0}
+  }
+
+  /* ---------- 2) SUCHERGEBNISSE: Tabs + Karten ---------- */
+  html body > .search-modal .component-tabs__tab{border-bottom-color:transparent!important;box-shadow:inset 0 -2px 0 transparent;transition:color .2s,box-shadow .25s;cursor:pointer}
+  html body > .search-modal .component-tabs__tab.active{color:#1c1c1c!important;box-shadow:inset 0 -2px 0 var(--bx-gold,#c8a45c)}
+  html body > .search-modal .component-tabs__tab:not(.active):hover{box-shadow:inset 0 -1px 0 rgba(200,164,92,.55)}
+
+  /* Sammlungen: aufgeräumte Karten – Logo ganz sichtbar, Name + Anzahl direkt darunter */
+  html body > .search-modal #content-predictive-search-collections .predictive-search__results-list{
+    display:grid!important;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))!important;gap:20px!important;
+    max-width:1100px;margin:0 auto;padding:8px 24px 24px;list-style:none;
+  }
+  html body > .search-modal #content-predictive-search-collections .predictive-search__list-item{border:0!important;padding:0!important;margin:0!important;width:auto!important;max-width:none!important}
+  html body > .search-modal .card-collection{
+    position:relative;display:flex;flex-direction:column;gap:12px;height:100%;box-sizing:border-box;
+    padding:12px 12px 14px;border-radius:16px;text-align:center;text-decoration:none;
+    background:rgba(255,255,255,.5);
+  }
+  html body > .search-modal .card-collection .card__media{
+    position:relative;aspect-ratio:4/3;width:100%;height:auto!important;padding:0!important;margin:0;
+    border-radius:10px;overflow:hidden;background:#fff;
+  }
+  html body > .search-modal .card-collection:not(:has(.card__media))::before{
+    content:"";display:block;aspect-ratio:4/3;border-radius:10px;
+    background:linear-gradient(135deg,#fff,#f3eee3);
+  }
+  html body > .search-modal .card-collection .lazy-image-container,
+  html body > .search-modal .card-collection .lazy-image{
+    position:absolute!important;inset:0;width:auto!important;height:auto!important;padding:0!important;margin:0!important;aspect-ratio:auto!important;transform:none!important;
+  }
+  html body > .search-modal .card-collection .lazy-image-container::before,
+  html body > .search-modal .card-collection .lazy-image::before{display:none!important}
+  html body > .search-modal .card-collection img.card__image{
+    position:absolute!important;inset:0;width:100%!important;height:100%!important;box-sizing:border-box;padding:12%;
+    object-fit:contain!important;object-position:center!important;opacity:1!important;
+    transform:none!important;transition:filter .3s!important;
+  }
+  html body > .search-modal .card-collection .lazy-image > img:not(.card__image){display:none!important}
+  html body > .search-modal .card-collection .card__title{margin:0;line-height:1.3}
+  html body > .search-modal .card-collection .heading__details{display:block;margin-top:4px;font-size:11px;letter-spacing:.08em;color:rgba(28,28,28,.66)}
+
+  /* "Aufleuchten" bei Hover/Fokus: feiner Goldrand + sanfter Schein auf einer Innenebene – die Karte selbst bewegt sich nicht */
+  html body > .search-modal .card-collection::after,
+  html body > .search-modal .predictive-search__list-item .card.card-js::after{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    box-shadow:0 0 0 1px rgba(200,164,92,0),0 0 0 rgba(200,164,92,0);
+    transition:box-shadow .3s ease;
+  }
+  html body > .search-modal .predictive-search__list-item .card.card-js{position:relative;border-radius:14px}
+  html body > .search-modal .predictive-search__list-item .card.card-js::after{inset:-8px}
+  html body > .search-modal .card-collection:hover::after,
+  html body > .search-modal .card-collection:focus-visible::after,
+  html body > .search-modal .predictive-search__list-item .card.card-js:hover::after,
+  html body > .search-modal .predictive-search__list-item .card.card-js:focus-visible::after{
+    box-shadow:0 0 0 1px rgba(200,164,92,.85),0 10px 34px -10px rgba(200,164,92,.55);
+  }
+  html body > .search-modal .card-collection:hover img.card__image,
+  html body > .search-modal .card-collection:focus-visible img.card__image{filter:brightness(1.04) contrast(1.03)}
+  html body > .search-modal .card-collection:focus-visible,
+  html body > .search-modal .predictive-search__list-item .card.card-js:focus-visible{outline:0}
+  @media (max-width:600px){
+    html body > .search-modal #content-predictive-search-collections .predictive-search__results-list{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;padding:8px 16px 20px}
+  }
+
+  /* ---------- 3) CHATTY: nur ein kleiner, ruhiger Launcher; Chat öffnet erst per Klick ---------- */
+  /* Begrüssungs-Pop-up ("Hallo, wie können wir Ihnen helfen?") ausblenden – solange es in der App nicht abgeschaltet ist */
+  .chatty-ai-mode.state-resting .aimode-psc-host{display:none!important}
+  html body .chatty-ai-mode.state-resting{
+    left:auto!important;transform:none!important;align-items:flex-end!important;
+    right:var(--a2-chat-r,16px)!important;bottom:calc(var(--a2-chat-b,20px) + env(safe-area-inset-bottom,0px))!important;
+  }
+  html body .chatty-ai-mode.state-resting .aimode-sbar-dock{width:44px!important;transform:none!important}
+  /* sanft einblenden, 2 s nach Erscheinen – nur bis zum ersten Öffnen (danach ohne Verzögerung) */
+  html:not(.a2-chat-used) body .chatty-ai-mode.state-resting .aimode-sbar-dock{animation:a2ChatIn .6s ease 2s both}
+  @keyframes a2ChatIn{from{opacity:0}to{opacity:1}}
+  html body .chatty-ai-mode.state-resting .aimode-sbar-container{
+    width:44px!important;height:44px!important;min-width:0!important;padding:0!important;gap:0!important;justify-content:center!important;border-radius:999px!important;
+    background:rgba(22,20,17,.34)!important;
+    -webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5);
+    border:0!important;
+    box-shadow:0 0 0 1px rgba(200,164,92,.8),inset 0 0 0 1px rgba(255,255,255,.14),0 6px 18px -6px rgba(0,0,0,.45)!important;
+    transition:box-shadow .3s ease,background .3s ease;
+  }
+  html body .chatty-ai-mode.state-resting .aimode-sbar-container:hover,
+  html body .chatty-ai-mode.state-resting .aimode-sbar-container:focus-visible{
+    background:rgba(22,20,17,.46)!important;
+    box-shadow:0 0 0 1px var(--bx-gold-l,#f1dea8),inset 0 0 0 1px rgba(255,255,255,.2),0 8px 26px -6px rgba(200,164,92,.6)!important;
+  }
+  html body .chatty-ai-mode.state-resting .aimode-sbar-container .aimode-sbar-content{opacity:0!important;max-width:0!important;min-width:0!important;width:0!important;flex:0 0 0!important;margin:0!important;overflow:hidden!important;pointer-events:none!important}
+  html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle{width:44px!important;height:44px!important;margin:0!important;flex:0 0 44px!important;display:flex!important;align-items:center;justify-content:center}
+  html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle img{width:28px!important;height:28px!important;border-radius:999px;object-fit:cover}
+  /* Desktop mit rechter Seitenleiste (96 px): links daneben, verdeckt weder die Leiste noch "Nach oben" */
+  @media (min-width:921px){
+    html:has(.secondary-sidebar){--a2-chat-r:112px}
+    /* Startseite: über der unteren Hero-Bedienzone (Pfeile, Chips, Seifen-Leiste) */
+    html.a2-home{--a2-chat-b:84px}
+  }
+  @media (max-width:920px){
+    html{--a2-chat-r:12px;--a2-chat-b:14px}
+    html.a2-home{--a2-chat-b:76px}
+    html body .chatty-ai-mode.state-resting .aimode-sbar-dock{width:40px!important}
+    html body .chatty-ai-mode.state-resting .aimode-sbar-container,
+    html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle{width:40px!important;height:40px!important;flex-basis:40px!important}
+    html body .chatty-ai-mode.state-resting .aimode-sbar-sparkle img{width:25px!important;height:25px!important}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html body > .search-modal.open,html body > .search-modal.a2-closing{animation-duration:.01s!important}
+    html body .chatty-ai-mode.state-resting .aimode-sbar-dock{animation:none!important}
+  }
+</style>
+<script>
+(function(){
+  var de=document.documentElement;
+  {% if template.name == 'index' %}de.classList.add('a2-home');{% endif %}
+  /* Chatty: nach dem ersten Klick auf den Launcher keine Einblend-Verzögerung mehr */
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.chatty-ai-mode'))de.classList.add('a2-chat-used')},true);
+  /* Such-Panel: das Theme entfernt das Panel beim Schliessen sofort aus dem DOM – eine Kopie blendet 250 ms aus */
+  document.addEventListener('searchmodal:close',function(){
+    var m=document.querySelector('body > .search-modal.open'); if(!m) return;
+    var c=m.cloneNode(true);
+    c.classList.add('a2-closing'); c.setAttribute('aria-hidden','true'); c.inert=true;
+    c.querySelectorAll('[id]').forEach(function(n){n.removeAttribute('id')});
+    document.body.appendChild(c);
+    setTimeout(function(){c.remove()},260);
+  });
+})();
+</script>
