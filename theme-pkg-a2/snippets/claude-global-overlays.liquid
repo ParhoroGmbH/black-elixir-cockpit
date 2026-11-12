@@ -49,7 +49,7 @@
   html body > .search-modal .component-tabs__tab.active{color:#1c1c1c!important;box-shadow:inset 0 -2px 0 var(--bx-gold,#c8a45c)}
   html body > .search-modal .component-tabs__tab:not(.active):hover{box-shadow:inset 0 -1px 0 rgba(200,164,92,.55)}
 
-  /* Sammlungen: aufgeräumte Karten – Logo ganz sichtbar, Name + Anzahl direkt darunter */
+  /* Sammlungen: aufgeräumte Karten – Logo ganz sichtbar, Name + Anzahl direkt darunter. Alle Sammlungsbilder sind quadratisch mit mittigem Motiv (geprüft 12.11.2026), daher 1:1-Feld ohne Beschnitt. */
   html body > .search-modal #content-predictive-search-collections .predictive-search__results-list{
     display:grid!important;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))!important;gap:20px!important;
     max-width:1100px;margin:0 auto;padding:8px 24px 24px;list-style:none;
@@ -61,11 +61,11 @@
     background:rgba(255,255,255,.5);
   }
   html body > .search-modal .card-collection .card__media{
-    position:relative;flex:0 0 auto!important;aspect-ratio:5/4;width:100%;height:auto!important;padding:0!important;margin:0;
+    position:relative;flex:0 0 auto!important;aspect-ratio:1/1;width:100%;height:auto!important;padding:0!important;margin:0;
     border-radius:10px;overflow:hidden;background:#fff;
   }
   html body > .search-modal .card-collection:not(:has(.card__media))::before{
-    content:"";display:block;aspect-ratio:5/4;border-radius:10px;
+    content:"";display:block;aspect-ratio:1/1;border-radius:10px;
     background:linear-gradient(135deg,#fff,#f3eee3);
   }
   html body > .search-modal .card-collection .lazy-image-container,
@@ -75,7 +75,7 @@
   html body > .search-modal .card-collection .lazy-image-container::before,
   html body > .search-modal .card-collection .lazy-image::before{display:none!important}
   html body > .search-modal .card-collection img.card__image{
-    position:absolute!important;inset:0;width:100%!important;height:100%!important;box-sizing:border-box;padding:4%;
+    position:absolute!important;inset:0;width:100%!important;height:100%!important;box-sizing:border-box;padding:0;
     object-fit:contain!important;object-position:center!important;opacity:1!important;
     transform:none!important;transition:filter .3s!important;
   }
