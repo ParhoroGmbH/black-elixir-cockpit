@@ -1,0 +1,178 @@
+{%- comment -%} Fragrance Library Landing. Oben die Scroll-Story (snippets/fl-story.liquid: Bibliothek bei Nacht + vier Welten), darunter das Regal. Files (Settings > Files): fl-plank/stile/back.jpg, fl-logo.png. Der frühere Scroll-Film (fl-opening.mp4, fl-f001..fl-f120.jpg) wurde am 12.11.2026 durch die Story ersetzt; seine CSS-Regeln (.scene/.stage/.cap/.bar) und die Einstellungen video/video_url/heading/subheading sind ungenutzt. {%- endcomment -%}
+{%- paginate collection.products by 60 -%}
+{%- render 'be-landing-cart' -%}
+<style>
+.fl-land{--bg:#0b0a09;--fg:#f1eadb;--muted:#a79f8e;--gold:#c9a45c;--line:rgba(201,164,92,.28);--serif:"Cormorant Garamond",Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",sans-serif}.fl-land *{box-sizing:border-box;margin:0}.fl-land{background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased}.fl-land .eyebrow{font-size:.8rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}.fl-land h1,.fl-land h2,.fl-land .cap .h{font-family:var(--serif);font-weight:400;line-height:1.02;text-wrap:balance}.fl-land .scene{height:380vh;position:relative}.fl-land .stage{position:sticky;top:0;height:100svh;overflow:hidden;background:#000}.fl-land .stage video,.fl-land .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.fl-land .stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),transparent 30%,transparent 55%,rgba(0,0,0,.75));pointer-events:none}.fl-land .cap{position:absolute;left:0;right:0;padding:0 clamp(16px,6vw,80px);color:#f1eadb;opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s;z-index:2}.fl-land .cap.on{opacity:1;transform:none}.fl-land .cap.top{top:12vh}.fl-land .cap.bot{bottom:9vh}.fl-land .cap .h{font-size:clamp(2.4rem,7vw,5.5rem);margin-top:10px}.fl-land .cap p{max-width:38ch;margin-top:14px;line-height:1.6;color:#d8cfbb}.fl-land .buy{display:inline-flex;align-items:center;gap:.5em;min-height:44px;margin-top:22px;padding:12px 30px;border:1px solid var(--gold);color:#f1eadb;text-decoration:none;letter-spacing:.2em;font-size:.875rem;touch-action:manipulation;text-transform:uppercase;backdrop-filter:blur(6px);background:rgba(0,0,0,.35)}.fl-land .bar{position:absolute;left:0;top:0;height:2px;background:var(--gold);width:0;z-index:3}.fl-land .lib{padding:16vh clamp(16px,6vw,80px)}.fl-land .case{position:relative;margin:78px 0 60px;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.15) 40%,rgba(0,0,0,.45)),url({{ 'fl-back.jpg' | file_url }}) top left/1400px auto repeat;border:0;border-left:clamp(26px,4vw,52px) solid #2a1209;border-right:clamp(26px,4vw,52px) solid #2a1209;border-image:url({{ 'fl-stile.jpg' | file_url }}) 0 40 / 0 clamp(26px,4vw,52px) stretch;box-shadow:inset 0 0 90px rgba(0,0,0,.9),inset 10px 0 14px -6px rgba(255,190,140,.16),inset -10px 0 14px -6px rgba(255,190,140,.16),0 30px 60px -20px #000;padding:10px 0 0}.fl-land .case::before{content:"";position:absolute;left:calc(-1*clamp(26px,4vw,52px) - 16px);right:calc(-1*clamp(26px,4vw,52px) - 16px);top:-66px;height:66px;border-radius:2px 2px 0 0;background:
+linear-gradient(180deg,rgba(255,205,160,.32) 0 3px,transparent 3px 12px,rgba(0,0,0,.55) 12px 15px,transparent 15px 28px,rgba(255,205,160,.14) 28px 30px,rgba(0,0,0,.65) 30px 33px,transparent 33px 44px,rgba(0,0,0,.5) 62px 66px),
+repeating-linear-gradient(90deg,rgba(0,0,0,.55) 0 7px,transparent 7px 16px) 0 44px/100% 14px no-repeat,
+url({{ 'fl-plank.jpg' | file_url }}) center/cover;box-shadow:0 10px 18px -4px #000,0 -1px 0 rgba(255,205,160,.25) inset}.fl-land .case::after{content:"";position:absolute;left:calc(-1*clamp(26px,4vw,52px) - 8px);right:calc(-1*clamp(26px,4vw,52px) - 8px);bottom:-46px;height:46px;background:linear-gradient(180deg,rgba(0,0,0,.6),transparent 12%,rgba(255,205,160,.12) 30%,transparent 34%,rgba(0,0,0,.5)),url({{ 'fl-plank.jpg' | file_url }}) center/cover;box-shadow:0 22px 30px -6px #000}.fl-land .sh{--bh:min(52vh,400px);margin-bottom:6px;position:relative}.fl-land .sh .row{display:flex;align-items:flex-end;gap:5px;padding:38px 3vw 0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}.fl-land .shnav{position:absolute;top:calc(38px + var(--bh)/2);transform:translateY(-50%);width:46px;height:46px;border-radius:50%;z-index:5;display:flex;align-items:center;justify-content:center;border:1px solid var(--gold);background:rgba(10,8,6,.78);cursor:pointer;color:#f1eadb;opacity:.95;box-shadow:0 6px 16px rgba(0,0,0,.55);transition:opacity .25s,background .25s}.fl-land .shnav svg{width:20px;height:20px;filter:drop-shadow(0 1px 2px #000);animation:flnudge 1.8s ease-in-out infinite}.fl-land .shnav.prev{left:10px}.fl-land .shnav.prev svg{animation-name:flnudgeL}.fl-land .shnav.next{right:10px}.fl-land .shnav:hover{background:rgba(201,164,92,.22)}.fl-land .shnav[disabled]{opacity:0;pointer-events:none}@keyframes flnudge{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}@keyframes flnudgeL{0%,100%{transform:translateX(0)}50%{transform:translateX(-3px)}}@media(max-width:700px){.fl-land .shnav{display:none}}.fl-land .plank{position:relative;height:70px;background:linear-gradient(180deg,rgba(255,200,150,.30),rgba(255,200,150,.06) 10%,transparent 24%,transparent 70%,rgba(0,0,0,.6)),url({{ 'fl-plank.jpg' | file_url }}) center/cover;border-top:2px solid rgba(255,205,160,.35);border-radius:0 0 3px 3px;box-shadow:0 18px 24px -6px #000,inset 0 -5px 8px rgba(0,0,0,.5);display:grid;place-items:center}.fl-land .plank::before{content:"";position:absolute;left:0;right:0;top:-16px;height:16px;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent),url({{ 'fl-plank.jpg' | file_url }}) center/cover;filter:brightness(1.25);clip-path:polygon(1.5% 0,98.5% 0,100% 100%,0 100%);z-index:0}.fl-land .sh .row{position:relative;z-index:1}.fl-land .plate{padding:6px 22px;background:none;color:#d9b768;font-family:var(--serif);font-weight:600;font-size:clamp(.8rem,1.6vw,1.05rem);letter-spacing:.24em;text-transform:uppercase;text-align:center;max-width:92%;background:linear-gradient(180deg,#f0d38f,#c9a45c 55%,#8f6a2e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 -1px 0 rgba(0,0,0,.9)) drop-shadow(0 1px 0 rgba(255,215,150,.25))}.fl-land .lib h2 small{display:block;font-size:.9rem;font-family:var(--sans);letter-spacing:.2em;color:var(--muted);margin-top:14px}.fl-land .detail{min-height:0;padding:22px 4vw 26px;display:grid;gap:6px;align-content:start;justify-items:start}.fl-land .detail b{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,5vw,3.4rem);color:#f1eadb}.fl-land .detail p{color:#b8ae98}.fl-land .chips{display:flex;gap:8px;margin-top:8px}.fl-land .chip{background:none;border:1px solid var(--line);color:#f1eadb;min-height:44px;padding:8px 18px;letter-spacing:.14em;cursor:pointer;font-size:.875rem;touch-action:manipulation}.fl-land .chip.on{border-color:#c9a45c;color:#c9a45c}.fl-land .price{font-family:var(--serif);font-size:1.7rem;color:#c9a45c;margin-top:6px}.fl-land .price .uvp{font-size:1rem;color:var(--muted);margin-right:10px;font-family:var(--sans);letter-spacing:.04em}.fl-land .price .uvp s{text-decoration-thickness:1px}.fl-land .legal,.fl-land .ship{display:block;font-family:var(--sans);font-size:.85rem;letter-spacing:.02em;color:var(--muted);margin-top:4px}.fl-land .ship{color:#d8cfbb}.fl-land .price small{font-size:.85rem;color:var(--muted);font-family:var(--sans);letter-spacing:.1em}.fl-land .detail .buy{margin-top:12px;color:#f1eadb}.fl-land .lib h1{font-size:clamp(2.2rem,6vw,4.5rem);margin:12px 0 20px}.fl-land .intro{max-width:62ch;font-size:1.05rem;line-height:1.65;color:#d8cfbb;margin:0 0 44px}.fl-land .intro p{margin:0 0 .6em}.fl-land .hint{display:none;font-size:.9rem;color:var(--muted);margin:-28px 0 20px}@media(pointer:coarse){.fl-land .hint{display:block}}.fl-land .trust{list-style:none;padding:28px 0 0;margin:70px 0 0;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:14px 40px;font-size:.95rem;color:#d8cfbb}.fl-land .trust li{display:flex;align-items:center;gap:10px}.fl-land .trust .pay{display:flex;flex-wrap:wrap;gap:6px}.fl-land .trust .pay svg{height:24px;width:auto}.fl-land .book{container-type:inline-size;flex:0 0 auto;height:var(--bh);width:calc(var(--bh)/3.3);border:0;cursor:pointer;touch-action:manipulation;color:#d9b768;display:flex;flex-direction:column;align-items:center;padding:calc(var(--bh)*.07) 0 calc(var(--bh)*.055);border-radius:2px 2px 0 0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.05),transparent 60%),repeating-linear-gradient(37deg,rgba(255,255,255,.012) 0 2px,transparent 2px 5px),var(--c);box-shadow:inset -6px 0 10px rgba(0,0,0,.35),inset 3px 0 6px rgba(255,255,255,.05);transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s}.fl-land .book .t{font-family:var(--serif);font-size:9cqw;letter-spacing:.2em;text-align:center;line-height:1.5}.fl-land .book .n{min-height:0;overflow:visible}.fl-land .book.long .n{font-size:11.5cqw;letter-spacing:.06em}.fl-land .book.light{color:#8a6a26}.fl-land .book.light .s,.fl-land .book.light .t{color:#8a6a26}.fl-land .book.light .l{background:#8a6a26}.fl-land .book .l{width:80%;height:1px;background:#c9a45c;margin:7% 0}.fl-land .book .n{flex:1;writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--serif);font-size:17cqw;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;text-align:center}.fl-land .book .fl{width:56%;aspect-ratio:2/1;display:grid;place-items:center;background:linear-gradient(135deg,#e7c987,#9c7434 55%,#d3ab60);color:#1a1712;font-family:var(--serif);font-size:15cqw;margin-bottom:6%}.fl-land .book .s{font-size:6.4cqw;letter-spacing:.22em;color:#c9a45c}.fl-land .book:hover,.fl-land .book.on{transform:translateY(-26px);box-shadow:0 20px 30px -10px #000,inset -6px 0 10px rgba(0,0,0,.5)}.fl-land .book.on{outline:1px solid var(--gold)}.fl-land .book:focus-visible,.fl-land .chip:focus-visible,.fl-land .buy:focus-visible,.fl-land .shnav:focus-visible{outline:2px solid var(--gold);outline-offset:3px}.fl-land .shnav{touch-action:manipulation}
+.fl-land .stage .fl{position:absolute;left:clamp(12px,3vw,32px);top:clamp(72px,9vw,110px);height:44px;width:auto;z-index:4;filter:drop-shadow(0 0 12px rgba(201,164,92,.35))}.fl-land{overflow-x:clip;background:var(--bg);color:var(--fg);font-family:var(--sans)}
+@media(max-width:700px){.fl-land .scene{height:180vh}.fl-land .sh{--bh:clamp(220px,72vw,300px)}.fl-land .sh .row{gap:4px;padding-left:2vw;padding-right:2vw}.fl-land .book .t,.fl-land .book .s{display:none}.fl-land .book .l{margin:4% 0}}
+.fl-land .detail{grid-template-columns:minmax(200px,340px) minmax(220px,1fr) clamp(180px,22vw,300px);column-gap:4vw}.fl-land .detail>*{grid-column:1}.fl-land .detail>.notes{grid-column:2;grid-row:1/span 6;align-self:center;border-left:1px solid var(--line);padding-left:clamp(16px,3vw,44px);display:grid;gap:14px;max-width:560px}.fl-land .notes .h{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}.fl-land .notes .k{display:block;font-size:.75rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}.fl-land .notes .v{display:block;font-family:var(--serif);font-size:1.15rem;line-height:1.4;color:#f1eadb}
+.fl-land .detail>.pic{grid-column:3;grid-row:1/span 6;align-self:center;justify-self:end;width:100%;height:auto;aspect-ratio:1;object-fit:cover;box-shadow:0 14px 30px -10px #000}
+.fl-land .sh{container-type:inline-size}
+@media(min-width:701px){@container (max-width:900px){.fl-land .detail{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,clamp(140px,24cqw,200px));column-gap:28px;padding-left:28px;padding-right:28px}.fl-land .detail b{font-size:clamp(1.7rem,5.2cqw,2.6rem)}.fl-land .detail>.notes{padding-left:22px}}}
+.fl-land .book{position:relative}.fl-land .book:hover::after,.fl-land .book.on::after{content:"";position:absolute;left:0;right:0;top:100%;height:26px}
+@media(max-width:700px){.fl-land .detail{grid-template-columns:1fr}.fl-land .detail>.notes{grid-column:1;grid-row:auto;border-left:0;border-top:1px solid var(--line);padding:14px 0 0;margin-top:8px}.fl-land .detail>.pic{grid-column:1;grid-row:auto;justify-self:start;width:min(260px,70%);margin-top:12px}}
+@media(prefers-reduced-motion:reduce){.fl-land .shnav svg{animation:none}.fl-land .book,.fl-land .cap,.fl-land .shnav{transition:none}}
+/* Claude 12.11.2026 Runde 2: volle Breite (wie DUMO: Flaeche laeuft unter der linken Seitenleiste durch), Kauf im Detailfeld, Holzregal mit Tiefe, Logo/Untertitel-Position, Handy-Buchruecken */
+.fl-land{width:calc(100% + var(--fl-sbw,0px));margin-left:calc(-1*var(--fl-sbw,0px))}
+.fl-land .lib{padding-left:calc(var(--fl-sbw,0px) + clamp(16px,4vw,64px));padding-right:clamp(16px,4vw,64px)}
+.fl-land .cap{padding-left:calc(var(--fl-sbw,0px) + clamp(16px,6vw,80px))}
+.fl-land .cap.bot{bottom:calc(9vh + var(--fl-off,0px))}
+.fl-land .stage .fl{left:calc(var(--fl-sbw,0px) + clamp(16px,3vw,40px));top:clamp(16px,2.4vw,32px);right:auto;bottom:auto}
+.main-sidebar,.main-sidebar *{transition:color .4s ease,fill .4s ease}
+html.fl-dark .main-sidebar,html.fl-dark .main-sidebar a,html.fl-dark .main-sidebar span,html.fl-dark .main-sidebar button,html.fl-dark .main-sidebar p,html.fl-dark .main-sidebar div{color:#fff!important}
+html.fl-dark .main-sidebar svg,html.fl-dark .main-sidebar svg *{fill:#fff!important;color:#fff!important}
+.fl-land .acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}
+.fl-land .detail .acts .buy{margin-top:0;cursor:pointer;font-family:var(--sans);border-radius:0;white-space:nowrap;flex:1 1 auto;justify-content:center;padding-left:18px;padding-right:18px;letter-spacing:.16em}
+.fl-land .detail .acts .add{background:var(--gold);color:#14100a;border-color:var(--gold);font-weight:500;backdrop-filter:none;transition:background .25s}
+.fl-land .detail .acts .add:hover{background:#dcbc7a}
+.fl-land .detail .acts .add:disabled{opacity:.75;cursor:default}
+.fl-land .acts .err{flex-basis:100%;font-size:.85rem;color:#e08a6f}
+.fl-land .acts .err:empty{display:none}
+/* Regal: Licht von oben, Schatten unter dem Brett, Buecher stehen auf der Brettflaeche, Messingschiene mit Schild */
+.fl-land .sh::before{content:"";position:absolute;left:0;right:0;top:0;height:calc(38px + var(--bh));background:radial-gradient(ellipse 62% 78% at 50% -4%,rgba(255,198,124,.36),rgba(255,190,116,.12) 46%,transparent 74%);pointer-events:none;z-index:0}
+.fl-land .sh::after{content:"";position:absolute;left:0;right:0;top:0;height:64px;background:linear-gradient(180deg,rgba(0,0,0,.78),rgba(0,0,0,.3) 45%,transparent);pointer-events:none;z-index:2}
+.fl-land .sh .row{padding-bottom:13px}
+.fl-land .book::before{content:"";position:absolute;left:-5%;right:-5%;top:100%;height:13px;background:radial-gradient(ellipse 50% 100% at 50% 0,rgba(0,0,0,.85),rgba(0,0,0,.35) 55%,transparent 100%);pointer-events:none;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .45s}
+.fl-land .book:hover::before,.fl-land .book.on::before{transform:translateY(26px) scaleX(.82);opacity:.45}
+.fl-land .book{background:linear-gradient(90deg,rgba(255,255,255,.07),transparent 16%,transparent 78%,rgba(0,0,0,.28)),linear-gradient(180deg,rgba(255,214,160,.1),transparent 22%),radial-gradient(circle at 30% 20%,rgba(255,255,255,.05),transparent 60%),repeating-linear-gradient(37deg,rgba(255,255,255,.012) 0 2px,transparent 2px 5px),var(--c)}
+.fl-land .plank{height:74px;border-top:0;background:linear-gradient(180deg,rgba(255,214,170,.42) 0,rgba(255,214,170,.12) 3px,transparent 9px,transparent 34%,rgba(255,236,210,.07) 40%,transparent 50%,transparent 72%,rgba(0,0,0,.62)),url({{ 'fl-plank.jpg' | file_url }}) center/cover;box-shadow:0 26px 30px -8px rgba(0,0,0,.95),0 3px 0 rgba(0,0,0,.6),inset 0 -6px 9px rgba(0,0,0,.55)}
+.fl-land .plank::before{top:-17px;height:17px;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.05) 70%,rgba(255,220,180,.16)),url({{ 'fl-plank.jpg' | file_url }}) center/cover;filter:brightness(1.35) saturate(1.05);clip-path:polygon(1.2% 0,98.8% 0,100% 100%,0 100%)}
+.fl-land .plank::after{content:"";position:absolute;left:1.5%;right:1.5%;top:50%;height:3px;transform:translateY(-50%);background:linear-gradient(180deg,#f3dda0,#b88d42 45%,#6e4f1e);box-shadow:0 1px 2px rgba(0,0,0,.8),0 -1px 0 rgba(0,0,0,.35);border-radius:2px}
+.fl-land .plate{position:relative;z-index:1;padding:7px 26px;max-width:86%;font-size:clamp(.72rem,1.25vw,.92rem);letter-spacing:.22em;background:radial-gradient(circle at 9px 50%,#6b4d1c 0 1.6px,transparent 2.2px),radial-gradient(circle at calc(100% - 9px) 50%,#6b4d1c 0 1.6px,transparent 2.2px),linear-gradient(180deg,#f1dca2,#caa258 38%,#a57c36 62%,#d9b970);-webkit-background-clip:border-box;background-clip:border-box;-webkit-text-fill-color:#221405;color:#221405;font-weight:700;text-shadow:0 1px 0 rgba(255,238,196,.45);border-radius:2px;box-shadow:0 2px 5px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,246,214,.7),inset 0 -1px 0 rgba(70,45,10,.6);filter:none}
+.fl-land .swipe{display:none}
+@media(max-width:700px){
+.fl-land .lib{padding-left:16px;padding-right:16px}
+.fl-land .book .n{line-height:1.12}
+.fl-land .book.long .n{font-size:max(13px,16cqw);letter-spacing:.05em}
+.fl-land .trust li{flex-wrap:wrap}
+.fl-land .swipe{display:flex;position:absolute;right:0;top:38px;height:var(--bh);width:46px;align-items:center;justify-content:flex-end;padding-right:6px;background:linear-gradient(90deg,transparent,rgba(8,6,4,.82));color:#f1eadb;pointer-events:none;z-index:3;transition:opacity .4s}
+.fl-land .swipe svg{width:20px;height:20px;animation:flnudge 1.8s ease-in-out infinite}
+.fl-land .sh.scrolled .swipe,.fl-land .sh.noflow .swipe{opacity:0}
+.fl-land .plate{font-size:.68rem;letter-spacing:.13em;padding:7px 20px;max-width:94%}
+}
+@media(prefers-reduced-motion:reduce){.fl-land .swipe svg{animation:none}.fl-land .book::before{transition:none}}
+</style>
+<div class="fl-land">
+{% render 'fl-story' %}
+<section class="lib">
+<div class="eyebrow">Fragrance Library</div>
+<h1>{{ section.settings.heading_lib }}</h1>
+<div class="intro">{% if collection.description != blank %}{{ collection.description }}{% else %}<p>{{ section.settings.intro }}</p>{% endif %}</div>
+<p class="hint">{{ section.settings.hint }}</p>
+<div class="case" id="fl-case"></div>
+<ul class="trust"><li>{{ section.settings.trust_delivery }}</li><li>{{ section.settings.trust_shipping }}</li><li>{{ section.settings.trust_return }}</li><li>{{ section.settings.trust_payment }}<span class="pay">{% for type in shop.enabled_payment_types %}{{ type | payment_type_svg_tag }}{% endfor %}</span></li></ul>
+</section>
+</div>
+<script>
+window.FL_DATA=[{% for p in collection.products %}{%- assign d = p.description | replace: '</p>', '</p>|~|' | replace: '</li>', '</li>|~|' | replace: '</div>', '</div>|~|' | replace: '<br', '|~|<br' | replace: '</h', '|~|</h' | strip_html | newline_to_br | replace: '|~|', '<br />' -%}{%- assign kop = '' -%}{%- assign her = '' -%}{%- assign bas = '' -%}{%- assign dn = '' -%}{%- if d contains 'Duftnoten:' -%}{%- assign dn = d | split: 'Duftnoten:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Kopfnote:' -%}{%- assign kop = d | split: 'Kopfnote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Herznote:' -%}{%- assign her = d | split: 'Herznote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Basisnote:' -%}{%- assign bas = d | split: 'Basisnote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- capture be_uvp_ausnahme -%}{%- render 'be-uvp-ausnahme', vendor: p.vendor -%}{%- endcapture -%}{"h":{{ p.handle | json }},"u":{{ p.url | json }},"t":{{ p.title | json }},"m":{{ p.featured_image | image_url: width: 640 | json }},"n":[{{ kop | json }},{{ her | json }},{{ bas | json }}],"dn":{{ dn | json }},"v":[{% for v in p.variants %}{"t":{{ v.title | json }},"p":{{ v.price | default: 0 }},"c":{%- if be_uvp_ausnahme contains 'ja' -%}{{ v.compare_at_price | default: 0 }}{%- else -%}0{%- endif -%},"i":{{ v.id }},"a":{{ v.available }},"up":{{ v.unit_price | default: 0 }},"ur":{{ v.unit_price_measurement.reference_value | default: 0 }},"uu":{{ v.unit_price_measurement.reference_unit | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% unless forloop.last %},{% endunless %}{% endfor %}];
+</script>
+<script>
+(function(){
+var C={"Rebecca":"#363736","Othello":"#2f2f2d","Orlando":"#eaebef","Romeo and Juliet":"#c23a3d","Beloved":"#e7e9ed","The House of Mirth":"#2f2f2d","Invisible Cities":"#e8eaee","Hard Times":"#282926","The Alchemist":"#2a2928","Utopia":"#2b3652","Anna Karenina":"#f1f2f1","The Secret Garden":"#b83034","Emma":"#f1f2f2","Lost Illusions":"#dadbd4","Crime and Punishment":"#b1272c","Notes from Underground":"#2b2a29","Vanity Fair":"#202a3d","War and Peace":"#aa2e2e","Hamlet":"#232323","The Call of the Wild":"#f6f6f5","The Castle":"#242f42","The Magic Mountain":"#f6f6f6","One Hundred Years of Solitude":"#f3f3f2","The Trial":"#2a282a","The Stranger":"#313131","Things Fall Apart":"#292929","The Great Gatsby":"#f6f6f6","The Gambler":"#b02b2f","To the Lighthouse":"#2e3a4f","Heart of Darkness":"#2a2a2a","In Search of Lost Time":"#273147","Sense and Sensibility":"#f1f2f0","The Grapes of Wrath":"#bc3838","The Sun Also Rises":"#313133","A Tale of Two Cities":"#283447","The Red and the Black":"#b93132","1984":"#f4f4f2","The Brothers Karamazov":"#333234","Republic":"#2f2f2f","The Overcoat":"#202a3d","The Age of Innocence":"#aa252b","The Golden Bowl":"#a8272a"};
+function lum(h){var r=parseInt(h.substr(1,2),16),g=parseInt(h.substr(3,2),16),b=parseInt(h.substr(5,2),16);return(.299*r+.587*g+.114*b)/255}
+function grp(h){var r=parseInt(h.substr(1,2),16),g=parseInt(h.substr(3,2),16),b=parseInt(h.substr(5,2),16);if(lum(h)>.62)return 'w';if(r>g+50&&r>b+50)return 'r';if(b>r+18&&b>g)return 'b';return 'k'}
+function arrange(L){var G={},order=[];L.forEach(function(B){var g=grp(C[B[0]]||'#2a2a2a');(G[g]=G[g]||[]).push(B);if(order.indexOf(g)<0)order.push(g)});var out=[],last='';while(out.length<L.length){var best='';order.forEach(function(g){if(g!==last&&G[g].length&&(!best||G[g].length>G[best].length))best=g});if(!best)order.forEach(function(g){if(G[g].length&&!best)best=g});out.push(G[best].shift());last=best}return out}
+var X="Extrait de Parfum",E="Eau de Parfum",CTA={{ section.settings.cta | default: 'Zum Duft' | json }},SHIP={{ section.settings.ship_line | default: '' | json }};
+var D=window.FL_DATA||[];
+var NF={"fragrance-library-the-sun-also-rises-eau-de-parfum":["Zitrusakkorde, aromatische Nuancen","Florale Elemente, dezente Gewürznoten","Warme Holznoten, Moschus, Amber"],"fragrance-library-the-alchemist-eau-de-parfum":["Bergamotte, Kardamom","Damaszener Rose, Safran","Sandelholz, Oud, Ambra, Vanille"],"fragrance-library-utopia-eau-de-parfum":["Safran, Italienische Mandarine","Chinesischer Osmanthus, Veilchen","Akigalawood, Immortelle Absolue"],"fragrance-library-orlando":["Ananas, Grapefruit, Bergamotte","Zedernholz, Patchouli, Jasmin","Eichenmoos, holzige Noten"],"fragrance-library-othello":["Zistrosenöl, Labdanum","Lavandin, Zimt, Benzoeharz","Vanille, Amber"],"fragrance-library-rebecca":["Bourbon-Vanille","Kokosnuss","Palo Santo, weißer Moschus"],"fragrance-library-romeo-and-juliet":["Würzige und aromatische Akzente","Orientalische Gewürze, Holznoten","Edle Hölzer, orientalische Akkorde"],"fragrance-library-the-house-of-mirth":["Rosa Pfeffer, Bitterorange, Ingwer, Weihrauch, Rum, Bergamotte, Grapefruit, Kardamom","Blonder Tabak, Sandelholz, Jasmin, Safran, Osmanthus, Tuberose","Vetiver, Labdanum, Myrrhe, Patchouli, Moschus, Zedernholz, Vanille, Tonkabohne"],"fragrance-library-beloved":["Weihrauch, Nuss, Birne","Rose, Safran, Jasmin, Osmanthusblüte","Sandelholz, Ambra, Vanille, holzige Noten"]};
+function nm(p){var t=p.t.replace(/^\s*Fragrance Library\s*/i,'').replace(/\s*(eau|extrait)\s+de\s+parfum\s*$/i,'').trim();var k=Object.keys(C).filter(function(n){return n.toLowerCase().replace(/[^a-z0-9]/g,'')===t.toLowerCase().replace(/[^a-z0-9]/g,'')})[0];return k||AL[p.h]||t}
+var AL={"fragrance-library-the-call-of-the-wild":"The Call of the Wild","fragrance-library-the-call-of-wild-eau-de-parfum":"The Call of the Wild","fragrance-library-the-age-of-innocense":"The Age of Innocence","fragrance-library-the-overcoat":"The Overcoat","fragrance-library-the-stranger-eau-de-parfum":"The Stranger","fragrance-library-the-sun-also-rises-eau-de-parfum":"The Sun Also Rises"};
+var EUR=new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'});function eur(c){return EUR.format(c/100)}
+var Sh=[["50 ml · Extrait de Parfum",X,50,[]],["100 ml · Extrait de Parfum",X,100,[]],["100 ml · Eau de Parfum",E,100,[]]];
+D.forEach(function(p){
+var ext=/extrait/i.test(p.t);var vs=p.v.filter(function(v){return v.a}).map(function(v){return{ml:parseInt(v.t,10),ext:ext||/extrait/i.test(v.t),p:v.p,c:v.c,i:v.i,up:v.up,ur:v.ur,uu:v.uu}});
+if(!vs.length)return;
+var m=/placeholder/i.test(p.m||'')?'':p.m;
+function cn(s){s=String(s||'').split(/(?:Kopf|Herz|Basis|Duft)noten?\s*:/i)[0].trim();return s.length>160?'':s}var pn=p.n.map(cn);
+function put(k,use){Sh[k][3].push({n:nm(p),u:p.u,m:m,no:pn.some(Boolean)?pn:(NF[p.h]||pn),dn:cn(p.dn),v:use.sort(function(a,b){return a.ml-b.ml})})}
+var ex=vs.filter(function(v){return v.ext}),ed=vs.filter(function(v){return !v.ext});
+/* Regal nach Vollgroessen: Produkte, von denen nur noch die 3-ml-Probe lieferbar ist, stehen nicht im 50/100-ml-Regal */
+function full(a){return a.filter(function(v){return v.ml>=10})}var fx=full(ex);
+if(fx.length)put(fx.every(function(v){return v.ml===50})?0:1,ex);
+if(full(ed).length)put(2,ed);
+});
+Sh=Sh.filter(function(S){return S[3].length});
+var navs=[];
+var c=document.getElementById('fl-case');
+Sh.forEach(function(S){
+S[3]=arrange(S[3].map(function(o){return [o.n,o]}));
+var sh=document.createElement('div');sh.className='sh';
+var row=document.createElement('div');row.className='row';
+var pl=document.createElement('div');pl.className='plank';
+var pt=document.createElement('div');pt.className='plate';pt.textContent=S[0];pl.appendChild(pt);
+var dt=document.createElement('div');dt.className='detail';dt.setAttribute('aria-live','polite');
+var prev=document.createElement('button');prev.className='shnav prev';prev.type='button';prev.setAttribute('aria-label','Zurück');prev.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>';
+var next=document.createElement('button');next.className='shnav next';next.type='button';next.setAttribute('aria-label','Weiter');next.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>';
+var sw=document.createElement('span');sw.className='swipe';sw.setAttribute('aria-hidden','true');sw.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>';
+function navUpd(){prev.disabled=row.scrollLeft<=4;next.disabled=row.scrollLeft>=row.scrollWidth-row.clientWidth-4;if(row.scrollLeft>8)sh.classList.add('scrolled');sh.classList.toggle('noflow',row.scrollWidth<=row.clientWidth+4)}
+var holdId=null;
+function hold(dir){stop();function step(){row.scrollLeft+=dir*10;holdId=requestAnimationFrame(step)}holdId=requestAnimationFrame(step)}
+function stop(){if(holdId){cancelAnimationFrame(holdId);holdId=null}}
+prev.addEventListener('pointerdown',function(e){e.preventDefault();hold(-1)});
+next.addEventListener('pointerdown',function(e){e.preventDefault();hold(1)});
+[prev,next].forEach(function(btn){['pointerup','pointerleave','pointercancel'].forEach(function(ev){btn.addEventListener(ev,stop)})});
+row.addEventListener('scroll',navUpd,{passive:true});
+navs.push(navUpd);
+S[3].forEach(function(B){
+var n=B[0],o=B[1],vs=o.v;
+var b=document.createElement('button');b.className='book';var col=C[n]||'#2a2a2a';if(grp(col)==='w')col='#f4f4f2';b.style.setProperty('--c',col);if(lum(col)>.55)b.classList.add('light');
+b.innerHTML='<span class="t" aria-hidden="true">LIBRARY<br>COLLECTION</span><span class="l"></span><span class="n" aria-hidden="true"></span><span class="fl" aria-hidden="true">F|L</span><span class="s" aria-hidden="true">Fragrance Library</span>';
+b.setAttribute('aria-label',n);b.querySelector('.n').textContent=n;if(n.length>11)b.classList.add('long');
+function show(k){
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;')}var v=vs[k],nt='',ch=vs.length>1?'<div class="chips">'+vs.map(function(m,j){return '<button class="chip'+(j===k?' on':'')+'" data-k="'+j+'">'+m.ml+' ml</button>'}).join('')+'</div>':'';
+if(!(o.no&&o.no.some(Boolean))&&o.dn)nt='<div class="notes"><span class="h">Duftnoten</span><div><span class="v">'+esc(o.dn)+'</span></div></div>';
+if(o.no&&o.no.some(Boolean))nt='<div class="notes"><span class="h">Duftpyramide</span>'+[['Kopfnote',o.no[0]],['Herznote',o.no[1]],['Basisnote',o.no[2]]].filter(function(x){return x[1]}).map(function(x){return '<div><span class="k">'+x[0]+'</span><span class="v">'+esc(x[1])+'</span></div>'}).join('')+'</div>';
+var pr=v.c>v.p?'<span class="uvp">UVP <s>'+eur(v.c)+'</s></span>':'';
+var gp=v.up>0?' · '+(/^l$/i.test(v.uu)&&v.ur===1?eur(v.up/10)+'/100 ml':eur(v.up)+'/'+(v.ur>1?v.ur+' ':'')+(v.uu||'')):'';
+dt.innerHTML='<div class="eyebrow">Fragrance Library</div><b></b><p>'+S[1]+' · '+v.ml+' ml</p>'+ch+'<div class="price">'+pr+eur(v.p)+'<small class="legal">inkl. MwSt., zzgl. Versand'+gp+'</small><small class="ship">'+SHIP+'</small></div><div class="acts"><button class="buy add" type="button">In den Warenkorb</button><a class="buy" href="'+o.u+'?variant='+v.i+'">'+CTA+'<span aria-hidden="true">&rarr;</span></a><span class="err" role="status"></span></div>'+nt+(o.m?'<img class="pic" src="'+o.m+'" alt="" width="640" height="640" loading="lazy" decoding="async">':'');
+dt.querySelector('b').textContent=n;var im=dt.querySelector('.pic');if(im)im.alt='Fragrance Library '+n;
+dt.querySelectorAll('.chip').forEach(function(x){x.addEventListener('click',function(){show(+x.dataset.k)})});
+var ad=dt.querySelector('.add'),er=dt.querySelector('.err');ad.addEventListener('click',function(){if(window.beLandAdd)window.beLandAdd([v.i],ad,function(t){er.textContent=t});else location.href=o.u+'?variant='+v.i});
+}
+function pick(quiet){row.querySelectorAll('.book').forEach(function(x){x.classList.toggle('on',x===b)});var k=vs.length-1;vs.forEach(function(v,j){if(v.ml===S[2])k=j});show(k);if(quiet!==true&&matchMedia('(pointer:coarse)').matches)dt.scrollIntoView({block:'nearest',behavior:'smooth'})}
+b._pick=pick;
+b.addEventListener('click',pick);
+b.addEventListener('mouseenter',function(){if(matchMedia('(hover:hover)').matches)pick()});
+row.appendChild(b)});
+sh.appendChild(row);sh.appendChild(prev);sh.appendChild(next);sh.appendChild(sw);sh.appendChild(pl);sh.appendChild(dt);c.appendChild(sh)});
+var fb=c.querySelector('.book');if(fb&&fb._pick)fb._pick(true);
+function fit(){document.querySelectorAll('.fl-land .book .n').forEach(function(n){n.style.fontSize='';var fs=parseFloat(getComputedStyle(n).fontSize);var mn=innerWidth<=700?12:9;while((n.scrollHeight>n.clientHeight+1||n.scrollWidth>n.clientWidth+1)&&fs>mn){fs-=.5;n.style.fontSize=fs+'px'}});navs.forEach(function(u){u()})}
+fit();addEventListener('resize',function(){clearTimeout(fit.t);fit.t=setTimeout(fit,120)});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+})();
+</script>
+<script>
+(function(){var L=document.querySelector('.fl-land');if(!L)return;var de=document.documentElement,sb=document.querySelector('.main-sidebar-section'),st=L.querySelector('.stage');
+function w(){de.style.setProperty('--fl-sbw',(sb&&getComputedStyle(sb).display!='none'?sb.offsetWidth:0)+'px')}
+function chk(){if(st)st.style.setProperty('--fl-off',Math.max(0,Math.round(st.getBoundingClientRect().bottom-innerHeight))+'px');if(!sb||!sb.offsetWidth){de.classList.remove('fl-dark');return}var r=L.getBoundingClientRect(),m=innerHeight/2;de.classList.toggle('fl-dark',r.top<m&&r.bottom>m)}
+w();chk();addEventListener('resize',function(){w();chk()});addEventListener('scroll',chk,{passive:true});addEventListener('load',function(){w();chk()})})();
+</script>
+<script>
+/* Touch: 1. Tipp waehlt das Buch, 2. Tipp oeffnet das Produkt. Desktop: Klick oeffnet direkt (Hover waehlt). */
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.fl-land .book');if(b)window.__flOn=b.classList.contains('on')},true);
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.fl-land .book');if(!b)return;if(!matchMedia('(hover:hover)').matches&&!window.__flOn)return;var a=b.closest('.sh').querySelector('.detail .buy');if(a&&a.getAttribute('href'))location.href=a.getAttribute('href')});
+</script>
+{%- endpaginate -%}
+{% schema %}
+{
+"name": "Fragrance Library Landing",
+"settings": [
+{"type":"video","id":"video","label":"Eröffnungsvideo (Shopify-Datei)"},
+{"type":"url","id":"video_url","label":"Oder Video-URL (mp4)"},
+{"type":"text","id":"heading","label":"Intro-Überschrift","default":"Jedes Buch ein Duft"},
+{"type":"text","id":"subheading","label":"Intro-Untertitel","default":"Scrolle nach unten und zieh dein Buch aus dem Regal."},
+{"type":"text","id":"heading_lib","label":"Überschrift Bibliothek (H1)","default":"Die Bibliothek"},
+{"type":"textarea","id":"intro","label":"Einleitung (wird genutzt, wenn die Kollektionsbeschreibung leer ist)","default":"Jeder Duft der Fragrance Library trägt den Namen eines Weltromans. Du wählst ein Buch aus dem Regal, wir zeigen dir Preis, Größe und Duftpyramide. Mit einem Klick bist du beim Duft oder legst ihn direkt in den Warenkorb – bei BLACK ELIXIR - Maison de Parfum."},
+{"type":"text","id":"hint","label":"Hinweis für Touch-Geräte","default":"Wische durchs Regal und tippe ein Buch an – zweimal, um den Duft zu öffnen."},
+{"type":"text","id":"cta","label":"Button-Text","default":"Zum Duft"},
+{"type":"text","id":"ship_line","label":"Zeile unter dem Preis","default":"Lieferzeit 1–3 Werktage · Kostenloser Versand innerhalb Deutschlands"},
+{"type":"text","id":"trust_delivery","label":"Trust: Lieferzeit","default":"Lieferzeit 1–3 Werktage"},
+{"type":"text","id":"trust_shipping","label":"Trust: Versand","default":"Kostenloser Versand innerhalb Deutschlands"},
+{"type":"text","id":"trust_return","label":"Trust: Widerruf","default":"14 Tage Widerrufsrecht"},
+{"type":"text","id":"trust_payment","label":"Trust: Zahlung","default":"Sichere Zahlung"}
+],
+"presets": [{"name":"Fragrance Library Landing"}]
+}
+{% endschema %}
