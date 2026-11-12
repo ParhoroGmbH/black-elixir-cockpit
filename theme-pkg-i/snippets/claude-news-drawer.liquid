@@ -323,10 +323,14 @@
   if (dlg) dlg.setAttribute('aria-label', title);
   /* neue Inhalte als "ungelesen" melden */
   nd.dataset.newsVersion = (nd.dataset.newsVersion || '') + '-bxnd1';
+  if (window.customElements) customElements.whenDefined('news-drawer').then(patch);
+
+  /* Tastatur: Fokus im Fenster halten, Esc schliesst, Fokus zurück zum Auslöser (erst wenn global.js news-drawer definiert hat) */
+  function patch() {
+  if (nd.bxndPatched || typeof nd.open !== 'function') return;
+  nd.bxndPatched = true;
   nd.currentVersion = nd.dataset.newsVersion;
   if (nd.updateUnreadIndicator) nd.updateUnreadIndicator();
-
-  /* Tastatur: Fokus im Fenster halten, Esc schliesst, Fokus zurück zum Auslöser */
   function shown(el) {
     if (!el || !el.isConnected || !el.getClientRects().length || getComputedStyle(el).visibility === 'hidden') return false;
     var r = el.getBoundingClientRect(); return r.right > 0 && r.left < innerWidth && r.bottom > 0 && r.top < innerHeight;
@@ -355,5 +359,6 @@
   document.addEventListener('keydown', function (e) {
     if ((e.key === 'Escape' || e.key === 'Esc') && nd.classList.contains('active')) { e.preventDefault(); nd.close(); }
   });
+  }
 })();
 </script>
