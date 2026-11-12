@@ -37,10 +37,11 @@
 .flb-bot.is-in .flb-sh{opacity:1}
 .flb-bot.flb-bot.is-3d img.flb-cut,.flb-bot.flb-bot.is-3d .flb-sh,.flb-bot.flb-bot.is-3d .flb-fr{opacity:0}
 /* Ersatz: Originalfoto auf papierfarbener Tafel mit feiner Linie (Weiß verschmilzt mit dem Papier) */
-/* als ovales Medaillon (alte Buchillustration), nicht als Quadrat */
-.flb-fr{left:50%;top:50%;height:92%;aspect-ratio:.8;max-width:94%;transform:translate(-50%,-50%);background:#efe2c4;box-shadow:inset 0 0 0 1px rgba(120,92,44,.6),inset 0 0 0 5px #efe2c4,inset 0 0 0 6px rgba(120,92,44,.35),inset 0 0 26px rgba(120,92,44,.25);opacity:0;transition:opacity .5s;overflow:hidden;border-radius:50%}
-.flb-bot.flb-bot .flb-fr img{position:absolute;inset:0;z-index:-1;width:100%;height:100%;aspect-ratio:auto;border-radius:0;background:none;object-fit:cover;mix-blend-mode:multiply;display:block}
+.flb-fr{left:50%;top:50%;height:86%;aspect-ratio:1;max-width:92%;transform:translate(-50%,-50%);background:#efe2c4;outline:1px solid rgba(120,92,44,.55);outline-offset:-7px;opacity:0;transition:opacity .5s;overflow:hidden;border-radius:2px}
+.flb-bot.flb-bot .flb-fr img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:0;background:none;object-fit:cover;mix-blend-mode:multiply;display:block}
 .flb-bot.is-in .flb-fr{opacity:1}
+/* kein Foto vorhanden: Monogramm wie auf dem Buchrücken */
+.flb-mono{left:50%;top:50%;transform:translate(-50%,-50%);padding:.35em .7em;font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(2rem,5vw,3.4rem);letter-spacing:.06em;color:#1a1712;background:linear-gradient(135deg,#e7c987,#9c7434 55%,#d3ab60);box-shadow:0 2px 6px rgba(40,24,6,.4)}
 /* aufgeschlagenes Buch */
 .flb-ov{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:24px;font-family:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 .flb-ov *,.flb-ov *::before,.flb-ov *::after{box-sizing:border-box;margin:0}
@@ -137,7 +138,7 @@ function bottle(h,img,alt,box){
   var k=key(h);box.textContent='';box.className='flb-bot';box._k=k;
   function frame(){if(!img||box._k!==k||box.querySelector('.flb-fr'))return;var f=el('span','flb-fr'),i=new Image();i.alt=alt||'';i.decoding='async';i.onload=function(){if(box._k===k)box.classList.add('is-in')};i.src=img;f.appendChild(i);box.appendChild(f)}
   function cut(){var i=new Image();i.className='flb-cut';i.alt=alt||'';i.decoding='async';i.onload=function(){if(box._k===k)box.classList.add('is-in')};i.onerror=function(){if(i.parentNode)i.parentNode.removeChild(i);var s=box.querySelector('.flb-sh');if(s)box.removeChild(s);frame()};box.appendChild(el('span','flb-sh'));box.appendChild(i);i.src=FILES+'be-fl-cut-'+k+'.webp'}
-  if(CUT.indexOf(' '+k+' ')>=0)cut();else frame();
+  if(CUT.indexOf(' '+k+' ')>=0)cut();else if(img)frame();else if(!GLB[k])box.appendChild(el('span','flb-mono','F|L'));
   if(GLB[k]){
     var m=document.createElement('model-viewer');m.setAttribute('alt',alt||'');m.setAttribute('camera-orbit','18deg 80deg auto');m.setAttribute('field-of-view','22deg');m.setAttribute('interaction-prompt','none');m.setAttribute('tone-mapping','neutral');m.setAttribute('environment-image','neutral');m.setAttribute('exposure','1.05');m.setAttribute('shadow-intensity','1.2');m.setAttribute('shadow-softness','.8');m.setAttribute('loading','eager');m.setAttribute('interpolation-decay','120');
     m.addEventListener('load',function(){if(box._k===k)box.classList.add('is-3d')});
