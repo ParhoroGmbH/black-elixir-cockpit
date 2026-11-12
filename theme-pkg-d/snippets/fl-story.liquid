@@ -20,6 +20,8 @@
 .fls-cap{position:absolute;left:0;right:0;bottom:9vh;bottom:9svh;padding:0 clamp(16px,6cqw,80px) 0 calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px));color:var(--cream);text-shadow:0 1px 18px rgba(0,0,0,.65)}
 .fls-cap .fls-eye,.fls-cap .fls-h{color:var(--cream)}
 .fls-cap p{max-width:40ch;margin-top:14px;color:#e4dcc9;font-size:17px}
+/* sobald die Glasfläche die Szene zur Hälfte bedeckt, blendet der Szenentext aus (er würde sonst unter dem Glas hervorschauen) */
+.fls-cap{transition:opacity .5s ease}.fls-ch.is-cov .fls-cap{opacity:0}
 .fls-cue{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#d2c8b2}
 .fls-cue i{display:block;width:1px;height:34px;background:linear-gradient(180deg,var(--gold),transparent)}
 /* Intro v2: sobald das Buch offen ist (.is-open), blenden Dachzeile, Überschrift und Text aus und der Verlauf wird heller – die Titelseite mit Flakon-Stich bleibt frei lesbar, nur der Scroll-Hinweis bleibt. Hochformat: Bildausschnitt auf die rechte Buchseite. */
@@ -32,7 +34,7 @@
 .fls-pane{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:grid;align-items:center;padding:clamp(20px,5vh,56px) clamp(16px,4cqw,56px) clamp(28px,7vh,72px) calc(var(--fl-sbw,0px) + clamp(16px,4cqw,56px))}
 /* Glas: leicht getönt + weichgezeichnet, die Szene bleibt dahinter sichtbar; ohne backdrop-filter dichter getönt */
 .fls-glass{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center;gap:clamp(16px,3cqw,48px);padding:clamp(16px,2.6cqw,36px);border-radius:22px;background:linear-gradient(145deg,rgba(252,248,240,.6),rgba(248,243,233,.46));border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 30px 70px -20px rgba(0,0,0,.55)}
-@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))){.fls-glass{background:linear-gradient(145deg,rgba(252,248,240,.34),rgba(248,243,233,.2));-webkit-backdrop-filter:blur(16px) saturate(125%);backdrop-filter:blur(16px) saturate(125%)}}
+@supports ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))){.fls-glass{background:linear-gradient(145deg,rgba(252,248,240,.34),rgba(248,243,233,.2));-webkit-backdrop-filter:blur(11px) saturate(125%);backdrop-filter:blur(11px) saturate(125%)}}
 .fls-stage{position:relative;container-type:size;height:min(72vh,640px);min-height:0}
 .fls-stage model-viewer{position:absolute;inset:0;z-index:1;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;transition:opacity .7s}
 .fls-stage.is-set model-viewer{opacity:1}.fls-stage.is-ph model-viewer{opacity:0;pointer-events:none}
@@ -329,7 +331,8 @@
       if (o.vis) any = 1;
       if (o.prod) {
         // Szene pausiert (Standbild hinter dem Glas), sobald die Glasfläche das Bild füllt – spart das Weichzeichnen bewegter Bilder
-        var cov = o.prod.getBoundingClientRect().top < H * .12 ? 1 : 0;
+        var pt = o.prod.getBoundingClientRect().top, cov = pt < H * .12 ? 1 : 0, half = pt < H * .62 ? 1 : 0;
+        if (half !== o.half) { o.half = half; o.el.classList.toggle('is-cov', !!half); }
         if (cov !== o.cov) { o.cov = cov; if (o.v && !still) { if (cov) o.v.pause(); else play(o); } }
       }
       if (!o.stage) return;
