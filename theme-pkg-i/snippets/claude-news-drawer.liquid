@@ -218,7 +218,20 @@
       {%- endif -%}
       {%- if art -%}
         {%- assign i = i | plus: 1 -%}
-        {%- assign art_x = art.excerpt | default: art.content | strip_html | strip_newlines | truncate: 120 -%}
+        {%- liquid
+          comment
+            Erster Satz der Zusammenfassung, sonst (zu lang/leer) nichts – kein abgeschnittener Text
+          endcomment
+          assign art_x = art.excerpt | default: art.content | strip_html | strip_newlines | split: '. ' | first | strip
+          if art_x.size > 140
+            assign art_x = ''
+          elsif art_x != blank
+            assign art_last = art_x | slice: -1
+            unless art_last == '.' or art_last == '!' or art_last == '?'
+              assign art_x = art_x | append: '.'
+            endunless
+          endif
+        -%}
         <li style="--i:{{ i }}"><a class="bxnd-item" href="{{ art.url }}">
           <span class="bxnd-thumb">{%- if art.image -%}<img src="{{ art.image | image_url: width: 160, height: 160, crop: 'center' }}" alt="" width="80" height="80" loading="lazy">{%- endif -%}</span>
           <span class="bxnd-body"><span class="bxnd-label">{{ t_l5 }}</span><h3 class="bxnd-h">{{ art.title | escape }}</h3>{%- if art_x != blank -%}<span class="bxnd-x">{{ art_x }}</span>{%- endif -%}<span class="bxnd-cta">{{ t_c5 }}<i aria-hidden="true">→</i></span></span>
@@ -275,7 +288,7 @@
   news-drawer .news-drawer .line-container{display:none}
 
   /* Liste */
-  .bxnd{margin-top:18px}
+  .bxnd{margin-top:18px;padding-bottom:28px}
   .bxnd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
   .bxnd-item{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;align-items:start;padding:14px;margin:0 -14px;border-radius:18px;border:1px solid transparent;color:#fff!important;text-decoration:none!important;transition:background .3s,border-color .3s,transform .3s}
   .bxnd-item:hover{background:rgba(255,255,255,.06);border-color:rgba(241,222,168,.22)}
