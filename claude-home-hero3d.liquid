@@ -151,16 +151,16 @@
       o.parts = o.parts.filter(function (p) {
         p.a += dt; if (p.a > p.l) return false;
         var q = p.a / p.l;
-        if (p.puff) { c.fillStyle = 'rgba(214,180,120,' + (.22 * (1 - q)).toFixed(3) + ')'; c.beginPath(); c.ellipse(p.x + p.vx * p.a, p.y - 14 * q, p.r + 70 * q, (p.r + 70 * q) * .38, 0, 0, 7); c.fill(); return true; }
+        if (p.puff) { c.fillStyle = 'rgba(222,190,130,' + (.42 * (1 - q) * (1 - q)).toFixed(3) + ')'; c.beginPath(); c.ellipse(p.x + p.vx * p.a, p.y - 14 * q, p.r + 95 * q, (p.r + 95 * q) * .36, 0, 0, 7); c.fill(); return true; }
         p.vy += 520 * dt; p.vx *= 1 - 2.2 * dt; p.x += p.vx * dt; p.y += p.vy * dt; if (p.y > p.g) { p.y = p.g; p.vy *= -.25; }
-        c.fillStyle = 'rgba(' + p.c + ',' + (.85 * (1 - q)).toFixed(3) + ')'; c.beginPath(); c.arc(p.x, p.y, p.s, 0, 7); c.fill(); return true;
+        c.fillStyle = 'rgba(' + p.c + ',' + (1 - q * q).toFixed(3) + ')'; c.beginPath(); c.arc(p.x, p.y, p.s, 0, 7); c.fill(); return true;
       });
     }
     function burst(o) {
       var cs = getComputedStyle(o.box), x = parseFloat(cs.getPropertyValue('--gx')) + 40 || o.box.offsetWidth / 2 + 40, gy = parseFloat(cs.getPropertyValue('--gy')) + 40 || o.box.offsetHeight * .8;
-      for (var j = 0; j < 70; j++) { var a = Math.random() * Math.PI, sp = 120 + Math.random() * 320;
-        o.parts.push({ x: x + (Math.random() - .5) * 90, y: gy - 4, vx: Math.cos(a) * sp * (Math.random() < .5 ? -1 : 1), vy: -Math.sin(a) * sp * .55 - 40, g: gy + 6 + Math.random() * 14, s: .8 + Math.random() * 2.4, a: 0, l: .6 + Math.random() * .7, c: Math.random() < .7 ? '201,164,106' : '240,214,160' }); }
-      for (j = 0; j < 9; j++) o.parts.push({ puff: 1, x: x + (j - 4) * 18, y: gy, vx: (j - 4) * 26, r: 16 + Math.random() * 14, a: 0, l: .9 + Math.random() * .4 });
+      for (var j = 0; j < 120; j++) { var a = Math.random() * Math.PI, sp = 120 + Math.random() * 320;
+        o.parts.push({ x: x + (Math.random() - .5) * 90, y: gy - 4, vx: Math.cos(a) * sp * (Math.random() < .5 ? -1 : 1), vy: -Math.sin(a) * sp * .55 - 40, g: gy + 6 + Math.random() * 14, s: 1 + Math.random() * 3, a: 0, l: .6 + Math.random() * .7, c: Math.random() < .7 ? '214,176,112' : '248,226,176' }); }
+      for (j = 0; j < 11; j++) o.parts.push({ puff: 1, x: x + (j - 5) * 16, y: gy, vx: (j - 5) * 30, r: 18 + Math.random() * 16, a: 0, l: .9 + Math.random() * .4 });
     }
     var cur = null, vis = 1, run = 0;
     function enter(o) {
