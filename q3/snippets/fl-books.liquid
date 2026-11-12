@@ -1,0 +1,197 @@
+{%- comment -%} fl-books – gemeinsame Bausteine der Fragrance Library (Landingpage sections/fragrance-library-landing + Startseiten-Regal snippets/claude-home-library). Claude · 12.11.2026 (Paket D).
+  Stellt window.FLB bereit: dust(el) = feiner Staub über einem Buch (kein Glanz), photo(box, bild, alt) = Produktfoto der gewählten Größe auf einer Papiertafel (Bild der Variante, sonst Hauptbild; ohne Foto Monogramm F|L), pre(bild) = Foto vorladen, open(buch, ausloeser) = aufgeschlagenes Buch als Dialog (links Foto der gewählten Größe, rechts Titel, Noten als Inhaltsverzeichnis, Größe, Preis, Grundpreis je 100 ml, Kauf über window.beLandAdd), money/gp = einheitliches Preisformat, wood(el) = Holztexturen erst laden, wenn das Regal in Sichtweite kommt.
+  Dateien (Inhalte > Dateien): be-fl-holz2-brett/kante/pfosten/rueck/sims.jpg, be-fl-papier.jpg (die Freisteller be-fl-cut-*.webp liegen noch in den Dateien, werden aber nicht mehr benutzt). Neue Texte stehen hier als Übersetzungstabelle (de, en, fr, it, da, ar) – keine Locale-Dateien nötig. Wird je Seite nur einmal ausgegeben. {%- endcomment -%}
+{%- assign flb_l = request.locale.iso_code | slice: 0, 2 -%}
+{%- case flb_l -%}
+  {%- when 'en' -%}{%- assign flb_s = 'Pull a book from the shelf – it opens for you.|Close book|Contents' -%}
+  {%- when 'fr' -%}{%- assign flb_s = 'Tirez un livre de l’étagère – il s’ouvre pour vous.|Fermer le livre|Sommaire' -%}
+  {%- when 'it' -%}{%- assign flb_s = 'Estrai un libro dallo scaffale – si apre per te.|Chiudi il libro|Indice' -%}
+  {%- when 'da' -%}{%- assign flb_s = 'Træk en bog ud af reolen – den åbner sig for dig.|Luk bogen|Indhold' -%}
+  {%- when 'ar' -%}{%- assign flb_s = 'اسحب كتابًا من الرف – فينفتح أمامك.|إغلاق الكتاب|المحتويات' -%}
+  {%- else -%}{%- assign flb_s = 'Zieh ein Buch aus dem Regal – es schlägt sich auf.|Buch schließen|Inhalt' -%}
+{%- endcase -%}
+<style>
+/* Holz: Farbe als Ersatz, Texturen erst mit .flb-wood (setzt FLB.wood, sobald das Regal in Sichtweite kommt) */
+.flb-sims{background:#2b170c}.flb-kante{background:#2e190d}.flb-brett{background:#4a2c18}.flb-pfosten{background:#28150b}.flb-rueck{background:#170e08}
+.flb-wood .flb-sims,.flb-wood.flb-sims{background:url({{ 'be-fl-holz2-sims.jpg' | file_url }}) center/100% 100% no-repeat,#2b170c}
+.flb-wood .flb-kante,.flb-wood.flb-kante{background:linear-gradient(180deg,rgba(255,214,160,.34) 0,rgba(255,214,160,.08) 3px,rgba(0,0,0,0) 9px,rgba(0,0,0,0) 62%,rgba(0,0,0,.62)),url({{ 'be-fl-holz2-kante.jpg' | file_url }}) center/100% 100% no-repeat,#2e190d}
+.flb-wood .flb-brett,.flb-wood.flb-brett{background:linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,0) 70%,rgba(255,226,180,.22)),url({{ 'be-fl-holz2-brett.jpg' | file_url }}) center/100% 100% no-repeat,#4a2c18}
+.flb-wood .flb-pfosten,.flb-wood.flb-pfosten{background:linear-gradient(90deg,rgba(0,0,0,.6),rgba(0,0,0,0) 30%,rgba(255,206,150,.12) 56%,rgba(0,0,0,.55)),url({{ 'be-fl-holz2-pfosten.jpg' | file_url }}) center/100% 100% no-repeat,#28150b}
+.flb-wood .flb-rueck,.flb-wood.flb-rueck{background:linear-gradient(180deg,rgba(0,0,0,.78),rgba(0,0,0,.22) 26%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.42)),url({{ 'be-fl-holz2-rueck.jpg' | file_url }}) center/cover no-repeat,#170e08}
+/* Staub */
+.flb-dust{position:fixed;inset:0;z-index:60;pointer-events:none;overflow:hidden}
+.flb-dust i{position:absolute;display:block;border-radius:50%;background:rgba(236,220,188,.85);opacity:0;animation:flbSpeck var(--d,900ms) ease-out forwards;will-change:transform,opacity}
+.flb-dust b{position:absolute;display:block;border-radius:50%;background:radial-gradient(closest-side,rgba(226,208,174,.34),rgba(226,208,174,.12) 55%,rgba(226,208,174,0));filter:blur(3px);opacity:0;animation:flbPuff 950ms ease-out forwards;will-change:transform,opacity}
+@keyframes flbSpeck{0%{opacity:0;transform:translate(0,0)}18%{opacity:.9}100%{opacity:0;transform:translate(var(--x),var(--y))}}
+@keyframes flbPuff{0%{opacity:0;transform:translateY(6px) scale(.5)}30%{opacity:1}100%{opacity:0;transform:translateY(-22px) scale(1.25)}}
+/* Flakon ohne weißes Quadrat */
+/* Flakon = Produktfoto der gewählten Größe auf einer Papiertafel mit feinem Rahmen (Wunsch 12.11.2026: für jedes Buch gleich, keine 3D-Modelle/Freisteller mehr). Tafel hat feste Größe; beim Größenwechsel blendet das neue Foto über das alte. */
+.flb-bot{position:relative;display:block;width:100%;height:100%;min-height:0}
+.flb-bot>*{position:absolute}
+.flb-fr{container-type:size;left:50%;top:50%;height:86%;aspect-ratio:1;max-width:92%;transform:translate(-50%,-50%);background:#efe2c4;outline:1px solid rgba(120,92,44,.55);outline-offset:-7px;overflow:hidden;border-radius:2px}
+.flb-bot.flb-bot .flb-fr img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:0;background:none;object-fit:contain;mix-blend-mode:multiply;display:block;opacity:0;transition:opacity .45s ease}
+.flb-bot.flb-bot .flb-fr img.on{opacity:1}
+.flb-fr .flb-ki{position:absolute;right:4.2cqw;bottom:3.2cqw;z-index:2;font:300 max(6px,3.1cqw)/1 Poppins,Jost,system-ui,sans-serif;color:rgb(196,196,196);mix-blend-mode:multiply;white-space:nowrap;pointer-events:none;user-select:none}
+/* Claude 12.11.2026 (QA-Paket Q3): in kleinen Tafeln (Startseiten-Karte/Regal, unter ca. 194 px) mindestens 6 px und etwas dunkleres Grau; ab 194 px (Landing-Buch) unveraendert */
+@container (max-width:193px){.flb-fr .flb-ki{color:rgb(150,150,150)}}
+.flb-bot .flb-fr .flb-mono{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block;width:auto;height:auto;white-space:nowrap;writing-mode:horizontal-tb;line-height:1;padding:.3em .55em;font-family:"Cormorant Garamond",Georgia,serif;font-size:22cqmin;letter-spacing:.06em;color:#1a1712;background:linear-gradient(135deg,#e7c987,#9c7434 55%,#d3ab60);box-shadow:0 2px 6px rgba(40,24,6,.4)}
+/* aufgeschlagenes Buch */
+.flb-ov{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:24px;font-family:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.flb-ov *,.flb-ov *::before,.flb-ov *::after{box-sizing:border-box;margin:0}
+.flb-bg{position:absolute;inset:0;background:rgba(8,5,3,.74);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;transition:opacity .35s}
+.flb-ov.is-on .flb-bg{opacity:1}
+.flb-bk{--ink:#1d1710;--mut:#5a4b35;--rule:rgba(110,84,40,.5);position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);width:min(1040px,100%);max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);min-height:min(660px,calc(100vh - 48px));min-height:min(660px,calc(100dvh - 48px));color:var(--ink);background:#f1e4c3;border-radius:5px;box-shadow:0 0 0 9px var(--c,#2a2a2a),0 0 0 10px rgba(0,0,0,.55),0 2px 0 12px rgba(0,0,0,.35),0 50px 90px -10px rgba(0,0,0,.8);opacity:0;transform:translate(var(--ox,0px),var(--oy,0px)) scale(.16);transition:transform .6s cubic-bezier(.2,.85,.25,1),opacity .3s;transform-origin:50% 50%}
+.flb-bk.has-tex{background:url({{ 'be-fl-papier.jpg' | file_url }}) center/100% 100% no-repeat,#f1e4c3}
+.flb-ov.is-on .flb-bk{opacity:1;transform:none}
+.flb-bk::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:64px;transform:translateX(-50%);background:linear-gradient(90deg,rgba(60,40,12,0),rgba(60,40,12,.2) 46%,rgba(40,24,6,.42) 50%,rgba(60,40,12,.2) 54%,rgba(60,40,12,0));pointer-events:none}
+/* Buchdeckel klappt auf */
+.flb-bk::after{content:"";position:absolute;left:50%;right:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(0,0,0,0) 30%),var(--c,#2a2a2a);transform-origin:0 50%;transform:perspective(1800px) rotateY(0deg);-webkit-backface-visibility:hidden;backface-visibility:hidden;pointer-events:none;border-radius:0 5px 5px 0;transition:transform .75s cubic-bezier(.3,.7,.2,1) .28s}
+.flb-ov.is-on .flb-bk::after{transform:perspective(1800px) rotateY(-179deg)}
+.flb-pg{position:relative;min-width:0;min-height:0;padding:clamp(22px,3.6vw,48px)}
+.flb-l{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.flb-l .flb-box{width:100%;height:min(54vh,460px);min-height:240px}
+.flb-r::before,.flb-r::after{content:"";flex:1 0 0px}
+.flb-r{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;padding-inline-start:clamp(30px,4.4vw,60px)}
+.flb-r>*{flex:0 0 auto}
+.flb-eye{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--mut)}
+.flb-t{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(2rem,3.6vw,3.1rem);line-height:1.04;margin-top:8px;color:var(--ink);letter-spacing:0;text-transform:none;text-wrap:balance}
+.flb-sub{margin-top:8px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.flb-toc{margin-top:18px;padding-top:14px;border-top:1px solid var(--rule)}
+.flb-toc h3{font-family:inherit;font-size:12px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--mut);text-align:center}
+.flb-toc dl{margin-top:8px}
+.flb-toc dl>div{display:grid;grid-template-columns:minmax(96px,max-content) minmax(0,1fr);gap:4px 14px;align-items:baseline;padding:8px 0;border-bottom:1px dotted var(--rule)}
+.flb-toc dt{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);white-space:nowrap}
+.flb-toc dt span{display:inline-block;min-width:1.9em;font-family:"Cormorant Garamond",Georgia,serif;font-size:15px;letter-spacing:.04em;color:var(--ink)}
+.flb-toc dd{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:1.14rem;line-height:1.3;color:var(--ink)}
+.flb-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.flb-ov .flb-chip{min-height:44px;padding:8px 18px;border:1px solid var(--ink);border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:14px;letter-spacing:.08em;cursor:pointer;touch-action:manipulation;transition:background-color .2s,color .2s;box-shadow:none;width:auto}
+.flb-ov .flb-chip.on{background:var(--ink);color:#f6ecd2}
+.flb-price{margin-top:16px;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:1.9rem;line-height:1.1;color:var(--ink)}
+.flb-price .u{margin-inline-end:10px;font-family:Jost,system-ui,sans-serif;font-weight:400;font-size:14px;letter-spacing:.03em;color:var(--mut)}
+.flb-legal,.flb-ship{display:block;font-size:13px;line-height:1.45;color:var(--mut)}
+.flb-legal{margin-top:6px}
+.flb-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.flb-ov .flb-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;flex:1 1 auto;min-height:48px;padding:12px 22px;border:1px solid var(--ink);border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;white-space:nowrap;cursor:pointer;touch-action:manipulation;transition:background-color .25s,color .25s;box-shadow:none;width:auto;height:auto;opacity:1}
+.flb-ov .flb-btn--pri{background:var(--ink);color:#f6ecd2}
+.flb-ov .flb-btn:hover{background:var(--ink);color:#f6ecd2}
+.flb-ov .flb-btn--pri:hover{background:#3b2f1f}
+.flb-ov .flb-btn:disabled{opacity:.75;cursor:progress}
+.flb-err{margin-top:8px;font-size:13px;color:#8f2f1f}.flb-err:empty{display:none}
+.flb-ov .flb-x{position:absolute;z-index:3;top:10px;inset-inline-end:10px;width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(29,23,16,.08);color:var(--ink);cursor:pointer;padding:0;box-shadow:none;transition:background-color .2s}
+.flb-ov .flb-x:hover{background:rgba(29,23,16,.18)}
+.flb-ov .flb-x svg{width:18px;height:18px;display:block}
+.flb-ov :focus-visible{outline:2px solid #8a6a26;outline-offset:3px}
+/* solange ein Buch offen ist, tritt die Chat-Blase zurück (sie läge sonst über dem Blatt) */
+html.flb-open .chatty-ai-mode.state-resting{opacity:0!important;pointer-events:none!important}
+@media (max-width:760px){
+.flb-ov{padding:0;place-items:stretch}
+.flb-bk{min-height:0;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;width:100%;height:100%;max-height:none;border-radius:0;box-shadow:inset 0 0 0 6px var(--c,#2a2a2a);overflow-y:auto;overscroll-behavior:contain;transform:translateY(40px) scale(.96)}
+.flb-bk.has-tex{background-size:200% 100%;background-position:100% 0}
+.flb-bk::before,.flb-bk::after{display:none}
+.flb-pg{padding:20px 22px}
+.flb-l{padding-top:54px;padding-bottom:0}
+.flb-l .flb-box{height:30vh;min-height:200px}
+.flb-r::before,.flb-r::after{display:none}
+.flb-r{overflow:visible;padding-inline-start:22px;padding-bottom:0}
+/* Kaufknöpfe bleiben unten am Blatt stehen */
+.flb-acts{position:sticky;bottom:0;z-index:2;flex-wrap:nowrap;margin:16px -22px 0;padding:12px 22px calc(12px + env(safe-area-inset-bottom,0px));background:#f1e4c3;box-shadow:0 -1px 0 var(--rule),0 -12px 16px -10px rgba(60,40,12,.25)}
+.flb-ov .flb-btn{padding:12px 10px;font-size:12px;letter-spacing:.12em}
+.flb-err{padding-bottom:10px}
+.flb-ov .flb-x{position:fixed;top:14px;background:rgba(241,228,195,.92);box-shadow:0 0 0 1px var(--rule)}
+.flb-toc dl>div{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+.flb-bk,.flb-bg,.flb-bk::after,.flb-bot *{transition:none!important}
+.flb-bk{transform:none}.flb-bk::after{display:none}
+}
+</style>
+<script>
+window.FLB=window.FLB||(function(){
+var T={{ flb_s | split: '|' | json }},L={top:{{ 'claude.n.top_html' | t | json }},heart:{{ 'claude.n.heart_html' | t | json }},base:{{ 'claude.n.base_html' | t | json }},notes:{{ 'claude.n.notes_html' | t | json }},uvp:{{ 'claude.c.uvp_html' | t | json }},atc:{{ 'claude.c.atc_html' | t | json }},to:{{ 'claude.c.to_scent_html' | t | json }},legal:{{ 'claude.fl.legal_html' | t | json }},ship:{{ 'claude.fl.ship_html' | t | json }}};
+var MF={{ shop.money_format | json }},FILES={{ 'be-fl-papier.jpg' | file_url | split: 'be-fl-papier.jpg' | first | json }};
+/* Einheitlicher Look auf der Papiertafel (12.11.2026, nur im Theme, Produktbilder unverändert): weiße Fassungen der 50-ml-Extrait-Fotos (Freisteller ohne Neuzeichnen auf #FFFFFF, Größe/Lage/Schatten wie die 100-ml-Flat-Lays) und quadratisch zugeschnittene 3-ml-Fotos. Variante-ID -> Datei (Inhalte > Dateien, be-fl-white-*.jpg); gilt vor dem Variantenbild. */
+var WHITE={"54355215810902":"be-fl-white-the-alchemist-eau-de-parfum-50ml-v3.jpg","54355712835926":"be-fl-white-invisible-cities-50ml-v3.jpg","54355712868694":"be-fl-white-orlando-50ml-v3.jpg","54355725484374":"be-fl-white-othello-50ml-v3.jpg","54355725746518":"be-fl-white-rebecca-50ml-v3.jpg","54355747668310":"be-fl-white-romeo-and-juliet-50ml-v3.jpg","54355747733846":"be-fl-white-the-house-of-mirth-50ml-v3.jpg","54355747799382":"be-fl-white-beloved-50ml-v3.jpg","67736210407815":"be-fl-white-the-trial-eau-de-parfum-3ml-v2.jpg","67736019075463":"be-fl-white-to-the-lighthouse-eau-de-parfum-3ml-v2.jpg","67736112857479":"be-fl-white-heart-of-darkness-eau-de-parfum-3ml-v2.jpg","67736164860295":"be-fl-white-the-grapes-of-wrath-eau-de-parfum-3ml-v2.jpg","67736211489159":"be-fl-white-a-tale-of-two-cities-3ml-v2.jpg","67735964549511":"be-fl-white-hard-times-eau-de-parfum-3ml-v2.jpg","67736113348999":"be-fl-white-the-alchemist-eau-de-parfum-3ml-v2.jpg","67736210997639":"be-fl-white-the-gambler-eau-de-parfum-3ml-v2.jpg","67736164106631":"be-fl-white-notes-from-underground-eau-de-parfum-3ml-v2.jpg","67736069669255":"be-fl-white-lost-illusions-eau-de-parfum-3ml-v2.jpg"};
+function white(id){var f=WHITE[String(id)];return f?FILES+f:''}
+var still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function key(h){return String(h||'').replace(/^(fragrance-library-)+/,'')}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function money(c){return MF.replace(/<[^>]+>/g,'').replace(/\{\{[^}]*\}\}/,(Math.round(c)/100).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}))}
+/* Grundpreis immer je 100 ml (Shopify liefert ihn je Liter bzw. je 100 ml) */
+function gp(up,ur,uu){if(!(up>0))return '';uu=String(uu||'').toLowerCase();ur=+ur||1;var f={ml:1,cl:10,l:1000}[uu];return f?money(up/(ur*f)*100)+' / 100 ml':money(up)+' / '+(ur>1?ur+' ':'')+uu}
+/* Staub: weiche Wolke + ein paar Körnchen steigen von der Oberkante auf; kurz, leise, höchstens alle 0,7 s je Buch */
+var layer;
+function dust(b,big){
+  if(still||!b)return;var now=performance.now();if(b._fd&&now-b._fd<700)return;b._fd=now;
+  var r=b.getBoundingClientRect();if(!r.width||r.bottom<0||r.top>innerHeight)return;
+  if(!layer||!layer.isConnected){layer=el('div','flb-dust');layer.setAttribute('aria-hidden','true');document.body.appendChild(layer)}
+  var w=Math.max(r.width,40),p=el('b');p.style.cssText='left:'+(r.left-w*.25)+'px;top:'+(r.top-w*.42)+'px;width:'+w*1.5+'px;height:'+w*.8+'px';layer.appendChild(p);
+  for(var i=0,n=big?14:9;i<n;i++){var s=el('i'),z=1+Math.random()*2;s.style.cssText='left:'+(r.left+Math.random()*r.width)+'px;top:'+(r.top+Math.random()*10-4)+'px;width:'+z+'px;height:'+z+'px;--x:'+(Math.random()*36-18).toFixed(1)+'px;--y:'+(-16-Math.random()*34).toFixed(1)+'px;--d:'+(650+Math.random()*450|0)+'ms;animation-delay:'+(Math.random()*140|0)+'ms';layer.appendChild(s)}
+  setTimeout(function(){for(var k=0;k<n+1&&layer.firstChild;k++)layer.removeChild(layer.firstChild)},1300);
+}
+/* Foto in box (Papiertafel). src = Bild-URL der gewählten Größe; null = kein Foto -> Monogramm. Gleiche URL: nichts tun. Neue URL: neues Bild lädt unsichtbar und blendet dann über. */
+function sz(u,w){u=String(u||'');if(!u)return '';if(u.indexOf('//')===0)u='https:'+u;return /[?&]width=\d+/.test(u)?u.replace(/([?&])width=\d+/,'$1width='+w):u+(u.indexOf('?')<0?'?':'&')+'width='+w}
+function pre(u){if(u){var i=new Image();i.src=sz(u,600)}}
+function photo(box,u,alt){
+  if(/placeholder/i.test(u||''))u='';
+  if(!box.classList.contains('flb-bot')){box.textContent='';box.className='flb-bot'}
+  var key=String(u||'-').split('?')[0].replace(/^https?:/,'');if(box._u===key)return;box._u=key;
+  var f=box.querySelector('.flb-fr'),m=box.querySelector('.flb-mono');
+  if(!f){f=el('span','flb-fr');box.appendChild(f)}
+  /* kein Foto: dieselbe Tafel mit dem Monogramm des Buchrückens */
+  if(!u){[].forEach.call(f.querySelectorAll('img'),function(o){o.classList.remove('on')});var k0=f.querySelector('.flb-ki');if(k0)f.removeChild(k0);if(!m)f.appendChild(el('span','flb-mono','F|L'));return}
+  if(m)f.removeChild(m);
+  /* KI-Hinweis: nicht bei Fotos mit eingebranntem Hinweis (be-fl-white-*) und nicht bei 3 ml */
+  var ki=f.querySelector('.flb-ki'),skip=/be-fl-white-/.test(u)||/(^|\s)3 ml$/.test(alt||'');
+  if(skip){if(ki)f.removeChild(ki)}else if(!ki){ki=el('span','flb-ki','KI-generiert');ki.setAttribute('aria-hidden','true');f.appendChild(ki)}
+  var i=new Image(),mine=box._u;i.alt=alt||'';i.decoding='async';i.width=600;i.height=600;
+  i.onload=function(){if(box._u!==mine){if(i.parentNode)i.parentNode.removeChild(i);return}setTimeout(function(){i.classList.add('on');[].forEach.call(f.querySelectorAll('img'),function(o){if(o!==i){o.classList.remove('on');setTimeout(function(){if(o.parentNode&&!o.classList.contains('on'))o.parentNode.removeChild(o)},500)}})},16)};
+  i.srcset=sz(u,600)+' 1x, '+sz(u,1200)+' 2x';i.src=sz(u,600);f.appendChild(i);
+}
+/* Holztexturen erst laden, wenn el in Sichtweite kommt */
+function wood(e){if(!e)return;if(!('IntersectionObserver' in window)){e.classList.add('flb-wood');return}var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();e.classList.add('flb-wood')}},{rootMargin:'700px 0px'});io.observe(e)}
+/* aufgeschlagenes Buch. o={n:Name,h:Handle,u:URL,m:Foto,c:Deckelfarbe,kind:"Extrait de Parfum",no:[Kopf,Herz,Basis],dn:Duftnoten,v:[{ml,p,c,i,up,ur,uu}]} */
+var cur=null;
+function close(){
+  if(!cur)return;var c=cur;cur=null;c.ov.classList.remove('is-on');document.removeEventListener('keydown',c.key,true);
+  var de=document.documentElement;de.style.overflow=c.of;de.style.paddingRight=c.pr;de.classList.remove('flb-open');
+  setTimeout(function(){if(c.ov.parentNode)c.ov.parentNode.removeChild(c.ov);if(c.from){c.from.classList.remove('out');dust(c.from);try{c.from.focus({preventScroll:true})}catch(e){}}},still?0:420);
+}
+function open(o,from){
+  if(cur)return;var vs=o.v||[];if(!vs.length)return;
+  var ov=el('div','flb-ov'),bg=el('div','flb-bg'),bk=el('div','flb-bk'),x=el('button','flb-x'),l=el('div','flb-pg flb-l'),r=el('div','flb-pg flb-r'),box=el('div','flb-box'),bot=el('div');
+  ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Fragrance Library '+o.n);
+  bk.style.setProperty('--c',o.c||'#2a2a2a');x.type='button';x.setAttribute('aria-label',T[1]);x.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+  box.appendChild(bot);l.appendChild(box);bk.appendChild(x);bk.appendChild(l);bk.appendChild(r);ov.appendChild(bg);ov.appendChild(bk);
+  var tex=new Image();tex.onload=function(){bk.classList.add('has-tex')};tex.src={{ 'be-fl-papier.jpg' | file_url | json }};
+  function show(k){
+    var v=vs[k];r.textContent='';
+    r.appendChild(el('div','flb-eye','Fragrance Library'));var h=el('h2','flb-t',o.n);r.appendChild(h);
+    r.appendChild(el('p','flb-sub',o.kind+' · '+v.ml+' ml'));
+    var rows=[];if(o.no&&o.no.some(Boolean))rows=[[L.top,o.no[0]],[L.heart,o.no[1]],[L.base,o.no[2]]].filter(function(q){return q[1]});else if(o.dn)rows=[[L.notes,o.dn]];
+    if(rows.length){var toc=el('div','flb-toc'),dl=el('dl');toc.appendChild(el('h3','',T[2]));rows.forEach(function(q,i){var d=el('div'),dt=el('dt');dt.appendChild(el('span','',['I','II','III'][i]));dt.appendChild(document.createTextNode(q[0]));d.appendChild(dt);d.appendChild(el('dd','',q[1]));dl.appendChild(d)});toc.appendChild(dl);r.appendChild(toc)}
+    if(vs.length>1){var ch=el('div','flb-chips');ch.setAttribute('role','group');ch.setAttribute('aria-label',{{ 'claude.l.size_html' | t | json }});vs.forEach(function(m,j){var c=el('button','flb-chip'+(j===k?' on':''),m.ml+' ml');c.type='button';c.setAttribute('aria-pressed',j===k);c.addEventListener('pointerenter',function(){pre(white(m.i)||m.im||o.m)});c.addEventListener('focus',function(){pre(white(m.i)||m.im||o.m)});c.addEventListener('click',function(){show(j);var n=r.querySelectorAll('.flb-chip')[j];if(n)n.focus()});ch.appendChild(c)});r.appendChild(ch)}
+    var pr=el('div','flb-price');if(v.c>v.p){var u=el('span','u',L.uvp+' ');u.appendChild(el('s','',money(v.c)));pr.appendChild(u)}pr.appendChild(document.createTextNode(money(v.p)));
+    var g=gp(v.up,v.ur,v.uu);pr.appendChild(el('small','flb-legal',L.legal+(g?' · '+g:'')));pr.appendChild(el('small','flb-ship',L.ship));r.appendChild(pr);
+    var ac=el('div','flb-acts'),ad=el('button','flb-btn flb-btn--pri',L.atc),a=el('a','flb-btn',L.to+' '),er=el('p','flb-err');ad.type='button';a.href=o.u+'?variant='+v.i;a.appendChild(el('span','','→')).setAttribute('aria-hidden','true');er.setAttribute('role','status');
+    ad.addEventListener('click',function(){if(window.beLandAdd)window.beLandAdd([v.i],ad,function(t){er.textContent=t});else location.href=a.href});
+    ac.appendChild(ad);ac.appendChild(a);r.appendChild(ac);r.appendChild(er);
+    photo(bot,white(v.i)||v.im||o.m,'Fragrance Library '+o.n+' '+v.ml+' ml');
+  }
+  show(vs.length-1);
+  var de=document.documentElement,c={ov:ov,from:from,of:de.style.overflow,pr:de.style.paddingRight};
+  if(from){var fr=from.getBoundingClientRect();bk.style.setProperty('--ox',(fr.left+fr.width/2-innerWidth/2).toFixed(0)+'px');bk.style.setProperty('--oy',(fr.top+fr.height/2-innerHeight/2).toFixed(0)+'px');from.classList.add('out');dust(from,1)}
+  c.key=function(e){
+    if(e.key==='Escape'){if(bk.contains(document.activeElement)||document.activeElement===document.body){e.preventDefault();e.stopPropagation();close()}return}
+    if(e.key!=='Tab'||!ov.contains(document.activeElement))return;
+    var f=[].filter.call(bk.querySelectorAll('button,a[href]'),function(n){return !n.disabled&&n.offsetParent!==null});if(!f.length)return;
+    var a0=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a0){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a0.focus()}
+  };
+  var sw=innerWidth-de.clientWidth;de.classList.add('flb-open');de.style.overflow='hidden';if(sw>0)de.style.paddingRight=sw+'px';
+  document.body.appendChild(ov);cur=c;document.addEventListener('keydown',c.key,true);
+  bg.addEventListener('click',close);x.addEventListener('click',close);
+  ov.addEventListener('click',function(e){if(e.target===ov)close()});
+  void bk.offsetWidth;setTimeout(function(){ov.classList.add('is-on');try{x.focus({preventScroll:true})}catch(e){}},30);
+}
+return {T:T,dust:dust,photo:photo,pre:pre,white:white,open:open,close:close,money:money,gp:gp,wood:wood,key:key};
+})();
+</script>
