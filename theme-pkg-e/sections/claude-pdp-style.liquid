@@ -90,9 +90,10 @@ body:not(.cpd-past) .product-sticky-cart{translate:0 120%;opacity:0;visibility:h
 .cpd-desc__inner{font-size:15.5px;line-height:1.75;color:#2b2925}
 .cpd-desc__inner > :first-child{margin-top:0}
 .cpd-desc__inner p{margin:0 0 .9em}
-.cpd-desc__inner h2,.cpd-desc__inner h3,.cpd-desc__inner h4,.cpd-desc__inner h5,.cpd-desc__inner h6{font-family:var(--cp-serif);font-weight:600;text-transform:none;letter-spacing:.005em;color:var(--cp-ink);margin:1.5em 0 .5em;line-height:1.2}
-.cpd-desc__inner h2{font-size:24px}.cpd-desc__inner h3{font-size:21px}.cpd-desc__inner h4,.cpd-desc__inner h5,.cpd-desc__inner h6{font-size:18px}
-.cpd-desc__inner .cpd-lead{font-size:22px;font-style:italic;font-weight:500;margin:0 0 .7em;color:#3a352c}
+.cpd .cpd-desc__inner :is(h2,h3,h4,h5,h6),.cpd .cpd-desc__inner .cpd-lead{font-family:var(--cp-serif)!important;font-weight:600!important;text-transform:none!important;letter-spacing:.005em!important;color:var(--cp-ink);margin:1.5em 0 .5em;line-height:1.2!important}
+.cpd .cpd-desc__inner h2{font-size:24px!important}.cpd .cpd-desc__inner h3{font-size:21px!important}.cpd .cpd-desc__inner :is(h4,h5,h6){font-size:18px!important}
+.cpd .cpd-desc__inner .cpd-lead{font-size:22px!important;font-style:italic;font-weight:500!important;line-height:1.3!important;margin:0 0 .7em;color:#3a352c}
+.cpd .cpd-desc__inner > p > strong:only-child{font-weight:600}
 .cpd-desc__inner ul,.cpd-desc__inner ol{margin:0 0 1em;padding-inline-start:1.2em}
 .cpd-desc__inner li{margin:.25em 0}
 .cpd-desc__inner hr{border:0;height:1px;background:var(--cp-hair);margin:1.6em 0}
@@ -187,6 +188,7 @@ body:not(.cpd-past) .product-sticky-cart{translate:0 120%;opacity:0;visibility:h
 .section-apps .jdgm-rev__body{font-size:14.5px;line-height:1.7}
 .section-apps .jdgm-rev__icon{background:var(--cp-soft)!important;color:var(--cp-gold-d)!important}
 .section-apps .jdgm-paginate__page{color:var(--cp-ink)!important}
+.section-apps .jdgm-rev-widg__summary-text:empty{display:none}
 .section-be-faq .be-faq{padding-top:56px!important;padding-bottom:0!important}
 .section-be-faq .be-faq__heading{font-family:var(--cp-serif)!important;font-weight:600!important;font-size:clamp(28px,2.6vw,40px)!important;line-height:1.1!important;text-transform:none!important;letter-spacing:.005em!important;margin:0 0 22px!important}
 .section-be-faq .be-faq__heading::after{content:"";display:block;width:56px;height:1px;margin-top:16px;background:var(--cp-gold)}

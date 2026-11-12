@@ -220,7 +220,8 @@
       var kids=[].slice.call(inner.children);
       /* 1) Titel-Präfix in der ersten Überschrift nicht wiederholen */
       var f=kids[0],title=(root.getAttribute('data-title')||'').toLowerCase();
-      if(f&&lvl(f)&&title&&txt(f).toLowerCase().indexOf(title)===0){
+      var fh=f&&(lvl(f)||(f.tagName==='P'&&txt(f).length<220&&!f.querySelector('br,a,img')));
+      if(fh&&title&&txt(f).toLowerCase().indexOf(title)===0){
         var rest=txt(f).slice(title.length).replace(/^[\s–—\-:|·]+/,'');
         if(rest.length>3){f.textContent=rest.charAt(0).toUpperCase()+rest.slice(1);f.classList.add('cpd-lead')}
       }else if(f&&lvl(f)){f.classList.add('cpd-lead')}
