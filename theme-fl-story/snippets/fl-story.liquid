@@ -16,8 +16,8 @@
 .fls-shade{background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,0) 26%,rgba(0,0,0,0) 42%,rgba(0,0,0,.86));pointer-events:none}
 /* heller Schleier: oben an einem Kapitel, das auf eine helle Fläche folgt (hebt sich vom Video), und über jeder hellen Fläche (legt sich aufs Video) */
 .fls-ch--lit::before,.fls-prod::before{content:"";position:absolute;left:0;right:0;pointer-events:none}
-.fls-ch--lit::before{z-index:3;top:-1px;height:34vh;height:34svh;background:linear-gradient(180deg,var(--paper),rgba(248,246,241,.8) 22%,rgba(248,246,241,.4) 50%,rgba(248,246,241,.1) 80%,rgba(248,246,241,0))}
-.fls-prod::before{bottom:calc(100% - 1px);height:38vh;height:38svh;background:linear-gradient(180deg,rgba(248,246,241,0),rgba(248,246,241,.1) 20%,rgba(248,246,241,.4) 50%,rgba(248,246,241,.8) 78%,var(--paper))}
+.fls-ch--lit::before{z-index:3;top:-1px;height:34vh;height:34svh;background:linear-gradient(180deg,rgba(248,246,241,1) 0%,rgba(248,246,241,0.98) 6%,rgba(248,246,241,0.92) 14%,rgba(248,246,241,0.78) 26%,rgba(248,246,241,0.55) 40%,rgba(248,246,241,0.3) 55%,rgba(248,246,241,0.12) 70%,rgba(248,246,241,0.03) 85%,rgba(248,246,241,0) 100%)}
+.fls-prod::before{bottom:calc(100% - 1px);height:38vh;height:38svh;background:linear-gradient(180deg,rgba(248,246,241,0) 0%,rgba(248,246,241,0.03) 15%,rgba(248,246,241,0.12) 30%,rgba(248,246,241,0.3) 45%,rgba(248,246,241,0.55) 60%,rgba(248,246,241,0.78) 74%,rgba(248,246,241,0.92) 86%,rgba(248,246,241,0.98) 94%,rgba(248,246,241,1) 100%)}
 .fls-eye{display:flex;align-items:center;gap:12px;font-size:12px;line-height:1.4;letter-spacing:.3em;text-transform:uppercase;color:var(--ink)}
 .fls-eye::before{content:"";flex:none;width:28px;height:1px;background:var(--gold)}
 .fls-h{font-family:var(--serif);font-weight:500;line-height:1.02;text-wrap:balance;font-size:clamp(2.4rem,7cqw,5.5rem);margin-top:10px;letter-spacing:0;text-transform:none}
