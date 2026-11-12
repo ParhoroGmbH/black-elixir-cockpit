@@ -325,7 +325,7 @@
       var m = [], g = [], p = 0;
       iv.forEach(function (v) { var l = m[m.length - 1]; if (l && v[0] <= l[1] + 1) l[1] = Math.max(l[1], v[1]); else m.push(v); });
       lights.forEach(function (z) {
-        var r = z.getBoundingClientRect(), a = r.top - b.top, e = r.bottom - b.top - (z.classList.contains('fls-end') ? innerHeight * .3 : 0), n = [];
+        var r = z.getBoundingClientRect(), a = r.top - b.top, e = r.bottom - b.top - (z.classList.contains('fls-end') ? innerHeight * .27 : 0), n = [];
         if (!r.height || e <= 0 || a >= b.height || e <= a || r.right <= b.left + 1 || r.left >= b.right - 1) return;
         m.forEach(function (v) { if (v[1] <= a || v[0] >= e) n.push(v); else { if (v[0] < a) n.push([v[0], a]); if (v[1] > e) n.push([e, v[1]]); } });
         m = n;
