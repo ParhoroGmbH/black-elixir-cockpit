@@ -25,7 +25,7 @@ url({{ 'fl-plank.jpg' | file_url }}) center/cover;box-shadow:0 10px 18px -4px #0
 html.fl-dark .main-sidebar,html.fl-dark .main-sidebar a,html.fl-dark .main-sidebar span,html.fl-dark .main-sidebar button,html.fl-dark .main-sidebar p,html.fl-dark .main-sidebar div{color:#fff!important}
 html.fl-dark .main-sidebar svg,html.fl-dark .main-sidebar svg *{fill:#fff!important;color:#fff!important}
 .fl-land .acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}
-.fl-land .detail .acts .buy{margin-top:0;cursor:pointer;font-family:var(--sans);border-radius:0;white-space:nowrap}
+.fl-land .detail .acts .buy{margin-top:0;cursor:pointer;font-family:var(--sans);border-radius:0;white-space:nowrap;flex:1 1 auto;justify-content:center;padding-left:18px;padding-right:18px;letter-spacing:.16em}
 .fl-land .detail .acts .add{background:var(--gold);color:#14100a;border-color:var(--gold);font-weight:500;backdrop-filter:none;transition:background .25s}
 .fl-land .detail .acts .add:hover{background:#dcbc7a}
 .fl-land .detail .acts .add:disabled{opacity:.75;cursor:default}
@@ -51,7 +51,7 @@ html.fl-dark .main-sidebar svg,html.fl-dark .main-sidebar svg *{fill:#fff!import
 .fl-land .swipe{display:flex;position:absolute;right:0;top:38px;height:var(--bh);width:46px;align-items:center;justify-content:flex-end;padding-right:6px;background:linear-gradient(90deg,transparent,rgba(8,6,4,.82));color:#f1eadb;pointer-events:none;z-index:3;transition:opacity .4s}
 .fl-land .swipe svg{width:20px;height:20px;animation:flnudge 1.8s ease-in-out infinite}
 .fl-land .sh.scrolled .swipe,.fl-land .sh.noflow .swipe{opacity:0}
-.fl-land .detail .acts .buy{flex:1 1 auto;justify-content:center;padding-left:14px;padding-right:14px;letter-spacing:.14em}
+.fl-land .plate{font-size:.68rem;letter-spacing:.13em;padding:7px 20px;max-width:94%}
 }
 @media(prefers-reduced-motion:reduce){.fl-land .swipe svg{animation:none}.fl-land .book::before{transition:none}}
 </style>
