@@ -489,7 +489,7 @@
         var s = m.length ? 'linear-gradient(180deg,' + g.join(',') + ')' : '';
         if (s !== o.last) { o.last = s; if (s) o.el.style.setProperty(o.v, s); else o.el.style.removeProperty(o.v); }
         o.els.forEach(function (e) {
-          var r = e.getBoundingClientRect(), y = (r.top + r.bottom) / 2 - b.top;
+          var r = e.getBoundingClientRect(), y = Math.min(b.height - 1, Math.max(1, (r.top + r.bottom) / 2 - b.top)); /* angeschnittene Einträge am Leistenrand zählen mit ihrem sichtbaren Teil */
           e.classList.toggle('bx-ondark', r.height > 0 && m.some(function (v) { return y > v[0] && y < v[1]; }));
         });
       });
@@ -518,6 +518,8 @@
     if (!n || !d || d.querySelector('.bx-news-row')) return;
     var T = { de: 'Neuigkeiten', en: 'News', fr: 'Actualités', it: 'Novità', da: 'Nyheder', ar: 'الأخبار' }, btn = n.querySelector('button');
     n.classList.add('bx-news-row');
+    /* das Neuigkeiten-Fenster liegt unter dem Menü: beim Antippen das Menü schließen, dann ist es sichtbar */
+    if (btn) btn.addEventListener('click', function () { var c = document.querySelector('#mega-menu-drawer .menu-drawer__close button'); if (c) c.click(); });
     if (btn) btn.insertAdjacentHTML('beforeend', '<span class="bx-news-label">' + (T[{{ request.locale.iso_code | json }}] || T.de) + '</span>');
     var h = d.querySelector('.menu-drawer__header');
     if (h && h.parentNode === d) d.insertBefore(n, h.nextSibling); else d.insertBefore(n, d.firstChild);
