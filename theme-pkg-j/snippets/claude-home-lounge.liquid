@@ -76,8 +76,9 @@
   .cvt-plq{position:relative;z-index:1;margin-top:14px;min-width:min(420px,100%);max-width:min(480px,100%);padding:12px 22px 13px;border-radius:4px;background:var(--brass);color:#24190a;text-align:center;box-shadow:inset 0 1px 0 rgba(255,250,230,.8),inset 0 -1px 0 rgba(80,55,15,.6),0 10px 22px rgba(0,0,0,.55)}
   .cvt-plq::before,.cvt-plq::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3cf,#7a5a20);box-shadow:0 0 0 1px rgba(60,40,10,.45)}
   .cvt-plq::before{inset-inline-start:9px}.cvt-plq::after{inset-inline-end:9px}
-  .cvt-cap{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:2px 12px}
-  .cvt-cap[hidden]{display:none}
+  .cvt-plq{display:grid;align-items:center}
+  .cvt-cap{grid-area:1/1;display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:2px 12px}
+  .cvt-cap[hidden]{display:flex;visibility:hidden}
   .cvt-cap small{flex-basis:100%;font-size:11px;letter-spacing:.24em;font-weight:600}
   .cvt-cap b{font-family:"Cormorant Garamond","Bodoni Moda",Georgia,serif;font-size:clamp(18px,1.6vw,22px);font-weight:600;line-height:1.15}
   .cvt-pr{font-weight:600;font-size:15px}
