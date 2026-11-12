@@ -1,0 +1,58 @@
+{%- comment -%} Black-Elixir-Identitaet: Kapitel und Kauf-Bereich weiss mit schwarzer Schrift; Film-Szenen bleiben dunkel. Priscus/Verus: Flakon statt Box. Kauf-Bereich: die Sieben in einer Reihe (Desktop), 4+3 (Tablet), 2er-Raster (Handy). Linke Seitenleiste: Szenen laufen darunter durch, Schrift wird weiss ueber Videos und schwarz ueber weissen Bereichen. {%- endcomment -%}
+<style>
+html body .dh{height:190vh}
+html body .dg{height:280vh}
+.dh,.dv,.dg,.dm{width:calc(100% + var(--dm-sbw,0px));margin-left:calc(-1*var(--dm-sbw,0px))}
+.dm .dv,.dm .dg{width:100%;margin-left:0}
+.dh-hint,.dg-hint{padding-left:var(--dm-sbw,0px)!important}
+.dh-tx{padding-left:calc(var(--dm-sbw,0px) + 16px)!important}
+.dv-tx,.dg-in{padding-left:calc(var(--dm-sbw,0px) + 20px)!important}
+.dm-cp .dm-st{padding-left:var(--dm-sbw,0px)}
+html body .dm-shop{padding-left:calc(var(--dm-sbw,0px) + 20px)}
+.main-sidebar,.main-sidebar *{transition:color .4s ease,fill .4s ease}
+html.dm-dark .main-sidebar,html.dm-dark .main-sidebar a,html.dm-dark .main-sidebar span,html.dm-dark .main-sidebar button,html.dm-dark .main-sidebar p,html.dm-dark .main-sidebar div{color:#fff!important}
+html.dm-dark .main-sidebar svg,html.dm-dark .main-sidebar svg *{fill:#fff!important;color:#fff!important}
+html body .dm-cp .dm-st{background:#fff}
+html body .dm-cp h2{color:#000}
+html body .dm-cp .dm-lab{color:#000;display:flex;align-items:center;gap:12px}
+html body .dm-cp .dm-lab::before{content:'';width:28px;height:2px;background:var(--a)}
+html body .dm-cp .dm-tag{color:#000;font-style:italic;letter-spacing:.04em}
+html body .dm-cp .dm-story{color:#2a2a2a}
+html body .dm-cp .dm-notes{border-top-color:#e2e2e2;color:#111}
+html body .dm-cp .dm-notes span{color:#8a8a8a}
+html body .dm-cp .dm-btn{background:#000;color:#fff}
+html body .dm-cp .dm-btn:hover{background:#222}
+html body .dm-cp .dm-sm{color:#555}
+html body .dm-cp .dm-bust{filter:drop-shadow(0 30px 30px rgba(0,0,0,.18))}
+html body .dm-3d::part(default-progress-bar){display:none}
+html body .dm-shop{background:#fff;color:#111;gap:44px}
+html body .dm-shop h2{color:#000}
+html body .dm-cards{max-width:1320px;display:flex;flex-wrap:wrap;justify-content:center;gap:28px 14px;position:relative}
+html body .dm-card{flex:0 0 calc((100% - 6*14px)/7);min-width:0;border:0;background:transparent;padding:0;align-items:center;text-align:center;gap:6px}
+html body .dm-card .im{height:240px;width:100%;align-items:flex-end;position:relative;padding-bottom:14px;margin-bottom:8px}
+html body .dm-card .im::after{content:'';position:absolute;left:12%;right:12%;bottom:4px;height:14px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,.2),rgba(0,0,0,0) 70%)}
+html body .dm-card img{max-height:100%;width:auto;position:relative;z-index:1;filter:drop-shadow(0 10px 10px rgba(0,0,0,.12));transition:transform .35s ease}
+html body .dm-card img[src*="dumo-flasche"]{max-height:80%}
+html body .dm-card:hover img{transform:translateY(-8px)}
+html body .dm-card b{color:#000;font-size:17px;letter-spacing:.08em}
+html body .dm-card .dm-sm{color:#777;text-decoration:none;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+html body .dm-card>span:not(.dm-sm){font-size:14px;color:#111}
+html body .dm-card .dm-btn{width:100%;color:#000;border:1px solid #000;background:#fff;min-height:40px;padding:0 6px;font-size:11px;letter-spacing:.1em;margin-top:4px}
+html body .dm-card .dm-btn:hover{background:#000;color:#fff}
+html body .dm-cards::after{content:'';position:absolute;left:0;right:0;top:254px;height:1px;background:linear-gradient(90deg,rgba(0,0,0,0),#d8d8d8 15%,#d8d8d8 85%,rgba(0,0,0,0));pointer-events:none}
+@media (max-width:1100px){html body .dm-card{flex-basis:calc((100% - 3*14px)/4)}html body .dm-cards::after{display:none}}
+@media (max-width:640px){html body .dm-cards{gap:24px 12px}html body .dm-card{flex-basis:calc((100% - 12px)/2)}html body .dm-card .im{height:200px}html body .dm-card .dm-btn{min-height:44px}}
+html body .dm-all .dm-btn{background:#000;color:#fff}
+html body .dm-fine{color:#666}
+html body .dm-msg{color:#000}
+html body .dm-sig{border-top-color:#e6e6e6}
+html body .dm-sig strong{color:#000}
+html body .dm-sig span{color:#777}
+html body .dm .dm-shop button:focus-visible,html body .dm-cp button:focus-visible{outline-color:#000}
+@media (prefers-reduced-motion:reduce){html body .dh,html body .dg{height:100vh}html body .dm-card img{transition:none}}
+</style>
+<script>document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('img[src*="dumo-cut-priscus"],img[src*="dumo-cut-verus"]').forEach(function(i){i.src=i.src.replace('dumo-cut-','dumo-flasche-').split('?')[0]});
+var sb=document.querySelector('.main-sidebar-section'),de=document.documentElement;
+function w(){de.style.setProperty('--dm-sbw',(sb&&getComputedStyle(sb).display!='none'?sb.offsetWidth:0)+'px')}
+function chk(){if(!sb||!sb.offsetWidth){de.classList.remove('dm-dark');return}var x=Math.max(10,sb.offsetWidth/2),dark=document.elementsFromPoint(x,innerHeight/2).some(function(e){return e.matches&&e.matches('.dh,.dv,.dg')});de.classList.toggle('dm-dark',dark)}
+w();chk();addEventListener('resize',function(){w();chk()});addEventListener('scroll',chk,{passive:true})});</script>
