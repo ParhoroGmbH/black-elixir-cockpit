@@ -95,7 +95,7 @@
             {%- assign bv = p.variants | where: 'available', true | sort: 'price' | last -%}
             {%- assign bprice = bv.price | default: p.price_max -%}
             {%- assign k = forloop.index0 | times: 7 | modulo: 9 | plus: 91 | divided_by: 100.0 -%}
-            <button type="button" class="cl-book{% if 'def' contains c1 %} light{% endif %}{% if nm.size > 11 %} long{% endif %}{% if forloop.first %} on{% endif %}" style="--c:{{ col }};--k:{{ k }}" aria-label="{{ nm }}" data-u="{{ p.url }}" data-t="{{ p.title | remove: 'Fragrance Library ' | escape }}" data-p="{{ bprice | money | strip_html | escape }}" data-i="{{ p.featured_image | image_url: width: 500 }}">
+            <button type="button" class="cl-book{% if 'def' contains c1 %} light{% endif %}{% if nm.size > 11 %} long{% endif %}{% if forloop.first %} on{% endif %}" style="--c:{{ col }};--k:{{ k }}" aria-label="{{ nm }}" data-u="{{ p.url }}" data-t="{{ p.title | remove: 'Fragrance Library ' | escape }}" data-p="{{ bprice | money | strip_html | escape }}" data-i="{% if p.featured_image %}{{ p.featured_image | image_url: width: 600 }}{% endif %}">
               <span class="cl-bk"><span class="l"></span><span class="n" aria-hidden="true">{{ nm }}</span><span class="fl" aria-hidden="true">F|L</span></span>
             </button>
           {%- endfor -%}
@@ -123,6 +123,7 @@
     }
     function ml(v) { var m = /([\d.,]+)\s*ml/i.exec(v.title || ''); return m ? parseFloat(m[1].replace(',', '.')) : 0; }
     function variant(v) {
+      var ob = s.querySelector('.cl-book.on'); if (ob) pic(ob, v);
       p.textContent = money(v.price);
       var um = v.unit_price_measurement;
       /* Grundpreis je 100 ml – gleiches Format wie auf der Library-Seite */
@@ -131,18 +132,27 @@
       [].forEach.call(chips.children, function (c) { c.classList.toggle('on', +c.dataset.id === v.id); c.setAttribute('aria-pressed', +c.dataset.id === v.id); });
     }
     function fill(d) {
+      curD = d;
       notes.textContent = ''; chips.textContent = '';
       pyramid(d.description).forEach(function (n) { var r = el('div'); r.appendChild(el('span', '', ({ Kopfnote: {{ 'claude.n.top_html' | t | json }}, Herznote: {{ 'claude.n.heart_html' | t | json }}, Basisnote: {{ 'claude.n.base_html' | t | json }} })[n[0]] || n[0])); r.appendChild(el('span', '', n[1])); notes.appendChild(r); });
       /* Runde 3: Größen klein → groß; vorgewählt ist die größte lieferbare Größe (3-ml-Probe nur, wenn sonst nichts lieferbar ist) */
       var vs = d.variants.slice().sort(function (a, b) { return (ml(a) - ml(b)) || (a.price - b.price); });
-      if (vs.length > 1) vs.forEach(function (v) { var c = el('button', 'cl-chip', v.title); c.type = 'button'; c.dataset.id = v.id; c.disabled = !v.available; c.addEventListener('click', function () { variant(v); }); chips.appendChild(c); });
+      if (vs.length > 1) vs.forEach(function (v) { var c = el('button', 'cl-chip', v.title); c.type = 'button'; c.dataset.id = v.id; c.disabled = !v.available; c.addEventListener('pointerenter', function () { if (F) F.pre(vimg(v, d)); }); c.addEventListener('focus', function () { if (F) F.pre(vimg(v, d)); }); c.addEventListener('click', function () { variant(v); }); chips.appendChild(c); });
       /* bei gleicher Größe und gleichem Preis gewinnt die Variante, die im Produkt zuerst steht (z. B. "100 ml" vor "100 ml EXTRAIT") */
       var av = d.variants.filter(function (v) { return v.available; }), best = av[0];
       av.forEach(function (v) { if (ml(v) > ml(best) || (ml(v) === ml(best) && v.price > best.price)) best = v; });
       variant(best || vs[vs.length - 1]);
     }
     /* Flakon ohne weißes Quadrat: 3D-Modell, Freisteller oder Foto auf Papier (snippets/fl-books) */
-    function pic(b) { if (F && bot) F.bottle(b.dataset.u.split('?')[0].split('/products/')[1], b.dataset.i, 'Fragrance Library ' + b.dataset.t, bot); }
+    /* Foto der gewählten Größe auf der Papiertafel (snippets/fl-books): Bild der Variante, sonst Produktbild mit der Größe im Alt-Text/Dateinamen, sonst Hauptbild */
+    var curD = null;
+    function vimg(v, d) {
+      if (v && v.featured_image && v.featured_image.src) return v.featured_image.src;
+      var n = String(ml(v || {}) || ''), hit = '';
+      if (n && d) (d.media || []).some(function (m) { var a = String(m.alt || '').toLowerCase(), f = String(m.src || (m.preview_image || {}).src || '').split('?')[0].split('/').pop().toLowerCase(); if (a.indexOf(n + ' ml') >= 0 || a.indexOf(n + 'ml') >= 0 || f.indexOf(n + 'ml') >= 0 || f.indexOf(n + '-ml') >= 0 || (n === '3' && /probe|sample/.test(a + f))) { hit = m.src || (m.preview_image || {}).src; return true; } });
+      return hit || (d && d.featured_image) || '';
+    }
+    function pic(b, v) { if (F && bot) F.photo(bot, v ? vimg(v, curD) : b.dataset.i, 'Fragrance Library ' + b.dataset.t + (v ? ' ' + v.title : '')); }
     function load(b) {
       var url = b.dataset.u.split('?')[0]; cur = url;
       notes.textContent = ''; chips.textContent = ''; gp.textContent = ''; atc.dataset.variantId = ''; ab.disabled = true; ab.textContent = {{ 'claude.c.atc_html' | t | json }};

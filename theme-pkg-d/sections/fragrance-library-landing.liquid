@@ -83,7 +83,32 @@ html.fl-dark .main-sidebar svg,html.fl-dark .main-sidebar svg *{fill:#fff!import
 </section>
 </div>
 <script>
-window.FL_DATA=[{% for p in collection.products %}{%- assign d = p.description | replace: '</p>', '</p>|~|' | replace: '</li>', '</li>|~|' | replace: '</div>', '</div>|~|' | replace: '<br', '|~|<br' | replace: '</h', '|~|</h' | strip_html | newline_to_br | replace: '|~|', '<br />' -%}{%- assign kop = '' -%}{%- assign her = '' -%}{%- assign bas = '' -%}{%- assign dn = '' -%}{%- if d contains 'Duftnoten:' -%}{%- assign dn = d | split: 'Duftnoten:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Kopfnote:' -%}{%- assign kop = d | split: 'Kopfnote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Herznote:' -%}{%- assign her = d | split: 'Herznote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Basisnote:' -%}{%- assign bas = d | split: 'Basisnote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- capture be_uvp_ausnahme -%}{%- render 'be-uvp-ausnahme', vendor: p.vendor -%}{%- endcapture -%}{"h":{{ p.handle | json }},"u":{{ p.url | json }},"t":{{ p.title | json }},"m":{{ p.featured_image | image_url: width: 640 | json }},"n":[{{ kop | json }},{{ her | json }},{{ bas | json }}],"dn":{{ dn | json }},"v":[{% for v in p.variants %}{"t":{{ v.title | json }},"p":{{ v.price | default: 0 }},"c":{%- if be_uvp_ausnahme contains 'ja' -%}{{ v.compare_at_price | default: 0 }}{%- else -%}0{%- endif -%},"i":{{ v.id }},"a":{{ v.available }},"up":{{ v.unit_price | default: 0 }},"ur":{{ v.unit_price_measurement.reference_value | default: 0 }},"uu":{{ v.unit_price_measurement.reference_unit | json }}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% unless forloop.last %},{% endunless %}{% endfor %}];
+window.FL_DATA=[{% for p in collection.products %}{%- assign d = p.description | replace: '</p>', '</p>|~|' | replace: '</li>', '</li>|~|' | replace: '</div>', '</div>|~|' | replace: '<br', '|~|<br' | replace: '</h', '|~|</h' | strip_html | newline_to_br | replace: '|~|', '<br />' -%}{%- assign kop = '' -%}{%- assign her = '' -%}{%- assign bas = '' -%}{%- assign dn = '' -%}{%- if d contains 'Duftnoten:' -%}{%- assign dn = d | split: 'Duftnoten:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Kopfnote:' -%}{%- assign kop = d | split: 'Kopfnote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Herznote:' -%}{%- assign her = d | split: 'Herznote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- if d contains 'Basisnote:' -%}{%- assign bas = d | split: 'Basisnote:' | last | split: '<br />' | first | strip -%}{%- endif -%}{%- capture be_uvp_ausnahme -%}{%- render 'be-uvp-ausnahme', vendor: p.vendor -%}{%- endcapture -%}{"h":{{ p.handle | json }},"u":{{ p.url | json }},"t":{{ p.title | json }},"m":{% if p.featured_image %}{{ p.featured_image | image_url: width: 600 | json }}{% else %}""{% endif %},"n":[{{ kop | json }},{{ her | json }},{{ bas | json }}],"dn":{{ dn | json }},"v":[{% for v in p.variants %}{"t":{{ v.title | json }},"p":{{ v.price | default: 0 }},"c":{%- if be_uvp_ausnahme contains 'ja' -%}{{ v.compare_at_price | default: 0 }}{%- else -%}0{%- endif -%},"i":{{ v.id }},"a":{{ v.available }},"up":{{ v.unit_price | default: 0 }},"ur":{{ v.unit_price_measurement.reference_value | default: 0 }},"uu":{{ v.unit_price_measurement.reference_unit | json }},"im":{%- liquid
+  comment
+    Foto der Größe: Bild der Variante; sonst ein Produktbild, dessen Alt-Text oder Dateiname die Größe nennt ("50 ml", "50ml", "probe" für 3 ml); sonst leer (dann Hauptbild)
+  endcomment
+  assign vim = v.featured_image
+  if vim == blank
+    assign vml = v.title | plus: 0 | append: ''
+    assign k1 = vml | append: ' ml'
+    assign k2 = vml | append: 'ml'
+    assign k3 = vml | append: '-ml'
+    for im in p.images
+      assign ia = im.alt | downcase
+      assign is = im.src | split: '?' | first | split: '/' | last | downcase
+      if ia contains k1 or ia contains k2 or is contains k2 or is contains k3
+        assign vim = im
+        break
+      endif
+      if vml == '3'
+        if ia contains 'probe' or is contains 'probe' or ia contains 'sample'
+          assign vim = im
+          break
+        endif
+      endif
+    endfor
+  endif
+-%}{% if vim %}{{ vim | image_url: width: 600 | json }}{% else %}""{% endif %}}{% unless forloop.last %},{% endunless %}{% endfor %}]}{% unless forloop.last %},{% endunless %}{% endfor %}];
 </script>
 <script>
 (function(){
@@ -103,7 +128,7 @@ function nm(p){var k=CK[F.key(p.h).replace(/-(eau|eu|extrait)-de-parfum$/,'').re
 var Cab=[[X,[]],[E,[]]];
 D.forEach(function(p){
 /* Extrait erkennen – auch in übersetzten Variantentiteln (z. B. "100 ml PERFUME EXTRACT") */
-var XR=/extrait|extract|estratto|ekstrakt|extracto|مستخلص|خلاصة|[إا]كستر/i,ext=XR.test(p.t);var vs=p.v.filter(function(v){return v.a}).map(function(v){return{ml:parseInt(v.t,10),ext:ext||XR.test(v.t),p:v.p,c:v.c,i:v.i,up:v.up,ur:v.ur,uu:v.uu}});
+var XR=/extrait|extract|estratto|ekstrakt|extracto|مستخلص|خلاصة|[إا]كستر/i,ext=XR.test(p.t);var vs=p.v.filter(function(v){return v.a}).map(function(v){return{ml:parseInt(v.t,10),ext:ext||XR.test(v.t),p:v.p,c:v.c,i:v.i,up:v.up,ur:v.ur,uu:v.uu,im:v.im}});
 if(!vs.length)return;
 var m=/placeholder/i.test(p.m||'')?'':p.m;
 function cn(s){s=String(s||'').split(/(?:Kopf|Herz|Basis|Duft)noten?\s*:/i)[0].trim();return s.length>160?'':s}var pn=p.n.map(cn);

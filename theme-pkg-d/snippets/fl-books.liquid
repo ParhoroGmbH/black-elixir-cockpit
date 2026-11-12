@@ -1,14 +1,14 @@
 {%- comment -%} fl-books – gemeinsame Bausteine der Fragrance Library (Landingpage sections/fragrance-library-landing + Startseiten-Regal snippets/claude-home-library). Claude · 12.11.2026 (Paket D).
-  Stellt window.FLB bereit: dust(el) = feiner Staub über einem Buch (kein Glanz), bottle(handle, foto, alt, box) = Flakon ohne weißes Quadrat (3D-Modell be4-fl-*.glb, sonst freigestelltes Produktfoto be-fl-cut-<handle>.webp, sonst Originalfoto auf Papier), open(buch, ausloeser) = aufgeschlagenes Buch als Dialog (links Flakon, rechts Titel, Noten als Inhaltsverzeichnis, Größe, Preis, Grundpreis je 100 ml, Kauf über window.beLandAdd), money/gp = einheitliches Preisformat, wood(el) = Holztexturen erst laden, wenn das Regal in Sichtweite kommt.
-  Dateien (Inhalte > Dateien): be-fl-holz2-brett/kante/pfosten/rueck/sims.jpg, be-fl-papier.jpg, be-fl-cut-*.webp. Neue Texte stehen hier als Übersetzungstabelle (de, en, fr, it, da, ar) – keine Locale-Dateien nötig. Wird je Seite nur einmal ausgegeben. {%- endcomment -%}
+  Stellt window.FLB bereit: dust(el) = feiner Staub über einem Buch (kein Glanz), photo(box, bild, alt) = Produktfoto der gewählten Größe auf einer Papiertafel (Bild der Variante, sonst Hauptbild; ohne Foto Monogramm F|L), pre(bild) = Foto vorladen, open(buch, ausloeser) = aufgeschlagenes Buch als Dialog (links Foto der gewählten Größe, rechts Titel, Noten als Inhaltsverzeichnis, Größe, Preis, Grundpreis je 100 ml, Kauf über window.beLandAdd), money/gp = einheitliches Preisformat, wood(el) = Holztexturen erst laden, wenn das Regal in Sichtweite kommt.
+  Dateien (Inhalte > Dateien): be-fl-holz2-brett/kante/pfosten/rueck/sims.jpg, be-fl-papier.jpg (die Freisteller be-fl-cut-*.webp liegen noch in den Dateien, werden aber nicht mehr benutzt). Neue Texte stehen hier als Übersetzungstabelle (de, en, fr, it, da, ar) – keine Locale-Dateien nötig. Wird je Seite nur einmal ausgegeben. {%- endcomment -%}
 {%- assign flb_l = request.locale.iso_code | slice: 0, 2 -%}
 {%- case flb_l -%}
-  {%- when 'en' -%}{%- assign flb_s = 'Pull a book from the shelf – it opens for you.|Close book|Contents|Shown: 50 ml bottle' -%}
-  {%- when 'fr' -%}{%- assign flb_s = 'Tirez un livre de l’étagère – il s’ouvre pour vous.|Fermer le livre|Sommaire|Illustration : flacon de 50 ml' -%}
-  {%- when 'it' -%}{%- assign flb_s = 'Estrai un libro dallo scaffale – si apre per te.|Chiudi il libro|Indice|Nell’immagine: flacone da 50 ml' -%}
-  {%- when 'da' -%}{%- assign flb_s = 'Træk en bog ud af reolen – den åbner sig for dig.|Luk bogen|Indhold|Vist: flakon på 50 ml' -%}
-  {%- when 'ar' -%}{%- assign flb_s = 'اسحب كتابًا من الرف – فينفتح أمامك.|إغلاق الكتاب|المحتويات|الصورة: عبوة 50 مل' -%}
-  {%- else -%}{%- assign flb_s = 'Zieh ein Buch aus dem Regal – es schlägt sich auf.|Buch schließen|Inhalt|Abbildung: 50-ml-Flakon' -%}
+  {%- when 'en' -%}{%- assign flb_s = 'Pull a book from the shelf – it opens for you.|Close book|Contents' -%}
+  {%- when 'fr' -%}{%- assign flb_s = 'Tirez un livre de l’étagère – il s’ouvre pour vous.|Fermer le livre|Sommaire' -%}
+  {%- when 'it' -%}{%- assign flb_s = 'Estrai un libro dallo scaffale – si apre per te.|Chiudi il libro|Indice' -%}
+  {%- when 'da' -%}{%- assign flb_s = 'Træk en bog ud af reolen – den åbner sig for dig.|Luk bogen|Indhold' -%}
+  {%- when 'ar' -%}{%- assign flb_s = 'اسحب كتابًا من الرف – فينفتح أمامك.|إغلاق الكتاب|المحتويات' -%}
+  {%- else -%}{%- assign flb_s = 'Zieh ein Buch aus dem Regal – es schlägt sich auf.|Buch schließen|Inhalt' -%}
 {%- endcase -%}
 <style>
 /* Holz: Farbe als Ersatz, Texturen erst mit .flb-wood (setzt FLB.wood, sobald das Regal in Sichtweite kommt) */
@@ -25,22 +25,12 @@
 @keyframes flbSpeck{0%{opacity:0;transform:translate(0,0)}18%{opacity:.9}100%{opacity:0;transform:translate(var(--x),var(--y))}}
 @keyframes flbPuff{0%{opacity:0;transform:translateY(6px) scale(.5)}30%{opacity:1}100%{opacity:0;transform:translateY(-22px) scale(1.25)}}
 /* Flakon ohne weißes Quadrat */
+/* Flakon = Produktfoto der gewählten Größe auf einer Papiertafel mit feinem Rahmen (Wunsch 12.11.2026: für jedes Buch gleich, keine 3D-Modelle/Freisteller mehr). Tafel hat feste Größe; beim Größenwechsel blendet das neue Foto über das alte. */
 .flb-bot{position:relative;display:block;width:100%;height:100%;min-height:0}
 .flb-bot>*{position:absolute}
-.flb-bot model-viewer{inset:0;width:100%;height:100%;background:transparent;--poster-color:transparent;opacity:0;transition:opacity .6s}
-.flb-bot.is-3d model-viewer{opacity:1}
-.flb-bot model-viewer::part(default-progress-bar){display:none}
-.flb-bot.flb-bot img.flb-cut{left:50%;bottom:9%;height:84%;width:auto;max-width:92%;aspect-ratio:auto;border-radius:0;background:none;object-fit:contain;object-position:50% 100%;transform:translateX(-50%);opacity:0;transition:opacity .5s,transform .6s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 3px 3px rgba(30,18,6,.35))}
-.flb-bot.flb-bot.is-in img.flb-cut{opacity:1}
-.flb-bot.flb-bot:hover img.flb-cut{transform:translateX(-50%) rotate(-2.2deg) translateY(-3px)}
-.flb-sh{left:50%;bottom:6.5%;width:46%;height:7%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(24,14,4,.55),rgba(24,14,4,.2) 60%,rgba(24,14,4,0));filter:blur(2px);opacity:0;transition:opacity .5s}
-.flb-bot.is-in .flb-sh{opacity:1}
-.flb-bot.flb-bot.is-3d img.flb-cut,.flb-bot.flb-bot.is-3d .flb-sh,.flb-bot.flb-bot.is-3d .flb-fr{opacity:0}
-/* Ersatz: Originalfoto auf papierfarbener Tafel mit feiner Linie (Weiß verschmilzt mit dem Papier) */
-.flb-fr{left:50%;top:50%;height:86%;aspect-ratio:1;max-width:92%;transform:translate(-50%,-50%);background:#efe2c4;outline:1px solid rgba(120,92,44,.55);outline-offset:-7px;opacity:0;transition:opacity .5s;overflow:hidden;border-radius:2px}
-.flb-bot.flb-bot .flb-fr img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:0;background:none;object-fit:cover;mix-blend-mode:multiply;display:block}
-.flb-bot.is-in .flb-fr{opacity:1}
-/* kein Foto vorhanden: Monogramm wie auf dem Buchrücken */
+.flb-fr{left:50%;top:50%;height:86%;aspect-ratio:1;max-width:92%;transform:translate(-50%,-50%);background:#efe2c4;outline:1px solid rgba(120,92,44,.55);outline-offset:-7px;overflow:hidden;border-radius:2px}
+.flb-bot.flb-bot .flb-fr img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:0;background:none;object-fit:contain;mix-blend-mode:multiply;display:block;opacity:0;transition:opacity .45s ease}
+.flb-bot.flb-bot .flb-fr img.on{opacity:1}
 .flb-mono{left:50%;top:50%;transform:translate(-50%,-50%);padding:.35em .7em;font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(2rem,5vw,3.4rem);letter-spacing:.06em;color:#1a1712;background:linear-gradient(135deg,#e7c987,#9c7434 55%,#d3ab60);box-shadow:0 2px 6px rgba(40,24,6,.4)}
 /* aufgeschlagenes Buch */
 .flb-ov{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:24px;font-family:Jost,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
@@ -57,8 +47,6 @@
 .flb-pg{position:relative;min-width:0;min-height:0;padding:clamp(22px,3.6vw,48px)}
 .flb-l{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
 .flb-l .flb-box{width:100%;height:min(54vh,460px);min-height:240px}
-.flb-fig{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);text-align:center}
-.flb-fig:empty{display:none}
 .flb-r::before,.flb-r::after{content:"";flex:1 0 0px}
 .flb-r{overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;padding-inline-start:clamp(30px,4.4vw,60px)}
 .flb-r>*{flex:0 0 auto}
@@ -112,16 +100,12 @@ html.flb-open .chatty-ai-mode.state-resting{opacity:0!important;pointer-events:n
 @media (prefers-reduced-motion:reduce){
 .flb-bk,.flb-bg,.flb-bk::after,.flb-bot *{transition:none!important}
 .flb-bk{transform:none}.flb-bk::after{display:none}
-.flb-bot.flb-bot:hover img.flb-cut{transform:translateX(-50%)}
 }
 </style>
 <script>
 window.FLB=window.FLB||(function(){
 var T={{ flb_s | split: '|' | json }},L={top:{{ 'claude.n.top_html' | t | json }},heart:{{ 'claude.n.heart_html' | t | json }},base:{{ 'claude.n.base_html' | t | json }},notes:{{ 'claude.n.notes_html' | t | json }},uvp:{{ 'claude.c.uvp_html' | t | json }},atc:{{ 'claude.c.atc_html' | t | json }},to:{{ 'claude.c.to_scent_html' | t | json }},legal:{{ 'claude.fl.legal_html' | t | json }},ship:{{ 'claude.fl.ship_html' | t | json }}};
 var MF={{ shop.money_format | json }},FILES={{ 'be-fl-papier.jpg' | file_url | split: 'be-fl-papier.jpg' | first | json }};
-var GLB={"the-alchemist-eau-de-parfum":"726d6965c7f4d746/be4-fl-red.glb","the-house-of-mirth":"7a67b14fc1ffec9a/be4-fl-yellow.glb","orlando":"d4c849a1041ec3a7/be4-fl-orlando.glb","invisible-cities":"b4395c42ef329856/be4-fl-cities.glb","beloved":"50b5261580d3bfd9/be4-fl-beloved.glb","romeo-and-juliet":"ce3b708a28188d20/be4-fl-romeo.glb","rebecca":"13a61eafefe41e40/be4-fl-white.glb","hard-times-eau-de-parfum":"3e91251fba23d183/be4-fl-hardtimes.glb"};
-/* freigestellte Produktfotos (be-fl-cut-<handle ohne "fragrance-library-">.webp). Nicht dabei, weil die Freistellung nicht sauber war (weißer Flakon auf Weiß): 1984, Anna Karenina, The Call of the Wild, To the Lighthouse, Lost Illusions -> Originalfoto auf Papier */
-var CUT=" a-tale-of-two-cities crime-and-punishment-eau-de-parfum emma-eu-de-parfum hamlet-eau-de-parfum heart-of-darkness-eau-de-parfum in-search-of-lost-time-eau-de-parfum notes-from-underground-eau-de-parfum one-hundred-years-of-solitude-eau-de-parfum othello republic-eau-de-parfum sense-and-sensibility-eau-de-parfum the-age-of-innocense the-brothers-karamazov-eau-de-parfum the-castle-eau-de-parfum the-gambler-eau-de-parfum the-golden-bowl-eau-de-parfum the-grapes-of-wrath-eau-de-parfum the-great-gatsby-eau-de-parfum the-magic-mountain-eau-de-parfum the-red-and-the-black-eau-de-parfum the-seceret-garden-eau-de-parfum the-stranger-eau-de-parfum the-sun-also-rises-eau-de-parfum the-trial-eau-de-parfum things-fall-apart-eau-de-parfum utopia-eau-de-parfum vanity-fair-eau-de-parfum war-and-peace-eau-de-parfum ";
 var still=matchMedia('(prefers-reduced-motion:reduce)').matches;
 function key(h){return String(h||'').replace(/^(fragrance-library-)+/,'')}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
@@ -138,21 +122,18 @@ function dust(b,big){
   for(var i=0,n=big?14:9;i<n;i++){var s=el('i'),z=1+Math.random()*2;s.style.cssText='left:'+(r.left+Math.random()*r.width)+'px;top:'+(r.top+Math.random()*10-4)+'px;width:'+z+'px;height:'+z+'px;--x:'+(Math.random()*36-18).toFixed(1)+'px;--y:'+(-16-Math.random()*34).toFixed(1)+'px;--d:'+(650+Math.random()*450|0)+'ms;animation-delay:'+(Math.random()*140|0)+'ms';layer.appendChild(s)}
   setTimeout(function(){for(var k=0;k<n+1&&layer.firstChild;k++)layer.removeChild(layer.firstChild)},1300);
 }
-function mvLoad(fail){if(customElements.get('model-viewer')||window.__flsMV)return;window.__flsMV=1;var s=document.createElement('script');s.type='module';s.src='https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js';s.onerror=fail;document.head.appendChild(s)}
-/* Flakon in box: 3D-Modell (dreht sich leicht, wenn der Zeiger darüber ist), sonst Freisteller mit Standschatten, sonst Originalfoto auf Papier. Bis das Modell da ist, steht das Foto. */
-function bottle(h,img,alt,box){
-  var k=key(h);box.textContent='';box.className='flb-bot';box._k=k;
-  function frame(){if(!img||box._k!==k||box.querySelector('.flb-fr'))return;var f=el('span','flb-fr'),i=new Image();i.alt=alt||'';i.decoding='async';i.onload=function(){if(box._k===k)box.classList.add('is-in')};i.src=img;f.appendChild(i);box.appendChild(f)}
-  function cut(){var i=new Image();i.className='flb-cut';i.alt=alt||'';i.decoding='async';i.onload=function(){if(box._k===k)box.classList.add('is-in')};i.onerror=function(){if(i.parentNode)i.parentNode.removeChild(i);var s=box.querySelector('.flb-sh');if(s)box.removeChild(s);frame()};box.appendChild(el('span','flb-sh'));box.appendChild(i);i.src=FILES+'be-fl-cut-'+k+'.webp'}
-  if(CUT.indexOf(' '+k+' ')>=0)cut();else if(img)frame();else if(!GLB[k])box.appendChild(el('span','flb-mono','F|L'));
-  if(GLB[k]){
-    var m=document.createElement('model-viewer');m.setAttribute('alt',alt||'');m.setAttribute('camera-orbit','18deg 80deg auto');m.setAttribute('field-of-view','22deg');m.setAttribute('interaction-prompt','none');m.setAttribute('tone-mapping','neutral');m.setAttribute('environment-image','neutral');m.setAttribute('exposure','1.05');m.setAttribute('shadow-intensity','1.2');m.setAttribute('shadow-softness','.8');m.setAttribute('loading','eager');m.setAttribute('interpolation-decay','120');
-    m.addEventListener('load',function(){if(box._k===k)box.classList.add('is-3d')});
-    box.addEventListener('pointerenter',function(){if(!still&&box._k===k)m.setAttribute('camera-orbit','-22deg 80deg auto')});
-    box.addEventListener('pointerleave',function(){if(box._k===k)m.setAttribute('camera-orbit','18deg 80deg auto')});
-    box.appendChild(m);m.setAttribute('src','https://cdn.shopify.com/3d/models/o/'+GLB[k]);mvLoad(function(){});
-  }
-  return GLB[k]?'3d':CUT.indexOf(' '+k+' ')>=0?'cut':img?'frame':'none';
+/* Foto in box (Papiertafel). src = Bild-URL der gewählten Größe; null = kein Foto -> Monogramm. Gleiche URL: nichts tun. Neue URL: neues Bild lädt unsichtbar und blendet dann über. */
+function sz(u,w){u=String(u||'');if(!u)return '';if(u.indexOf('//')===0)u='https:'+u;return /[?&]width=\d+/.test(u)?u.replace(/([?&])width=\d+/,'$1width='+w):u+(u.indexOf('?')<0?'?':'&')+'width='+w}
+function pre(u){if(u){var i=new Image();i.src=sz(u,600)}}
+function photo(box,u,alt){
+  if(!box.classList.contains('flb-bot')){box.textContent='';box.className='flb-bot'}
+  var key=String(u||'-').split('?')[0].replace(/^https?:/,'');if(box._u===key)return;box._u=key;
+  var f=box.querySelector('.flb-fr'),m=box.querySelector('.flb-mono');
+  if(!u){if(f)box.removeChild(f);if(!m)box.appendChild(el('span','flb-mono','F|L'));return}
+  if(m)box.removeChild(m);if(!f){f=el('span','flb-fr');box.appendChild(f)}
+  var i=new Image(),mine=box._u;i.alt=alt||'';i.decoding='async';i.width=600;i.height=600;
+  i.onload=function(){if(box._u!==mine){if(i.parentNode)i.parentNode.removeChild(i);return}requestAnimationFrame(function(){i.classList.add('on');[].forEach.call(f.querySelectorAll('img'),function(o){if(o!==i){o.classList.remove('on');setTimeout(function(){if(o.parentNode&&!o.classList.contains('on'))o.parentNode.removeChild(o)},500)}})})};
+  i.srcset=sz(u,600)+' 1x, '+sz(u,1200)+' 2x';i.src=sz(u,600);f.appendChild(i);
 }
 /* Holztexturen erst laden, wenn el in Sichtweite kommt */
 function wood(e){if(!e)return;if(!('IntersectionObserver' in window)){e.classList.add('flb-wood');return}var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();e.classList.add('flb-wood')}},{rootMargin:'700px 0px'});io.observe(e)}
@@ -165,11 +146,10 @@ function close(){
 }
 function open(o,from){
   if(cur)return;var vs=o.v||[];if(!vs.length)return;
-  var ov=el('div','flb-ov'),bg=el('div','flb-bg'),bk=el('div','flb-bk'),x=el('button','flb-x'),l=el('div','flb-pg flb-l'),r=el('div','flb-pg flb-r'),box=el('div','flb-box'),bot=el('div'),fig=el('p','flb-fig');
+  var ov=el('div','flb-ov'),bg=el('div','flb-bg'),bk=el('div','flb-bk'),x=el('button','flb-x'),l=el('div','flb-pg flb-l'),r=el('div','flb-pg flb-r'),box=el('div','flb-box'),bot=el('div');
   ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');ov.setAttribute('aria-label','Fragrance Library '+o.n);
   bk.style.setProperty('--c',o.c||'#2a2a2a');x.type='button';x.setAttribute('aria-label',T[1]);x.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>';
-  box.appendChild(bot);l.appendChild(box);l.appendChild(fig);bk.appendChild(x);bk.appendChild(l);bk.appendChild(r);ov.appendChild(bg);ov.appendChild(bk);
-  var kindOfPic=bottle(o.h,o.m,'Fragrance Library '+o.n,bot);
+  box.appendChild(bot);l.appendChild(box);bk.appendChild(x);bk.appendChild(l);bk.appendChild(r);ov.appendChild(bg);ov.appendChild(bk);
   var tex=new Image();tex.onload=function(){bk.classList.add('has-tex')};tex.src={{ 'be-fl-papier.jpg' | file_url | json }};
   function show(k){
     var v=vs[k];r.textContent='';
@@ -177,13 +157,13 @@ function open(o,from){
     r.appendChild(el('p','flb-sub',o.kind+' · '+v.ml+' ml'));
     var rows=[];if(o.no&&o.no.some(Boolean))rows=[[L.top,o.no[0]],[L.heart,o.no[1]],[L.base,o.no[2]]].filter(function(q){return q[1]});else if(o.dn)rows=[[L.notes,o.dn]];
     if(rows.length){var toc=el('div','flb-toc'),dl=el('dl');toc.appendChild(el('h3','',T[2]));rows.forEach(function(q,i){var d=el('div'),dt=el('dt');dt.appendChild(el('span','',['I','II','III'][i]));dt.appendChild(document.createTextNode(q[0]));d.appendChild(dt);d.appendChild(el('dd','',q[1]));dl.appendChild(d)});toc.appendChild(dl);r.appendChild(toc)}
-    if(vs.length>1){var ch=el('div','flb-chips');ch.setAttribute('role','group');ch.setAttribute('aria-label',{{ 'claude.l.size_html' | t | json }});vs.forEach(function(m,j){var c=el('button','flb-chip'+(j===k?' on':''),m.ml+' ml');c.type='button';c.setAttribute('aria-pressed',j===k);c.addEventListener('click',function(){show(j);var n=r.querySelectorAll('.flb-chip')[j];if(n)n.focus()});ch.appendChild(c)});r.appendChild(ch)}
+    if(vs.length>1){var ch=el('div','flb-chips');ch.setAttribute('role','group');ch.setAttribute('aria-label',{{ 'claude.l.size_html' | t | json }});vs.forEach(function(m,j){var c=el('button','flb-chip'+(j===k?' on':''),m.ml+' ml');c.type='button';c.setAttribute('aria-pressed',j===k);c.addEventListener('pointerenter',function(){pre(m.im||o.m)});c.addEventListener('focus',function(){pre(m.im||o.m)});c.addEventListener('click',function(){show(j);var n=r.querySelectorAll('.flb-chip')[j];if(n)n.focus()});ch.appendChild(c)});r.appendChild(ch)}
     var pr=el('div','flb-price');if(v.c>v.p){var u=el('span','u',L.uvp+' ');u.appendChild(el('s','',money(v.c)));pr.appendChild(u)}pr.appendChild(document.createTextNode(money(v.p)));
     var g=gp(v.up,v.ur,v.uu);pr.appendChild(el('small','flb-legal',L.legal+(g?' · '+g:'')));pr.appendChild(el('small','flb-ship',L.ship));r.appendChild(pr);
     var ac=el('div','flb-acts'),ad=el('button','flb-btn flb-btn--pri',L.atc),a=el('a','flb-btn',L.to+' '),er=el('p','flb-err');ad.type='button';a.href=o.u+'?variant='+v.i;a.appendChild(el('span','','→')).setAttribute('aria-hidden','true');er.setAttribute('role','status');
     ad.addEventListener('click',function(){if(window.beLandAdd)window.beLandAdd([v.i],ad,function(t){er.textContent=t});else location.href=a.href});
     ac.appendChild(ad);ac.appendChild(a);r.appendChild(ac);r.appendChild(er);
-    fig.textContent=kindOfPic==='3d'&&v.ml!==50?T[3]:'';
+    photo(bot,v.im||o.m,'Fragrance Library '+o.n+' '+v.ml+' ml');
   }
   show(vs.length-1);
   var de=document.documentElement,c={ov:ov,from:from,of:de.style.overflow,pr:de.style.paddingRight};
@@ -200,6 +180,6 @@ function open(o,from){
   ov.addEventListener('click',function(e){if(e.target===ov)close()});
   void bk.offsetWidth;setTimeout(function(){ov.classList.add('is-on');try{x.focus({preventScroll:true})}catch(e){}},30);
 }
-return {T:T,dust:dust,bottle:bottle,open:open,close:close,money:money,gp:gp,wood:wood,key:key};
+return {T:T,dust:dust,photo:photo,pre:pre,open:open,close:close,money:money,gp:gp,wood:wood,key:key};
 })();
 </script>
