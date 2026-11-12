@@ -1,0 +1,171 @@
+{%- comment -%} Teil der Section claude-home (gerendert aus claude-home-c). 12.11.2026: VIDEO-LOUNGE als ein klassischer Fernseher an der Salonwand – Kanalwechsel per Klick/Tipp/Wischen/Pfeiltasten und automatisch (stumm, je Videolänge, höchstens 11 s; stoppt bei der ersten Bedienung). Nur aktuelles + nächstes Video wird geladen, Pause außerhalb des Sichtbereichs / bei verstecktem Tab. Videos und Produkte unverändert aus der Section-Einstellung video_collections. {%- endcomment -%}
+{%- liquid
+  assign s = sec.settings
+  assign vcount = 0
+  assign screens = ''
+  assign chans = ''
+  assign caps = ''
+  assign vlist = s.video_collections | split: ','
+-%}
+{%- for entry in vlist -%}
+  {%- liquid
+    assign ep = entry | split: '|'
+    assign cp = ep[0] | strip | split: ':'
+    assign vp = all_products[cp[0]]
+    if vp.id == blank or vcount >= 10
+      continue
+    endif
+    assign vm = vp.media | where: 'media_type', 'video' | first
+    assign vurl = ep[1] | strip
+    if vm == blank and vurl == blank
+      continue
+    endif
+    assign vposter = vp.featured_image
+    if vurl == blank
+      assign vposter = vm.preview_image
+      assign bh = 0
+      for so in vm.sources
+        if so.format == 'mp4' and so.height <= 720 and so.height > bh
+          assign vurl = so.url
+          assign bh = so.height
+        endif
+      endfor
+      if vurl == blank
+        assign vurl = vm.sources | where: 'format', 'mp4' | map: 'url' | first
+      endif
+    endif
+    if vurl == blank
+      continue
+    endif
+    assign vlab = cp[1] | default: vp.vendor
+    assign vcount = vcount | plus: 1
+    assign vi = vcount | minus: 1
+  -%}
+  {%- capture one -%}<video class="cvt-v{% if vcount == 1 %} is-on{% endif %}" muted loop playsinline preload="none" data-src="{{ vurl }}" data-poster="{{ vposter | image_url: width: 720 }}" aria-label="{{ 'claude.v.video_html' | t }}: {{ vp.title | escape }}"{% if vcount > 1 %} aria-hidden="true"{% endif %}></video>{%- endcapture -%}
+  {%- assign screens = screens | append: one -%}
+  {%- capture one -%}<button type="button" class="cvt-ch{% if vcount == 1 %} is-on{% endif %}" data-cvt-go="{{ vi }}" aria-label="{{ vlab | escape }} – {{ vp.title | escape }}"{% if vcount == 1 %} aria-current="true"{% endif %}><span class="cvt-th"><img src="{{ vposter | image_url: width: 120 }}" alt="" width="60" height="80" loading="lazy"></span><span class="cvt-cl"><small>CH {{ vcount }}</small>{{ vlab | escape }}</span></button>{%- endcapture -%}
+  {%- assign chans = chans | append: one -%}
+  {%- capture one -%}<div class="cvt-cap{% if vcount == 1 %} is-on{% endif %}"{% if vcount > 1 %} hidden{% endif %}><small>{{ vlab | upcase | escape }}</small><b>{{ vp.title | truncate: 64 | escape }}</b><span class="cvt-pr">{{ vp.price | money }}</span><a href="{{ vp.url }}">{{ 'claude.c.to_scent_html' | t }} <span aria-hidden="true">→</span></a></div>{%- endcapture -%}
+  {%- assign caps = caps | append: one -%}
+{%- endfor -%}
+{%- if vcount > 0 -%}
+<style>
+  /* Salon-Wand: Hintergrund be-videolounge-bg (aus claude-home-c), Fernseher mit Messingrand, Wandschein, Konsole */
+  .cvt{--brass:linear-gradient(100deg,#7d5f26,#c9a256 18%,#f6e3b0 38%,#d6b46a 55%,#9c7a34 78%,#e2c47f);overflow:hidden}
+  .cvt .ch-head{margin-bottom:clamp(18px,3vw,34px)}
+  .cvt-stage{position:relative;display:flex;flex-direction:column;align-items:center}
+  .cvt-glow{position:absolute;left:50%;top:44%;width:min(980px,150%);aspect-ratio:1.5;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,214,150,.22),rgba(200,150,80,.1) 45%,transparent 75%);pointer-events:none;transition:opacity .5s;z-index:0}
+  .cvt-tv{position:relative;z-index:1;padding:clamp(12px,1.3vw,18px);border-radius:16px;background:linear-gradient(160deg,#2a2118,#0c0907 40%,#17110b);box-shadow:0 0 0 1px rgba(241,222,168,.75),0 0 0 4px #0b0806,0 0 0 5px rgba(200,164,92,.45),0 50px 90px rgba(0,0,0,.75),0 18px 30px rgba(0,0,0,.6)}
+  .cvt-tv::after{content:"";position:absolute;inset:clamp(12px,1.3vw,18px);border-radius:6px;box-shadow:0 0 0 1px rgba(200,164,92,.55);pointer-events:none}
+  .cvt-scr{position:relative;display:block;width:min(420px,calc((100svh - 330px) * .75));min-width:280px;aspect-ratio:3/4;border-radius:6px;overflow:hidden;background:#050403;cursor:pointer;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+  .cvt-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .18s linear}
+  .cvt-v.is-on{opacity:1}
+  .cvt-scr::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 60px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.05);background:linear-gradient(160deg,rgba(255,255,255,.07),transparent 35%);transition:box-shadow .4s}
+  @media (hover:hover){.cvt-scr:hover::before{box-shadow:inset 0 0 60px rgba(0,0,0,.4),inset 0 0 0 1px rgba(241,222,168,.55),inset 0 0 40px rgba(241,222,168,.18)}}
+  .cvt-scr:focus-visible{outline:2px solid var(--accL);outline-offset:6px}
+  /* Kanalwechsel: kurz abdunkeln, Zeilenflimmern, waagerechter Lichtstreif */
+  .cvt-fx{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.38) 0 1px,transparent 1px 3px),rgba(4,3,2,.62)}
+  .cvt-fx::after{content:"";position:absolute;left:-10%;right:-10%;top:50%;height:3px;margin-top:-1.5px;background:linear-gradient(90deg,transparent,rgba(255,236,196,.95) 40%,#fff 50%,rgba(255,236,196,.95) 60%,transparent);box-shadow:0 0 18px 4px rgba(255,220,160,.55);transform:scaleX(0);opacity:0}
+  .cvt-scr.is-zap .cvt-fx{animation:cvtDim .32s ease-out}
+  .cvt-scr.is-zap .cvt-fx::after{animation:cvtSweep .32s ease-out}
+  @keyframes cvtDim{0%{opacity:0}18%{opacity:1}35%{opacity:.82}48%{opacity:1}100%{opacity:0}}
+  @keyframes cvtSweep{0%{transform:scaleX(0);opacity:0}30%{transform:scaleX(.35);opacity:1}55%{transform:scaleX(1);opacity:.9}100%{transform:scaleX(1);opacity:0}}
+  .cvt-snd{position:absolute;top:12px;inset-inline-end:12px;z-index:4;width:44px;height:44px;border-radius:999px;border:1px solid rgba(241,222,168,.6);background:rgba(8,6,4,.55);color:#fff;font-size:16px;cursor:pointer}
+  .cvt-snd:focus-visible,.cvt-nav:focus-visible,.cvt-ch:focus-visible,.cvt-cap a:focus-visible{outline:2px solid var(--accL);outline-offset:3px}
+  /* Messingschild */
+  .cvt-plq{position:relative;z-index:1;margin-top:18px;min-width:min(420px,100%);max-width:min(560px,100%);padding:12px 22px 13px;border-radius:4px;background:var(--brass);color:#24190a;text-align:center;box-shadow:inset 0 1px 0 rgba(255,250,230,.8),inset 0 -1px 0 rgba(80,55,15,.6),0 10px 22px rgba(0,0,0,.55)}
+  .cvt-plq::before,.cvt-plq::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3cf,#7a5a20);box-shadow:0 0 0 1px rgba(60,40,10,.45)}
+  .cvt-plq::before{inset-inline-start:9px}.cvt-plq::after{inset-inline-end:9px}
+  .cvt-cap{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:2px 12px}
+  .cvt-cap[hidden]{display:none}
+  .cvt-cap small{flex-basis:100%;font-size:11px;letter-spacing:.24em;font-weight:600}
+  .cvt-cap b{font-family:"Cormorant Garamond","Bodoni Moda",Georgia,serif;font-size:clamp(18px,1.6vw,22px);font-weight:600;line-height:1.15}
+  .cvt-pr{font-weight:600;font-size:15px}
+  .cvt-cap a{flex-basis:100%;display:inline-block;margin-top:2px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#24190a;text-decoration:underline;text-underline-offset:3px;padding:6px 0 2px}
+  /* Konsole mit Kanälen */
+  .cvt-con{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:10px;width:min(1000px,100%);margin-top:22px;padding:12px 14px;border-radius:6px;background:linear-gradient(180deg,#3a2a19,#1c140c 55%,#120c07);box-shadow:inset 0 1px 0 rgba(241,222,168,.55),0 22px 40px rgba(0,0,0,.6)}
+  .cvt-chs{display:flex;gap:8px;min-width:0;overflow-x:auto;scrollbar-width:none;padding:2px}
+  .cvt-chs::-webkit-scrollbar{display:none}
+  .cvt-ch{flex:0 0 auto;display:flex;align-items:center;gap:8px;min-height:44px;padding:5px 12px 5px 5px;border-radius:6px;border:1px solid rgba(241,222,168,.22);background:rgba(10,8,6,.5);color:#d9cdb3;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:border-color .3s,color .3s,background .3s}
+  .cvt-ch small{display:block;font-size:9px;letter-spacing:.2em;opacity:.7}
+  .cvt-cl{text-align:start;line-height:1.2;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cvt-th{width:30px;height:40px;border-radius:3px;overflow:hidden;flex:0 0 auto;background:#000}
+  .cvt-th img{width:100%;height:100%;object-fit:cover;display:block;opacity:.75}
+  .cvt-ch.is-on{border-color:#e2c47f;color:#f6e3b0;background:linear-gradient(180deg,rgba(200,164,92,.26),rgba(200,164,92,.08));box-shadow:0 0 14px rgba(226,196,127,.25)}
+  .cvt-ch.is-on .cvt-th img{opacity:1}
+  @media (hover:hover){.cvt-ch:hover{border-color:rgba(241,222,168,.6);color:#fff}}
+  .cvt-nav{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1px solid var(--acc);background:rgba(10,8,6,.8);color:#fff;font-size:18px;cursor:pointer}
+  [dir=rtl] .cvt-nav span{display:inline-block;transform:scaleX(-1)}
+  @media (max-width:860px){
+    .cvt-scr{width:100%;min-width:0}
+    .cvt-tv{width:100%;max-width:440px;padding:10px}
+    .cvt-tv::after{inset:10px}
+    .cvt-plq{min-width:0;width:100%;max-width:440px;padding:10px 16px}
+    .cvt-con{max-width:440px;padding:6px 8px;gap:4px;background:none;box-shadow:none}
+    .cvt-chs{flex:1;justify-content:center;gap:0}
+    .cvt-ch{width:30px;min-height:44px;padding:0;justify-content:center;border:0;background:none;box-shadow:none}
+    .cvt-ch::before{content:"";width:9px;height:9px;border-radius:50%;background:rgba(241,222,168,.35)}
+    .cvt-ch.is-on{background:none;box-shadow:none}
+    .cvt-ch.is-on::before{background:#e2c47f;box-shadow:0 0 8px rgba(226,196,127,.7);transform:scale(1.25)}
+    .cvt-th,.cvt-cl{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){.cvt-v{transition-duration:.4s}.cvt-scr.is-zap .cvt-fx,.cvt-scr.is-zap .cvt-fx::after{animation:none}}
+</style>
+<section class="ch-sec ch-dark cv-sec cvt">
+  <div class="ch-wrap">
+    <div class="ch-head"><div><p class="ch-eyebrow">{{ 'claude.v.e_html' | t }}</p><h2 class="ch-h2">{{ 'claude.v.h_html' | t }}</h2></div><p class="ch-lead" style="max-width:360px">{{ 'claude.v.l_html' | t }}</p></div>
+    <div class="cvt-stage" data-cvt role="region" aria-roledescription="carousel" aria-label="{{ 'claude.v.h_html' | t | escape }}">
+      <span class="cvt-glow" aria-hidden="true"></span>
+      <div class="cvt-tv">
+        <div class="cvt-scr" data-cvt-scr tabindex="0" role="button" aria-label="{{ 'claude.v.next_html' | t | escape }}">{{ screens }}<span class="cvt-fx" aria-hidden="true"></span></div>
+        <button type="button" class="cvt-snd" data-cvt-snd aria-pressed="false" aria-label="{{ 'claude.v.sound_on_html' | t | escape }}">🔈</button>
+      </div>
+      <div class="cvt-plq" aria-live="polite">{{ caps }}</div>
+      <div class="cvt-con">
+        <button type="button" class="cvt-nav" data-cvt-d="-1" aria-label="{{ 'claude.v.prev_html' | t | escape }}"><span aria-hidden="true">←</span></button>
+        <div class="cvt-chs">{{ chans }}</div>
+        <button type="button" class="cvt-nav" data-cvt-d="1" aria-label="{{ 'claude.v.next_html' | t | escape }}"><span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+  </div>
+  <script>(function () {
+    var st = document.currentScript.parentElement.querySelector('[data-cvt]'), scr = st.querySelector('[data-cvt-scr]'),
+      vs = [].slice.call(scr.querySelectorAll('.cvt-v')), chs = [].slice.call(st.querySelectorAll('.cvt-ch')), caps = [].slice.call(st.querySelectorAll('.cvt-cap')),
+      snd = st.querySelector('[data-cvt-snd]'), n = vs.length, cur = 0, near = false, seen = false, auto = !matchMedia('(prefers-reduced-motion:reduce)').matches,
+      rm = !auto, sound = false, t = 0, zt = 0;
+    var LON = {{ 'claude.v.sound_on_html' | t | json }}, LOFF = {{ 'claude.v.sound_off_html' | t | json }};
+    function load(i) { var v = vs[i]; if (!v) return; if (v.dataset.poster) { v.poster = v.dataset.poster; v.removeAttribute('data-poster'); } if (v.dataset.src) { v.src = v.dataset.src; v.removeAttribute('data-src'); v.preload = 'auto'; } }
+    function arm() { clearTimeout(t); if (!auto || !seen || document.hidden || n < 2) return; var v = vs[cur], d = v.duration; t = setTimeout(function () { go(cur + 1, true); }, Math.min(isFinite(d) && d > 1 ? d * 1000 : 11000, 11000)); }
+    function play() { var v = vs[cur]; if (!near || !seen || document.hidden) return; load(cur); if (rm && !sound) return; load((cur + 1) % n); v.muted = !sound; var p = v.play(); if (p && p.catch) p.catch(function () {}); if (isFinite(v.duration)) arm(); else v.addEventListener('loadedmetadata', function f() { v.removeEventListener('loadedmetadata', f); if (v === vs[cur]) arm(); }); }
+    function stop() { clearTimeout(t); vs.forEach(function (v) { v.pause(); }); }
+    function show(i) {
+      vs.forEach(function (v, k) { var on = k === i; v.classList.toggle('is-on', on); if (on) v.removeAttribute('aria-hidden'); else { v.setAttribute('aria-hidden', 'true'); v.pause(); v.muted = true; try { v.currentTime = 0; } catch (e) {} } });
+      chs.forEach(function (c, k) { c.classList.toggle('is-on', k === i); if (k === i) c.setAttribute('aria-current', 'true'); else c.removeAttribute('aria-current'); });
+      caps.forEach(function (c, k) { c.hidden = k !== i; c.classList.toggle('is-on', k === i); });
+      cur = i; play();
+    }
+    function go(i, fromAuto) {
+      i = (i + n) % n; if (!fromAuto) { auto = false; clearTimeout(t); }
+      if (i === cur) return;
+      load(i); clearTimeout(zt);
+      if (rm) { show(i); return; }
+      scr.classList.remove('is-zap'); void scr.offsetWidth; scr.classList.add('is-zap');
+      zt = setTimeout(function () { show(i); setTimeout(function () { scr.classList.remove('is-zap'); }, 200); }, 120);
+    }
+    st.querySelectorAll('[data-cvt-d]').forEach(function (b) { b.addEventListener('click', function () { go(cur + +b.dataset.cvtD); }); });
+    chs.forEach(function (c, k) { c.addEventListener('click', function () { go(k); }); });
+    var x0 = null, y0 = 0;
+    scr.addEventListener('pointerdown', function (e) { x0 = e.clientX; y0 = e.clientY; });
+    scr.addEventListener('pointerup', function (e) { if (x0 === null) return; var dx = e.clientX - x0, dy = e.clientY - y0, rtl = getComputedStyle(st).direction === 'rtl' ? -1 : 1; x0 = null; if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(cur + (dx < 0 ? 1 : -1) * rtl); else if (Math.abs(dx) < 10 && Math.abs(dy) < 10) go(cur + 1); });
+    scr.addEventListener('pointercancel', function () { x0 = null; });
+    scr.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(cur + 1); } });
+    st.addEventListener('keydown', function (e) { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; var rtl = getComputedStyle(st).direction === 'rtl' ? -1 : 1; e.preventDefault(); go(cur + (e.key === 'ArrowRight' ? 1 : -1) * rtl); var a = document.activeElement; if (a && a.classList.contains('cvt-ch')) chs[cur] && chs[cur].focus(); });
+    snd.addEventListener('click', function () { auto = false; clearTimeout(t); sound = !sound; var v = vs[cur]; v.muted = !sound; if (sound) { load(cur); var p = v.play(); if (p && p.catch) p.catch(function () {}); } snd.textContent = sound ? '🔊' : '🔈'; snd.setAttribute('aria-pressed', sound); snd.setAttribute('aria-label', sound ? LOFF : LON); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { near = true; load(cur); } }); }, { rootMargin: '600px 0px' }).observe(st);
+      new IntersectionObserver(function (es) { es.forEach(function (e) { seen = e.isIntersecting; if (seen) play(); else stop(); }); }, { threshold: .25 }).observe(scr);
+    } else { near = seen = true; play(); }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else play(); });
+  })();</script>
+</section>
+{%- endif -%}
