@@ -114,10 +114,6 @@
       unless posterM.id != blank
         assign posterM = poster
       endunless
-      if forloop.first
-        assign pre_d = poster | image_url: width: 2000
-        assign pre_m = posterM | image_url: width: 900
-      endif
       case n
         when 1
           assign mlist = 'BABOR|eab800eba079cdeb/be-cal-babor.glb|-24|babor|flat,ARTDECO|7f0bc976655f8fa4/be-cal-artdeco.glb|-24|artdeco|flat,Molton Brown|5c65f193dc68588a/be-cal-mb3.glb|-24|mb|flat,Wir für Sie|8c572b0420074443/be-cal-wfs.glb|-24|wfs|flat' | split: ','
@@ -183,8 +179,6 @@
     {%- assign hsc_slides = hsc_slides | append: slide_html -%}
   {%- endfor -%}
   {%- endcapture -%}
-  {%- comment -%} Perf 13.11.2026: Poster der ersten Folie mit hoher Prioritaet vorladen (gleiche URL wie das CSS-Hintergrundbild, kein Doppelladen); je Bildschirmgroesse nur eines {%- endcomment -%}
-  <link rel="preload" as="image" href="{{ pre_d }}" fetchpriority="high" media="(min-width:861px)"><link rel="preload" as="image" href="{{ pre_m }}" fetchpriority="high" media="(max-width:860px)">
   {{ hsc_slides }}
   <div class="ch-ctrl">
     <button type="button" data-h3-prev aria-label="{{ 'claude.hero.prev_html' | t }}">←</button>
