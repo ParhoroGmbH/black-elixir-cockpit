@@ -1,0 +1,70 @@
+{%- comment -%} Teil der Section claude-home – Feinschliff nach QA 11.11.2026 (Mobil-Header, Kontrast, 3D-Sektionen, echte Hintergründe, Marken-Logos, Footer-Gravur) {%- endcomment -%}
+{%- assign bg_gift = images['hero_B_v2_desktop_2560x1440_71500a2f-8369-41d2-8bfc-7fff0a911e3c.jpg'] -%}
+{%- assign bg_gift_m = images['hero_B_v2_mobile_1080x1620_53e208e2-df8f-4ae5-adba-942b295a1d5a.jpg'] -%}
+{%- assign bg_lib = images['concept1_bibliothek_fullres.jpg'] -%}
+{%- assign bg_lib_m = images['concept1_bibliothek_mobile_4x5_9291040e-920f-4ffd-9e46-9a2fd3089a6b.jpg'] -%}
+<style>
+  .ch-dots button{height:24px;width:22px;background:transparent!important;position:relative}
+  .ch-dots button::after{content:"";position:absolute;left:0;right:0;top:10px;height:4px;border-radius:2px;background:rgba(255,255,255,.45)}
+  .ch-dots button.is-on{width:50px}
+  .ch-dots button.is-on::after{background:var(--acc)}
+  .ch .h3-title{word-break:normal;overflow-wrap:normal;-webkit-hyphens:auto;hyphens:auto;font-size:clamp(36px,4.2vw,64px)}
+  .ch .h3-text{flex:1 1 400px}
+  .ch .h3-stage{flex:0 1 480px}
+  .ch .h3-slide:nth-of-type(2)::before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(0,0,0,.92),rgba(0,0,0,.5) 48%,rgba(0,0,0,.12)),url({{ bg_gift | image_url: width: 2200 }}) center/cover}
+  .ch .cd-stage{height:720px}
+  .ch .cd-orbit{top:100px}
+  .ch .cd-m .cd-inner{color:var(--accL)}
+  .ch .ch-marq{position:relative;background:#000;border-bottom:0;padding:16px 0}
+  .ch .ch-marq div{gap:48px;align-items:center}
+  .ch .mq-l{position:relative;display:block;flex:0 0 auto;width:180px;height:90px;overflow:hidden}
+  .ch .mq-l img{position:absolute;left:50%;top:50%;width:180px;height:180px;max-width:none;transform:translate(-50%,-50%);object-fit:cover;filter:invert(1) grayscale(1) contrast(1.4);mix-blend-mode:screen}
+  .ch .ch-marq::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 44%,#e9c97a 50%,transparent 56%) 0 0/300% 100%;mix-blend-mode:multiply;animation:mqSweep 7s linear infinite}
+  @keyframes mqSweep{from{background-position:100% 0}to{background-position:0 0}}
+  .ch .cl{background:linear-gradient(180deg,rgba(12,8,4,.7),rgba(12,8,4,.88)),url({{ bg_lib | image_url: width: 2200 }}) 50% 6%/130% auto no-repeat,#140e08!important}
+  .ch .cl-panel{align-self:flex-end}
+  .ch .cl-panel img{height:auto}
+  .ch .cv-sec{background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.72)),url({{ bg_gift | image_url: width: 2200 }}) 0 50%/cover no-repeat,#000!important}
+  .ch .cv-wrap{position:relative}
+  .ch .cv-wrap .ch-vids{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px}
+  .ch .cv-wrap .ch-vids::-webkit-scrollbar{display:none}
+  .ch .cv-wrap .ch-vid{flex:0 0 clamp(220px,24vw,280px);scroll-snap-align:start}
+  .ch .cv-nav{position:absolute;top:50%;z-index:3;width:50px;height:50px;margin-top:-25px;border-radius:50%;border:1px solid var(--acc);background:rgba(10,8,6,.8);color:#fff;font-size:18px;cursor:pointer}
+  .ch .cv-nav.p{left:-14px}.ch .cv-nav.x{right:-14px}
+  .ch .ca-doors{align-items:end}
+  .ch .cg .ch-arch{background:linear-gradient(160deg,rgba(20,15,8,.72),rgba(20,15,8,.5))!important;border:1px solid rgba(241,222,168,.45)!important}
+  .ch .cg .ch-arch__k{color:var(--accL)!important}
+  .ch .cg .ch-arch__d{color:#e9dfc8!important;font-size:14px}
+  .ch .cg .ch-arch__t{font-size:clamp(26px,2.3vw,34px)!important;line-height:1.08;text-wrap:balance;word-break:normal}
+  .ch .cr-stage{height:250px;padding-top:70px}
+  .ch .cr[data-level="1"] .cr-lid{transform:rotateX(90deg) translateZ(104px)}
+  .ch .cr[data-level="2"] .cr-lid{transform:rotateX(90deg) translateZ(124px) rotateZ(22deg)}
+  .be-foilwrap a.be-foil.be-foil{-webkit-mask-size:100% auto!important;mask-size:100% auto!important;background:linear-gradient(100deg,#6f6a62 0%,#bdb7ab 18%,#e9e4d8 32%,#9c968b 44%,#fff4d6 50%,#9c968b 56%,#d8d2c5 70%,#7d776d 100%) 0 0/320% 100%!important;animation:beSweep 6s ease-in-out infinite alternate!important;transform:scale(.62)!important}
+  a.be-foil img,a.be-foil figure{opacity:0!important}
+  div.be-foilwrap.be-foilwrap{filter:drop-shadow(0 -1px 0 rgba(0,0,0,.95)) drop-shadow(0 1px 0 rgba(255,255,255,.35)) drop-shadow(0 0 14px rgba(232,206,140,.18))!important}
+  @keyframes beSweep{from{background-position:100% 0}to{background-position:0 0}}
+  @media (prefers-reduced-motion:reduce){.be-foilwrap a.be-foil.be-foil{animation:none!important;background-position:50% 0!important}}
+  @media (min-width:861px){.shopify-section-footer .hb-widerruf-wrapper{display:none!important}}
+  /* 12.11.2026 Audit: bei 1280/1366 px (Inhalt nur ~800–880 px breit) keine 3+1-Reihe mehr – Kacheln stehen 4 nebeneinander oder 2×2; Geschenk-Sektion und Duft-Finder bleiben zweispaltig */
+  @media (min-width:861px){.ch .ch-grid{grid-template-columns:repeat(auto-fit,minmax(clamp(calc(25% - 14px),calc((934px - 100%) * 999),calc(50% - 9px)),1fr))}.ch .ch-gift{gap:clamp(28px,4vw,60px)}.ch .ch-gift>div{flex:1 1 360px}.ch .ch-finder{gap:clamp(28px,4vw,56px)}.ch .ch-finder>div{flex:1 1 340px}}
+  @media (max-width:860px){
+    .shopify-section-mobile-header{position:relative;z-index:6}
+    .claude-home-section{margin-top:calc(-1 * var(--ch-mh, 98px));position:relative;z-index:0}
+    .ch .h3-slide:nth-of-type(2)::before{background:linear-gradient(180deg,rgba(0,0,0,.88),rgba(0,0,0,.45) 55%,rgba(0,0,0,.2)),url({{ bg_gift_m | image_url: width: 1080 }}) center/cover}
+    .ch .cd-stage{height:440px}
+    .ch .cd-orbit{top:0}
+    .ch .cl{background:linear-gradient(180deg,rgba(12,8,4,.72),rgba(12,8,4,.9)),url({{ bg_lib_m | image_url: width: 1100 }}) 50% 0/cover no-repeat,#140e08!important}
+    .ch .cv-sec{background-size:auto 100%!important}
+    .ch .cv-nav{display:none}
+    .ch .mq-l{width:140px;height:72px}
+    .ch .mq-l img{width:140px;height:140px}
+    .ch .cg .ch-arch__t{font-size:28px!important}
+  }
+</style>
+<script>
+  (function () {
+    function setH() { var m = document.querySelector('.shopify-section-mobile-header'); if (m) document.documentElement.style.setProperty('--ch-mh', m.offsetHeight + 'px'); }
+    setH(); window.addEventListener('resize', setH);
+    document.addEventListener('DOMContentLoaded', function () { document.querySelectorAll('.ca-pick b').forEach(function (b) { b.textContent = b.textContent.replace(/ *[(]V.*$/, ''); }); });
+  })();
+</script>
