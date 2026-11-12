@@ -1,0 +1,21 @@
+{%- comment -%} DUMO-Figur: echtes 3D-Modell (gleiches GLB wie DUMO-Landingpage, pro Duft eingefärbt). Name dreht sich mit. Claude · 11.11.2026 {%- endcomment -%}
+{%- assign nm = p.title | remove: 'DUMO ' | split: ' ' | first -%}
+{%- assign low = nm | downcase -%}
+{%- case low -%}
+  {%- when 'spartacus' -%}{%- assign tint = '1,0.84,0.5' -%}
+  {%- when 'commodus' -%}{%- assign tint = '1,0.8,0.44' -%}
+  {%- when 'crixus' -%}{%- assign tint = '0.72,0.58,0.42' -%}
+  {%- when 'marcus' -%}{%- assign tint = '0.3,0.3,0.32' -%}
+  {%- when 'rexor' -%}{%- assign tint = '1,1,1' -%}
+  {%- when 'priscus' -%}{%- assign tint = '0.82,0.78,0.72' -%}
+  {%- when 'verus' -%}{%- assign tint = '0.5,0.49,0.48' -%}
+  {%- else -%}{%- assign tint = '' -%}
+{%- endcase -%}
+<span class="cd-fig">
+  {%- if tint != '' -%}
+    <model-viewer class="cd-3d" src="https://cdn.shopify.com/3d/models/o/ad28ed4a76c72b24/dumo-flakon.glb" data-tint="{{ tint }}" alt="{{ 'claude.d.fig3d_html' | t: name: nm }}" camera-orbit="0deg 82deg auto" auto-rotate auto-rotate-delay="0" rotation-per-second="36deg" interaction-prompt="none" disable-zoom disable-pan environment-image="neutral" exposure="1.15" loading="lazy" reveal="auto" crossorigin="anonymous"></model-viewer>
+  {%- else -%}
+    <img class="cd-cut" src="https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-flasche-{{ low }}.png?width=300" alt="{{ 'claude.d.fig_html' | t: name: nm }}" width="150" height="190" loading="lazy">
+  {%- endif -%}
+  <span class="cd-plinth"><span class="cd-n">{{ nm }}</span><span class="cd-n cd-n--b" aria-hidden="true">{{ nm }}</span></span>
+</span>

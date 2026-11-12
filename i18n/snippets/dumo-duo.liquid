@@ -1,0 +1,53 @@
+{%- comment -%} Priscus und Verus: Duell-Video, dann Burgtor (nur die zwei Torfluegel oeffnen sich per Scroll, keine Mauer), danach laufen die zwei Krieger in Schleife, dann Produkte. Video laedt erst beim Annaehern. {%- endcomment -%}
+<style>.dm-tx h2{font-size:clamp(36px,4.6vw,84px);white-space:nowrap;letter-spacing:calc(.12em - var(--p)*.08em)}@media (max-width:760px){.dm-tx h2{font-size:clamp(34px,11vw,56px)}.dg-row .dm-btn{padding:8px 10px;letter-spacing:.06em;line-height:1.25}}
+.dg-row .dm-btn{background:#fff;color:#000}.dg-row .dm-btn:hover{background:#e8e8e8}
+.dg{position:relative;height:440vh;background:#0b0907;--g:0;--k:0;--a:#8fae8a}
+.dg-st{position:sticky;top:0;height:100vh;overflow:hidden;perspective:1600px;background:#0b0907}
+.dg-vid,.dg-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dg-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,9,7,.5),rgba(11,9,7,0) 30%,rgba(11,9,7,.2) 55%,rgba(11,9,7,.92));opacity:calc(.5 + var(--k)*.5)}
+.dg-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:12px;padding:0 20px 7vh;text-align:center;color:#f3e8d0;opacity:var(--k);transform:translateY(calc((1 - var(--k))*40px));pointer-events:none}
+.dg-in.on{pointer-events:auto}
+.dg-lab{font:500 12px Jost,system-ui,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#a9bfa5}
+.dg-row{display:flex;gap:clamp(16px,5vw,80px);align-items:flex-end;justify-content:center}
+.dg-row figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+.dg-row img{width:clamp(100px,14vw,210px);height:auto;filter:drop-shadow(0 24px 30px rgba(0,0,0,.7))}
+.dg-row figcaption{font:600 clamp(16px,2vw,24px) Cinzel,serif;letter-spacing:.08em}
+.dg-row small{display:block;font:400 12px Jost,sans-serif;letter-spacing:.15em;color:#cbb88f;text-transform:uppercase}
+.dg-frame{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);height:max(56.25vw,100vh);transform:translate(-50%,-50%);transform-style:preserve-3d;pointer-events:none}
+.dg-door{position:absolute;top:0;width:50%;height:100%;background-image:url('https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-tor-fluegel.png?width=2400');background-size:200% 100%;backface-visibility:hidden;transition:filter .2s linear}
+.dg-l{left:0;background-position:left center;transform-origin:left center;transform:rotateY(calc(var(--g)*-100deg));box-shadow:inset -14px 0 22px -8px rgba(0,0,0,.75),6px 0 18px rgba(0,0,0,calc(var(--g)*.8));filter:brightness(calc(1 - var(--g)*.7))}
+.dg-r{right:0;background-position:right center;transform-origin:right center;transform:rotateY(calc(var(--g)*100deg));box-shadow:inset 14px 0 22px -8px rgba(0,0,0,.75),-6px 0 18px rgba(0,0,0,calc(var(--g)*.8));filter:brightness(calc(1 - var(--g)*.7))}
+.dg-light{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,rgba(255,214,150,calc(var(--g)*.35)),rgba(0,0,0,0) 60%)}
+.dg-hint{position:absolute;left:0;right:0;bottom:6vh;text-align:center;font:500 12px Jost,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#e9d9b4;opacity:calc(1 - var(--g)*4);text-shadow:0 2px 8px #000}
+@media (prefers-reduced-motion:reduce){.dg{height:100vh}.dg-frame,.dg-hint,.dg-vid,.dg-light{display:none}.dg-in{opacity:1;transform:none;pointer-events:auto}}</style>
+{%- assign pp = nil -%}{%- assign vv = nil -%}
+{%- for x in dumo.products -%}{%- if x.handle contains 'priscus' -%}{%- assign pp = x -%}{%- elsif x.handle contains 'verus' -%}{%- assign vv = x -%}{%- endif -%}{%- endfor -%}
+{%- assign dv_ds = 'claude.dm.duo_sub_html' | t -%}{%- render 'dumo-scene', sid: 'duell', vid: 'https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-schwerter.mp4?v=1793473345', poster: 'https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-schwerter.png?v=1793473345', title: '„Equal they fought, equal they yielded.“', sub: dv_ds, vh: 320 -%}
+<section class="dg" id="dm-tor"><div class="dg-st">
+<img class="dg-poster" src="https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-tor-krieger.png?v=1793509204&width=1800" alt="" loading="lazy" decoding="async">
+<video class="dg-vid" muted playsinline loop preload="none" poster="https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-tor-krieger.png?v=1793509204&width=1800" data-src="https://cdn.shopify.com/videos/c/vp/2c01db206dc941d19f1ab1a1e0d79f4e/2c01db206dc941d19f1ab1a1e0d79f4e.SD-480p-1.5Mbps-101078329.mp4" aria-hidden="true"></video>
+<div class="dg-light"></div>
+<div class="dg-shade"></div>
+<div class="dg-in">
+<div class="dg-lab">{{ 'claude.dm.duel_html' | t }}</div>
+<div class="dg-row">
+<figure><img src="https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-flasche-priscus.png?v=1793534461&width=500" alt="{{ pp.title | escape }}" loading="lazy"><figcaption>PRISCUS<small>The Scent of Victory</small></figcaption>{%- if pp.available -%}<button class="dm-btn" type="button" data-add="{{ pp.selected_or_first_available_variant.id }}">{{ 'claude.c.atc_html' | t }} · {{ pp.price | money }}</button>{%- else -%}<button class="dm-btn" type="button" disabled>{{ 'claude.c.sold_out_html' | t }}</button>{%- endif -%}</figure>
+<figure><img src="https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-flasche-verus.png?v=1793534461&width=500" alt="{{ vv.title | escape }}" loading="lazy"><figcaption>VERUS<small>The Scent of Darkness</small></figcaption>{%- if vv.available -%}<button class="dm-btn" type="button" data-add="{{ vv.selected_or_first_available_variant.id }}">{{ 'claude.c.atc_html' | t }} · {{ vv.price | money }}</button>{%- else -%}<button class="dm-btn" type="button" disabled>{{ 'claude.c.sold_out_html' | t }}</button>{%- endif -%}</figure>
+</div></div>
+<div class="dg-frame"><div class="dg-door dg-l"></div><div class="dg-door dg-r"></div></div>
+<div class="dg-hint">{{ 'claude.dm.gate_hint_html' | t }}</div>
+</div></section>
+<script>(function(){var w=document.getElementById('dm-tor');if(!w)return;var v=w.querySelector('video'),inn=w.querySelector('.dg-in'),on=false,warm=false;
+function c(x){return Math.min(1,Math.max(0,x))}
+function u(){var r=w.getBoundingClientRect(),t=r.height-innerHeight,p=c(-r.top/t);var g=c(p/0.35),k=c((p-0.75)/0.2);var e=1-Math.pow(1-g,2);w.style.setProperty('--g',e.toFixed(4));w.style.setProperty('--k',k.toFixed(4));inn.classList.toggle('on',k>0.5);
+if(!warm&&r.top<innerHeight*2.5){warm=true;v.preload='auto';v.src=v.dataset.src}
+var vis=r.bottom>0&&r.top<innerHeight;
+if(vis&&g>0.5&&!on){on=true;var q=v.play();if(q&&q.catch)q.catch(function(){})}
+if((!vis||g<0.1)&&on){on=false;v.pause()}}
+addEventListener('scroll',u,{passive:true});addEventListener('resize',u);u();})();</script>
+
+{%- comment -%} Claude 12.11.2026: Priscus und Verus als volle 3D-Kapitel direkt nach dem Tor. Rollen aus dem Produktnamen (Victory/Darkness), Noten und Duftrichtung aus der Produktbeschreibung, Duell aus der Szene davor. {%- endcomment -%}
+{%- capture st_p -%}{{ 'claude.dm.priscus_story_html' | t }}{%- endcapture -%}
+{%- capture st_v -%}{{ 'claude.dm.verus_story_html' | t }}{%- endcapture -%}
+{%- assign dr = 'claude.dm.priscus_role_html' | t -%}{%- assign dt = 'claude.dm.priscus_top_html' | t -%}{%- assign dh = 'claude.dm.marcus_heart_html' | t -%}{%- assign db = 'claude.dm.priscus_base_html' | t -%}{%- render 'dumo-chapter', pr: pp, name: 'Priscus', role: dr, tag: 'The Scent of Victory', color: '#8fae8a', story: st_p, top: dt, heart: dh, base: db -%}
+{%- assign dr = 'claude.dm.verus_role_html' | t -%}{%- assign dt = 'claude.dm.verus_top_html' | t -%}{%- assign dh = 'claude.dm.crixus_heart_html' | t -%}{%- assign db = 'claude.dm.verus_base_html' | t -%}{%- render 'dumo-chapter', pr: vv, name: 'Verus', role: dr, tag: 'The Scent of Darkness', color: '#8a7aa8', story: st_v, top: dt, heart: dh, base: db -%}

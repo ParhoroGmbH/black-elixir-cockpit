@@ -1,0 +1,149 @@
+{%- comment -%}
+  BE Geschenk-Fix 1B + 1A-Picker (CEO 10.11.2026 20:10 «الصابون: إي، الكتابة بالكارت وGelsomino بينحط لحاله، بعد تجربة المعاينة»).
+  Legt fehlende Gratis-Seifen automatisch nach: 1 ab 59 €, 2 ab 99 € (anrechenbare Basis aus sections/be-seife-state.liquid).
+  Default Gelsomino 48228221026646; liegt Gelsomino schon, die naechste Sorte aus geschenk-seifen nach Bestand (VORSCHLAG.md 2.2).
+  Nur die fuenf Aquaviva-Varianten (WHITE), nie Rituals/Sakura. Eigene Zeilen tragen _be_seife.
+  Nie mehr als erlaubt: bei zu vielen Seifen werden NUR _be_seife-Zeilen reduziert, manuell gewaehlte Seifen bleiben.
+  Unter 59 € werden nur _be_seife-Zeilen entfernt. Bleibt eine eigene Zeile nach 2,5 s > 0 € (Rabatt greift nicht),
+  wird sie entfernt und fuer diesen Warenkorbinhalt nicht erneut gelegt (keine Schleifen, max. 8 Schritte pro Seite).
+  0 € machen weiter D1 2432663060871 / D2 2432663093639 (unveraendert). Echter Preis bleibt 13,95 €.
+  Fix 10.11.2026 22:30 (Live-Test 22:22 fehlgeschlagen): offene Plaetze in einem Request legen, 0-€-Pruefung erst bei vollen Plaetzen,
+  neuer sessionStorage-Schluessel be_seife_block2 (alte Sperren aus Tests wirken nicht mehr).
+  Klick-Handler fuer den Picker in snippets/be-seife-hint.liquid (Hinzufuegen / Tauschen).
+  Eingebunden in layout/theme.liquid nach be-probe-auto. Aktiv bis 31.12.2026 23:59:59 Berlin.
+{%- endcomment -%}
+{%- liquid
+  assign be_now = 'now' | date: '%s' | plus: 0
+-%}
+{%- if be_now >= 1792274400 and be_now <= 1798757999 and request.design_mode == false -%}
+<script>
+(function(){
+  if(window.__beSeife) return; window.__beSeife=1;
+  var WHITE=[48228221026646,48228123836758,48228062101846,48228277027158,48228151263574];
+  var PROP='_be_seife', KEY='be_seife_block2', MAX=8;
+  var R=window.routes||{}, base=(R.cart_url||'/cart'), root=(R.root_url||'/');
+  if(root.slice(-1)!=='/') root+='/';
+  var running=false, again=false, busy=false, ops=0, timer=null;
+  var nf=window.fetch.bind(window);
+  function j(url,body){return nf(url,body?{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body)}:{credentials:'same-origin',headers:{Accept:'application/json'}}).then(function(r){return r.json().then(function(x){if(!r.ok) throw x; return x;});});}
+  function state(){
+    return nf(root+'?sections=be-seife-state',{credentials:'same-origin',headers:{Accept:'application/json'}}).then(function(r){return r.json();}).then(function(h){
+      var html=h&&h['be-seife-state']; if(!html) throw 'no-state';
+      var m=html.match(/<script[^>]*data-be-seife-state[^>]*>([\s\S]*?)<\/script>/); if(!m) throw 'no-state';
+      return JSON.parse(m[1]);
+    });
+  }
+  function isSample(it){return it.variant_id===67736019075463;}
+  function sig(c){return (c.items||[]).filter(function(it){return WHITE.indexOf(it.variant_id)===-1&&!isSample(it);}).map(function(it){return it.variant_id+':'+it.quantity;}).sort().join(',');}
+  function blocked(c){try{return sessionStorage.getItem(KEY)===sig(c);}catch(e){return false;}}
+  function block(c){try{sessionStorage.setItem(KEY,sig(c));}catch(e){}}
+  function isOwn(it){return WHITE.indexOf(it.variant_id)!==-1&&it.properties&&it.properties[PROP];}
+  function change(it,q){ops++;return j((R.cart_change_url||'/cart/change')+'.js',{id:it.key,quantity:q});}
+  function add(id){ops++;return j((R.cart_add_url||'/cart/add')+'.js',{items:[{id:id,quantity:1,properties:{_be_seife:'1'}}]});}
+  function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
+  function refreshUI(){
+    if(/\/cart\/?$/.test(location.pathname)&&!document.querySelector('cart-drawer.active')){
+      var ci=document.querySelector('cart-items'), sec=ci&&ci.closest('.shopify-section');
+      if(sec){var sid=sec.id.replace('shopify-section-','');nf(base+'?section_id='+encodeURIComponent(sid),{credentials:'same-origin'}).then(function(r){return r.ok?r.text():'';}).then(function(t){var n=t&&new DOMParser().parseFromString(t,'text/html').querySelector('.shopify-section, #shopify-section-'+sid);if(n)sec.innerHTML=n.innerHTML;}).catch(function(){});}
+    }
+    var d=document.querySelector('cart-drawer');
+    if(d&&d.getSectionsToRender){
+      var s=d.getSectionsToRender();
+      nf(location.pathname+'?sections='+s.map(function(x){return x.id;}).join(','),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(h){
+        s.forEach(function(x){if(!h[x.id])return;document.querySelectorAll(x.selector).forEach(function(el){try{el.innerHTML=d.getSectionInnerHTML(h[x.id],x.selector);}catch(e){}});});
+      }).catch(function(){});
+    }
+    try{ if(window.publish&&window.PUB_SUB_EVENTS) publish(PUB_SUB_EVENTS.cartUpdate,{source:'be-seife'}); }catch(e){}
+    document.dispatchEvent(new CustomEvent('be-seife:changed'));
+  }
+  // naechste Sorte: zuerst eine, die noch nicht im Warenkorb liegt (Reihenfolge aus state.order), sonst die erste verfuegbare
+  function pick(S,c,skip){
+    var inCart=(c.items||[]).map(function(it){return it.variant_id;});
+    var order=(S.order||[]).filter(function(id){return WHITE.indexOf(id)!==-1&&skip.indexOf(id)===-1;});
+    for(var i=0;i<order.length;i++){if(inCart.indexOf(order[i])===-1) return order[i];}
+    return order[0]||null;
+  }
+  // Fix 10.11.2026 22:30: alle offenen Plaetze in EINEM /cart/add.js legen. Mit AOVAI_BIOTAVHZ im Warenkorb waehlt Shopify bei
+  // Parfum + AOV-Probe + nur 1 Seife D3 statt D1 (Seife 13,95 €) -> frueher wurde diese Seife als "nicht rabattiert" entfernt und gesperrt.
+  function pickMany(S,c,n){
+    var inCart=(c.items||[]).map(function(it){return it.variant_id;}), out=[];
+    var order=(S.order||[]).filter(function(id){return WHITE.indexOf(id)!==-1;});
+    for(var i=0;i<order.length&&out.length<n;i++){if(inCart.indexOf(order[i])===-1) out.push(order[i]);}
+    for(var k=0;out.length<n&&order.length;k++){out.push(order[k%order.length]);}
+    return out;
+  }
+  function addMany(S,c,n){
+    var ids=pickMany(S,c,n); if(!ids.length){block(c);return Promise.resolve();}
+    if(ids.length===1) return tryAdd(S,c,[]);
+    ops++;
+    return j((R.cart_add_url||'/cart/add')+'.js',{items:ids.map(function(id){return {id:id,quantity:1,properties:{_be_seife:'1'}};})})
+      .catch(function(){return tryAdd(S,c,[]);}); // z. B. eine Sorte ausverkauft -> einzeln weiter
+  }
+  function tryAdd(S,c,skip){
+    var id=pick(S,c,skip); if(!id){block(c);return Promise.resolve();}
+    return add(id).catch(function(err){ // z. B. 422 ausverkauft -> naechste Sorte, max. 5 Versuche
+      skip.push(id); if(skip.length>=WHITE.length||ops>=MAX){block(c);return;} return tryAdd(S,c,skip);
+    });
+  }
+  function run(){
+    if(busy||running){again=true;return;} if(ops>=MAX) return; running=true; var changed=false;
+    Promise.all([state(),j(base+'.js')]).then(function(r){
+      var S=r[0], c=r[1]; if(!S||!S.active) return;
+      var ids=(S.ids&&S.ids.length)?S.ids:WHITE;
+      var soaps=(c.items||[]).filter(function(it){return ids.indexOf(it.variant_id)!==-1;}).reduce(function(n,it){return n+it.quantity;},0);
+      var own=(c.items||[]).filter(isOwn), allowed=S.allowed|0;
+      if(soaps>allowed&&own.length){ // zu viele: nur eigene Zeilen reduzieren
+        var o=own[own.length-1]; changed=true; return change(o,o.quantity-1);
+      }
+      if(soaps<allowed){
+        if(blocked(c)) return;
+        changed=true;
+        return addMany(S,c,allowed-soaps).then(function(){return wait(2500);}).then(function(){return Promise.all([state(),j(base+'.js')]);}).then(function(r2){
+          var S2=r2[0], c2=r2[1];
+          var n2=(c2.items||[]).filter(function(it){return ids.indexOf(it.variant_id)!==-1;}).reduce(function(n,it){return n+it.quantity;},0);
+          if(n2<(S2.allowed|0)) return; // Plaetze noch nicht voll -> naechster Lauf ergaenzt, nichts entfernen
+          var bad=(c2.items||[]).filter(function(it){return isOwn(it)&&it.final_line_price>0;})[0];
+          if(bad){block(c2);return change(bad,bad.quantity-1);}
+        });
+      }
+      var paid=soaps>=allowed&&own.filter(function(it){return it.final_line_price>0;})[0];
+      if(paid){ // eigene Zeile nicht rabattiert -> nach kurzer Wartezeit entfernen, nicht wieder legen
+        return wait(2500).then(function(){return j(base+'.js');}).then(function(c3){
+          var p3=(c3.items||[]).filter(function(it){return isOwn(it)&&it.final_line_price>0;})[0];
+          if(p3){block(c3);changed=true;return change(p3,p3.quantity-1);}
+        });
+      }
+    }).catch(function(){}).then(function(){
+      running=false; if(changed){refreshUI();setTimeout(schedule,3000);}
+      if(again){again=false;schedule();}
+    });
+  }
+  function schedule(){clearTimeout(timer);timer=setTimeout(run,450);}
+  // Picker-Buttons (snippets/be-seife-hint.liquid): data-be-seife-add=<Variante>, optional data-be-seife-from=<Zeilen-Key> zum Tauschen
+  document.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest&&e.target.closest('[data-be-seife-add]'); if(!b) return;
+    e.preventDefault(); if(b.disabled||busy) return;
+    var id=+b.getAttribute('data-be-seife-add'), from=b.getAttribute('data-be-seife-from');
+    if(WHITE.indexOf(id)===-1) return;
+    busy=true; b.disabled=true; var old=b.textContent; b.textContent='…';
+    var p=from?j((R.cart_change_url||'/cart/change')+'.js',{id:from,quantity:0}):Promise.resolve();
+    p.then(function(){return j((R.cart_add_url||'/cart/add')+'.js',{items:[{id:id,quantity:1,properties:{_be_seife:'1'}}]});})
+     .then(function(){busy=false;refreshUI();schedule();})
+     .catch(function(err){busy=false;b.disabled=false;b.textContent=old;
+        var m=b.parentNode&&b.parentNode.querySelector('.be-seife-pick__msg'); if(m) m.textContent=(err&&err.description)||{{ 'claude.sb.err_html' | t | json }};
+        schedule();});
+  });
+  window.fetch=function(input){
+    var p=nf.apply(window,arguments);
+    try{var u=typeof input==='string'?input:(input&&input.url)||'';
+      if(/\/cart\/(add|change|update|clear)(\.js)?(\?|$)/.test(u.split('#')[0])) p.then(function(){schedule();},function(){});}catch(e){}
+    return p;
+  };
+  document.addEventListener('be-probe:changed',schedule);
+  try{ if(window.subscribe&&window.PUB_SUB_EVENTS) subscribe(PUB_SUB_EVENTS.cartUpdate,function(ev){if(!ev||ev.source!=='be-seife') schedule();}); }catch(e){}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule); else schedule();
+  setTimeout(schedule,4500);
+  window.addEventListener('pageshow',function(e){if(e.persisted) schedule();});
+})();
+</script>
+{%- endif -%}

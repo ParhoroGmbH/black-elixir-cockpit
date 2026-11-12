@@ -1,0 +1,37 @@
+{%- comment -%} Teil der Section claude-home (Claude · Neue Homepage 11.11.2026 – nicht anfassen) {%- endcomment -%}
+<script>
+(function () {
+  var root = document.getElementById('ch-{{ sec.id }}'); if (!root) return;
+  var slides = root.querySelectorAll('[data-ch-slide]'), dots = root.querySelectorAll('[data-ch-dot]'), cur = 0, timer;
+  function go(i) { cur = (i + slides.length) % slides.length; slides.forEach(function (s, k) { s.classList.toggle('is-on', k === cur); }); dots.forEach(function (d, k) { d.classList.toggle('is-on', k === cur); }); }
+  function auto() { clearInterval(timer); timer = setInterval(function () { go(cur + 1); }, 8000); }
+  var pv = root.querySelector('[data-ch-prev]'), nx = root.querySelector('[data-ch-next]');
+  if (pv) pv.addEventListener('click', function () { go(cur - 1); auto(); });
+  if (nx) nx.addEventListener('click', function () { go(cur + 1); auto(); });
+  dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); auto(); }); });
+  if (slides.length > 1) auto();
+  var tabs = root.querySelectorAll('[data-ch-tab]'), panels = root.querySelectorAll('[data-ch-panel]');
+  tabs.forEach(function (t) { t.addEventListener('click', function () { var k = t.getAttribute('data-ch-tab'); tabs.forEach(function (x) { x.classList.toggle('is-on', x === t); x.setAttribute('aria-selected', x === t); }); panels.forEach(function (p) { p.classList.toggle('is-on', p.getAttribute('data-ch-panel') === k); }); }); });
+  var moods = root.querySelectorAll('.ch-mood'), rt = root.querySelector('[data-ch-rt]'), ru = root.querySelector('[data-ch-ru]');
+  moods.forEach(function (m) { m.addEventListener('click', function () { moods.forEach(function (x) { x.classList.toggle('is-on', x === m); x.lastElementChild.textContent = x === m ? '●' : '○'; }); rt.textContent = m.getAttribute('data-t'); ru.href = m.getAttribute('data-u'); }); });
+  root.querySelectorAll('[data-ch-door]').forEach(function (d) { d.addEventListener('click', function (e) { if (e.target.closest('a') && d.classList.contains('is-open')) return; d.classList.toggle('is-open'); }); });
+  root.querySelectorAll('[data-ch-sound]').forEach(function (b) { b.addEventListener('click', function () { var v = b.parentElement.querySelector('video'); if (!v) return; v.muted = !v.muted; if (!v.muted) v.play(); b.textContent = v.muted ? '🔈' : '🔊'; b.setAttribute('aria-label', v.muted ? {{ 'claude.v.sound_on_html' | t | json }} : {{ 'claude.v.sound_off_html' | t | json }}); }); });
+  if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { v.play && v.play().catch(function () {}); } else { v.pause && v.pause(); } }); }, { rootMargin: '200px' }); root.querySelectorAll('.ch-vid video').forEach(function (v) { v.muted = true; v.setAttribute('playsinline', ''); io.observe(v); }); }
+  var r = root.querySelector('[data-ch-basket]'), bar = root.querySelector('[data-ch-bar]'), bm = root.querySelector('[data-ch-bm]'), bv = root.querySelector('[data-ch-bv]'), soaps = root.querySelector('[data-ch-soaps]');
+  function upd() { if (!r) return; var v = +r.value; bar.style.width = Math.round(v / 140 * 100) + '%'; bv.textContent = (v >= +r.max && +r.dataset.cents > v * 100) ? r.dataset.real : v + ' €'; var lvl = v >= 99 ? 2 : (v >= 59 ? 1 : 0); if (soaps) soaps.setAttribute('data-level', lvl); bm.textContent = lvl === 2 ? {{ 'claude.g.m_done_html' | t | json }} : (lvl === 1 ? {{ 'claude.g.m_one_html' | t | json }}.replace('{n}', 99 - v) : {{ 'claude.g.m_none_html' | t | json }}.replace('{n}', 59 - v)); }
+  if (r) { r.addEventListener('input', upd); upd(); }
+  // Perf 12.11.2026: Sektions-Hintergründe + Video-Poster erst kurz vor Sichtbarkeit (spätestens 3 s nach dem Laden) – Animationen außerhalb des Sichtbereichs pausieren
+  var secs = [].slice.call(root.querySelectorAll('.ch-sec'));
+  function bgIn(s) { if (s.classList.contains('bg-in')) return; s.classList.add('bg-in'); s.querySelectorAll('video[data-poster]').forEach(function (v) { v.poster = v.getAttribute('data-poster'); v.removeAttribute('data-poster'); }); }
+  function allIn() { secs.forEach(bgIn); }
+  if ('IntersectionObserver' in window) {
+    var lz = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { bgIn(e.target); lz.unobserve(e.target); } }); }, { rootMargin: '900px 0px' });
+    secs.forEach(function (s) { lz.observe(s); });
+    var an = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle('ch-off', !e.isIntersecting); }); }, { rootMargin: '150px 0px' });
+    [].forEach.call(root.children, function (el) { if (el.tagName !== 'STYLE' && el.tagName !== 'SCRIPT') an.observe(el); });
+    var later = function () { setTimeout(function () { (window.requestIdleCallback || setTimeout)(allIn); }, 3000); };
+    if (document.readyState === 'complete') later(); else addEventListener('load', later);
+    addEventListener('hashchange', allIn);
+  } else allIn();
+})();
+</script>

@@ -1,0 +1,353 @@
+{%- comment -%}
+  BE Empfehlung Ladenhüter / Rituals-S-Upsell.
+  PDP (ctx: 'pdp'): rotiert "Passend zu Ihrem Duft" über Kollektion empfehlung-ladenhueter
+  (nur vorrätig; ohne Sakura, Advent, BEA'S/Entwürfe). Fallback: 18 fest hinterlegte Handles,
+  falls die Kollektion fehlt oder leer ist. CEO-Freigabe 10.11.2026 21:00 Europe/Berlin.
+  Warenkorb/Drawer (ctx: drawer/cart/js) bleiben beim bisherigen Rituals-S-Picker.
+  ctx: 'drawer' (snippets/cart-drawer.liquid), 'cart' (sections/main-cart.liquid), 'pdp' (custom_liquid in templates/product.json), 'js' (nur Skript).
+{%- endcomment -%}
+{%- liquid
+  assign be_ctx = ctx | default: 'drawer'
+  assign be_r_show = false
+  assign be_lh_mode = false
+  if be_ctx != 'js'
+    if be_ctx == 'pdp' and product != blank and product.available
+      capture be_x
+        render 'be-ist-parfum', p: product
+      endcapture
+      if be_x contains 'ja'
+        assign be_lh_fallback = 'laura-biagiotti-laura-set,hugo-boss-hugo-man-shower-gel,hugo-boss-hugo-man-deo-stick,hugo-boss-bottled-shower-gel,duschgel-fur-manner-classic,jil-sander-evergreen-shower-gel,lancome-tresor-bodylotion,jil-sander-sport-for-women-sower-gel,laura-biagiotti-roma-body-lotion,rituals-the-ritual-of-karma-geschenkset-s-2026,rituals-the-ritual-of-ayurveda-geschenkset-s-2026,rituals-homme-geschenkset-m-2026,rituals-the-ritual-of-ayurveda-me-time-set-joyful-reset,rituals-homme-geschenkset-s-2026,rituals-the-ritual-of-ayurveda-geschenkset-m-2026' | split: ','
+        assign be_lh_handles = be_lh_fallback
+        assign be_lh_source = 'fallback'
+        assign be_lh_col = collections['empfehlung-ladenhueter']
+        if be_lh_col != blank and be_lh_col.products_count > 0
+          assign be_lh_col_str = ''
+          for be_cp in be_lh_col.products
+            if be_cp.handle != blank
+              if be_lh_col_str != blank
+                assign be_lh_col_str = be_lh_col_str | append: ','
+              endif
+              assign be_lh_col_str = be_lh_col_str | append: be_cp.handle
+            endif
+          endfor
+          if be_lh_col_str != blank
+            assign be_lh_handles = be_lh_col_str | split: ','
+            assign be_lh_source = 'collection'
+          endif
+        endif
+        assign be_lh_herren_kw = 'zielgruppe: herren|pour homme|for men|le male|le-male|homme|uomo' | split: '|'
+        assign be_lh_is_herren = false
+        assign be_lh_blob = product.title | downcase | append: ' ' | append: product.handle | append: ' ' | append: product.tags
+        assign be_lh_blob = be_lh_blob | downcase
+        if product.tags contains 'Zielgruppe: Herren'
+          assign be_lh_is_herren = true
+        endif
+        if be_lh_is_herren == false
+          for k in be_lh_herren_kw
+            if be_lh_blob contains k
+              assign be_lh_is_herren = true
+              break
+            endif
+          endfor
+        endif
+        if be_lh_is_herren == false
+          if product.handle contains '-men-' or product.handle contains 'hugo-man' or product.handle contains 'eros-men'
+            assign be_lh_is_herren = true
+          endif
+        endif
+        assign be_lh_count = 0
+        assign be_lh_pref_count = 0
+        assign be_r_pick = nil
+        assign be_lh_pref_pick = nil
+        for h in be_lh_handles
+          if h == blank or h == product.handle
+            continue
+          endif
+          assign be_p = all_products[h]
+          if be_p == blank or be_p.available == false
+            continue
+          endif
+          assign be_excl_blob = be_p.handle | append: ' ' | append: be_p.title | downcase
+          if be_excl_blob contains 'sakura' or be_excl_blob contains 'advent'
+            continue
+          endif
+          assign be_vend = be_p.vendor | downcase
+          if be_vend contains "bea's" or be_vend contains 'bea’s' or be_vend == 'beas'
+            continue
+          endif
+          assign be_v = be_p.selected_or_first_available_variant
+          if be_v == blank or be_v.available == false
+            continue
+          endif
+          assign be_q = be_v.inventory_quantity | default: 0
+          if be_q <= 0
+            continue
+          endif
+          assign be_in_cart = false
+          for item in cart.items
+            if item.product.handle == h
+              assign be_in_cart = true
+              break
+            endif
+          endfor
+          if be_in_cart
+            continue
+          endif
+          assign be_lh_count = be_lh_count | plus: 1
+          if be_r_pick == nil
+            assign be_r_pick = be_p
+          endif
+          assign be_lh_g = 'damen'
+          if h contains 'homme' or h contains 'hugo-man' or h contains 'bottled-shower' or h contains 'eros-men' or h contains 'fur-manner'
+            assign be_lh_g = 'herren'
+          endif
+          if h contains 'karma' or h contains 'ayurveda'
+            assign be_lh_g = 'unisex'
+          endif
+          if be_lh_is_herren
+            if be_lh_g == 'herren' or be_lh_g == 'unisex'
+              assign be_lh_pref_count = be_lh_pref_count | plus: 1
+              if be_lh_pref_pick == nil
+                assign be_lh_pref_pick = be_p
+              endif
+            endif
+          else
+            if be_lh_g == 'damen' or be_lh_g == 'unisex'
+              assign be_lh_pref_count = be_lh_pref_count | plus: 1
+              if be_lh_pref_pick == nil
+                assign be_lh_pref_pick = be_p
+              endif
+            endif
+          endif
+        endfor
+        if be_lh_pref_pick != nil
+          assign be_r_pick = be_lh_pref_pick
+        endif
+        if be_r_pick != nil
+          assign be_r_show = true
+          assign be_lh_mode = true
+          assign be_rv = be_r_pick.selected_or_first_available_variant
+          assign be_r_name = be_r_pick.title | remove_first: 'Rituals...' | remove_first: 'RITUALS...' | remove: ' 2026' | strip
+        endif
+      endif
+    endif
+
+    unless be_lh_mode
+      assign be_r_handles = 'rituals-the-ritual-of-sakura-geschenkset-s-2026,rituals-the-ritual-of-karma-geschenkset-s-2026,rituals-the-ritual-of-ayurveda-geschenkset-s-2026,rituals-homme-geschenkset-s-2026' | split: ','
+      assign be_r_has_s = false
+      assign be_r_parfum = false
+      assign be_r_herren = false
+      for item in cart.items
+        if be_r_handles contains item.product.handle
+          assign be_r_has_s = true
+        endif
+        assign be_iv = item.product.vendor | downcase
+        assign be_it = item.product.title | downcase
+        if be_iv contains 'rituals'
+          if be_it contains 'geschenkset s ' or be_it contains 'gift set s' or be_it contains 'small gift set'
+            assign be_r_has_s = true
+          endif
+        endif
+        if be_ctx != 'pdp' and item.final_line_price > 0 and item.variant_id != 67736019075463 and item.gift_card == false
+          capture be_x
+            render 'be-ist-parfum', p: item.product
+          endcapture
+          if be_x contains 'ja'
+            assign be_r_parfum = true
+            if item.product.tags contains 'Zielgruppe: Herren'
+              assign be_r_herren = true
+            endif
+          endif
+        endif
+      endfor
+      if be_r_parfum and be_r_has_s == false
+        assign be_r_pick = nil
+        assign be_r_best = -1
+        assign be_r_any = nil
+        for h in be_r_handles
+          assign be_p = all_products[h]
+          if be_p == blank or be_p.available == false
+            continue
+          endif
+          assign be_v = be_p.selected_or_first_available_variant
+          if be_v.available == false
+            continue
+          endif
+          if be_r_any == nil
+            assign be_r_any = be_p
+          endif
+          if h contains 'homme'
+            if be_r_herren
+              assign be_r_pick = be_p
+              break
+            endif
+            continue
+          endif
+          assign be_q = be_v.inventory_quantity | default: 0
+          if be_q > be_r_best
+            assign be_r_best = be_q
+            assign be_r_pick = be_p
+          endif
+        endfor
+        if be_r_pick == nil
+          assign be_r_pick = be_r_any
+        endif
+        if be_r_pick != nil
+          assign be_r_show = true
+          assign be_rv = be_r_pick.selected_or_first_available_variant
+          assign be_r_name = be_r_pick.title | remove_first: 'Rituals...' | remove_first: 'RITUALS...' | remove: ' 2026' | strip
+        endif
+      endif
+    endunless
+  endif
+-%}
+{%- if be_r_show and be_lh_mode -%}
+  {%- liquid
+    assign be_lh_prefer = 'damen'
+    if be_lh_is_herren
+      assign be_lh_prefer = 'herren'
+    endif
+  -%}
+<div class="be-rit-up be-rit-up--pdp" data-be-rit-up data-be-lh-up data-be-lh-prefer="{{ be_lh_prefer }}" data-be-lh-source="{{ be_lh_source }}">
+  {%- for h in be_lh_handles -%}
+    {%- if h == blank or h == product.handle -%}{%- continue -%}{%- endif -%}
+    {%- assign be_p = all_products[h] -%}
+    {%- if be_p == blank or be_p.available == false -%}{%- continue -%}{%- endif -%}
+    {%- assign be_excl_blob = be_p.handle | append: ' ' | append: be_p.title | downcase -%}
+    {%- if be_excl_blob contains 'sakura' or be_excl_blob contains 'advent' -%}{%- continue -%}{%- endif -%}
+    {%- assign be_vend = be_p.vendor | downcase -%}
+    {%- if be_vend contains "bea's" or be_vend contains 'bea’s' or be_vend == 'beas' -%}{%- continue -%}{%- endif -%}
+    {%- assign be_v = be_p.selected_or_first_available_variant -%}
+    {%- if be_v == blank or be_v.available == false -%}{%- continue -%}{%- endif -%}
+    {%- assign be_q = be_v.inventory_quantity | default: 0 -%}
+    {%- if be_q <= 0 -%}{%- continue -%}{%- endif -%}
+    {%- assign be_in_cart = false -%}
+    {%- for item in cart.items -%}
+      {%- if item.product.handle == h -%}{%- assign be_in_cart = true -%}{%- break -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if be_in_cart -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      assign be_lh_g = 'damen'
+      if h contains 'homme' or h contains 'hugo-man' or h contains 'bottled-shower' or h contains 'eros-men' or h contains 'fur-manner'
+        assign be_lh_g = 'herren'
+      endif
+      if h contains 'karma' or h contains 'ayurveda'
+        assign be_lh_g = 'unisex'
+      endif
+      assign be_lh_name = be_p.title | remove_first: 'Rituals...' | remove_first: 'RITUALS...' | remove: ' 2026' | strip
+      assign be_lh_tl = be_p.title | downcase
+      assign be_lh_sub = 'claude.r.sub_add_html' | t
+      if be_lh_tl contains 'geschenkset' or be_lh_tl contains 'gift set' or be_lh_tl contains 'me-time set' or be_lh_tl contains 'laura set'
+        assign be_lh_sub = 'claude.r.sub_gift_html' | t
+      endif
+      assign be_lh_visible = false
+      if be_p.handle == be_r_pick.handle
+        assign be_lh_visible = true
+      endif
+    -%}
+  <div class="be-lh-item"{% unless be_lh_visible %} hidden{% endunless %} data-be-lh-item data-handle="{{ h }}" data-gender="{{ be_lh_g }}">
+    <a class="be-rit-up__media" href="{{ be_p.url }}" tabindex="-1" aria-hidden="true">
+      {%- if be_p.featured_image -%}<img src="{{ be_p.featured_image | image_url: width: 160 }}" alt="" width="64" height="64" loading="lazy">{%- endif -%}
+    </a>
+    <div class="be-rit-up__body">
+      <p class="be-rit-up__eyebrow">{{ 'claude.r.fit_html' | t }}</p>
+      <p class="be-rit-up__title"><a href="{{ be_p.url }}">{{ be_lh_name | escape }}</a></p>
+      <p class="be-rit-up__price">{{ be_v.price | money }} <span>· {{ be_lh_sub }}</span></p>
+    </div>
+    <form action="{{ routes.cart_add_url }}" method="post" class="be-rit-atc be-rit-up__form" data-variants="{{ be_v.id }}">
+      <input type="hidden" name="id" value="{{ be_v.id }}">
+      <input type="hidden" name="quantity" value="1">
+      <button type="submit" class="be-rit-up__btn">{{ 'claude.c.atc_html' | t }}</button>
+    </form>
+  </div>
+  {%- endfor -%}
+</div>
+<script>
+(function(){
+  var wrap=document.querySelector('[data-be-lh-up]');
+  if(!wrap||wrap.getAttribute('data-be-lh-ready')) return;
+  wrap.setAttribute('data-be-lh-ready','1');
+  var nodes=Array.prototype.slice.call(wrap.querySelectorAll('[data-be-lh-item]'));
+  if(!nodes.length){ wrap.style.display='none'; return; }
+  var prefer=wrap.getAttribute('data-be-lh-prefer')||'';
+  var pool=nodes.filter(function(n){
+    var g=n.getAttribute('data-gender')||'';
+    return !prefer || g===prefer || g==='unisex';
+  });
+  if(!pool.length) pool=nodes;
+  var pick=pool[Math.floor(Math.random()*pool.length)];
+  nodes.forEach(function(n){ n.hidden = n!==pick; });
+  wrap.classList.add('is-ready');
+})();
+</script>
+<noscript><style>.be-rit-up--pdp[data-be-lh-up]{visibility:visible!important}</style></noscript>
+{%- elsif be_r_show -%}
+<div class="be-rit-up be-rit-up--{{ be_ctx }}" data-be-rit-up>
+  <a class="be-rit-up__media" href="{{ be_r_pick.url }}" tabindex="-1" aria-hidden="true">
+    {%- if be_r_pick.featured_image -%}<img src="{{ be_r_pick.featured_image | image_url: width: 160 }}" alt="" width="64" height="64" loading="lazy">{%- endif -%}
+  </a>
+  <div class="be-rit-up__body">
+    <p class="be-rit-up__eyebrow">{{ 'claude.r.fit_html' | t }}</p>
+    <p class="be-rit-up__title"><a href="{{ be_r_pick.url }}">Rituals {{ be_r_name | escape }}</a></p>
+    <p class="be-rit-up__price">{{ be_rv.price | money }} <span>· {{ 'claude.r.sub_gift_html' | t }}</span></p>
+  </div>
+  <form action="{{ routes.cart_add_url }}" method="post" class="be-rit-atc be-rit-up__form" data-variants="{{ be_rv.id }}">
+    <input type="hidden" name="id" value="{{ be_rv.id }}">
+    <input type="hidden" name="quantity" value="1">
+    <button type="submit" class="be-rit-up__btn">{{ 'claude.c.atc_html' | t }}</button>
+  </form>
+</div>
+{%- endif -%}
+{%- if be_r_show or be_ctx == 'js' -%}
+<style>
+  .be-rit-up{display:grid;grid-template-columns:64px 1fr;gap:6px 12px;align-items:center;margin:0 0 16px;padding:12px;border:1px solid rgba(var(--color-foreground,0,0,0),.25);border-radius:4px;text-align:left}
+  .be-rit-up--pdp{margin:14px 0 4px}
+  .be-rit-up--pdp[data-be-lh-up]:not(.is-ready){visibility:hidden}
+  .be-rit-up[data-be-lh-up] .be-lh-item{display:contents}
+  .be-rit-up[data-be-lh-up] .be-lh-item[hidden]{display:none}
+  .be-rit-up p{margin:0;line-height:1.4}
+  .be-rit-up__media img{display:block;width:64px;height:64px;object-fit:contain}
+  .be-rit-up__eyebrow{font-size:.72em;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+  .be-rit-up__title{font-weight:600;font-size:.92em}
+  .be-rit-up__title a{color:inherit;text-decoration:none}
+  .be-rit-up__price{font-size:.88em}
+  .be-rit-up__price span{opacity:.7}
+  .be-rit-up__form{grid-column:1 / -1;margin:0}
+  .be-rit-up__btn,.be-rit-btn{width:100%;min-height:40px;padding:6px 12px;font:inherit;font-size:.78em;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:1px solid rgb(var(--color-foreground,0,0,0));background:transparent;color:inherit}
+  .be-rit-up__btn:hover,.be-rit-btn:hover{background:rgb(var(--color-foreground,0,0,0));color:rgb(var(--color-background,255,255,255))}
+  .be-rit-up__btn[disabled],.be-rit-btn[disabled]{opacity:.6;cursor:default}
+  .be-rit-msg{font-size:.82em;margin:6px 0 0}
+</style>
+<script>
+(function(){
+  if(window.__beRitAtc) return; window.__beRitAtc=1;
+  document.addEventListener('submit',function(e){
+    var f=e.target; if(!f||!f.matches||!f.matches('form.be-rit-atc')) return;
+    e.preventDefault();
+    var btn=f.querySelector('button[type=submit]'); if(!btn||btn.disabled) return;
+    var items=(f.getAttribute('data-variants')||'').split(',').filter(Boolean).map(function(x){return {id:+x,quantity:1};});
+    if(!items.length) return;
+    var old=btn.textContent; btn.disabled=true; btn.textContent={{ 'claude.r.adding_html' | t | json }};
+    var onCart=/\/cart\/?$/.test(location.pathname), drawer=document.querySelector('cart-drawer'), body={items:items};
+    if(!onCart&&drawer&&drawer.getSectionsToRender){try{body.sections=drawer.getSectionsToRender().map(function(s){return s.id;});body.sections_url=location.pathname;}catch(err){}}
+    fetch(((window.routes&&routes.cart_add_url)||'/cart/add')+'.js',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body)})
+      .then(function(r){return r.json().then(function(j){if(!r.ok) throw j; return j;});})
+      .then(function(j){
+        if(onCart){location.reload();return;}
+        if(window.publish&&window.PUB_SUB_EVENTS){try{publish(PUB_SUB_EVENTS.cartUpdate,{source:'be-rituals'});}catch(err){}}
+        document.dispatchEvent(new CustomEvent('cart:refresh'));
+        if(drawer&&j.sections&&drawer.renderContents){
+          try{drawer.renderContents(j);}catch(err){}
+          if(drawer.open&&!drawer.classList.contains('active')){try{drawer.open();}catch(err){}}
+        } else { location.href=(window.routes&&routes.cart_url)||'/cart'; return; }
+        if(document.body.contains(btn)){btn.textContent={{ 'claude.r.in_cart_html' | t | json }};}
+      })
+      .catch(function(err){
+        btn.disabled=false; btn.textContent=old;
+        var m=f.querySelector('.be-rit-msg'); if(!m){m=document.createElement('p');m.className='be-rit-msg';m.setAttribute('role','status');f.appendChild(m);}
+        m.textContent=(err&&err.description)||{{ 'claude.r.err_html' | t | json }};
+      });
+  });
+})();
+</script>
+{%- endif -%}

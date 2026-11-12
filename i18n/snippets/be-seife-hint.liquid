@@ -1,0 +1,138 @@
+{%- comment -%}
+  BE Seifen-Hinweis im Warenkorb (Seite + Drawer), ueber Zwischensumme/Kasse.
+  10.11.2026 (CEO 15:43 «حطّوا البانر والجملة بالسلّة»): dynamisch nach Warenwert, Du-Form, Link "Seife wählen".
+  Gerendert in sections/main-cart.liquid und snippets/cart-drawer.liquid -> wird mit main-cart bzw. #CartDrawer
+  nach jeder Warenkorbaenderung per Section Rendering neu geladen (assets/cart.js, assets/cart-drawer.js).
+  Basis = wie snippets/be-geschenk-leiste.liquid / be-probe-auto.liquid (Kaufbedingung der Rabatte): Zeilensumme nach Rabatten
+  ohne Seifen (Saponifico Aquaviva), ohne Duftprobe 67736019075463, ohne Gutscheine, ohne 0-€-Zeilen,
+  ohne bereits rabattierte Zeilen und ohne Tag be-seife-ausschluss.
+  Aktionsfenster 18.10.2026 – 31.12.2026 23:59:59 Berlin (1792274400 – 1798757999). Rabatte unveraendert.
+  10.11.2026 20:10 (CEO «الصابون: إي، الكتابة بالكارت وGelsomino بينحط لحاله»), Geschenk-Fix 1A: zaehlt offene Gratis-Plaetze
+  (1 ab 59 €, 2 ab 99 €) und zeigt eine Mini-Auswahl aus geschenk-seifen (Hinzufuegen / Tauschen der automatisch
+  gelegten Seife _be_seife, siehe snippets/be-seife-auto.liquid). Backup der Live-Fassung (MD5 db1dddb82c8ef7c2b6a0c54e868c2cb8):
+  /workspace/shopify/geschenk_fix_umsetzung_2026-11-10/backup_live/be-seife-hint.liquid
+  Vorherige Fassung (statischer Text, nirgends gerendert): backup in /workspace/shopify/collective_versand_2026-11-10/backup/snippets/be-seife-hint.liquid
+{%- endcomment -%}
+{%- liquid
+  assign be_now = 'now' | date: '%s' | plus: 0
+  assign be_show = false
+  if be_now >= 1792274400 and be_now <= 1798757999 and cart.item_count > 0
+    assign be_show = true
+  endif
+  assign be_base = 0
+  assign be_soaps_cart = 0
+  assign be_auto_key = ''
+  assign be_auto_vid = 0
+  assign be_auto_name = ''
+  for item in cart.items
+    assign be_is_soap = false
+    for be_col in item.product.collections
+      if be_col.handle == 'geschenk-seifen'
+        assign be_is_soap = true
+      endif
+    endfor
+    if be_is_soap
+      assign be_soaps_cart = be_soaps_cart | plus: item.quantity
+      if item.properties['_be_seife'] != blank and be_auto_key == ''
+        assign be_auto_key = item.key
+        assign be_auto_vid = item.variant_id
+        assign be_auto_name = item.product.title | remove_first: 'Saponificio Aquaviva ' | remove_first: 'Saponifico Aquaviva ' | remove: ' Face & Body Soap' | strip
+      endif
+      continue
+    endif
+    if item.variant_id == 67736019075463 or item.gift_card or item.final_line_price <= 0
+      continue
+    endif
+    if item.product.tags contains 'be-seife-ausschluss'
+      continue
+    endif
+    assign be_disc = 0
+    for a in item.line_level_discount_allocations
+      assign be_disc = be_disc | plus: a.amount
+    endfor
+    if be_disc > 0
+      continue
+    endif
+    assign be_base = be_base | plus: item.final_line_price
+  endfor
+  if be_base < 5900
+    assign be_state = 1
+    assign be_rest = 5900 | minus: be_base
+  elsif be_base < 9900
+    assign be_state = 2
+    assign be_rest = 9900 | minus: be_base
+  else
+    assign be_state = 3
+    assign be_rest = 0
+  endif
+  assign be_allowed = 0
+  if be_base >= 9900
+    assign be_allowed = 2
+  elsif be_base >= 5900
+    assign be_allowed = 1
+  endif
+  assign be_open = be_allowed | minus: be_soaps_cart
+  if be_open < 0
+    assign be_open = 0
+  endif
+  assign be_eu = be_rest | divided_by: 100
+  assign be_ct = be_rest | modulo: 100
+  if be_ct < 10
+    assign be_x = be_eu | append: ',0' | append: be_ct
+  else
+    assign be_x = be_eu | append: ',' | append: be_ct
+  endif
+-%}
+{%- if be_show -%}
+<div class="be-seife-hint" role="status" aria-live="polite" data-state="{{ be_state }}" data-base="{{ be_base }}" data-open="{{ be_open }}" data-soaps="{{ be_soaps_cart }}">
+  <p class="be-seife-hint__text body-secondary-text--{{ settings.typography_preset }}">
+    {%- if be_state == 1 -%}
+      {{ 'claude.h.s1_html' | t: amount: be_x }}
+      {{ ' ' }}<a class="be-seife-hint__link" href="{{ routes.collections_url }}/geschenk-seifen">{{ 'claude.c.choose_soap_html' | t }}</a>
+    {%- elsif be_state == 2 and be_soaps_cart == 0 -%}
+      {{ 'claude.h.s2a_html' | t: amount: be_x }}
+      {{ ' ' }}<a class="be-seife-hint__link" href="{{ routes.collections_url }}/geschenk-seifen">{{ 'claude.c.choose_soap_html' | t }}</a>
+    {%- elsif be_state == 2 -%}
+      {{ 'claude.h.s2b_html' | t: amount: be_x }}
+    {%- elsif be_open >= 2 -%}
+      {{ 'claude.h.o2_html' | t }}
+    {%- elsif be_open == 1 -%}
+      {{ 'claude.h.o1_html' | t }}
+    {%- else -%}
+      {{ 'claude.h.done_html' | t }}
+    {%- endif -%}
+    {%- if be_auto_key != '' -%}
+      {{ ' ' }}{{ 'claude.h.auto_html' | t: name: be_auto_name }}
+    {%- endif -%}
+  </p>
+  {%- if be_open > 0 or be_auto_key != '' -%}
+    {%- assign be_pick_col = collections['geschenk-seifen'] -%}
+    <div class="be-seife-pick" data-be-seife-pick>
+      <p class="be-seife-pick__label">{% if be_open > 0 %}{{ 'claude.h.add_html' | t }}{% else %}{{ 'claude.h.swap_html' | t }}{% endif %}</p>
+      <div class="be-seife-pick__list">
+        {%- for be_p in be_pick_col.products limit: 8 -%}
+          {%- assign be_v = be_p.selected_or_first_available_variant -%}
+          {%- if be_v == blank or be_v.available == false -%}{%- continue -%}{%- endif -%}
+          {%- if be_open == 0 and be_v.id == be_auto_vid -%}{%- continue -%}{%- endif -%}
+          {%- assign be_pn = be_p.title | remove_first: 'Saponificio Aquaviva ' | remove_first: 'Saponifico Aquaviva ' | remove: ' Face & Body Soap' | strip -%}
+          <button type="button" class="be-seife-pick__btn" data-be-seife-add="{{ be_v.id }}"{% if be_open == 0 %} data-be-seife-from="{{ be_auto_key }}"{% endif %}>{{ be_pn | escape }}</button>
+        {%- endfor -%}
+      </div>
+      <p class="be-seife-pick__msg" role="status"></p>
+    </div>
+  {%- endif -%}
+</div>
+<style>
+  .be-seife-hint{margin:0 0 12px;padding:10px 14px;border:1px solid currentColor;border-radius:4px;text-align:left}
+  .be-seife-hint p{margin:0;line-height:1.45}
+  .be-seife-hint__link{text-decoration:underline;text-underline-offset:3px;font-weight:600;color:inherit;white-space:nowrap}
+  .be-seife-pick{margin-top:8px}
+  .be-seife-pick__label{font-size:.82em;opacity:.8;margin:0 0 4px}
+  .be-seife-pick__list{display:flex;flex-wrap:wrap;gap:6px}
+  .be-seife-pick__btn{min-height:32px;padding:4px 10px;font:inherit;font-size:.78em;cursor:pointer;border:1px solid currentColor;border-radius:3px;background:transparent;color:inherit}
+  .be-seife-pick__btn:hover{background:rgb(var(--color-foreground,0,0,0));color:rgb(var(--color-background,255,255,255))}
+  .be-seife-pick__btn[disabled]{opacity:.6;cursor:default}
+  .be-seife-pick__msg{font-size:.8em;margin:4px 0 0}
+  .be-seife-pick__msg:empty{display:none}
+</style>
+{%- endif -%}

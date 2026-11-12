@@ -1,0 +1,14 @@
+{%- render 'dumo-identity' -%}
+{%- render 'dumo-box' -%}
+{%- render 'dumo-mobile' -%}
+<style>html body .dm-cards::after{display:none}</style>
+{%- assign dv_t = section.settings.title -%}{%- if dv_t == 'Sieben kamen in die Arena. Jeder mit seiner Geschichte.' -%}{%- assign dv_t = 'claude.dm.arena_text_html' | t -%}{%- endif -%}{%- render 'dumo-scene', sid: section.id, vid: section.settings.video_url, poster: section.settings.poster_url, title: dv_t, sub: section.settings.sub, vh: section.settings.vh -%}
+{% schema %}
+{"name":"DUMO Szene","settings":[
+{"type":"text","id":"video_url","label":"Video-URL","default":"https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-arena.mp4"},
+{"type":"text","id":"poster_url","label":"Poster-URL","default":"https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-arena.png"},
+{"type":"text","id":"title","label":"Titel","default":"Sieben kamen in die Arena. Jeder mit seiner Geschichte."},
+{"type":"text","id":"sub","label":"Untertitel"},
+{"type":"range","id":"vh","label":"Scroll-Länge (vh)","min":200,"max":500,"step":50,"default":300}],
+"presets":[{"name":"DUMO Szene"}]}
+{% endschema %}

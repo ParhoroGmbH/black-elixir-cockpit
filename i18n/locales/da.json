@@ -1,0 +1,831 @@
+{
+  "sections": {
+    "cart": {
+      "title_cart": "Din indkøbskurv",
+      "title_basket": "Din kurv",
+      "title_bag": "Din taske",
+      "remove_title": "Fjern {{ title }}",
+      "subtotal": "Delsum",
+      "cart_total": "Kurvtotal",
+      "bag_total": "Taskensum",
+      "basket_total": "Kurvsum",
+      "saved": "Du har gemt",
+      "checkout": "Betaling",
+      "cart_error": "Der opstod en fejl under opdatering af din indkøbskurv. Prøv venligst igen.",
+      "bag_error": "Der opstod en fejl under opdateringen af din taske. Prøv venligst igen.",
+      "basket_error": "Der opstod en fejl under opdateringen af din kurv. Prøv venligst igen.",
+      "cart_quantity_error_html": "Du kan kun tilføje {{ quantity }} af denne vare til din taske.",
+      "bag_quantity_error_html": "Du kan kun tilføje {{ quantity }} af denne vare til din kurv.",
+      "basket_quantity_error_html": "Du kan kun tilføje {{ quantity }} af denne vare til din indkøbskurv.",
+      "taxes_and_shipping_policy_at_checkout_html": "Skatter og <a class=\"shipping-policy-link\" href=\"{{ link }}\">forsendelse</a> beregnes ved kassen",
+      "taxes_included_but_shipping_at_checkout": "Skatter inkluderet, og forsendelse beregnes ved kassen",
+      "taxes_included_and_shipping_policy_html": "Skatter inkluderet. <a class=\"shipping-policy-link\" href=\"{{ link }}\">Forsendelse</a> beregnes ved kassen.",
+      "taxes_and_shipping_at_checkout": "Skatter og forsendelse beregnes ved kassen",
+      "estimate": "Overslag",
+      "zip": "Postnummer",
+      "zip_placeholder": "Indtast postnummer",
+      "shipping_country": "Land",
+      "shipping_state": "Stat",
+      "headings": {
+        "product": "Produkt",
+        "total": "I alt"
+      },
+      "update": "opdatere",
+      "quick_add_to_cart": "Føj hurtigt til indkøbskurven",
+      "quick_add_to_bag": "Føj hurtigt til tasken",
+      "quick_add_to_basket": "Føj hurtigt til kurven"
+    },
+    "featured_blog": {
+      "onboarding_content": "Opret dit første indlæg, eller vælg en blog med indlæg."
+    },
+    "featured_collection": {
+      "collection": "Samling"
+    },
+    "featured_collection_tabs": {
+      "tab_placeholder": "Samling"
+    },
+    "collection_template": {
+      "empty": "Denne samling indeholder ikke noget produkt.",
+      "link": "Fortsæt med at handle",
+      "no_products": "Ingen produkter blev fundet.",
+      "use_fewer_filters_html": "Brug færre filtre eller <a class=\"{{ class }}\" href=\"{{ link }}\">fjern alle</a>"
+    },
+    "video": {
+      "load_video": "Video indlæses: {{ description }}"
+    },
+    "slideshow": {
+      "pause_slideshow": "Stop diasshow",
+      "play_slideshow": "Afspil diasshow"
+    },
+    "page": {
+      "heading": "Sideskift"
+    },
+    "collection_list": {
+      "first_placeholder": "Første",
+      "second_placeholder": "Anden",
+      "third_placeholder": "Tredje",
+      "fourth_placeholder": "Fjerde",
+      "fifth_placeholder": "Femte",
+      "other_placeholders": "Samling"
+    },
+    "qiuck_view": {
+      "open_quick_view": "Åbn hurtigvisning-popup"
+    },
+    "countdown_timer": {
+      "days": "Mærke",
+      "hours": "Std",
+      "minutes": "Min",
+      "seconds": "Sek",
+      "days_minimized": "T"
+    },
+    "stories_slideshow": {
+      "products_promotion_label": "Produkter fra kampagnen"
+    }
+  },
+  "general": {
+    "links": {
+      "link_to_button_label": "Link til {{ label }}"
+    }
+  },
+  "templates": {
+    "search": {
+      "no_results": "Ingen resultater fundet for “{{ terms }}”. Tjek stavningen eller brug et andet ord eller en anden sætning.",
+      "products": "Produkter",
+      "queries": "Forslag",
+      "collections": "Samlinger",
+      "articles": "Blogindlæg",
+      "pages": "Sider",
+      "search_for": "Søg efter {{ terms }}",
+      "go_to_search_page": "Gå til søgesiden",
+      "results_with_count": {
+        "one": "{{ count }} resultat",
+        "other": "{{ count }} resultater"
+      },
+      "results_with_count_and_term": {
+        "one": "{{ count }} resultat for “{{ terms }}”",
+        "other": "{{ count }} resultater for “{{ terms }}”"
+      },
+      "use_fewer_filters_html": "Brug færre filtre eller <a class=\"{{ class }}\" href=\"{{ link }}\">fjern alle</a>",
+      "search_title": "Søgning",
+      "placeholder": "Søgning",
+      "clear": "slette",
+      "menu_title": "Populære søgninger"
+    },
+    "contact": {
+      "form": {
+        "name": "Navn",
+        "email": "E-mail",
+        "phone": "Telefon",
+        "comment": "Besked",
+        "post_success": "Mange tak for din henvendelse. Vi vil kontakte dig så hurtigt som muligt.",
+        "error_heading": "Indstil venligst følgende:",
+        "checkbox": "Almindelige forretningsbetingelser",
+        "send": "Send besked",
+        "product_url": "Produkt",
+        "send_form": "Sender"
+      }
+    },
+    "404": {
+      "title": "404 Side ikke fundet",
+      "subtext": "Den side, du har anmodet om, findes ikke",
+      "return_home": "gå tilbage til startsiden"
+    }
+  },
+  "accessibility": {
+    "skip_to_product_info": "Spring til produktinformation",
+    "close": "Luk",
+    "unit_price_separator": "pro",
+    "link_messages": {
+      "new_window": "Et nyt vindue åbnes."
+    },
+    "loading": "Indlæser...",
+    "review": "Anmeldelse",
+    "reviews": "Anmeldelser",
+    "total_reviews": "Samlede bedømmelser",
+    "star_reviews_info": "{{ rating_value }} ud af {{ rating_max }} stjerner",
+    "drag_to_compare": "Træk for at se forskellen mellem to billeder",
+    "pause": "Pause",
+    "play": "Afspilning",
+    "mute": "Stum",
+    "unmute": "Tænd for lyden",
+    "discount": "Rabatkode",
+    "discount_applied": "Rabat {{ code }} anvendt"
+  },
+  "collections": {
+    "page_title": "Samlinger",
+    "product": "Produkt",
+    "products": "Produkter",
+    "shop_all": "Alle produkter"
+  },
+  "products": {
+    "product": {
+      "all": "Alle",
+      "by_vendor": "Fra",
+      "vendor_placeholder": "Udbyder",
+      "title_placeholder": "Produkttitel",
+      "description_placeholder": "Så snart du tilføjer et produkt, ændres beskrivelsen.",
+      "add_to_cart": "Føj til indkøbskurv",
+      "add_to_bag": "Føj til taske",
+      "add_to_basket": "Føj til kurv",
+      "pre_order": "Forudbestilling",
+      "color_swatch_tag": "Farve",
+      "on_sale": "UDSALG",
+      "product_variants": "Produktudgaven",
+      "collection_by_brand": "Samling efter mærke",
+      "brand": "Shop efter mærke",
+      "related_collection": "køb samlingen",
+      "media": {
+        "gallery_viewer": "Galleri-fremviser",
+        "load_image": "Indlæs billede {{ index }} i gallerivisning",
+        "load_model": "Indlæser 3D-model {{ index }} i gallerivisning",
+        "load_video": "Afspil video {{ index }} i gallerivisning",
+        "image_available": "Billede {{ index }} er nu tilgængeligt i gallerivisning",
+        "open_media": "Åbn medier {{ index }} i modalvindue",
+        "zoom_in": "Forstør",
+        "play_media": "Afspil medier"
+      },
+      "nested_label": "{{ title }} til {{ parent_title }}",
+      "quantity": {
+        "label": "Mængde",
+        "input_label": "Mængde af {{ product }}",
+        "increase": "Øg mængden af {{ product }}",
+        "decrease": "Reducer mængden af {{ product }}"
+      },
+      "pickup_availability": {
+        "view_store_info": "Vis butikoplysninger",
+        "check_other_stores": "Tjek tilgængelighed i andre butikker",
+        "pick_up_available": "Afhentning er mulig",
+        "pick_up_available_at_html": "Afhentning muligt i <span class=\"color-foreground\">{{ location_name }}</span>",
+        "pick_up_unavailable_at_html": "Afhentning er i øjeblikket ikke mulig i <span class=\"color-foreground\">{{ location_name }}</span>",
+        "unavailable": "Afhentningsmulighed kunne ikke indlæses",
+        "refresh": "opdatere",
+        "available_to_pickup_at": "Klar til afhentning hos {{ store_name }}",
+        "out_of_stock_at": "Ikke på lager hos {{ store_name }}"
+      },
+      "price": {
+        "from_price_html": "Fra {{ price }}",
+        "regular_price": "Almindelig pris",
+        "sale_price": "Salgspris",
+        "unit_price": "Enkeltpris"
+      },
+      "inventory": {
+        "inventory_label": "Tilgængelighed",
+        "in_stock_label": "På lager",
+        "stock_label_html": "kun {{ count }} tilbage på lager",
+        "out_of_stock": "Udsolgt",
+        "will_not_ship_until": "Klar til afsendelse {{ date }}",
+        "will_be_in_stock_after": "På lager igen {{ date }}",
+        "waiting_for_stock": "Inventaret er på vej"
+      },
+      "share_button": "Dele",
+      "share_on_facebook": "Dele",
+      "share_on_twitter": "twitteren",
+      "share_on_pinterest": "pinden",
+      "share_on_line": "Dele",
+      "copy_link": "Kopiér link",
+      "copy_code": "Kopier",
+      "copied_message": "Kopieret!",
+      "sold_out": "Udsolgt",
+      "unavailable": "Ikke tilgængelig",
+      "value_unavailable": "{{ option_value }} — Ikke tilgængelig",
+      "video_exit_message": "{{ title }} åbner videoen i fuldskærm i samme vindue.",
+      "xr_button": "Vis i dit rum",
+      "xr_button_label": "Vis i dit rum, indlæser artikel i augmented reality-vindue",
+      "include_taxes": "Skatter inkluderet.",
+      "shipping_policy_html": "<a class=\"shipping-policy-link\" href=\"{{ link }}\">Forsendelse</a> beregnes ved kassen.",
+      "change_button": "Ændr",
+      "error_message_required": "Dette felt er påkrævet.",
+      "custom_error": "Udfyld venligst alle påkrævede felter.",
+      "error_select_options": "Vælg venligst mindst {{ options }} muligheder.",
+      "error_select_option": "Vælg venligst mindst {{ option }} mulighed.",
+      "drop_zone_text": "Træk og slip eller Gennemse",
+      "drop_zone_size": "Maksimal filstørrelse 5 MB",
+      "file_size_error": "Filstørrelsen er for stor (maks. 5 MB)."
+    },
+    "modal": {
+      "label": "Medie-galleri"
+    },
+    "facets": {
+      "clear_all": "Slet alt",
+      "from": "fra",
+      "filter_button": "Filtrér og sorter",
+      "product_count": {
+        "one": "{{ product_count }} af {{ count }} produkter",
+        "other": "{{ product_count }} af {{ count }} produkter"
+      },
+      "product_count_simple": {
+        "one": "{{ count }} produkt",
+        "other": "{{ count }} produkter"
+      },
+      "found_count": {
+        "one": "{{ product_count }} af {{ count }} fundet",
+        "other": "{{ product_count }} af {{ count }} fundet"
+      },
+      "found_count_simple": {
+        "one": "{{ count }} fundet",
+        "other": "{{ count }} fundet"
+      },
+      "sort_by_label": "Sorter efter:",
+      "to": "til",
+      "filters_selected": {
+        "one": "{{ count }} valgt",
+        "other": "{{ count }} valgt"
+      },
+      "reset": "Nulstil",
+      "max_price": "Den højeste pris er {{ price }}",
+      "show_more": "Vis mere",
+      "show_less": "Vis mindre"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Konto",
+      "details": "Kontooplysninger",
+      "return": "Tilbage til kontodetaljer",
+      "go_to_account": "Gå til kontosiden",
+      "create_account": "Log ind / Opret konto"
+    },
+    "activate_account": {
+      "title": "Aktivér konto",
+      "subtext": "Opret din adgangskode for at aktivere din konto.",
+      "password": "Adgangskode",
+      "password_confirm": "Bekræft adgangskode",
+      "submit": "Aktivér konto",
+      "cancel": "Afvis invitation"
+    },
+    "addresses": {
+      "title": "Adressen",
+      "view": "Vis adresse",
+      "default": "Standard",
+      "add_new": "Tilføj en ny adresse",
+      "edit_address": "Rediger adresse",
+      "first_name": "Fornavn",
+      "last_name": "Efternavn",
+      "company": "Virksomhed",
+      "address1": "Adresse 1",
+      "address2": "Adresse 2",
+      "city": "By",
+      "country": "Land/område",
+      "province": "Distrikt",
+      "zip": "Postnummer",
+      "phone": "Telefon",
+      "set_default": "Indstil som standardadresse",
+      "add": "Tilføj adresse",
+      "update": "Opdater adresse",
+      "cancel": "Annuller",
+      "edit": "Rediger",
+      "delete": "Slet",
+      "delete_confirm": "Er du sikker på, at du vil slette denne adresse?"
+    },
+    "log_out": "Log ud",
+    "login_page": {
+      "cancel": "Annuller",
+      "create_account": "Opret konto",
+      "email": "E-mail",
+      "forgot_password": "Har du glemt din adgangskode?",
+      "guest_continue": "Videre",
+      "guest_title": "Fortsæt som gæst",
+      "password": "Adgangskode",
+      "title": "Log ind",
+      "sign_in": "Log ind",
+      "submit": "Indsend",
+      "have_account": "Du har endnu ikke en konto?"
+    },
+    "order": {
+      "title": "Bestilling {{ name }}",
+      "date_html": "afsendt den {{ date }}",
+      "billing_address": "Faktureringsadresse",
+      "payment_status": "Betalingsstatus",
+      "shipping_address": "Forsendelsesadresse",
+      "fulfillment_status": "Opfyldelsesstatus",
+      "discount": "Rabat",
+      "shipping": "Forsendelse",
+      "tax": "Skatter",
+      "product": "Produkt",
+      "sku": "LME",
+      "price": "Pris",
+      "quantity": "Mængde",
+      "total": "I alt",
+      "fulfilled_at_html": "Opfylder {{ date }}",
+      "track_shipment": "Spor forsendelse",
+      "subtotal": "Delsum",
+      "total_duties": "Told"
+    },
+    "orders": {
+      "title": "Bestillingshistorik",
+      "order_number": "Bestilling",
+      "order_number_link": "Ordrenummer {{ number }}",
+      "date": "Dato",
+      "payment_status": "Betalingsstatus",
+      "fulfillment_status": "Opfyldelsesstatus",
+      "total": "I alt",
+      "none": "Du har endnu ikke afgivet nogen ordre."
+    },
+    "recover_password": {
+      "title": "Nulstil din adgangskode",
+      "subtext": "Vi sender dig en e-mail for at nulstille din adgangskode",
+      "success": "Vi har sendt dig en e-mail med et link til at opdatere din adgangskode."
+    },
+    "register": {
+      "title": "Opret konto",
+      "first_name": "Fornavn",
+      "last_name": "Efternavn",
+      "email": "E-mail",
+      "password": "Adgangskode",
+      "submit": "oprette",
+      "have_account": "Har du allerede en konto?",
+      "login": "Log ind"
+    },
+    "reset_password": {
+      "title": "Nulstil din adgangskode",
+      "subtext": "Indtast en ny adgangskode for {{ email }}",
+      "password_confirm": "Bekræft adgangskode",
+      "submit": "Indsend",
+      "cancel": "Annuller",
+      "password": "Adgangskode"
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Her er {{ value }} dit gavekort til {{ shop }}!",
+      "subtext": "Dit gavekort",
+      "shop_link": "Begynd at handle",
+      "remaining_html": "Tilbageværende {{ balance }}",
+      "price_value": "Værdi af gavekort:",
+      "text_1": "Brug denne kode ved kassen",
+      "text_2": "for at indløse dit gavekort",
+      "qr_image_alt": "QR-kode - scan for at indløse gavekortet",
+      "expired": "Udløbet",
+      "print_gift_card": "Udskriv dette gavekort",
+      "add_to_apple_wallet": "Føj til Apple Wallet"
+    }
+  },
+  "recipient": {
+    "form": {
+      "checkbox": "Jeg vil gerne sende dette som et gavekort",
+      "email_label": "Modtagerens e-mail*",
+      "email_label_optional": "Modtagerens e-mail (valgfrit)",
+      "email": "E-mail",
+      "name_label": "Modtagers navn",
+      "name": "Navn",
+      "message_label": "Besked",
+      "message": "Besked",
+      "max_characters": "{{ max_chars }} tegn maks"
+    }
+  },
+  "newsletter": {
+    "success": "Tak for tilmeldingen",
+    "button_label": "Log ind"
+  },
+  "cart": {
+    "title_basket": "Indkøbskurv",
+    "title_cart": "Indkøbskurv",
+    "title_bag": "taske",
+    "continue_shopping": "Fortsæt med at handle",
+    "empty_cart": "Din indkøbskurv er tom",
+    "empty_bag": "Din taske er tom",
+    "empty_basket": "Din kurv er tom",
+    "login": "Log ind",
+    "item_added_cart": "Varen er blevet tilføjet til din indkøbskurv",
+    "item_added_bag": "Varen er blevet tilføjet til din taske",
+    "item_added_basket": "Varen er blevet tilføjet til din kurv",
+    "free_shipping_minimum": "Standard"
+  },
+  "cart_drawer": {
+    "product": "Produkt",
+    "products": "Produkter",
+    "view_cart": "Se indkøbskurv",
+    "view_bag": "Se taske",
+    "view_basket": "Se kurv",
+    "quantity": "Mængde"
+  },
+  "blogs": {
+    "article": {
+      "all_tags": "Alle",
+      "comments": {
+        "one": "{{ count }} Kommentarer",
+        "other": "{{ count }} kommentarer"
+      },
+      "moderated": "Bemærk venligst, at kommentarer skal godkendes, før de offentliggøres.",
+      "comment_form_title": "Efterlad en kommentar",
+      "name": "Navn",
+      "email": "E-mail",
+      "message": "Kommentar",
+      "post": "Skriv en kommentar",
+      "tags": "Mærker",
+      "back_to_blog": "gå til journal",
+      "previous_post": "Forrige indlæg",
+      "next_post": "Næste indlæg",
+      "success": "Din kommentar er blevet offentliggjort! Mange tak!",
+      "success_moderated": "Din kommentar er blevet sendt med succes. Vi vil snart offentliggøre den, da vores blog er modereret."
+    }
+  },
+  "free_shipping_bar": {
+    "complete_text": "Tillykke! Du har gratis levering.",
+    "progress_text": "Brug endnu {{ rest_amount }} for at få gratis levering."
+  },
+  "discount_code": {
+    "enter_discount_code": "Indtast rabatkode",
+    "discount_code_error": "Rabattkode '{{ code }}' kan ikke anvendes på din indkøbskurv",
+    "existing_discount_code_error": "Rabattkoden '{{ code }}' er allerede blevet anvendt på din indkøbskurv",
+    "shipping_discount_code_warning": "Forsendelsesrabatter vises ved kassen efter indtastning af en adresse",
+    "apply": "Anvend",
+    "remove_discount": "Fjern rabat {{ code }}"
+  },
+  "store_selector": {
+    "change_my_store": "Skift min butik",
+    "select_your_store": "Vælg din butik"
+  },
+  "claude": {
+    "c": {
+      "atc_html": "Læg i kurven",
+      "sold_out_html": "Udsolgt",
+      "to_scent_html": "Se duften",
+      "from_html": "fra",
+      "uvp_html": "Vejl. pris",
+      "choose_size_html": "Vælg størrelse",
+      "discover_html": "Udforsk",
+      "choose_soap_html": "Vælg din sæbe",
+      "only_until_html": "Kun til 31.12.2026 · kun i webshoppen",
+      "err_html": "Det lykkedes desværre ikke. Prøv venligst igen."
+    },
+    "n": {
+      "top_html": "Topnote",
+      "heart_html": "Hjertenote",
+      "base_html": "Basisnote",
+      "top_s_html": "Top",
+      "heart_s_html": "Hjerte",
+      "base_s_html": "Base",
+      "pyramid_html": "Duftpyramide",
+      "notes_html": "Duftnoter",
+      "unit_price_html": "Enhedspris"
+    },
+    "hero": {
+      "e1_html": "Julekalendere 2026",
+      "t1_html": "Adventstiden begynder med en låge",
+      "x1_html": "Julekalendere fra BABOR, ARTDECO, Molton Brown og Wir für Sie – pleje og duft bag hver eneste låge.",
+      "b1_html": "Se julekalenderne",
+      "t2_html": "Italiensk sæbe i gave",
+      "x2_html": "Fra 59 € får du en italiensk sæbe efter eget valg, fra 99 € to sæber og en duftprøve – helt uden kode.",
+      "b2b_html": "Sådan gør du",
+      "t3_html": "Hver duft er en historie",
+      "x3_html": "Syv extraits, én flakon – hver bærer sin histories farver. Vælg en titel, og drej den i ro og mag.",
+      "b3_html": "Gå til biblioteket",
+      "t4_html": "Syv krigere, syv dufte",
+      "x4_html": "Hver flakon er en buste med metallisk finish – guld, sølv, bronze eller sort. Vælg din kriger.",
+      "b4_html": "Træd ind i arenaen",
+      "chip_html": "Gratis sæbe fra 59 € · uden kode",
+      "alt_dumo_html": "DUMO-flakon i 3D",
+      "alt_3d_html": "{{ name }} i 3D",
+      "aria_warrior_html": "Vælg en kriger",
+      "aria_pick_html": "Valg",
+      "tag59_html": "Gratis fra 59 €",
+      "prev_html": "Forrige motiv",
+      "next_html": "Næste motiv",
+      "dot_html": "Motiv {{ n }}",
+      "day1_html": "dag til den første låge",
+      "dayn_html": "dage til den første låge",
+      "today_html": "I dag åbner låge {n}"
+    },
+    "a": {
+      "trust1_html": "Anmeldt på Trusted Shops &amp; Judge.me",
+      "trust2_html": "Gratis sæbe fra 59 €",
+      "trust3_html": "Gratis fragt i Tyskland",
+      "trust4_html": "Medlem af Händlerbund",
+      "trust5_html": "idealo-partner siden 2023",
+      "stories_html": "Bestsellere,Gavesæt,Hjem,Advent",
+      "brands_html": "Mærker",
+      "reco_e_html": "Kurateret af Black Elixir",
+      "reco_h_html": "Udsøgte anbefalinger",
+      "tabs_html": "Bestsellere,Nyheder,Dame,Herre,Nichedufte,Udsalg",
+      "tag_sale_html": "UDSALG",
+      "tag_new_html": "NYHED",
+      "tag_best_html": "BESTSELLER",
+      "all_best_html": "Alle bestsellere"
+    },
+    "b": {
+      "niche_h_html": "Kendernes parfumehuse",
+      "niche_l_html": "Nicheparfumer, man ikke finder overalt.",
+      "niche_all_html": "Alle nichedufte",
+      "n_scents_html": "{{ n }} dufte",
+      "who_e_html": "Luksus- og nicheparfumer hos Black Elixir",
+      "who_h_html": "Hvem leder du efter en duft til?",
+      "g_names_html": "Damedufte,Herredufte,Unisexdufte,Nichedufte",
+      "g_subs_html": "Til hende,Til ham,Til alle,Til kendere",
+      "finder_e_html": "Duftfinder på 10 sekunder",
+      "finder_h_html": "Hvilken stemning bærer du i dag?",
+      "finder_l_html": "Vælg en følelse – så viser vi dig den verden, der passer.",
+      "mood_alts_html": "Oudtræ, læder og røg|Ambra, vanilje og tonka i stearinlysets skær|Bergamot, citron og hav|Iris, rose og pudder",
+      "mood1_html": "Mørk & mægtig|Oud, læder, røg|DUMO – gladiatorerne|",
+      "mood2_html": "Varm & forførende|Ambra, vanilje, tonka|Nichedufte|",
+      "mood3_html": "Frisk & klar|Bergamot, citrus, hav|Herredufte|",
+      "mood4_html": "Pudret & poetisk|Iris, rose, moskus|Fragrance Library|",
+      "mood1_t_html": "DUMO – gladiatorerne",
+      "your_world_html": "DIN VERDEN",
+      "view_scents_html": "Se duftene",
+      "three_html": "Tre dufte fra denne verden"
+    },
+    "v": {
+      "video_html": "Video",
+      "sound_on_html": "Lyd til",
+      "sound_off_html": "Lyd fra",
+      "e_html": "Videolounge",
+      "h_html": "Dufte i bevægelse",
+      "l_html": "Videoerne afspilles uden lyd – tryk på højttaleren for at slå lyden til.",
+      "prev_html": "Forrige videoer",
+      "next_html": "Flere videoer"
+    },
+    "g": {
+      "e_html": "Find en gave",
+      "h_html": "Den rette gave – til ethvert budget",
+      "k_gifts_html": "GAVER",
+      "k_browse_html": "GÅ PÅ OPDAGELSE",
+      "t1_html": "Gaver under 50 €",
+      "d1_html": "Små gestus med stor virkning",
+      "tag1_html": "under 50 €",
+      "t2_html": "Gaver op til 100 €",
+      "d2_html": "Til dem, der betyder noget",
+      "tag2_html": "op til 100 €",
+      "t3_html": "Gavefinder",
+      "d3_html": "Din vej til gaven",
+      "t4_html": "Plejesæt",
+      "d4_html": "Færdigpakket og klar til at give væk",
+      "s_h_html": "En gave i stedet for rabat.",
+      "s_l_html": "Fra 59 € en italiensk sæbe fra Saponificio Aquaviva efter eget valg, fra 99 € to sæber – duftprøven lægger vi automatisk ved. Helt uden kode.",
+      "basket_html": "DIN KURV",
+      "video_aria_html": "Åben gaveæske med italienske sæber, der langsomt drejer",
+      "m_done_html": "Sådan: to sæber + en gratis duftprøve er med.",
+      "m_one_html": "Én sæbe i gave – kun {n} € til den anden sæbe + duftprøve.",
+      "m_none_html": "Kun {n} € til din gratis sæbe."
+    },
+    "j": {
+      "e_html": "Fra vores duftjournal",
+      "h_html": "Viden om duft",
+      "btn_html": "Gå til journalen"
+    },
+    "ad": {
+      "e_html": "Vinter &amp; advent",
+      "h_html": "Små ritualer frem til jul",
+      "l_html": "Vælg en kalender, og kig bag lågerne.",
+      "all_html": "Alle julekalendere",
+      "s1_html": "Vælg en kalender",
+      "s2_html": "Tryk på en låge",
+      "s3_html": "Tryk to gange for at åbne kalenderen",
+      "aria_html": "Julekalendere",
+      "doors24_html": "24 låger",
+      "door_aria_html": "Åbn låge {{ n }}",
+      "door_html": "LÅGE {{ n }}",
+      "door_js_html": "Låge {n}",
+      "tap_html": "Tryk på en låge.",
+      "go_html": "Se kalenderen",
+      "note_html": "Indhold ifølge producenten. Rækkefølgen bag lågerne kan variere.",
+      "surprise_html": "Overraskelse"
+    },
+    "d": {
+      "aria_html": "DUMO – Gladiatorerne",
+      "fig3d_html": "DUMO {{ name }}-flakon i 3D",
+      "fig_html": "DUMO {{ name }}-flakon",
+      "fig_js_html": "DUMO {n}-flakon"
+    },
+    "i": {
+      "dl_a_html": "Bestil senest 30.11. – forventes fremme i tide til Sankt Nikolaus.",
+      "dl_b_html": "Bestil senest 17.12. – forventes fremme i tide til juleaften.",
+      "dl_s_html": "Leveringstid i Tyskland: 1–3 hverdage",
+      "strip_html": "Gratis sæbe fra 59 €, to sæber + duftprøve fra 99 €",
+      "s1_html": "Kun {x} til den gratis sæbe",
+      "s2_html": "Sæben er sikret – kun {x} til den anden sæbe + duftprøve",
+      "s3_html": "To sæber + duftprøve er sikret",
+      "stars_html": "5 ud af 5 stjerner",
+      "verified_html": "Verificeret køb",
+      "rv_e_html": "Kundeanmeldelser",
+      "rv_h_html": "Hvad andre siger om os",
+      "rv_l_html": "{{ rating }} ud af 5 stjerner baseret på {{ n }} anmeldelser på Judge.me."
+    },
+    "l": {
+      "e_html": "Dufternes bibliotek",
+      "l_html": "Hver duft en roman. Træk en bog ud af reolen.",
+      "all_html": "Se hele biblioteket",
+      "chapter_html": "Kapitel · Fragrance Library",
+      "size_html": "Størrelse",
+      "left_html": "Rul reolen til venstre",
+      "right_html": "Rul reolen til højre",
+      "hint_html": "Ét klik trækker bogen ud – dobbeltklik åbner duften."
+    },
+    "ch": {
+      "wishlist_html": "Ønskeliste"
+    },
+    "dm": {
+      "nav_html": "De syv dufte",
+      "n_gate_html": "Porten",
+      "n_arena_html": "Arenaen",
+      "n_ride_html": "Ridtet",
+      "n_shop_html": "Din kriger",
+      "scroll_html": "Scroll ned",
+      "subtitle_html": "Syv navne. Syv krigere.",
+      "arena_text_html": "Syv trådte ind i arenaen. Hver med sin historie.",
+      "ride_text_html": "Syv ryttere. Ét mål.",
+      "shop_title_html": "Vælg din kriger",
+      "all_html": "Læg alle tilgængelige i kurven",
+      "fine_html": "Prisen er summen af enkeltpriserne, uden sætrabat. Kun tilgængelige dufte tilføjes.<br>Alle priser inkl. moms, ekskl. fragt · Leveringstid 1–3 hverdage · Gratis fragt inden for Tyskland.",
+      "cur_by_html": "Kurateret af",
+      "presents_html": "præsenterer",
+      "hero_alt_html": "Gladiator med bronzehjelm",
+      "skip_html": "Gå direkte til udvalget",
+      "to_product_html": "Se produktet",
+      "duo_sub_html": "Martial · Indvielsen af Colosseum · 80 e.Kr.",
+      "duel_html": "Duellen uden taber",
+      "gate_hint_html": "Scroll for at åbne porten",
+      "spartacus_role_html": "Udbryderen",
+      "spartacus_story_html": "I 73 f.Kr. flygter han sammen med omkring 70 andre fra gladiatorskolen i Capua. Gruppen bliver til en hær, der holder Rom i ånde i to år.",
+      "spartacus_top_html": "Appelsin, fersken, tagetes",
+      "spartacus_heart_html": "Kanel, muskatnød, liljekonval",
+      "spartacus_base_html": "Ambra, moskus, patchouli, vanilje",
+      "crixus_role_html": "Galleren",
+      "crixus_story_html": "I 73 f.Kr. skiller han sig fra Spartacus med en stor del af hæren og falder i 72 f.Kr. ved Monte Gargano efter tre gange at have stormet en stejl skråning. Spartacus afholder gravlege til hans ære.",
+      "crixus_top_html": "Bergamot, eukalyptus, citron, ozoniske noter",
+      "crixus_heart_html": "Nellike, rose, viol",
+      "crixus_base_html": "Cedertræ, røgelse, patchouli, vetiver",
+      "commodus_role_html": "Kejseren i arenaen",
+      "commodus_story_html": "En kejser, der selv trådte ind i arenaen. Cassius Dio, et samtidigt vidne, beretter, at han nedlagde hundrede løver på én dag. I 192 e.Kr. blev han kvalt i sit bad, ikke i arenaen.",
+      "commodus_top_html": "Æble, bergamot, citron, mandarin",
+      "commodus_heart_html": "Nellike, heliotrop, hvide blomster",
+      "commodus_base_html": "Cedertræ, guajaktræ, patchouli, sandeltræ",
+      "marcus_role_html": "Æren",
+      "marcus_story_html": "Inspireret af Crassus, romeren, der besejrede Spartacus i 71 f.Kr. Rolig, klar, velplejet: citrus og hvide blomster over varmt træ.",
+      "marcus_top_html": "Bergamot, mynte, citron, fersken",
+      "marcus_heart_html": "Liljekonval, rose, hvide blomster",
+      "marcus_base_html": "Ambra, tørre træsorter, patchouli",
+      "rexor_role_html": "Magten",
+      "rexor_story_html": "Inspireret af eques, gladiatoren til hest med fjerprydet hjelm og rundt skjold. Krydret, pudret, træagtig: blomme og peber over cedertræ.",
+      "rexor_top_html": "Bergamot, eukalyptus, citron, blomme",
+      "rexor_heart_html": "Peber, liljekonval, rose",
+      "rexor_base_html": "Cederblad, cedertræ, labdanum, patchouli",
+      "priscus_role_html": "Sejren",
+      "priscus_story_html": "I 80 e.Kr., ved indvielsen af Colosseum, kæmper han mod Verus. Ifølge Martial ender duellen uden en taber. Frisk, grøn, træagtig: æble og galbanum over cedertræ og vetiver.",
+      "priscus_top_html": "Æble, eukalyptus, galbanum, ozoniske noter",
+      "priscus_base_html": "Cedertræ, tørre træsorter, patchouli, vetiver",
+      "verus_role_html": "Mørket",
+      "verus_story_html": "Priscus’ modstander i duellen uden taber. Martial skriver: »Equal they fought, equal they yielded.« Aromatisk, røget, træagtig: bergamot og eukalyptus over røgelse og vetiver.",
+      "verus_top_html": "Bergamot, eukalyptus, ozoniske noter",
+      "verus_base_html": "Røgelse, patchouli, vetiver"
+    },
+    "lc": {
+      "added_html": "Tilføjet ✓",
+      "err_html": "Det lykkedes ikke. Prøv venligst igen."
+    },
+    "gl": {
+      "t1_html": "Kun {{ amount }}&nbsp;€ til din gave",
+      "s1_html": "Fra 59&nbsp;€ én sæbe, fra 99&nbsp;€ to sæber og en duftprøve – til og med 31.12.2026, så længe lager haves.",
+      "t2_html": "Din gave: en sæbe efter eget valg – fra 99&nbsp;€ to sæber og en duftprøve",
+      "s2_html": "Kun {{ amount }}&nbsp;€ op til 99&nbsp;€. Til og med 31.12.2026, så længe lager haves.",
+      "probe_in_html": "Duftprøven er med",
+      "probe_auto_html": "Duftprøven kommer automatisk med",
+      "t3a_html": "Din gave er med: to sæber og en duftprøve To The Lighthouse (3&nbsp;ml).",
+      "t3b_html": "Dine to gratis sæber er med – duftprøven To The Lighthouse (3&nbsp;ml) kommer automatisk med.",
+      "t3c_html": "vælg en sæbe mere, så er begge sæber gratis.",
+      "t3d_html": "vælg nu dine to gratis sæber.",
+      "s3_html": "Til og med 31.12.2026, så længe lager haves.",
+      "link_html": "Vælg din gave"
+    },
+    "h": {
+      "s1_html": "Kun {{ amount }}&nbsp;€ til din gave.",
+      "s2a_html": "Din gave venter: Læg din sæbe i kurven nu. Kun {{ amount }}&nbsp;€ til to sæber og en duftprøve.",
+      "s2b_html": "Din gratis sæbe ligger i kurven. Kun {{ amount }}&nbsp;€ til to sæber og en duftprøve.",
+      "o2_html": "Du mangler stadig at vælge 2 gratis sæber.",
+      "o1_html": "Du mangler stadig at vælge 1 gratis sæbe.",
+      "done_html": "Dine to gratis sæber ligger i kurven. Duftprøven kommer med.",
+      "auto_html": "Vi har tilføjet {{ name }} – du kan bytte til en anden variant.",
+      "add_html": "Tilføj gratis:",
+      "swap_html": "Byt variant:"
+    },
+    "sb": {
+      "err_html": "Sæben kunne ikke tilføjes lige nu. Prøv venligst igen.",
+      "eyebrow_html": "Din gave",
+      "title_html": "En sæbe fra Saponificio Aquaviva – som gave til din duft",
+      "lead_a_html": "Ved køb for 59&nbsp;€ forærer vi dig en sæbe efter eget valg, fra 99&nbsp;€ to",
+      "lead_b_html": "– og vi lægger automatisk en gratis duftprøve fra Fragrance Library (3&nbsp;ml) i kurven",
+      "lead_c_html": "Vælg din variant direkte her.",
+      "calc_html": "Din kurvs værdi beregnes …",
+      "btn59_html": "Gratis fra 59&nbsp;€",
+      "btn59_js_html": "Gratis fra 59 €",
+      "cond_html": "Sæben er først gratis, når minimumsbeløbet er nået, og beregnes til 0&nbsp;€ ved kassen. Varer, der allerede er nedsat, tæller ikke med i minimumsbeløbet. Så længe lager haves."
+    },
+    "sbj": {
+      "incl_html": "inklusive denne duft",
+      "head_html": "Din kurvs værdi",
+      "a0_html": "Kun {x} til din gratis sæbe.",
+      "a1s_html": "Din gratis sæbe er låst op – vælg din variant. Kun {x} til den anden sæbe og din duftprøve.",
+      "a1_html": "Din gratis sæbe er låst op – vælg din variant. Kun {x} til den anden sæbe.",
+      "a2s_html": "Din gratis sæbe er valgt. Kun {x} til den anden sæbe og din duftprøve.",
+      "a2_html": "Din gratis sæbe er valgt. Kun {x} til den anden sæbe.",
+      "a3s_html": "To gratis sæber og din duftprøve er låst op – vælg dine varianter.",
+      "a3_html": "To gratis sæber er låst op – vælg dine varianter.",
+      "a4_html": "Din anden gratis sæbe er låst op – vælg din variant.",
+      "a5_html": "Begge dine gratis sæber er valgt.",
+      "a6_html": "Ét klik lægger både din duft og din sæbe i kurven.",
+      "picked_html": "Valgt",
+      "from99_html": "Gratis fra 99 €",
+      "complete_html": "Valget er komplet",
+      "one_more_html": "Vælg én mere",
+      "free_html": "Vælg gratis",
+      "with_html": "Vælg sammen med duften",
+      "ok2_html": "Din duft og din gratis sæbe ligger i kurven.",
+      "ok1_html": "Din gratis sæbe ligger i kurven."
+    },
+    "r": {
+      "fit_html": "Passer til din duft",
+      "sub_add_html": "Som supplement til din duft",
+      "sub_gift_html": "færdigpakket og klar til at give væk",
+      "adding_html": "Tilføjer …",
+      "in_cart_html": "I kurven",
+      "err_html": "Sættet kunne ikke tilføjes lige nu. Prøv venligst igen.",
+      "budget_html": "Vælg budget",
+      "together_html": "Samlet",
+      "both_html": "Læg begge i kurven"
+    },
+    "da": {
+      "ok_html": "Når du har sendt, modtager du en e-mail med et bekræftelseslink. Du er først tilmeldt, når du har bekræftet.",
+      "email_html": "E-mailadresse",
+      "btn_html": "Aktivér tilbudsalarm",
+      "c1_html": "Ja, jeg vil gerne modtage BLACK ELIXIR-nyhedsbrevet med tilbud og nyheder pr. e-mail. Jeg kan til enhver tid trække mit samtykke tilbage via afmeldingslinket. Læs mere i",
+      "c2_html": "privatlivspolitikken"
+    },
+    "fl": {
+      "alt_lib_html": "Gammelt bibliotek om natten i stearinlysets skær, en bog åbner sig",
+      "place_desert_html": "Ørkenen",
+      "line_desert_html": "Følg din drøm gennem ørkenen – derhen, hvor det første lys forvandler sandet til guld.",
+      "alt_desert_html": "Karavanetelt i ørkenen ved solopgang",
+      "line_verona_html": "En nat i Verona, roser mod den kolde sten – og et løfte, du aldrig glemmer.",
+      "alt_verona_html": "Stenbalkon med roser i måneskin",
+      "line_manderley_html": "Manderley i tågen: Du ankommer, og huset har ventet dig længe.",
+      "alt_manderley_html": "Herregård på klipperne over havet i tågen",
+      "line_hard_html": "Kulrøg, våde brosten, gaslys – og i et vindue brænder et lys, der venter på dig.",
+      "alt_hard_html": "Victoriansk industriby i skumringen med gaslygter",
+      "chapter_html": "Kapitel",
+      "intro_h_html": "Hver duft er en bog.",
+      "intro_p_html": "Slå den op. Fire historier venter på dig – og til hver hører en duft.",
+      "scroll_html": "Scroll",
+      "alt_3d_html": "{{ name }}-flakon i 3D – træk for at dreje",
+      "flacon_html": "Flakon",
+      "legal_html": "inkl. moms, ekskl. fragt",
+      "ship_html": "Leveringstid 1–3 hverdage · Gratis fragt inden for Tyskland",
+      "atc_aria_html": "Læg {{ name }} i kurven",
+      "to_aria_html": "Se duften {{ name }}",
+      "end_e_html": "Biblioteket",
+      "end_h_html": "Vælg din bog",
+      "end_p_html": "Alle dufte fra Fragrance Library står i reolen. Træk én ud.",
+      "s_heading_html": "Hver bog en duft",
+      "s_sub_html": "Scroll ned, og træk din bog ud af reolen.",
+      "s_h1_html": "Fragrance Library-parfumer – Biblioteket",
+      "s_h1_def_html": "Biblioteket",
+      "s_intro_html": "Hver duft fra Fragrance Library bærer navnet på en af verdenslitteraturens romaner. Du vælger en bog fra reolen, og vi viser dig pris, størrelse og duftpyramide. Med ét klik er du ved duften eller lægger den direkte i kurven – hos BLACK ELIXIR - Maison de Parfum.",
+      "s_hint_html": "Swipe gennem reolen, og tryk på en bog – to gange for at åbne duften.",
+      "t_del_html": "Leveringstid 1–3 hverdage",
+      "t_ship_html": "Gratis fragt inden for Tyskland",
+      "t_return_html": "14 dages fortrydelsesret",
+      "t_pay_html": "Sikker betaling",
+      "prev_html": "Tilbage",
+      "next_html": "Næste"
+    }
+  }
+}

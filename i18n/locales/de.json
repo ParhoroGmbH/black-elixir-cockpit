@@ -1,0 +1,912 @@
+{
+  "general": {
+    "social_media": {
+      "text": {
+        "instagram": "Instagram",
+        "twitter": "Twitter",
+        "tiktok": "TikTok",
+        "snapchat": "Snapchat",
+        "pinterest": "Pinterest",
+        "tumblr": "Tumblr",
+        "facebook": "Facebook",
+        "linkedin": "LinkedIn",
+        "youtube": "YouTube",
+        "vimeo": "Vimeo",
+        "reddit": "Reddit",
+        "trustpilot": "Trustpilot",
+        "tripadvisor": "Tripadvisor",
+        "telegram": "Telegram",
+        "line": "Line"
+      },
+      "short_text": {
+        "instagram": "IG",
+        "twitter": "TW",
+        "tiktok": "TT",
+        "snapchat": "SNAP",
+        "pinterest": "PIN",
+        "tumblr": "TU",
+        "facebook": "FB",
+        "linkedin": "LI",
+        "youtube": "YT",
+        "vimeo": "VM",
+        "reddit": "REDDIT",
+        "trustpilot": "TP",
+        "tripadvisor": "TA",
+        "telegram": "TG",
+        "line": "LN"
+      }
+    },
+    "breadcrumbs": {
+      "home": "Startseite",
+      "collections": "Kollektionen"
+    },
+    "burger_menu": "Burger-Menü öffnen",
+    "news_drawer": "Nachrichtenbereich öffnen",
+    "anchor_link": {
+      "title": "Ankerlink",
+      "text": "Dieser Abschnitt ist außerhalb der Themenanpassung unsichtbar"
+    },
+    "pagination": {
+      "label": "Paginierung",
+      "page": "Seite {{ number }}",
+      "next": "Nächste Seite",
+      "previous": "Vorherige Seite",
+      "load_more": "Mehr laden"
+    },
+    "password_page": {
+      "login_password_button": "Mit Passwort betreten",
+      "login_form_heading": "Shop mit Passwort betreten:",
+      "login_form_password_label": "Passwort",
+      "login_form_submit": "betreten",
+      "admin_link": "Bist du der Shopbesitzer?",
+      "admin_link_html": "Bist du der Shopbesitzer? <a href=\"/admin\" class=\"link underlined-link\">Hier einloggen</a>",
+      "login": "Hier einloggen",
+      "powered_by_shopify_html": " "
+    },
+    "slider": {
+      "of": "von",
+      "next_slide": "Nächstes Dia",
+      "previous_slide": "Vorheriges Dia"
+    },
+    "links": {
+      "link_to_button_label": "Link zu {{ label }}"
+    }
+  },
+  "templates": {
+    "search": {
+      "no_results": "Keine Ergebnisse gefunden für “{{ terms }}”. Die Rechtschreibung überprüfen oder ein anderes Wort oder eine andere Phrase verwenden.",
+      "products": "Produkte",
+      "queries": "Vorschläge",
+      "collections": "Sammlungen",
+      "articles": "Blogbeiträge",
+      "pages": "Seiten",
+      "search_for": "Suche nach {{ terms }}",
+      "go_to_search_page": "Zur Suchseite gehen",
+      "results_with_count": {
+        "one": "{{ count }} Ergebnis",
+        "other": "{{ count }} Ergebnisse"
+      },
+      "results_with_count_and_term": {
+        "one": "{{ count }} Ergebnis für “{{ terms }}”",
+        "other": "{{ count }} Ergebnisse für “{{ terms }}”"
+      },
+      "use_fewer_filters_html": "Verwende weniger Filter oder <a class=\"{{ class }}\" href=\"{{ link }}\"> entferne alle</a>",
+      "search_title": "Suche",
+      "placeholder": "Suche",
+      "clear": "löschen",
+      "menu_title": "Beliebte Suchen"
+    },
+    "contact": {
+      "form": {
+        "name": "Name",
+        "email": "E-Mail",
+        "phone": "Telefon",
+        "comment": "Nachricht",
+        "post_success": "Vielen Dank für deine Nachricht. Wir melden uns so schnell wie möglich bei dir.",
+        "error_heading": "Bitte korrigiere Folgendes:",
+        "checkbox": "Allgemeine Geschäftsbedingungen",
+        "send": "Nachricht senden",
+        "product_url": "Produkt",
+        "send_form": "Senden"
+      }
+    },
+    "404": {
+      "title": "404 Seite nicht gefunden",
+      "subtext": "Die von dir angeforderte Seite existiert nicht",
+      "return_home": "zurück zur Startseite gehen"
+    }
+  },
+  "sections": {
+    "cart": {
+      "title_cart": "Dein Warenkorb",
+      "title_basket": "Dein Korb",
+      "title_bag": "Deine Tasche",
+      "remove_title": "Entfernen {{ title }}",
+      "subtotal": "Zwischensumme",
+      "cart_total": "Warenkorbsumme",
+      "bag_total": "Taschensumme",
+      "basket_total": "Korbsumme",
+      "saved": "Du sparst",
+      "checkout": "Checkout",
+      "cart_error": "Beim Aktualisieren deines Warenkorbs ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "bag_error": "Beim Aktualisieren deiner Tasche ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "basket_error": "Beim Aktualisieren deines Korbes ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "cart_quantity_error_html": "Du kannst nur {{ quantity }} dieses Artikels zu deiner Tasche hinzufügen.",
+      "bag_quantity_error_html": "Du kannst nur {{ quantity }} dieses Artikels zu deinem Korb hinzufügen.",
+      "basket_quantity_error_html": "Du kannst nur {{ quantity }} dieses Artikels zu deinem Warenkorb hinzufügen.",
+      "taxes_and_shipping_policy_at_checkout_html": "Steuern und<a class=\"shipping-policy-link\" href=\"{{ link }}\">Versand</a> beim Checkout berechnet",
+      "taxes_included_but_shipping_at_checkout": "Steuern inklusive und Versand werden beim Checkout berechnet",
+      "taxes_included_and_shipping_policy_html": "Steuern inklusive. <a class=\"shipping-policy-link\" href=\"{{ link }}\">Versand</a> beim Checkout berechnet.",
+      "taxes_and_shipping_at_checkout": "Steuern und Versand werden beim Checkout berechnet",
+      "estimate": "Kostenvoranschlag",
+      "zip": "Postleitzahl",
+      "zip_placeholder": "Gib deine Postleitzahl ein",
+      "shipping_country": "Land",
+      "shipping_state": "Staat",
+      "headings": {
+        "product": "Produkt",
+        "total": "Insgesamt"
+      },
+      "update": "aktualisieren",
+      "quick_add_to_cart": "Schnell zum Warenkorb hinzufügen",
+      "quick_add_to_bag": "Schnell zur Tasche hinzufügen",
+      "quick_add_to_basket": "Schnell zum Korb hinzufügen"
+    },
+    "featured_blog": {
+      "onboarding_content": "Ihren ersten Beitrag erstellen, oder Blog mit Beiträgen auswählen."
+    },
+    "featured_collection": {
+      "collection": "Sammlung"
+    },
+    "featured_collection_tabs": {
+      "tab_placeholder": "Sammlung"
+    },
+    "collection_template": {
+      "empty": "Diese Sammlung enthält kein Produkt.",
+      "link": "Weiter einkaufen",
+      "no_products": "Keine Produkte wurden gefunden.",
+      "use_fewer_filters_html": "Weniger Filter verwenden oder <a class=\"{{ class }}\" href=\"{{ link }}\">alle entfernen</a>"
+    },
+    "video": {
+      "load_video": "Video laden: {{ description }}"
+    },
+    "slideshow": {
+      "pause_slideshow": "Diashow anhalten",
+      "play_slideshow": "Diashow abspielen"
+    },
+    "page": {
+      "heading": "Seitenüberschrift"
+    },
+    "collection_list": {
+      "first_placeholder": "Erste",
+      "second_placeholder": "Zweite",
+      "third_placeholder": "Dritte",
+      "fourth_placeholder": "Vierte",
+      "fifth_placeholder": "Fünfte",
+      "other_placeholders": "Sammlung"
+    },
+    "qiuck_view": {
+      "open_quick_view": "Schnellansicht -Popup öffnen"
+    },
+    "countdown_timer": {
+      "days": "Tag",
+      "hours": "Std",
+      "minutes": "Min",
+      "seconds": "Sek",
+      "days_minimized": "T",
+      "hours_minimized": "S",
+      "minutes_minimized": "M",
+      "seconds_minimized": "S"
+    },
+    "stories_slideshow": {
+      "products_promotion_label": "Produkte aus der Aktion"
+    }
+  },
+  "accessibility": {
+    "skip_to_product_info": "Zur Produktinformation springen",
+    "close": "Schließen",
+    "unit_price_separator": "pro",
+    "link_messages": {
+      "new_window": "Er öffnet sich ein neues Fenster."
+    },
+    "loading": "Laden...",
+    "review": "Bewertung",
+    "reviews": "Bewertungen",
+    "total_reviews": "Bewertungen insgesamt",
+    "star_reviews_info": "{{ rating_value }} aus {{ rating_max }} Sternen",
+    "drag_to_compare": "Ziehe, um den Unterschied zwischen zwei Bildern zu sehen",
+    "pause": "Pause",
+    "play": "Wiedergabe",
+    "mute": "Stumm",
+    "unmute": "Ton einschalten",
+    "discount": "Rabattcode",
+    "discount_applied": "Rabatt {{ code }} angewendet"
+  },
+  "collections": {
+    "page_title": "Sammlungen",
+    "product": "Produkt",
+    "products": "Produkte",
+    "shop_all": "Alle Produkte"
+  },
+  "products": {
+    "product": {
+      "all": "Alle",
+      "by_vendor": "Von ",
+      "vendor_placeholder": "Anbieter",
+      "title_placeholder": "Produkttitel",
+      "description_placeholder": "Sobald Sie ein Produkt hinzufügen, wird die Beschreibung geändert.",
+      "add_to_cart": "Zum Warenkorb hinzufügen",
+      "add_to_bag": "Zur Tasche hinzufügen",
+      "add_to_basket": "Zum Korb hinzufügen",
+      "pre_order": "Vorbestellung",
+      "color_swatch_tag": "Farbe",
+      "on_sale": "SALE",
+      "product_variants": "Produktvarianten",
+      "collection_by_brand": "Sammlung nach Marke",
+      "brand": "Shop nach Marke",
+      "related_collection": "die Sammlung kaufen",
+      "media": {
+        "gallery_viewer": "Galerie-Betrachter",
+        "load_image": "Bild laden {{ index }}in die Galerieansicht",
+        "load_model": "3D-Modell laden {{ index }} in die Galerieansicht",
+        "load_video": "Video abspielen {{ index }} in die Galerieansicht",
+        "image_available": "Bild {{ index }} ist jetzt in der Galerieansicht verfügbar",
+        "open_media": "Medien öffnen {{ index }} im Modal",
+        "zoom_in": "Vergrößern",
+        "play_media": "Medien abspielen"
+      },
+      "nested_label": "{{ title }} für {{ parent_title }}",
+      "quantity": {
+        "label": "Menge",
+        "input_label": "Menge von {{ product }}",
+        "increase": "Menge von {{ product }} erhöhe",
+        "decrease": "Menge von {{ product }} verringern"
+      },
+      "pickup_availability": {
+        "view_store_info": "Shopinformationen anzeigen",
+        "check_other_stores": "Verfügbarkeit in anderen Shops prüfen",
+        "pick_up_available": "Abholung ist möglich",
+        "pick_up_available_at_html": "Abholung möglich im <span class=\"color-foreground\">{{ location_name }}</span>",
+        "pick_up_unavailable_at_html": "Abholung derzeit ist nicht möglich in <span class=\"color-foreground\">{{ location_name }}</span>",
+        "unavailable": "Abholungsverfügbarkeit konnte nicht geladen werden",
+        "refresh": "aktualisieren",
+        "available_to_pickup_at": "Abholbereit bei {{ store_name }}",
+        "out_of_stock_at": "Nicht vorrätig bei {{ store_name }}"
+      },
+      "price": {
+        "from_price_html": "Von {{ price }}",
+        "regular_price": "Regulärer Preis",
+        "sale_price": "Verkaufspreis",
+        "unit_price": "Einzelpreis"
+      },
+      "inventory": {
+        "inventory_label": "Verfügbarkeit",
+        "in_stock_label": "Auf Lager",
+        "stock_label_html": "nur {{ count }} noch auf Lager",
+        "out_of_stock": "Ausverkauft",
+        "will_not_ship_until": "Bereit zum Versand {{ date }}",
+        "will_be_in_stock_after": "Wieder auf Lager {{ date }}",
+        "waiting_for_stock": "Inventar ist auf dem Weg"
+      },
+      "share_button": "Teilen",
+      "share_on_facebook": "Teilen",
+      "share_on_twitter": "twittern",
+      "share_on_pinterest": "pinnen",
+      "share_on_line": "Teilen",
+      "copy_link": "Link kopieren",
+      "copy_code": "Kopieren",
+      "copied_message": "Kopiert!",
+      "sold_out": "Ausverkauft",
+      "unavailable": "Nicht verfügbar",
+      "value_unavailable": "{{ option_value }} — Nicht verfügbar",
+      "video_exit_message": "{{ title }} öffnet das Video im Vollbildmodus im selben Fenster.",
+      "xr_button": "In deinem Raum anzeigen",
+      "xr_button_label": "In deinem Raum anzeigen, lädt Artikel in Augmented-Reality-Fenster",
+      "include_taxes": "Steuern inklusive.",
+      "shipping_policy_html": "<a class=\"shipping-policy-link\" href=\"{{ link }}\">Versand</a> beim Checkout berechnet.",
+      "change_button": "Ändern",
+      "error_message_required": "Dieses Feld ist erforderlich.",
+      "custom_error": "Bitte fülle alle erforderlichen Felder aus.",
+      "error_select_options": "Bitte wähle mindestens {{ options }} Optionen.",
+      "error_select_option": "Bitte wähle mindestens {{ option }} Option.",
+      "drop_zone_text": "Ziehen & Ablegen oder Durchsuchen",
+      "drop_zone_size": "Maximale Dateigröße 5 MB",
+      "file_size_error": "Dateigröße ist zu groß (max. 5 MB)."
+    },
+    "modal": {
+      "label": "Medien-Galerie"
+    },
+    "facets": {
+      "clear_all": "Alles löschen",
+      "from": "von",
+      "filter_button": "Filtern und sortieren",
+      "product_count": {
+        "one": "{{ product_count }} von {{ count }} Produkt",
+        "other": "{{ product_count }} von {{ count }} Produkte"
+      },
+      "product_count_simple": {
+        "one": "{{ count }} Produkt",
+        "other": "{{ count }} Produkte"
+      },
+      "found_count": {
+        "one": "{{ product_count }} von {{ count }} gefunden",
+        "other": "{{ product_count }} von {{ count }} gefunden"
+      },
+      "found_count_simple": {
+        "one": "{{ count }} gefunden",
+        "other": "{{ count }} gefunden"
+      },
+      "sort_by_label": "Sort by:",
+      "to": "zu",
+      "filters_selected": {
+        "one": "{{ count }} ausgewählt",
+        "other": "{{ count }} ausgewählt"
+      },
+      "reset": "Zurücksetzen",
+      "max_price": "Der höchste Preis beträgt {{ price }}",
+      "show_more": "Zeig mehr",
+      "show_less": "Zeig weniger"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Konto",
+      "details": "Konto-Details",
+      "return": "Zurück zu den Konto-Details",
+      "go_to_account": "Zur Kontoseite gehen",
+      "create_account": "Anmelden / Konto erstellen"
+    },
+    "activate_account": {
+      "title": "Konto aktivieren",
+      "subtext": "Erstelle dein Passwort, um dein Konto zu aktivieren.",
+      "password": "Passwort",
+      "password_confirm": "Passwort bestätigen",
+      "submit": "Konto aktivieren",
+      "cancel": "Einladung ablehnen"
+    },
+    "addresses": {
+      "title": "Adressen",
+      "view": "Adressen anzeigen",
+      "default": "Standard",
+      "add_new": "Eine neue Adresse hinzufügen",
+      "edit_address": "Adresse bearbeiten",
+      "first_name": "Vorname",
+      "last_name": "Nachname",
+      "company": "Unternehmen",
+      "address1": "Adresse 1",
+      "address2": "Adresse 2",
+      "city": "Stadt",
+      "country": "Land/Gebiet",
+      "province": "Bezirk",
+      "zip": "Post-/Postleitzahl",
+      "phone": "Telefon",
+      "set_default": "Als Standardadresse festlegen",
+      "add": "Adresse hinzufügen",
+      "update": "Adresse aktualisieren",
+      "cancel": "Stornieren",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "delete_confirm": "Bist du sicher, dass du diese Adresse löschen möchtest?"
+    },
+    "log_out": "Abmelden",
+    "login_page": {
+      "cancel": "Stornieren",
+      "create_account": "Konto erstellen",
+      "email": "E-Mail",
+      "forgot_password": "Hast du dein Passwort vergessen?",
+      "guest_continue": "Weiter",
+      "guest_title": "Als Gast weiterfahren",
+      "password": "Passwort",
+      "title": "Login",
+      "sign_in": "Login",
+      "submit": "Einreichen",
+      "have_account": "Du hast noch kein Konto?"
+    },
+    "order": {
+      "title": "Bestellung {{ name }}",
+      "date_html": "auf den {{ date }} aufgegeben",
+      "billing_address": "Rechnungsadresse",
+      "payment_status": "Zahlungsstatus",
+      "shipping_address": "Versandadresse",
+      "fulfillment_status": "Erfüllungsstatus",
+      "discount": "Rabatt",
+      "shipping": "Versand",
+      "tax": "Steuern",
+      "product": "Produkt",
+      "sku": "LME",
+      "price": "Preis",
+      "quantity": "Menge",
+      "total": "Insgesamt",
+      "fulfilled_at_html": "Erfüllt {{ date }}",
+      "track_shipment": "Sendung verfolgen",
+      "subtotal": "Zwischensumme",
+      "total_duties": "Zölle"
+    },
+    "orders": {
+      "title": "Bestellhistorie",
+      "order_number": "Bestellung",
+      "order_number_link": "Nummer der Bestellung {{ number }}",
+      "date": "Datum",
+      "payment_status": "Zahlungsstatus",
+      "fulfillment_status": "Erfüllungsstatus",
+      "total": "Insgesamt",
+      "none": "Du hast noch keine Bestellung aufgegeben."
+    },
+    "recover_password": {
+      "title": "Dein Passwort zurücksetzen",
+      "subtext": "Wir schicken dir eine E-Mail, um dein Passwort zurückzusetzen",
+      "success": "Wir haben dir eine E-Mail mit einem Link zur Aktualisierung deines Passworts geschickt."
+    },
+    "register": {
+      "title": "Konto erstellen",
+      "first_name": "Vorname",
+      "last_name": "Nachname",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "submit": "erstellen",
+      "have_account": "Hast du bereits ein Konto?",
+      "login": "Einloggen"
+    },
+    "reset_password": {
+      "title": "Dein Passwort zurücksetzen",
+      "subtext": "Gib ein neues Passwort für  {{ email }} ein",
+      "password_confirm": "Passwort bestätigen",
+      "submit": "Einreichen",
+      "cancel": "Stornieren",
+      "password": "Passwort"
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Hier ist {{ value }} deine Geschenkkarte für {{ shop }}!",
+      "subtext": "Deine Geschenkkarte",
+      "shop_link": "Einkaufen beginnen",
+      "remaining_html": "Verbleibend {{ balance }}",
+      "price_value": "Wert der Geschenkkarte:",
+      "text_1": "Verwende diesen Code beim Checkout",
+      "text_2": "um deine Geschenkkarte einzulösen",
+      "qr_image_alt": "QR-Code - scannen, um die Geschenkkarte einzulösen",
+      "expired": "Abgelaufen",
+      "print_gift_card": "Diese Geschenkkarte ausdrucken",
+      "add_to_apple_wallet": "Zu Apple Wallet hinzufügen"
+    }
+  },
+  "recipient": {
+    "form": {
+      "checkbox": "Ich möchte dies als eine Geschenkkarte versenden",
+      "email_label": "E-Mail des Empfängers*",
+      "email_label_optional": "E-Mail des Empfängers (optional)",
+      "email": "E-Mail",
+      "name_label": "Name des Empfängers",
+      "name": "Name",
+      "message_label": "Nachricht",
+      "message": "Nachricht",
+      "max_characters": "{{ max_chars }} Zeichen max"
+    }
+  },
+  "newsletter": {
+    "success": "Danke für die Anmeldung",
+    "button_label": "Anmelden"
+  },
+  "cart": {
+    "title_basket": "Warenkorb",
+    "title_cart": "Warenkorb",
+    "title_bag": "Tasche",
+    "continue_shopping": "Weiter einkaufen",
+    "empty_cart": "Dein Warenkorb ist leer",
+    "empty_bag": "Deine Tasche ist leer",
+    "empty_basket": "Dein Korb ist leer",
+    "login": "Einloggen",
+    "item_added_cart": "Artikel wurde deinem Warenkorb hinzugefügt",
+    "item_added_bag": "Artikel wurde deiner Tasche hinzugefügt",
+    "item_added_basket": "Artikel wurde deinem Korb hinzugefügt",
+    "free_shipping_minimum": "Default"
+  },
+  "cart_drawer": {
+    "product": "Produkt",
+    "products": "Produkte",
+    "view_cart": "Warenkorb ansehen",
+    "view_bag": "Tasche ansehen",
+    "view_basket": "Korb ansehen",
+    "quantity": "Menge"
+  },
+  "blogs": {
+    "article": {
+      "all_tags": "Alle",
+      "comments": {
+        "one": "{{ count }} Kommentar",
+        "other": "{{ count }} Kommentare"
+      },
+      "moderated": "Bitte beachte, dass Kommentare vor ihrer Veröffentlichung genehmigt werden müssen.",
+      "comment_form_title": "Einen Kommentar hinterlassen",
+      "name": "Name",
+      "email": "E-Mail",
+      "message": "Kommentar",
+      "post": "Kommentar schreiben",
+      "tags": "Tags",
+      "back_to_blog": "zum Journal gehen",
+      "previous_post": "Vorheriger Beitrag",
+      "next_post": "Nächster Beitrag",
+      "success": "Dein Kommentar wurde erfolgreich veröffentlicht! Dankeschön!",
+      "success_moderated": "Dein Kommentar wurde erfolgreich abgeschickt. Wir werden ihn in Kürze veröffentlichen, da unser Blog moderiert wird."
+    }
+  },
+  "free_shipping_bar": {
+    "complete_text": "Herzlichen Glückwunsch! Du hast kostenlosen Versand.",
+    "progress_text": "Gib noch {{ rest_amount }} mehr aus, um kostenlosen Versand zu erhalten."
+  },
+  "discount_code": {
+    "enter_discount_code": "Rabattcode eingeben",
+    "discount_code_error": "Rabattcode '{{ code }}' kann nicht auf deinen Warenkorb angewendet werden",
+    "existing_discount_code_error": "Rabattcode '{{ code }}' wurde bereits auf deinen Warenkorb angewendet",
+    "shipping_discount_code_warning": "Versandrabatte werden an der Kasse nach Eingabe einer Adresse angezeigt",
+    "apply": "Anwenden",
+    "remove_discount": "Rabatt {{ code }} entfernen"
+  },
+  "store_selector": {
+    "change_my_store": "Meinen Store ändern",
+    "select_your_store": "Wähle deinen Store aus"
+  },
+  "shopify": {
+    "links": {
+      "powered_by_shopify": "Powered by BLACK ELIXIR"
+    },
+    "checkout": {
+      "general": {
+        "page_title": "Zur Kasse"
+      }
+    }
+  },
+  "claude": {
+    "c": {
+      "atc_html": "In den Warenkorb",
+      "sold_out_html": "Ausverkauft",
+      "to_scent_html": "Zum Duft",
+      "from_html": "ab",
+      "uvp_html": "UVP",
+      "choose_size_html": "Größe wählen",
+      "discover_html": "Entdecken",
+      "choose_soap_html": "Seife wählen",
+      "only_until_html": "Nur bis 31.12.2026 · nur im Onlineshop",
+      "err_html": "Das hat leider nicht geklappt. Bitte versuche es noch einmal."
+    },
+    "n": {
+      "top_html": "Kopfnote",
+      "heart_html": "Herznote",
+      "base_html": "Basisnote",
+      "top_s_html": "Kopf",
+      "heart_s_html": "Herz",
+      "base_s_html": "Basis",
+      "pyramid_html": "Duftpyramide",
+      "notes_html": "Duftnoten",
+      "unit_price_html": "Grundpreis"
+    },
+    "hero": {
+      "e1_html": "Adventskalender 2026",
+      "t1_html": "Die Adventszeit beginnt mit einem Türchen",
+      "x1_html": "Adventskalender von BABOR, ARTDECO, Molton Brown und Wir für Sie – Tür für Tür Pflege und Duft.",
+      "b1_html": "Adventskalender entdecken",
+      "t2_html": "Italienische Seife geschenkt",
+      "x2_html": "Ab 59 € eine italienische Seife deiner Wahl, ab 99 € zwei Seifen und eine Duftprobe – ganz ohne Code.",
+      "b2b_html": "So geht’s",
+      "t3_html": "Jeder Duft ist eine Geschichte",
+      "x3_html": "Sieben Extraits, ein Flakon – jeder trägt die Farben seiner Geschichte. Wähle einen Titel und dreh ihn in Ruhe.",
+      "b3_html": "Zur Bibliothek",
+      "t4_html": "Sieben Krieger, sieben Düfte",
+      "x4_html": "Jeder Flakon eine Büste aus Metall-Optik – gold, silber, bronze oder schwarz. Wähle deinen Kämpfer.",
+      "b4_html": "Die Arena betreten",
+      "chip_html": "Seife geschenkt ab 59 € · ohne Code",
+      "alt_dumo_html": "DUMO Flakon in 3D",
+      "alt_3d_html": "{{ name }} in 3D",
+      "aria_warrior_html": "Krieger wählen",
+      "aria_pick_html": "Auswahl",
+      "tag59_html": "Ab 59 € geschenkt",
+      "prev_html": "Vorheriges Motiv",
+      "next_html": "Nächstes Motiv",
+      "dot_html": "Motiv {{ n }}",
+      "day1_html": "Tag bis zum ersten Türchen",
+      "dayn_html": "Tage bis zum ersten Türchen",
+      "today_html": "Heute öffnet Türchen {n}"
+    },
+    "a": {
+      "trust1_html": "Bewertet bei Trusted Shops &amp; Judge.me",
+      "trust2_html": "Gratis-Seife ab 59 €",
+      "trust3_html": "Kostenloser Versand in Deutschland",
+      "trust4_html": "Mitglied beim Händlerbund",
+      "trust5_html": "idealo Partner seit 2023",
+      "stories_html": "Bestseller,Geschenksets,Zuhause,Advent",
+      "brands_html": "Marken",
+      "reco_e_html": "Kuratiert von Black Elixir",
+      "reco_h_html": "Erlesene Empfehlungen",
+      "tabs_html": "Bestseller,Neuheiten,Damen,Herren,Nischendüfte,Sale",
+      "tag_sale_html": "SALE",
+      "tag_new_html": "NEU",
+      "tag_best_html": "BESTSELLER",
+      "all_best_html": "Alle Bestseller"
+    },
+    "b": {
+      "niche_h_html": "Die Häuser der Kenner",
+      "niche_l_html": "Nischenparfums, die man nicht überall findet.",
+      "niche_all_html": "Alle Nischendüfte",
+      "n_scents_html": "{{ n }} Düfte",
+      "who_e_html": "Luxus- und Nischenparfums bei Black Elixir",
+      "who_h_html": "Für wen suchst du?",
+      "g_names_html": "Damendüfte,Herrendüfte,Unisexdüfte,Nischendüfte",
+      "g_subs_html": "Für sie,Für ihn,Für alle,Für Kenner",
+      "finder_e_html": "Duft-Finder in 10 Sekunden",
+      "finder_h_html": "Welche Stimmung trägst du heute?",
+      "finder_l_html": "Wähle ein Gefühl – wir zeigen dir die passende Welt.",
+      "mood_alts_html": "Oud-Holz, Leder und Rauch|Ambra, Vanille und Tonka im Kerzenlicht|Bergamotte, Zitrone und Meer|Iris, Rose und Puder",
+      "mood1_html": "Dunkel & mächtig|Oud, Leder, Rauch|DUMO – die Gladiatoren|",
+      "mood2_html": "Warm & verführerisch|Ambra, Vanille, Tonka|Nischendüfte|",
+      "mood3_html": "Frisch & klar|Bergamotte, Zitrus, Meer|Herrendüfte|",
+      "mood4_html": "Pudrig & poetisch|Iris, Rose, Moschus|Fragrance Library|",
+      "mood1_t_html": "DUMO – die Gladiatoren",
+      "your_world_html": "DEINE WELT",
+      "view_scents_html": "Düfte ansehen",
+      "three_html": "Drei Düfte aus dieser Welt"
+    },
+    "v": {
+      "video_html": "Video",
+      "sound_on_html": "Ton an",
+      "sound_off_html": "Ton aus",
+      "e_html": "Video-Lounge",
+      "h_html": "Düfte in Bewegung",
+      "l_html": "Die Videos laufen lautlos – tippe auf den Lautsprecher für Ton.",
+      "prev_html": "Vorherige Videos",
+      "next_html": "Weitere Videos"
+    },
+    "g": {
+      "e_html": "Geschenke finden",
+      "h_html": "Das richtige Geschenk – für jedes Budget",
+      "k_gifts_html": "GESCHENKE",
+      "k_browse_html": "STÖBERN",
+      "t1_html": "Geschenke unter 50 €",
+      "d1_html": "Kleine Gesten mit großer Wirkung",
+      "tag1_html": "unter 50 €",
+      "t2_html": "Geschenke bis 100 €",
+      "d2_html": "Für die Menschen, die zählen",
+      "tag2_html": "bis 100 €",
+      "t3_html": "Geschenk-Finder",
+      "d3_html": "Dein Weg zum Geschenk",
+      "t4_html": "Pflegesets",
+      "d4_html": "Fertig verpackt zum Verschenken",
+      "s_h_html": "Ein Geschenk statt Rabatt.",
+      "s_l_html": "Ab 59 € eine italienische Seife von Saponificio Aquaviva nach Wahl, ab 99 € zwei Seifen – die Duftprobe legen wir automatisch dazu. Ganz ohne Code.",
+      "basket_html": "DEIN WARENKORB",
+      "video_aria_html": "Geöffnete Geschenkbox mit italienischen Seifen, langsam drehend",
+      "m_done_html": "Geschafft: zwei Seifen + Gratis-Duftprobe sind dabei.",
+      "m_one_html": "Eine Seife geschenkt – noch {n} € bis zur zweiten Seife + Probe.",
+      "m_none_html": "Noch {n} € bis zu deiner Gratis-Seife."
+    },
+    "j": {
+      "e_html": "Aus unserem Duft-Journal",
+      "h_html": "Wissen rund um Duft",
+      "btn_html": "Zum Journal"
+    },
+    "ad": {
+      "e_html": "Winter &amp; Advent",
+      "h_html": "Kleine Rituale bis zum Fest",
+      "l_html": "Wähle einen Kalender und schau hinter die Türchen.",
+      "all_html": "Alle Adventskalender",
+      "s1_html": "Kalender wählen",
+      "s2_html": "Türchen antippen",
+      "s3_html": "Zweimal tippen öffnet den Kalender",
+      "aria_html": "Adventskalender",
+      "doors24_html": "24 Türchen",
+      "door_aria_html": "Türchen {{ n }} öffnen",
+      "door_html": "TÜRCHEN {{ n }}",
+      "door_js_html": "Türchen {n}",
+      "tap_html": "Tippe auf ein Türchen.",
+      "go_html": "Zum Kalender",
+      "note_html": "Inhalt laut Hersteller. Die Reihenfolge hinter den Türchen kann abweichen.",
+      "surprise_html": "Überraschung"
+    },
+    "d": {
+      "aria_html": "DUMO – Die Gladiatoren",
+      "fig3d_html": "DUMO {{ name }} Flakon in 3D",
+      "fig_html": "DUMO {{ name }} Flakon",
+      "fig_js_html": "DUMO {n} Flakon"
+    },
+    "i": {
+      "dl_a_html": "Bis 30.11. bestellt – voraussichtlich rechtzeitig zum Nikolaus bei dir.",
+      "dl_b_html": "Bis 17.12. bestellt – voraussichtlich rechtzeitig zu Heiligabend bei dir.",
+      "dl_s_html": "Lieferzeit in Deutschland 1–3 Werktage",
+      "strip_html": "Ab 59 € eine Gratis-Seife, ab 99 € zwei Seifen + Duftprobe",
+      "s1_html": "Noch {x} bis zur Gratis-Seife",
+      "s2_html": "Seife gesichert – noch {x} bis zur zweiten Seife + Duftprobe",
+      "s3_html": "Zwei Seifen + Duftprobe gesichert",
+      "stars_html": "5 von 5 Sternen",
+      "verified_html": "Verifizierter Kauf",
+      "rv_e_html": "Kundenstimmen",
+      "rv_h_html": "Was andere über uns sagen",
+      "rv_l_html": "{{ rating }} von 5 Sternen aus {{ n }} Bewertungen bei Judge.me."
+    },
+    "l": {
+      "e_html": "Die Bibliothek der Düfte",
+      "l_html": "Jeder Duft ein Roman. Ziehe ein Buch aus dem Regal.",
+      "all_html": "Zur ganzen Bibliothek",
+      "chapter_html": "Kapitel · Fragrance Library",
+      "size_html": "Größe",
+      "left_html": "Regal nach links",
+      "right_html": "Regal nach rechts",
+      "hint_html": "Ein Klick zieht das Buch heraus – doppelt klicken öffnet den Duft."
+    },
+    "ch": {
+      "wishlist_html": "Wunschliste"
+    },
+    "dm": {
+      "nav_html": "Die sieben Düfte",
+      "n_gate_html": "Das Tor",
+      "n_arena_html": "Die Arena",
+      "n_ride_html": "Der Ritt",
+      "n_shop_html": "Dein Kämpfer",
+      "scroll_html": "Scrolle nach unten",
+      "subtitle_html": "Sieben Namen. Sieben Kämpfer.",
+      "arena_text_html": "Sieben kamen in die Arena. Jeder mit seiner Geschichte.",
+      "ride_text_html": "Sieben Reiter. Ein Ziel.",
+      "shop_title_html": "Wähle deinen Kämpfer",
+      "all_html": "Alle verfügbaren in den Warenkorb",
+      "fine_html": "Der Preis ist die Summe der Einzelpreise, ohne Bündelrabatt. Nur verfügbare Düfte werden hinzugefügt.<br>Alle Preise inkl. MwSt., zzgl. Versand · Lieferzeit 1–3 Werktage · Kostenloser Versand innerhalb Deutschlands.",
+      "cur_by_html": "Kuratiert von",
+      "presents_html": "präsentiert",
+      "hero_alt_html": "Gladiator mit Bronzehelm",
+      "skip_html": "Direkt zur Auswahl",
+      "to_product_html": "Zum Produkt",
+      "duo_sub_html": "Martial · Eröffnung des Kolosseums · 80 n. Chr.",
+      "duel_html": "Das Duell ohne Verlierer",
+      "gate_hint_html": "Scrollen öffnet das Tor",
+      "spartacus_role_html": "Der Ausbrecher",
+      "spartacus_story_html": "73 v. Chr. flieht er mit etwa 70 anderen aus der Gladiatorenschule in Capua. Aus der Gruppe wird ein Heer, das Rom zwei Jahre lang in Atem hält.",
+      "spartacus_top_html": "Orange, Pfirsich, Tagetes",
+      "spartacus_heart_html": "Zimt, Muskatnuss, Maiglöckchen",
+      "spartacus_base_html": "Amber, Moschus, Patchouli, Vanille",
+      "crixus_role_html": "Der Gallier",
+      "crixus_story_html": "Er trennt sich 73 v. Chr. mit einem großen Teil des Heeres von Spartacus und fällt 72 v. Chr. am Monte Gargano, nachdem er dreimal einen steilen Hang gestürmt hat. Spartacus richtet ihm Leichenspiele aus.",
+      "crixus_top_html": "Bergamotte, Eukalyptus, Zitrone, ozonische Noten",
+      "crixus_heart_html": "Nelke, Rose, Veilchen",
+      "crixus_base_html": "Zedernholz, Weihrauch, Patchouli, Vetiver",
+      "commodus_role_html": "Der Kaiser in der Arena",
+      "commodus_story_html": "Ein Kaiser, der selbst in die Arena stieg. Cassius Dio, ein Zeitzeuge, berichtet, er habe an einem Tag hundert Löwen erlegt. 192 n. Chr. wurde er im Bad erwürgt, nicht in der Arena.",
+      "commodus_top_html": "Apfel, Bergamotte, Zitrone, Mandarine",
+      "commodus_heart_html": "Nelke, Heliotrope, weiße Blüten",
+      "commodus_base_html": "Zedernholz, Guajakholz, Patchouli, Sandelholz",
+      "marcus_role_html": "Die Ehre",
+      "marcus_story_html": "Inspiriert von Crassus, dem Römer, der Spartacus 71 v. Chr. besiegte. Ruhig, klar, gepflegt: Zitrus und weiße Blüten über warmem Holz.",
+      "marcus_top_html": "Bergamotte, Minze, Zitrone, Pfirsich",
+      "marcus_heart_html": "Maiglöckchen, Rose, weiße Blüten",
+      "marcus_base_html": "Amber, getrocknete Hölzer, Patchouli",
+      "rexor_role_html": "Die Macht",
+      "rexor_story_html": "Inspiriert vom Eques, dem Gladiator zu Pferd mit Federhelm und rundem Schild. Würzig, pudrig, holzig: Pflaume und Pfeffer über Zedernholz.",
+      "rexor_top_html": "Bergamotte, Eukalyptus, Zitrone, Pflaume",
+      "rexor_heart_html": "Pfeffer, Maiglöckchen, Rose",
+      "rexor_base_html": "Zedernblatt, Zedernholz, Labdanum, Patchouli",
+      "priscus_role_html": "Der Sieg",
+      "priscus_story_html": "80 n. Chr., zur Eröffnung des Kolosseums, kämpft er gegen Verus. Das Duell endet laut Martial ohne Verlierer. Frisch, grün, holzig: Apfel und Galbanum über Zedernholz und Vetiver.",
+      "priscus_top_html": "Apfel, Eukalyptus, Galbanum, ozonische Noten",
+      "priscus_base_html": "Zedernholz, getrocknete Hölzer, Patchouli, Vetiver",
+      "verus_role_html": "Die Dunkelheit",
+      "verus_story_html": "Der Gegner von Priscus im Duell ohne Verlierer. Martial schreibt: „Equal they fought, equal they yielded.“ Aromatisch, rauchig, holzig: Bergamotte und Eukalyptus über Weihrauch und Vetiver.",
+      "verus_top_html": "Bergamotte, Eukalyptus, ozonische Noten",
+      "verus_base_html": "Weihrauch, Patchouli, Vetiver"
+    },
+    "lc": {
+      "added_html": "Hinzugefügt ✓",
+      "err_html": "Das hat nicht geklappt. Bitte versuche es erneut."
+    },
+    "gl": {
+      "t1_html": "Noch {{ amount }}&nbsp;€ bis zu deinem Geschenk",
+      "s1_html": "Ab 59&nbsp;€ eine Seife, ab 99&nbsp;€ zwei Seifen und eine Duftprobe, bis 31.12.2026, solange der Vorrat reicht.",
+      "t2_html": "Dein Geschenk: eine Seife deiner Wahl – ab 99&nbsp;€ zwei Seifen und eine Duftprobe",
+      "s2_html": "Noch {{ amount }}&nbsp;€ bis 99&nbsp;€. Bis 31.12.2026, solange der Vorrat reicht.",
+      "probe_in_html": "Die Duftprobe ist dabei",
+      "probe_auto_html": "Die Duftprobe kommt automatisch dazu",
+      "t3a_html": "Dein Geschenk ist dabei: zwei Seifen und eine Duftprobe To The Lighthouse (3&nbsp;ml).",
+      "t3b_html": "Deine zwei Gratis-Seifen sind dabei – die Duftprobe To The Lighthouse (3&nbsp;ml) kommt automatisch dazu.",
+      "t3c_html": "bitte wähle noch eine zweite Seife aus, dann sind beide Seifen gratis.",
+      "t3d_html": "bitte wähle jetzt deine zwei Gratis-Seifen aus.",
+      "s3_html": "Bis 31.12.2026, solange der Vorrat reicht.",
+      "link_html": "Geschenk auswählen"
+    },
+    "h": {
+      "s1_html": "Noch {{ amount }}&nbsp;€ bis zu deinem Geschenk.",
+      "s2a_html": "Dein Geschenk wartet: Lege dir jetzt deine Seife in den Warenkorb. Noch {{ amount }}&nbsp;€ bis zu zwei Seifen und einer Duftprobe.",
+      "s2b_html": "Deine Gratis-Seife ist im Warenkorb. Noch {{ amount }}&nbsp;€ bis zu zwei Seifen und einer Duftprobe.",
+      "o2_html": "Du hast noch 2 Gratis-Seifen offen.",
+      "o1_html": "Du hast noch 1 Gratis-Seife offen.",
+      "done_html": "Deine zwei Gratis-Seifen sind im Warenkorb. Die Duftprobe kommt dazu.",
+      "auto_html": "Wir haben {{ name }} ergänzt, du kannst die Sorte tauschen.",
+      "add_html": "Gratis hinzufügen:",
+      "swap_html": "Sorte tauschen:"
+    },
+    "sb": {
+      "err_html": "Die Seife konnte gerade nicht hinzugefügt werden. Bitte versuche es erneut.",
+      "eyebrow_html": "Dein Geschenk",
+      "title_html": "Eine Saponificio Aquaviva Seife – als Geschenk zu deinem Duft",
+      "lead_a_html": "Ab 59&nbsp;€ Warenwert schenken wir dir eine Seife deiner Wahl, ab 99&nbsp;€ zwei",
+      "lead_b_html": "– dazu legen wir automatisch eine Gratis-Duftprobe Fragrance Library (3&nbsp;ml) in den Warenkorb",
+      "lead_c_html": "Wähle deine Sorte direkt hier.",
+      "calc_html": "Dein Warenwert wird berechnet …",
+      "btn59_html": "Ab 59&nbsp;€ gratis",
+      "btn59_js_html": "Ab 59 € gratis",
+      "cond_html": "Die Seife ist erst ab Erreichen des Mindestwarenwerts gratis und wird an der Kasse mit 0&nbsp;€ berechnet. Bereits rabattierte Artikel zählen nicht zum Mindestwarenwert. Solange der Vorrat reicht."
+    },
+    "sbj": {
+      "incl_html": "inklusive dieses Dufts",
+      "head_html": "Dein Warenwert",
+      "a0_html": "Noch {x} bis zu deiner Gratis-Seife.",
+      "a1s_html": "Deine Gratis-Seife ist freigeschaltet – wähle deine Sorte. Noch {x} bis zur zweiten Seife und deiner Duftprobe.",
+      "a1_html": "Deine Gratis-Seife ist freigeschaltet – wähle deine Sorte. Noch {x} bis zur zweiten Seife.",
+      "a2s_html": "Deine Gratis-Seife ist gewählt. Noch {x} bis zur zweiten Seife und deiner Duftprobe.",
+      "a2_html": "Deine Gratis-Seife ist gewählt. Noch {x} bis zur zweiten Seife.",
+      "a3s_html": "Zwei Gratis-Seifen und deine Duftprobe sind freigeschaltet – wähle deine Sorten.",
+      "a3_html": "Zwei Gratis-Seifen sind freigeschaltet – wähle deine Sorten.",
+      "a4_html": "Deine zweite Gratis-Seife ist freigeschaltet – wähle deine Sorte.",
+      "a5_html": "Deine beiden Gratis-Seifen sind gewählt.",
+      "a6_html": "Ein Klick legt deinen Duft und deine Seife gemeinsam in den Warenkorb.",
+      "picked_html": "Gewählt",
+      "from99_html": "Gratis ab 99 €",
+      "complete_html": "Auswahl vollständig",
+      "one_more_html": "Noch eine wählen",
+      "free_html": "Gratis wählen",
+      "with_html": "Mit Duft wählen",
+      "ok2_html": "Dein Duft und deine Gratis-Seife liegen im Warenkorb.",
+      "ok1_html": "Deine Gratis-Seife liegt im Warenkorb."
+    },
+    "r": {
+      "fit_html": "Passend zu deinem Duft",
+      "sub_add_html": "Als Ergänzung zu deinem Duft",
+      "sub_gift_html": "fertig verpackt zum Verschenken",
+      "adding_html": "Wird hinzugefügt …",
+      "in_cart_html": "Im Warenkorb",
+      "err_html": "Das Set konnte gerade nicht hinzugefügt werden. Bitte versuche es erneut.",
+      "budget_html": "Budget wählen",
+      "together_html": "Zusammen",
+      "both_html": "Beide in den Warenkorb"
+    },
+    "da": {
+      "ok_html": "Nach dem Absenden erhältst du eine E-Mail mit Bestätigungslink. Angemeldet bist du erst nach deiner Bestätigung.",
+      "email_html": "E-Mail-Adresse",
+      "btn_html": "Deal-Alarm aktivieren",
+      "c1_html": "Ja, ich möchte den BLACK-ELIXIR-Newsletter mit Angeboten und Neuheiten per E-Mail erhalten. Ich kann meine Einwilligung jederzeit über den Abmeldelink widerrufen. Hinweise in der",
+      "c2_html": "Datenschutzerklärung"
+    },
+    "fl": {
+      "alt_lib_html": "Alte Bibliothek bei Nacht im Kerzenlicht, ein Buch öffnet sich",
+      "place_desert_html": "Die Wüste",
+      "line_desert_html": "Folge deinem Traum durch die Wüste – dorthin, wo das erste Licht den Sand zu Gold macht.",
+      "alt_desert_html": "Karawanenzelt in der Wüste bei Sonnenaufgang",
+      "line_verona_html": "Eine Nacht in Verona, Rosen am kalten Stein – und ein Versprechen, das du nicht vergisst.",
+      "alt_verona_html": "Steinbalkon mit Rosen im Mondlicht",
+      "line_manderley_html": "Manderley im Nebel: Du kommst an, und das Haus hat dich längst erwartet.",
+      "alt_manderley_html": "Herrenhaus auf Klippen über dem Meer im Nebel",
+      "line_hard_html": "Kohlenrauch, nasses Pflaster, Gaslicht – und in einem Fenster brennt eine Kerze, die auf dich wartet.",
+      "alt_hard_html": "Viktorianische Industriestadt in der Dämmerung mit Gaslaternen",
+      "chapter_html": "Kapitel",
+      "intro_h_html": "Jeder Duft ist ein Buch.",
+      "intro_p_html": "Schlag es auf. Vier Geschichten warten auf dich – und zu jeder gehört ein Duft.",
+      "scroll_html": "Scrollen",
+      "alt_3d_html": "Flakon {{ name }} in 3D – zum Drehen ziehen",
+      "flacon_html": "Flakon",
+      "legal_html": "inkl. MwSt., zzgl. Versand",
+      "ship_html": "Lieferzeit 1–3 Werktage · Kostenloser Versand innerhalb Deutschlands",
+      "atc_aria_html": "{{ name }} in den Warenkorb",
+      "to_aria_html": "Zum Duft {{ name }}",
+      "end_e_html": "Die Bibliothek",
+      "end_h_html": "Wähle dein Buch",
+      "end_p_html": "Alle Düfte der Fragrance Library stehen im Regal. Zieh eines heraus.",
+      "s_heading_html": "Jedes Buch ein Duft",
+      "s_sub_html": "Scrolle nach unten und zieh dein Buch aus dem Regal.",
+      "s_h1_html": "Fragrance Library Parfums – Die Bibliothek",
+      "s_h1_def_html": "Die Bibliothek",
+      "s_intro_html": "Jeder Duft der Fragrance Library trägt den Namen eines Weltromans. Du wählst ein Buch aus dem Regal, wir zeigen dir Preis, Größe und Duftpyramide. Mit einem Klick bist du beim Duft oder legst ihn direkt in den Warenkorb – bei BLACK ELIXIR - Maison de Parfum.",
+      "s_hint_html": "Wische durchs Regal und tippe ein Buch an – zweimal, um den Duft zu öffnen.",
+      "t_del_html": "Lieferzeit 1–3 Werktage",
+      "t_ship_html": "Kostenloser Versand innerhalb Deutschlands",
+      "t_return_html": "14 Tage Widerrufsrecht",
+      "t_pay_html": "Sichere Zahlung",
+      "prev_html": "Zurück",
+      "next_html": "Weiter"
+    }
+  }
+}

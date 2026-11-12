@@ -1,0 +1,149 @@
+{%- assign dumo = section.settings.collection | default: collections['dumo'] -%}
+{%- render 'be-landing-cart' -%}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Jost:wght@300;400;500&display=swap">
+<style>
+.dm{--bg:#0b0907;--ink:#e9dcc3;--mute:#a89572;--line:rgba(233,220,195,.25);background:var(--bg);color:var(--ink);font-family:Jost,system-ui,sans-serif;position:relative}
+.dm *{box-sizing:border-box}
+/* Claude 12.11.2026: Mini-Navigation (sieben Namen), erscheint nach dem Hero, verschwindet im Kauf-Bereich */
+.dm-nav{position:fixed;left:var(--dm-nl,0px);right:var(--dm-nr,0px);top:var(--dm-nt,0px);z-index:19;display:flex;justify-content:center;pointer-events:none;opacity:0;visibility:hidden;transform:translateY(-10px);transition:opacity .35s ease,transform .35s ease,visibility 0s .35s,top .25s ease}
+.dm-nav.on{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease,transform .35s ease,top .25s ease}
+.dm-nav ul{pointer-events:auto;list-style:none;margin:10px 10px 0;padding:0 8px;display:flex;max-width:calc(100% - 20px);overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;background:rgba(14,11,8,.8);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border:1px solid rgba(255,255,255,.16);border-radius:999px;box-shadow:0 8px 24px -12px rgba(0,0,0,.6)}
+.dm-nav ul::-webkit-scrollbar{display:none}
+.dm-nav li{flex:none;margin:0;padding:0}
+.dm-nav a{display:flex;align-items:center;height:40px;padding:0 13px;font:500 11px Jost,system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#e9dcc3;text-decoration:none;white-space:nowrap;box-shadow:inset 0 -2px 0 transparent;transition:color .25s,box-shadow .25s}
+.dm-nav a:hover{color:#fff}
+.dm-nav a[aria-current]{color:#fff;box-shadow:inset 0 -2px 0 #d98a3a}
+.dm .dm-nav a:focus-visible{outline:2px solid #e3c27d;outline-offset:-3px;border-radius:999px}
+.dm-err{flex-basis:100%;font-size:13px;line-height:1.4;color:#c8452f}.dm-err:empty{display:none}
+.dm-shop{scroll-margin-top:64px}
+@media (max-width:760px){.dm-ch.dm-cp{height:170vh}.dm-nav ul{margin-top:8px;border-radius:14px}.dm-nav a{height:44px;padding:0 12px;letter-spacing:.16em}}
+@media (prefers-reduced-motion:reduce){.dm-nav,.dm-nav.on{transition:none}.dm-ch.dm-cp{height:auto}}
+.dm-prog{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:#d98a3a;z-index:50;pointer-events:none}
+.dm-ch{position:relative;height:230vh;--p:0;--a:#d98a3a}
+.dm-st{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.dm h1,.dm h2{font-family:Cinzel,serif;font-weight:700;margin:0;color:#f3e8d0;letter-spacing:.04em}
+.dm-lab{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--a)}
+.dm-gate .dm-st{background:#0b0907}
+.dm-door{position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(90deg,#1b1611,#2a2118);z-index:3;border:1px solid #3a2f22}
+.dm-dl{left:0;transform:translateX(calc(var(--p)*-105%))}.dm-dr{right:0;transform:translateX(calc(var(--p)*105%))}
+.dm-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(217,138,58,.55),rgba(11,9,7,0) 60%);opacity:calc(.15 + var(--p)*.85)}
+.dm-gt{position:relative;z-index:2;text-align:center;padding:0 16px;transform:scale(calc(.9 + var(--p)*.25));opacity:calc(var(--p)*1.6)}
+.dm-gt h1{font-size:clamp(56px,14vw,170px);line-height:1}
+.dm-gt p{margin:12px 0 0;font-size:clamp(15px,2vw,20px);letter-spacing:.2em;text-transform:uppercase;color:#cbb88f}
+.dm-hint{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#a89572;z-index:4;opacity:calc(1 - var(--p)*3)}
+.dm-arena .dm-st{background:radial-gradient(ellipse at 50% 100%,#4a3520,#14100c 60%)}
+.dm-arena h2{font-size:clamp(34px,6vw,76px);text-align:center;line-height:1.1;padding:0 16px;opacity:calc(var(--p)*2);transform:translateY(calc((1 - var(--p))*40px))}
+.dm-cp .dm-st{background:radial-gradient(ellipse at 70% 60%,color-mix(in srgb,var(--a) 30%,#14100c),#0b0907 70%)}
+.dm-grid{width:100%;max-width:1240px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;align-items:center}
+.dm-tx{display:flex;flex-direction:column;gap:14px;max-width:540px}
+.dm-tx h2{font-size:clamp(46px,8vw,96px);line-height:1;opacity:clamp(0,calc(var(--p)*4),1);letter-spacing:calc(.2em - var(--p)*.16em)}
+.dm-tx .dm-lab{opacity:clamp(0,calc(var(--p)*5),1)}
+.dm-tag{font-family:Cinzel,serif;font-size:clamp(16px,2vw,22px);letter-spacing:.08em;color:var(--a);opacity:clamp(0,calc((var(--p) - .1)*5),1)}
+.dm-story{margin:0;font-size:clamp(15px,1.6vw,19px);line-height:1.55;font-weight:300;color:#d9caa8;opacity:clamp(0,calc((var(--p) - .25)*5),1);transform:translateY(calc((1 - clamp(0,(var(--p) - .25)*5,1))*24px))}
+.dm-notes{border-top:1px solid var(--line);padding-top:12px;font-size:15px;line-height:1.5;opacity:clamp(0,calc((var(--p) - .5)*5),1)}
+.dm-notes span{color:var(--mute);letter-spacing:.14em;text-transform:uppercase;font-size:12px;display:inline-block;width:62px}
+.dm-buy{opacity:clamp(0,calc((var(--p) - .65)*5),1);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.dm-btn{background:var(--a);color:#14100c;border:0;padding:0 26px;min-height:48px;font:500 14px Jost,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.dm-btn:disabled{opacity:.45;cursor:not-allowed}
+.dm-sm{font-size:13px;color:var(--mute);text-decoration:underline}
+.dm-vis{display:flex;justify-content:center;align-items:center;perspective:1000px}
+.dm-bust{width:min(280px,62vw);height:min(470px,52vh);display:flex;align-items:center;justify-content:center;transform:translateZ(calc((var(--p) - .5)*160px)) rotateY(calc((var(--p) - .5)*60deg)) translateY(calc((.5 - var(--p))*30px));filter:drop-shadow(0 40px 50px color-mix(in srgb,var(--a) 45%,transparent))}
+.dm-bust img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+.dm-bust b{font-family:Cinzel,serif;color:#f3e8d0}
+.dm-dip{display:flex;gap:min(6vw,60px);justify-content:center;perspective:1000px}
+.dm-dip .dm-bust{width:min(210px,34vw);height:min(380px,42vh)}
+.dm-dip .l{transform:translateX(calc((1 - var(--p))*-35vw)) rotateY(calc((1 - var(--p))*40deg))}
+.dm-dip .r{transform:translateX(calc((1 - var(--p))*35vw)) rotateY(calc((1 - var(--p))*-40deg))}
+.dm-quote{font-family:Cinzel,serif;font-size:clamp(16px,2.2vw,26px);text-align:center;color:#f3e8d0;opacity:clamp(0,calc((var(--p) - .6)*5),1);margin:12px 0 0;line-height:1.35;max-width:820px}
+.dm-cav .dm-st{background:linear-gradient(180deg,#0b0907,#2a2016 85%)}
+.dm-road{position:absolute;left:0;bottom:12vh;display:flex;gap:min(8vw,90px);padding-left:100vw;transform:translateX(calc(var(--p)*-100%))}
+.dm-rider{flex:none;width:min(220px,48vw);height:min(320px,42vh);border:1px solid var(--c);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:14px;color:#cbb88f;font-size:13px;background:rgba(255,255,255,.03)}
+.dm-rider img{max-height:70%;max-width:80%;object-fit:contain}
+.dm-rider b{font-family:Cinzel,serif;font-size:18px;color:#f3e8d0;font-weight:500}
+.dm-cav h2{position:absolute;top:16vh;left:0;right:0;text-align:center;font-size:clamp(30px,5vw,64px);padding:0 16px}
+.dm-shop{padding:96px 20px 120px;background:#0b0907;display:flex;flex-direction:column;align-items:center;gap:36px}
+.dm-shop h2{font-size:clamp(30px,5vw,60px);text-align:center}
+.dm-cards{width:100%;max-width:1240px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.dm-card{border:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:10px;background:radial-gradient(ellipse at 50% 30%,rgba(217,138,58,.12),rgba(255,255,255,.02) 65%)}
+.dm-card .im{height:220px;display:flex;align-items:center;justify-content:center}
+.dm-card img{max-height:100%;max-width:100%;object-fit:contain;filter:drop-shadow(0 18px 22px rgba(0,0,0,.7))}
+.dm-card b{font-family:Cinzel,serif;font-weight:500;font-size:18px;color:#f3e8d0}
+.dm-card .dm-btn{background:transparent;color:var(--ink);border:1px solid var(--c);min-height:44px;padding:0 12px;font-size:12px}
+.dm-all{display:flex;flex-direction:column;align-items:center;gap:10px}
+.dm-all .dm-btn{background:#d98a3a;font-size:15px;min-height:54px;padding:0 36px}
+.dm-fine{max-width:620px;text-align:center;font-size:13px;line-height:1.6;color:var(--mute)}
+.dm-msg{min-height:20px;font-size:14px;color:#e3c27d}
+.dm-sig{margin-top:40px;padding-top:36px;border-top:1px solid rgba(255,255,255,.18);width:100%;max-width:620px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.dm-sig strong{font:500 clamp(20px,2.6vw,30px) Jost,system-ui,sans-serif;letter-spacing:.42em;color:#fff;text-transform:uppercase;padding-left:.42em}
+.dm-sig span{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:#bdbdbd}
+.dm button:focus-visible,.dm a:focus-visible{outline:2px solid #e3c27d;outline-offset:3px}
+@media (max-width:760px){.dm-grid{gap:10px}.dm-tx{gap:8px}.dm-bust{height:26vh;width:44vw}.dm-notes{font-size:13px}.dm-tx h2{font-size:clamp(38px,12vw,60px)}.dm-lab{font-size:11px}.dm-btn{min-height:44px;padding:0 16px;font-size:12px}}
+@media (prefers-reduced-motion:reduce){.dm-ch{height:auto;--p:1!important}.dm-st{position:relative;height:auto;min-height:100vh;padding:80px 0}.dm-door{display:none}.dm-road{position:relative;transform:none;padding-left:16px;overflow-x:auto}.dm-bust,.dm-dip .l,.dm-dip .r{transform:none}}
+</style>
+<div class="dm" id="dm-{{ section.id }}">
+<div class="dm-prog"></div>
+<nav class="dm-nav" aria-label="{{ 'claude.dm.nav_html' | t }}"><ul></ul></nav>
+<section class="dm-ch dm-gate" data-n="{{ 'claude.dm.n_gate_html' | t }}"><div class="dm-st"><div class="dm-glow"></div><div class="dm-door dm-dl"></div><div class="dm-door dm-dr"></div><div class="dm-gt"><h1>DUMO</h1><p>{%- render 'claude-t', v: section.settings.subtitle, d: 'Sieben Namen. Sieben Kämpfer.', k: 'claude.dm.subtitle_html' -%}</p></div><div class="dm-hint">{{ 'claude.dm.scroll_html' | t }}</div></div></section>
+<section class="dm-ch dm-arena" data-n="{{ 'claude.dm.n_arena_html' | t }}"><div class="dm-st"><h2>{%- render 'claude-t', v: section.settings.arena_text, d: 'Sieben kamen in die Arena. Jeder mit seiner Geschichte.', k: 'claude.dm.arena_text_html' -%}</h2></div></section>
+{%- capture cav -%}
+Spartacus|{{ 'claude.dm.spartacus_role_html' | t }}|The Scent of Freedom|#d98a3a|{{ 'claude.dm.spartacus_story_html' | t }}|{{ 'claude.dm.spartacus_top_html' | t }}|{{ 'claude.dm.spartacus_heart_html' | t }}|{{ 'claude.dm.spartacus_base_html' | t }}
+Crixus|{{ 'claude.dm.crixus_role_html' | t }}|The Scent of Braveheart|#c8664a|{{ 'claude.dm.crixus_story_html' | t }}|{{ 'claude.dm.crixus_top_html' | t }}|{{ 'claude.dm.crixus_heart_html' | t }}|{{ 'claude.dm.crixus_base_html' | t }}
+Commodus|{{ 'claude.dm.commodus_role_html' | t }}|The Scent of War|#c9a24a|{{ 'claude.dm.commodus_story_html' | t }}|{{ 'claude.dm.commodus_top_html' | t }}|{{ 'claude.dm.commodus_heart_html' | t }}|{{ 'claude.dm.commodus_base_html' | t }}
+Marcus|{{ 'claude.dm.marcus_role_html' | t }}|The Scent of Honor|#a7b4b8|{{ 'claude.dm.marcus_story_html' | t }}|{{ 'claude.dm.marcus_top_html' | t }}|{{ 'claude.dm.marcus_heart_html' | t }}|{{ 'claude.dm.marcus_base_html' | t }}
+Rexor|{{ 'claude.dm.rexor_role_html' | t }}|The Scent of Power|#c98b5a|{{ 'claude.dm.rexor_story_html' | t }}|{{ 'claude.dm.rexor_top_html' | t }}|{{ 'claude.dm.rexor_heart_html' | t }}|{{ 'claude.dm.rexor_base_html' | t }}
+{%- endcapture -%}
+{%- assign rows = cav | strip | newline_to_br | split: '<br />' -%}
+{%- for row in rows -%}
+{%- assign f = row | strip | split: '|' -%}
+{%- if f.size < 8 -%}{%- continue -%}{%- endif -%}
+{%- assign low = f[0] | strip | downcase -%}
+{%- assign pr = nil -%}{%- for x in dumo.products -%}{%- if x.handle contains low -%}{%- assign pr = x -%}{%- break -%}{%- endif -%}{%- endfor -%}
+{%- if low == 'rexor' -%}{%- render 'dumo-duo', dumo: dumo -%}{%- endif -%}
+{%- assign nm = f[0] | strip -%}{%- render 'dumo-chapter', pr: pr, name: nm, role: f[1], tag: f[2], color: f[3], story: f[4], top: f[5], heart: f[6], base: f[7] -%}
+{%- endfor -%}
+<section class="dm-ch dm-cav" data-n="{{ 'claude.dm.n_ride_html' | t }}" style="height:320vh"><div class="dm-st"><h2>{%- render 'claude-t', v: section.settings.ride_text, d: 'Sieben Reiter. Ein Ziel.', k: 'claude.dm.ride_text_html' -%}</h2><div class="dm-road">
+{%- for x in dumo.products -%}<div class="dm-rider" style="--c:#b8996a">{%- if x.featured_image -%}<img src="{{ x.featured_image | image_url: width: 300 }}" alt="" loading="lazy">{%- endif -%}<b>{{ x.title | remove: 'DUMO ' | split: ' The' | first }}</b></div>{%- endfor -%}
+</div></div></section>
+<section class="dm-shop" id="dm-shop" data-n="{{ 'claude.dm.n_shop_html' | t }}"><h2>{%- render 'claude-t', v: section.settings.shop_title, d: 'Wähle deinen Kämpfer', k: 'claude.dm.shop_title_html' -%}</h2>
+<div class="dm-cards">
+{%- assign total = 0 -%}{%- assign ids = '' -%}
+{%- for x in dumo.products -%}
+{%- if x.available -%}{%- assign total = total | plus: x.price -%}{%- assign ids = ids | append: x.selected_or_first_available_variant.id | append: ',' -%}{%- endif -%}
+{%- assign hp = x.handle | split: '-' -%}{%- assign cut = 'https://cdn.shopify.com/s/files/1/0762/4949/7942/files/dumo-cut-' | append: hp[1] | append: '.png?v=1793534036' -%}
+<div class="dm-card" style="--c:#b8996a"><div class="im"><img src="{{ cut }}" alt="{{ x.title | escape }}" loading="lazy"></div><b>{{ x.title | remove: 'DUMO ' | split: ' The' | first }}</b><span class="dm-sm">100 ml · Eau de Parfum</span><span>{{ x.price | money }}</span>
+{%- if x.available -%}<button class="dm-btn" type="button" data-add="{{ x.selected_or_first_available_variant.id }}">{{ 'claude.c.atc_html' | t }}</button>{%- else -%}<button class="dm-btn" type="button" disabled>{{ 'claude.c.sold_out_html' | t }}</button>{%- endif -%}</div>
+{%- endfor -%}
+</div>
+<div class="dm-all"><button class="dm-btn" type="button" data-all="{{ ids | remove_last: ',' }}">{{ 'claude.dm.all_html' | t }} · {{ total | money }}</button><div class="dm-msg" role="status" aria-live="polite"></div><div class="dm-fine">{{ 'claude.dm.fine_html' | t }}</div></div>
+<div class="dm-sig"><span>{{ 'claude.dm.cur_by_html' | t }}</span><strong>Black Elixir</strong><span>Maison de Parfum</span></div>
+</section>
+</div>
+<script>
+(function(){var root=document.getElementById('dm-{{ section.id }}');if(!root)return;
+var chs=[].slice.call(root.querySelectorAll('.dm-ch')),bar=root.querySelector('.dm-prog'),msg=root.querySelector('.dm-msg');
+var rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function upd(){if(rm)return;var vh=innerHeight;chs.forEach(function(c){var r=c.getBoundingClientRect(),t=r.height-vh,p=t>0?Math.min(1,Math.max(0,-r.top/t)):1;c.style.setProperty('--p',p.toFixed(4))});var rr=root.getBoundingClientRect(),m=rr.height-vh;bar.style.transform='scaleX('+(m>0?Math.min(1,Math.max(0,-rr.top/m)):0)+')'}
+addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+var nav=root.querySelector('.dm-nav'),ul=nav.querySelector('ul'),cps=[].slice.call(root.querySelectorAll('.dm-cp')),shop=root.querySelector('.dm-shop'),hero=document.querySelector('.dh'),links=[],cur=-1;
+cps.forEach(function(c){var li=document.createElement('li'),a=document.createElement('a');a.href='#'+c.id;a.textContent=c.dataset.n;li.appendChild(a);ul.appendChild(li);links.push(a)});
+function go(c){var r=c.getBoundingClientRect(),t=r.height-innerHeight;scrollTo({top:r.top+scrollY+(t>0?t*.9:0),behavior:rm?'auto':'smooth'})}
+function navUpd(){var vh=innerHeight,rr=root.getBoundingClientRect(),top=0;
+[].forEach.call(document.querySelectorAll('.shopify-section-header,.shopify-section-mobile-header'),function(h){var b=h.getBoundingClientRect();if(b.height>0&&b.bottom>top&&b.top<=1)top=b.bottom});
+nav.style.setProperty('--dm-nt',Math.round(top)+'px');nav.style.setProperty('--dm-nl',Math.max(0,Math.round(rr.left))+parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dm-sbw')||0)+'px');nav.style.setProperty('--dm-nr',Math.max(0,Math.round(innerWidth-rr.right))+'px');
+var on=(!hero||hero.getBoundingClientRect().bottom<vh*.4)&&rr.top<vh&&shop.getBoundingClientRect().top>vh*.55;nav.classList.toggle('on',on);
+var k=-1;cps.forEach(function(c,i){var r=c.getBoundingClientRect();if(r.top<=vh*.5&&r.bottom>vh*.5)k=i});
+if(k!==cur){cur=k;links.forEach(function(a,i){if(i===k){a.setAttribute('aria-current','true');ul.scrollLeft=a.offsetLeft-(ul.clientWidth-a.offsetWidth)/2}else a.removeAttribute('aria-current')})}}
+addEventListener('scroll',navUpd,{passive:true});addEventListener('resize',navUpd);navUpd();setTimeout(navUpd,600);
+function fail(b){return function(t){var s=b.parentNode.querySelector('.dm-err');if(!s){if(!t)return;s=document.createElement('span');s.className='dm-err';s.setAttribute('role','status');b.parentNode.appendChild(s)}s.textContent=t}}
+root.addEventListener('click',function(e){var a=e.target.closest('.dm-nav a');if(a){var c=document.getElementById(a.getAttribute('href').slice(1));if(c){e.preventDefault();go(c)}return}
+var b=e.target.closest('[data-add],[data-all]');if(!b||!window.beLandAdd)return;window.beLandAdd((b.dataset.all||b.dataset.add).split(','),b,b.dataset.all?function(t){msg.textContent=t}:fail(b))})})();
+</script>
+{% schema %}
+{"name":"DUMO Arena","settings":[
+{"type":"collection","id":"collection","label":"Kollektion (Standard: dumo)"},
+{"type":"text","id":"subtitle","label":"Untertitel Tor","default":"Sieben Namen. Sieben Kämpfer."},
+{"type":"textarea","id":"arena_text","label":"Text Arena","default":"Sieben kamen in die Arena. Jeder mit seiner Geschichte."},
+{"type":"text","id":"ride_text","label":"Titel Reiter","default":"Sieben Reiter. Ein Ziel."},
+{"type":"text","id":"shop_title","label":"Titel Kauf","default":"Wähle deinen Kämpfer"}],
+"presets":[{"name":"DUMO Arena"}]}
+{% endschema %}

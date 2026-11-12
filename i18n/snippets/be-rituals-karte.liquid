@@ -1,0 +1,16 @@
+{%- comment -%}
+  BE Produktkarte für sections/be-rituals-geschenke.liquid (04.11.2026). Nur Verkaufspreis – bewusst KEIN compare_at/Streichpreis, kein Badge.
+{%- endcomment -%}
+{%- assign v = p.selected_or_first_available_variant -%}
+<div class="be-rit-card">
+  <a class="be-rit-card__img" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+    {%- if p.featured_image -%}<img src="{{ p.featured_image | image_url: width: 600 }}" srcset="{{ p.featured_image | image_url: width: 300 }} 300w, {{ p.featured_image | image_url: width: 600 }} 600w" sizes="(max-width: 749px) 50vw, 25vw" alt="{{ p.featured_image.alt | default: p.title | escape }}" width="600" height="600" loading="lazy">{%- endif -%}
+  </a>
+  <p class="be-rit-card__vendor">Rituals</p>
+  <p class="be-rit-card__title"><a href="{{ p.url }}">{{ p.title | remove_first: 'Rituals...' | remove_first: 'RITUALS...' | remove_first: 'Rituals' | remove: ' 2026' | strip | escape }}</a></p>
+  <p class="be-rit-card__price">{{ v.price | money }}</p>
+  <form action="{{ routes.cart_add_url }}" method="post" class="be-rit-atc" data-variants="{{ v.id }}">
+    <input type="hidden" name="id" value="{{ v.id }}"><input type="hidden" name="quantity" value="1">
+    <button type="submit" class="be-rit-btn">{{ 'claude.c.atc_html' | t }}</button>
+  </form>
+</div>

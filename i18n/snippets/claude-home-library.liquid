@@ -1,0 +1,144 @@
+{%- comment -%} Teil der Section claude-home – Fragrance Library als Bücherregal im Stil der Library-Landingpage. Claude · 11.11.2026 – nicht anfassen. 12.11.2026 Hover-Zittern behoben: der Button .cl-book bleibt stehen (stabile Hover-Fläche), nur das innere .cl-bk bewegt sich. {%- endcomment -%}
+{%- assign c_lib = collections[sec.settings.col_library] -%}
+{%- if c_lib.products.size > 0 -%}
+<style>
+  .cl{--bh:330px;--gold:#c9a45c;background:radial-gradient(ellipse 50% 40% at 50% 0%,rgba(255,214,140,.22),transparent 70%),repeating-linear-gradient(90deg,#1b130c 0 220px,#120c07 220px 224px),#140e08!important;color:#f1eadb}
+  .cl .ch-lead{color:#bfb39c}
+  .cl-room{display:flex;gap:28px;align-items:flex-end}
+  .cl-panel{flex:0 0 300px;align-self:stretch;border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:12px;color:#f1eadb}
+  .cl-panel img{width:100%;aspect-ratio:1;object-fit:contain;background:#fff;border-radius:16px}
+  .cl-panel small{font-size:11px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase}
+  .cl-panel b{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:26px;line-height:1.1}
+  .cl-shelfwrap{position:relative;flex:1 1 auto;min-width:0}
+  .cl-row{display:flex;align-items:flex-end;gap:5px;overflow-x:auto;overflow-y:hidden;padding:40px 18px 0;scrollbar-width:none;scroll-behavior:smooth}
+  .cl-row::-webkit-scrollbar{display:none}
+  .cl-end{flex:0 0 16px;height:calc(var(--bh) * .55);background:linear-gradient(90deg,#7d5f25,#f1dea8 45%,#9c7434);border-radius:3px 3px 0 0}
+  .cl-book{flex:0 0 auto;height:calc(var(--bh) * var(--k,1));width:calc(var(--bh) / 3.3);border:0;padding:0;margin:0;background:none;cursor:pointer;font:inherit;color:#d9b768;display:block}
+  .cl-bk{container-type:inline-size;position:relative;overflow:hidden;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding:calc(var(--bh) * .07) 0 calc(var(--bh) * .055);border-radius:3px 3px 0 0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.07),transparent 60%),repeating-linear-gradient(37deg,rgba(255,255,255,.015) 0 2px,transparent 2px 5px),var(--c);box-shadow:inset -7px 0 12px rgba(0,0,0,.4),inset 3px 0 6px rgba(255,255,255,.06),0 2px 0 rgba(0,0,0,.4);transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s}
+  .cl-bk::before,.cl-bk::after{content:"";position:absolute;left:8%;right:8%;height:2px;background:linear-gradient(90deg,transparent,#e7c987,transparent)}
+  .cl-bk::before{top:4%}
+  .cl-bk::after{bottom:3%}
+  .cl-book i{position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 44%,rgba(255,240,200,.35) 50%,transparent 56%);transform:translateY(-60%);transition:transform 1s;pointer-events:none}
+  .cl-book:hover i,.cl-book.on i{transform:translateY(60%)}
+  .cl-book:hover .cl-bk,.cl-book.on .cl-bk{transform:translateY(-28px);box-shadow:0 22px 30px -10px #000,inset -7px 0 12px rgba(0,0,0,.5)}
+  .cl-book.on .cl-bk{outline:1px solid var(--gold);outline-offset:2px}
+  .cl-book:focus-visible{outline:0}
+  .cl-book:focus-visible .cl-bk{outline:2px solid var(--gold);outline-offset:3px}
+  .cl-book .l{width:80%;height:1px;background:var(--gold);margin:6% 0}
+  .cl-book .n{flex:1;min-height:0;writing-mode:vertical-rl;transform:rotate(180deg);font-family:"Cormorant Garamond",Georgia,serif;font-size:16cqw;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(180deg,#f3dc9e,#b8913f 50%,#f3dc9e);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cl-book.long .n{font-size:11cqw;letter-spacing:.06em}
+  .cl-book.light{color:#8a6a26}
+  .cl-book.light .n{background:linear-gradient(180deg,#9c7434,#5e4517 50%,#9c7434);-webkit-background-clip:text;background-clip:text}
+  .cl-book.light .l{background:#8a6a26}
+  .cl-book .fl{width:58%;aspect-ratio:2/1;display:grid;place-items:center;background:linear-gradient(135deg,#e7c987,#9c7434 55%,#d3ab60);color:#1a1712;font-family:"Cormorant Garamond",Georgia,serif;font-size:15cqw;margin-bottom:6%;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+  .cl-plank{position:relative;height:26px;background:linear-gradient(180deg,#6a4728,#2a1a0e);border-top:2px solid var(--gold);box-shadow:0 22px 34px rgba(0,0,0,.65);display:flex;justify-content:center}
+  .cl-plank span{position:relative;top:4px;height:16px;padding:0 14px;font-size:10px;line-height:16px;letter-spacing:.35em;color:#3a2a10;background:linear-gradient(180deg,#f1dea8,#b8913f);text-shadow:0 1px 0 rgba(255,244,214,.6)}
+  .cl-nav{position:absolute;top:calc(40px + var(--bh) / 2);z-index:3;width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);background:rgba(10,8,6,.8);color:#f1eadb;cursor:pointer;font-size:18px}
+  .cl-nav.p{left:-6px}.cl-nav.x{right:-6px}
+  .cl-hint{margin:14px 0 0;font-size:12px;letter-spacing:.2em;color:#a79f8e;text-align:center}
+  @media (max-width:860px){
+    .cl{--bh:260px}
+    .cl-room{flex-direction:column-reverse;align-items:stretch}
+    .cl-panel{flex:0 0 auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:16px}
+    .cl-panel img{width:96px;flex:0 0 96px}
+    .cl-panel>div{flex:1 1 140px}
+    .cl-nav{display:none}
+  }
+</style>
+<section class="ch-sec cl" id="ch-library">
+  <div class="ch-wrap">
+    <div class="ch-head"><div><p class="ch-eyebrow" style="color:#c9a45c">{{ 'claude.l.e_html' | t }}</p><h2 class="ch-h2" style="font-family:'Cormorant Garamond',Georgia,serif">Fragrance Library</h2><p class="ch-lead">{{ 'claude.l.l_html' | t }}</p></div><a class="ch-btn ch-btn--line" style="color:#c9a45c" href="{{ c_lib.url }}">{{ 'claude.l.all_html' | t }}</a></div>
+    {%- assign cmap = 'Rebecca:#363736|Othello:#2f2f2d|Orlando:#eaebef|Romeo and Juliet:#c23a3d|Beloved:#e7e9ed|The House of Mirth:#2f2f2d|Invisible Cities:#e8eaee|Hard Times:#282926|The Alchemist:#2a2928|Utopia:#2b3652|Anna Karenina:#f1f2f1|The Secret Garden:#b83034|Emma:#f1f2f2|Lost Illusions:#dadbd4|Crime and Punishment:#b1272c|Notes from Underground:#2b2a29|Vanity Fair:#202a3d|War and Peace:#aa2e2e|Hamlet:#232323|The Call of the Wild:#f6f6f5|The Call Of Wild:#f6f6f5|The Castle:#242f42|The Magic Mountain:#f6f6f6|One Hundred Years of Solitude:#f3f3f2|The Trial:#2a282a|The Stranger:#313131|Things Fall Apart:#292929|The Great Gatsby:#f6f6f6|The Gambler:#b02b2f|To the Lighthouse:#2e3a4f|Heart of Darkness:#2a2a2a|In Search of Lost Time:#273147|Sense and Sensibility:#f1f2f0|The Grapes of Wrath:#bc3838|The Sun Also Rises:#313133|A Tale of Two Cities:#283447|The Red and the Black:#b93132|1984:#f4f4f2|The Brothers Karamazov:#333234|Republic:#2f2f2f|The Overcoat:#202a3d|The Age of Innocence:#aa252b|The Golden Bowl:#a8272a' | split: '|' -%}
+    {%- assign first_p = c_lib.products.first -%}
+    {%- comment -%} Runde 3: Preis vor dem Nachladen = größte lieferbare Größe (höchster Preis der lieferbaren Varianten), nicht die 3-ml-Probe {%- endcomment -%}
+    {%- assign first_v = first_p.variants | where: 'available', true | sort: 'price' | last -%}
+    {%- assign first_price = first_v.price | default: first_p.price_max -%}
+    <div class="cl-room">
+      <div class="cl-panel ch-glassD" aria-live="polite">
+        <img data-cl-img src="{{ first_p.featured_image | image_url: width: 500 }}" alt="{{ first_p.title | escape }}" width="500" height="500" loading="lazy">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <small>{{ 'claude.l.chapter_html' | t }}</small>
+          <b data-cl-t>{{ first_p.title | remove: 'Fragrance Library ' }}</b>
+          <div class="cl-notes" data-cl-notes></div>
+          <div class="cl-chips" data-cl-chips role="group" aria-label="{{ 'claude.l.size_html' | t }}"></div>
+          <span data-cl-p style="font-size:17px">{{ first_price | money }}</span>
+          <span class="cl-gp" data-cl-gp></span>
+          <div class="cl-acts"><add-to-cart class="cart-drawer" data-cl-atc><button type="button" class="ch-btn ch-btn--gold" disabled>{{ 'claude.c.atc_html' | t }}</button></add-to-cart><a class="ch-btn ch-btn--line" data-cl-u href="{{ first_p.url }}">{{ 'claude.c.to_scent_html' | t }}</a><span class="ci-err" data-ci-err role="alert"></span></div>
+        </div>
+      </div>
+      <div class="cl-shelfwrap">
+        <button type="button" class="cl-nav p" data-cl-nav="-1" aria-label="{{ 'claude.l.left_html' | t }}">←</button>
+        <button type="button" class="cl-nav x" data-cl-nav="1" aria-label="{{ 'claude.l.right_html' | t }}">→</button>
+        <div class="cl-row" data-cl-row>
+          <span class="cl-end" aria-hidden="true"></span>
+          {%- for p in c_lib.products limit: 40 -%}
+            {%- assign nm = p.title | remove: 'Fragrance Library ' | remove: ' Extrait de Parfum' | remove: ' Extrait  de Parfum' | remove: ' Eau de Parfum' | remove: ' EdP' | strip -%}
+            {%- assign nmd = nm | downcase -%}
+            {%- assign col = '#2a2a2a' -%}
+            {%- for e in cmap -%}{%- assign kv = e | split: ':' -%}{%- assign kd = kv[0] | downcase -%}{%- if kd == nmd -%}{%- assign col = kv[1] -%}{%- break -%}{%- endif -%}{%- endfor -%}
+            {%- assign c1 = col | slice: 1, 1 -%}
+            {%- assign bv = p.variants | where: 'available', true | sort: 'price' | last -%}
+            {%- assign bprice = bv.price | default: p.price_max -%}
+            {%- assign k = forloop.index0 | times: 7 | modulo: 9 | plus: 91 | divided_by: 100.0 -%}
+            <button type="button" class="cl-book{% if 'def' contains c1 %} light{% endif %}{% if nm.size > 11 %} long{% endif %}{% if forloop.first %} on{% endif %}" style="--c:{{ col }};--k:{{ k }}" aria-label="{{ nm }}" data-u="{{ p.url }}" data-t="{{ p.title | remove: 'Fragrance Library ' | escape }}" data-p="{{ bprice | money | strip_html | escape }}" data-i="{{ p.featured_image | image_url: width: 500 }}">
+              <span class="cl-bk"><i aria-hidden="true"></i><span class="l"></span><span class="n" aria-hidden="true">{{ nm }}</span><span class="fl" aria-hidden="true">F|L</span></span>
+            </button>
+          {%- endfor -%}
+          <span class="cl-end" aria-hidden="true"></span>
+        </div>
+        <div class="cl-plank"><span>FRAGRANCE LIBRARY</span></div>
+      </div>
+    </div>
+    <p class="cl-hint">{{ 'claude.l.hint_html' | t }}</p>
+  </div>
+</section>
+<script>
+  (function () {
+    var s = document.currentScript.previousElementSibling, row = s.querySelector('[data-cl-row]'), img = s.querySelector('[data-cl-img]'), t = s.querySelector('[data-cl-t]'), p = s.querySelector('[data-cl-p]'), u = s.querySelector('[data-cl-u]');
+    /* 12.11.2026: Duftnoten, Größe, Preis und Warenkorb-Button zum gewählten Buch – Daten erst bei Bedarf aus /products/<handle>.js */
+    var notes = s.querySelector('[data-cl-notes]'), chips = s.querySelector('[data-cl-chips]'), gp = s.querySelector('[data-cl-gp]'), atc = s.querySelector('[data-cl-atc]'), ab = atc.querySelector('button'), cache = {}, cur = '';
+    var MF = {{ shop.money_format | json }};
+    function money(c) { return MF.replace(/<[^>]+>/g, '').replace(/\{\{[^}]*\}\}/, (c / 100).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })); }
+    function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+    /* Duftpyramide wie auf der Library-Landingpage: Zeilen "Kopfnote: …", "Herznote: …", "Basisnote: …" aus der Produktbeschreibung */
+    function pyramid(html) {
+      var txt = new DOMParser().parseFromString(String(html || '').replace(/<(br|\/p|\/li|\/div|\/h\d)[^>]*>/gi, '\n'), 'text/html').body.textContent, out = [];
+      ['Kopfnote', 'Herznote', 'Basisnote'].forEach(function (k) { var m = new RegExp(k + ':\\s*([^\\n]+)').exec(txt); if (m && m[1].trim()) out.push([k, m[1].trim()]); });
+      return out;
+    }
+    function ml(v) { var m = /([\d.,]+)\s*ml/i.exec(v.title || ''); return m ? parseFloat(m[1].replace(',', '.')) : 0; }
+    function variant(v) {
+      p.textContent = money(v.price);
+      var um = v.unit_price_measurement;
+      gp.textContent = v.unit_price && um ? {{ 'claude.n.unit_price_html' | t | json }} + ': ' + money(v.unit_price) + ' / ' + (um.reference_value > 1 ? um.reference_value + ' ' : '') + um.reference_unit : '';
+      atc.dataset.variantId = v.available ? v.id : ''; ab.disabled = !v.available; ab.textContent = v.available ? {{ 'claude.c.atc_html' | t | json }} : {{ 'claude.c.sold_out_html' | t | json }};
+      [].forEach.call(chips.children, function (c) { c.classList.toggle('on', +c.dataset.id === v.id); c.setAttribute('aria-pressed', +c.dataset.id === v.id); });
+    }
+    function fill(d) {
+      notes.textContent = ''; chips.textContent = '';
+      pyramid(d.description).forEach(function (n) { var r = el('div'); r.appendChild(el('span', '', ({ Kopfnote: {{ 'claude.n.top_html' | t | json }}, Herznote: {{ 'claude.n.heart_html' | t | json }}, Basisnote: {{ 'claude.n.base_html' | t | json }} })[n[0]] || n[0])); r.appendChild(el('span', '', n[1])); notes.appendChild(r); });
+      /* Runde 3: Größen klein → groß; vorgewählt ist die größte lieferbare Größe (3-ml-Probe nur, wenn sonst nichts lieferbar ist) */
+      var vs = d.variants.slice().sort(function (a, b) { return (ml(a) - ml(b)) || (a.price - b.price); });
+      if (vs.length > 1) vs.forEach(function (v) { var c = el('button', 'cl-chip', v.title); c.type = 'button'; c.dataset.id = v.id; c.disabled = !v.available; c.addEventListener('click', function () { variant(v); }); chips.appendChild(c); });
+      /* bei gleicher Größe und gleichem Preis gewinnt die Variante, die im Produkt zuerst steht (z. B. "100 ml" vor "100 ml EXTRAIT") */
+      var av = d.variants.filter(function (v) { return v.available; }), best = av[0];
+      av.forEach(function (v) { if (ml(v) > ml(best) || (ml(v) === ml(best) && v.price > best.price)) best = v; });
+      variant(best || vs[vs.length - 1]);
+    }
+    function load(b) {
+      var url = b.dataset.u.split('?')[0]; cur = url;
+      notes.textContent = ''; chips.textContent = ''; gp.textContent = ''; atc.dataset.variantId = ''; ab.disabled = true; ab.textContent = {{ 'claude.c.atc_html' | t | json }};
+      if (cache[url]) return fill(cache[url]);
+      fetch(url + '.js').then(function (r) { return r.json(); }).then(function (d) { cache[url] = d; if (cur === url) fill(d); }).catch(function () {});
+    }
+    s.querySelectorAll('.cl-book').forEach(function (b) {
+      b.addEventListener('click', function () { s.querySelectorAll('.cl-book.on').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); if (img) { img.src = b.dataset.i; img.removeAttribute('srcset'); img.alt = b.dataset.t; } t.textContent = b.dataset.t; p.textContent = b.dataset.p; u.href = b.dataset.u; load(b); });
+      b.addEventListener('dblclick', function () { location.href = b.dataset.u; });
+    });
+    s.querySelectorAll('[data-cl-nav]').forEach(function (n) { n.addEventListener('click', function () { row.scrollBy({ left: +n.dataset.clNav * row.clientWidth * .8 }); }); });
+    /* erstes Buch: Daten erst laden, wenn das Regal in Sichtweite kommt */
+    var first = s.querySelector('.cl-book.on');
+    if (first) { if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); if (!cur) load(first); } }, { rootMargin: '300px 0px' }); io.observe(s); } else load(first); }
+  })();
+</script>
+{%- endif -%}
