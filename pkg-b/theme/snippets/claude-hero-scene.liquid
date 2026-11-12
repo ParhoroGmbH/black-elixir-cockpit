@@ -228,10 +228,12 @@
     new ResizeObserver(function () { size(); kick(); }).observe(el);
 
     el.__hsc = { camera: camera, controls: controls, renderer: renderer, scene: scene, az: 0, show: show, THREE: THREE };
-    el.querySelectorAll('.hsc-chip').forEach(function (b, k) { b.addEventListener('click', function () { show(k); }); });
+    el.querySelectorAll('.hsc-chip').forEach(function (b, k) {
+      b.addEventListener('click', function () { show(k); });
+      b.addEventListener('pointerenter', function () { load(k); }); b.addEventListener('focus', function () { load(k); }); // other models load only when asked for
+    });
     size(); place(P.startAz);
     await show(0);
-    cfg.models.slice(1).forEach(function (_, k) { setTimeout(function () { load(k + 1); }, 2500 + k * 800); }); // warm the other models after first paint
   }
 
   // sphere whose lower half is flattened to a real ground plane (same idea as three's GroundedSkybox), ground at y = -height
