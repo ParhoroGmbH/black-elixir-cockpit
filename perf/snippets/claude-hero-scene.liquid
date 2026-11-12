@@ -208,6 +208,7 @@
     return { k: k, sl: sl, box: sl.querySelector('[data-m3]'), bs: sl.querySelectorAll('[data-m3-go]'), tag: sl.querySelector('.sp3-tag'), tabs: sl.querySelector('.m3-tabs'), i: 0, touched: 0 };
   });
   function hold() { stop = 1; }
+  var NC = navigator.connection || {}, lite = !!(NC.saveData || /^(slow-2g|2g|3g)$/.test(NC.effectiveType || '')), pw = '', nw = 0; // lite = Datensparmodus/langsame Verbindung: nichts automatisch vorladen
   var S = null; // 3D-Szene, sobald geladen; ohne Szene (kein WebGL) wechseln nur Text + Poster
 
   function dotsOn(j) { dots.forEach(function (x, k) { x.classList.toggle('is-on', k === j); }); }
@@ -217,7 +218,7 @@
     slides[(j + 1) % slides.length].classList.add('bg-ok');
   }
   function show(i, u) { // u = per Hand bedient: Punkt sofort als Rueckmeldung; beim Auto-Wechsel erst mit der Szene
-    si = (i + slides.length) % slides.length; el = 0; sw = 0; var j = si; want = j;
+    si = (i + slides.length) % slides.length; el = 0; sw = 0; pw = ''; nw = 0; var j = si; want = j;
     if (u) dotsOn(j);
     if (!S || S.dead) { activate(j); return; }
     S.go(j, boxes[j].i);
@@ -240,6 +241,11 @@
     var t = Date.now(), dt = t - last; last = t;
     if (stop || hov || !vis || document.hidden || slides.length < 2 || !S || S.busy) return; // !S: Szene noch nicht bereit, Timer wartet
     el += dt; var o = boxes[si];
+    // Perf 13.11.2026: naechstes Produkt bzw. naechste Folie erst ca. 3,5 s vor dem automatischen Wechsel vorladen (statt automatisch ~1 s nach dem Start)
+    if (!lite && !S.dead) {
+      if (!sw && o.bs.length > 1 && el >= SWT - 3500 && el < DUR - 6000 && pw !== si + ':' + o.i) { pw = si + ':' + o.i; S.warm(o.k, (o.i + 1) % o.bs.length); }
+      if (!nw && el >= DUR - 3500) { nw = 1; var k2 = (si + 1) % slides.length; S.warm(k2, boxes[k2].i); }
+    }
     if (!sw && el >= SWT && el < DUR - 6000 && o.bs.length > 1) { sw = 1; pick(o, o.i + 1); }
     if (el >= DUR) show(si + 1);
   }, 250);
@@ -248,7 +254,15 @@
   if (document.readyState === 'complete') bgAll(); else addEventListener('load', bgAll);
 
   // ---------- 3D: ein Renderer, ein Ort + ein Produkt zur Zeit ----------
-  boot();
+  // Perf 13.11.2026: three.js, Panorama und GLB der ersten Folie erst holen, wenn das Poster gemalt ist (zwei Frames + Leerlauf, spaetestens nach 1,8 s); das Poster bleibt bis zur fertigen Szene stehen.
+  var booted = 0;
+  function runBoot() { if (!booted) { booted = 1; boot(); } }
+  (function () {
+    function idle() { requestAnimationFrame(function () { requestAnimationFrame(function () { if (window.requestIdleCallback) requestIdleCallback(runBoot, { timeout: 800 }); else setTimeout(runBoot, 120); }); }); }
+    var u = /url\(["']?([^"')]+)/.exec(getComputedStyle(slides[0].querySelector('.h3-bgl')).backgroundImage || ''), im;
+    if (u) { im = new Image(); im.onload = im.onerror = idle; im.src = u[1]; if (im.complete) idle(); } else idle();
+    setTimeout(runBoot, 1800);
+  })();
   async function boot() {
     var canvas = h.querySelector('.hsc-canvas'), snap = h.querySelector('.hsc-snap');
     var THREE, OrbitControls, GLTFLoader, renderer;
@@ -289,18 +303,20 @@
       c = places[url] = { u: ++use, p: null };
       c.p = new THREE.TextureLoader().loadAsync(url).then(function (tex) {
         tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = aniso; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
-        c.tex = tex; c.env = hdrEnv(tex.image); return c;
+        c.tex = tex; return (tex.image.decode ? tex.image.decode().catch(function () {}) : Promise.resolve()).then(function () { return hdrEnv(tex.image); }).then(function (rt) { c.env = rt; return c; });
       });
       c.p.catch(function () { delete places[url]; });
       return c.p;
     }
     // Licht/Spiegelungen: kleine Kopie des Panoramas mit angehobenen Lichtern (Pseudo-HDR) → PMREM; Glas und Metall bekommen echte Glanzpunkte des Ortes
-    function hdrEnv(img) {
+    function yieldMain() { return new Promise(function (r) { var mc = new MessageChannel(); mc.port1.onmessage = function () { r(); }; mc.port2.postMessage(0); }); } // Perf 13.11.2026: Hauptthread zwischendurch freigeben (keine Long Task)
+    async function hdrEnv(img) {
       var W = 1024, H2 = 512, cv = document.createElement('canvas'); cv.width = W; cv.height = H2;
       var x = cv.getContext('2d', { willReadFrequently: true }), c0 = Math.round(H2 * cfg.crop); // Panorama ohne obere 30 % (nie sichtbar): oberste Zeile nach oben strecken
       x.drawImage(img, 0, 0, img.width, 1, 0, 0, W, c0 + 1); x.drawImage(img, 0, c0, W, H2 - c0);
       var d = x.getImageData(0, 0, W, H2).data, f = new Uint16Array(W * H2 * 4), th = THREE.DataUtils.toHalfFloat;
       for (var i = 0; i < W * H2; i++) {
+        if (i % (W * 64) === 0 && i) await yieldMain();
         var r = lin(d[4 * i] / 255), g = lin(d[4 * i + 1] / 255), b = lin(d[4 * i + 2] / 255), mx = Math.max(r, g, b), k = mx > 0.55 ? 1 + 9 * Math.pow((mx - 0.55) / 0.45, 2) : 1;
         f[4 * i] = th(r * k); f[4 * i + 1] = th(g * k); f[4 * i + 2] = th(b * k); f[4 * i + 3] = th(1);
       }
@@ -351,16 +367,9 @@
       Promise.all([loadPlace(it), loadModel(it)]).then(function (r) {
         if (my !== tok) return;
         swap(it, s, r[0], r[1]); if (done) done(); S.busy = 0;
-        warmNext(s, i);
       }).catch(function () { if (my === tok) { S.busy = 0; live = 0; h.classList.remove('hsc-live'); if (s === want) activate(s); if (done) done(); } }); // Ladefehler: Poster des Motivs statt veralteter Szene
     }
     function warm(s, i) { var it = itemOf(s, i); if (it) { loadPlace(it).catch(function () {}); loadModel(it).catch(function () {}); } }
-    function warmNext(s, i) { // nächstes Produkt im Motiv und erstes des nächsten Motivs vorladen
-      setTimeout(function () {
-        var n = cfg.slides[s].items.length; if (n > 1) warm(s, (i + 1) % n);
-        var s2 = (s + 1) % cfg.slides.length; warm(s2, boxes[s2] ? boxes[s2].i : 0);
-      }, 1200);
-    }
     function swap(it, s, pl, md) {
       var K = cfg.kinds[it.kind] || cfg.kinds.bottle, P = placeOf(it);
       if (live) { // Schnappschuss des letzten Bildes über die Leinwand legen
@@ -446,7 +455,7 @@
 
     function size() {
       var W = h.clientWidth, Hc = h.clientHeight; if (!W || !Hc) return;
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mob() ? 1.5 : 2));
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mob() ? (lite ? 1 : (navigator.deviceMemory && navigator.deviceMemory <= 2 ? 1.25 : 1.5)) : 2));
       renderer.setSize(W, Hc, false); layout(true); dirty = 1;
     }
 
