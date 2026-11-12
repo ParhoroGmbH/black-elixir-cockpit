@@ -201,7 +201,7 @@
   html body sticky-secondary-header .logo__image.has-two-child .logo__image-item{display:block!important;transition:opacity .35s ease}
   html body sticky-secondary-header .logo__image.has-two-child .logo__image-item--transparent{position:absolute;left:0;top:0;opacity:0}
   /* dunkler Ton */
-  #shopify-section-secondary-header[data-bx-tone="dark"]{--bx-hbg:linear-gradient(180deg,rgba(8,9,12,.55),rgba(8,9,12,.38));--bx-hln:rgba(241,222,168,.5)}
+  #shopify-section-secondary-header[data-bx-tone="dark"]{--bx-hbg:linear-gradient(180deg,rgba(8,9,12,.48),rgba(8,9,12,.3));--bx-hln:rgba(241,222,168,.5)}
   #shopify-section-secondary-header[data-bx-tone="dark"] :is(.header,.header__content,.miscellaneous-container,.menu__list--header>.menu__item>.menu__item-title,.miscellaneous__subblock){--layout-text-color:255,255,255;color:#fff;text-shadow:0 0 8px rgba(0,0,0,.55)}
   #shopify-section-secondary-header[data-bx-tone="dark"] :is(.menu__list--header>.menu__item>.menu__item-title,.miscellaneous__subblock) :is(a,span,button,div){color:#fff!important}
   #shopify-section-secondary-header[data-bx-tone="dark"] :is(.menu__list--header>.menu__item>.menu__item-title,.miscellaneous__subblock) :is(svg,path){fill:#fff!important}
@@ -225,7 +225,7 @@
   @media (max-width:920px){
     html body #shopify-section-mobile-header{--logo-height:44px;--vertical-paddings:0px;box-shadow:none}
     #shopify-section-mobile-header::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:rgba(14,15,18,.8);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:inset 0 -1px 0 rgba(241,222,168,.45);transition:background-color .35s ease}
-    #shopify-section-mobile-header[data-bx-tone="dark"]::before{background:linear-gradient(180deg,rgba(8,9,12,.55),rgba(8,9,12,.38))}
+    #shopify-section-mobile-header[data-bx-tone="dark"]::before{background:linear-gradient(180deg,rgba(8,9,12,.48),rgba(8,9,12,.3))}
     html body #shopify-section-mobile-header :is(.mobile-header-section,.mobile-header){background:transparent!important}
     html body #shopify-section-mobile-header .mobile-header__content{position:relative;height:56px;padding:0 4px!important;gap:0;flex-wrap:nowrap}
     html body #shopify-section-mobile-header .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:0;border:0;z-index:1}
@@ -238,6 +238,23 @@
     html body #shopify-section-mobile-header .localization-container{display:none!important}
     html body #shopify-section-mobile-header .burger-menu-block{order:-2}
     html body #shopify-section-mobile-header .news-block{order:-1;margin-inline-end:auto}
+  }
+  /* A1 12.11.2026 – Arabisch: Fragrance-Library- und DUMO-Landing gespiegelt (Glas-Leiste rechts, Inhalt hält rechts frei). Nur Seitenränder; die Dateien der Landingpages bleiben unverändert. */
+  @media (min-width:921px){
+    html[dir="rtl"] .fl-land{margin-left:0;margin-right:calc(-1 * var(--fl-sbw,0px))}
+    html[dir="rtl"] .fl-land .lib{padding-left:clamp(16px,4vw,64px);padding-right:calc(var(--fl-sbw,0px) + clamp(16px,4vw,64px))}
+    html[dir="rtl"] .fl-land .cap{padding-left:clamp(16px,6vw,80px);padding-right:calc(var(--fl-sbw,0px) + clamp(16px,6vw,80px))}
+    html[dir="rtl"] .fl-land .stage .fl{left:auto;right:calc(var(--fl-sbw,0px) + clamp(16px,3vw,40px))}
+    html[dir="rtl"] .fl-land .fls-cap{padding-left:clamp(16px,6cqw,80px);padding-right:calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px))}
+    html[dir="rtl"] .fl-land .fls-prod{padding-left:clamp(16px,6cqw,96px);padding-right:calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px))}
+    html[dir="rtl"] .fl-land .fls-end{padding-left:clamp(16px,6cqw,80px);padding-right:calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px))}
+    html[dir="rtl"] .fl-land .fls-ch--intro .fls-media :is(img,video){object-position:50% 50%}
+    html[dir="rtl"] :is(.dh,.dv,.dg,.dm){margin-left:0;margin-right:calc(-1 * var(--dm-sbw,0px))}
+    html[dir="rtl"] :is(.dh-hint,.dg-hint){padding-left:0!important;padding-right:var(--dm-sbw,0px)!important}
+    html[dir="rtl"] .dh-tx{padding-left:16px!important;padding-right:calc(var(--dm-sbw,0px) + 16px)!important}
+    html[dir="rtl"] :is(.dv-tx,.dg-in){padding-left:20px!important;padding-right:calc(var(--dm-sbw,0px) + 20px)!important}
+    html[dir="rtl"] .dm-cp .dm-st{padding-left:0;padding-right:var(--dm-sbw,0px)}
+    html[dir="rtl"] body .dm-shop{padding-left:20px;padding-right:calc(var(--dm-sbw,0px) + 20px)}
   }
   /* Claude 12.11.2026: kein seitliches Scrollen am Desktop – Basis-Theme setzt body{width:100vw} (inkl. Scrollbalken) */
   html{overflow-x:clip}
