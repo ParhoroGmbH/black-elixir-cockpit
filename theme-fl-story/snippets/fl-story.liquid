@@ -46,8 +46,8 @@
 .fls-price{margin-top:18px;font-family:var(--serif);font-size:1.8rem;color:var(--gold);line-height:1.1}
 .fls-legal{display:block;margin-top:4px;font-size:.8rem;color:var(--mut)}
 .fls-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-.fls-btns add-to-cart{display:inline-flex}
-.fls .fls-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 26px;border:1px solid var(--gold);border-radius:0;background:rgba(0,0,0,.4);color:var(--fg);font:inherit;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer;touch-action:manipulation;transition:background-color .25s,color .25s;box-shadow:none;width:auto;height:auto}
+.fls .fls-btns add-to-cart{display:inline-flex;position:static;width:auto;height:auto;min-width:0;min-height:0;margin:0;padding:0;background:none;border:0;border-radius:0}
+.fls .fls-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 26px;border:1px solid var(--gold);border-radius:0;background:rgba(0,0,0,.4);color:var(--fg);font:inherit;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;white-space:nowrap;cursor:pointer;touch-action:manipulation;transition:background-color .25s,color .25s;box-shadow:none;width:auto;height:auto}
 .fls .fls-btn--gold{background:var(--gold);color:#14110c}
 .fls .fls-btn:hover{background:rgba(201,164,92,.24);color:var(--fg)}.fls .fls-btn--gold:hover{background:#e2c383;color:#14110c}
 .fls .fls-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
@@ -88,6 +88,7 @@
       when 'desert'
         assign fp = all_products['fragrance-library-the-alchemist-eau-de-parfum']
         assign glb = '726d6965c7f4d746/be4-fl-red.glb'
+        assign pref = 50
         assign name = 'The Alchemist'
         assign place = 'Die Wüste'
         assign line = 'Folge deinem Traum durch die Wüste – dorthin, wo das erste Licht den Sand zu Gold macht.'
@@ -96,6 +97,7 @@
       when 'verona'
         assign fp = all_products['fragrance-library-romeo-and-juliet']
         assign glb = 'ce3b708a28188d20/be4-fl-romeo.glb'
+        assign pref = 50
         assign name = 'Romeo and Juliet'
         assign place = 'Verona'
         assign line = 'Eine Nacht in Verona, Rosen am kalten Stein – und ein Versprechen, das du nicht vergisst.'
@@ -104,6 +106,7 @@
       when 'manderley'
         assign fp = all_products['fragrance-library-rebecca']
         assign glb = '13a61eafefe41e40/be4-fl-white.glb'
+        assign pref = 50
         assign name = 'Rebecca'
         assign place = 'Manderley'
         assign line = 'Manderley im Nebel: Du kommst an, und das Haus hat dich längst erwartet.'
@@ -121,7 +124,7 @@
     endcase
     if sc != 'library'
       comment
-        größte lieferbare Größe vorwählen (nie die 3-ml-Probe). pref = Größe, die das gezeigte Modell/Foto abbildet: ist sie lieferbar, wird sie gewählt.
+        größte lieferbare Größe vorwählen (nie die 3-ml-Probe). pref = Größe, die das gezeigte 3D-Modell (be4-Modelle = 50-ml-Flakon) bzw. Foto (Hard Times = 100 ml) abbildet: ist sie lieferbar, wird sie gewählt, damit Bild, Preis und Warenkorb zusammenpassen.
       endcomment
       assign best = 0
       for v in fp.variants
