@@ -330,6 +330,7 @@
         }
       },
       "block_order": [
+        "joy_wishlist_wishlist_button_nbUE8r",
         "6a9d8726-8747-4cb7-812a-d7dd1ea673be",
         "5dc5b007-724d-4c23-96b1-6555fc3ac5c4",
         "text_3XijCn",
@@ -347,7 +348,6 @@
         "custom_liquid_lieferzeit",
         "custom_liquid_be_rituals_s",
         "custom_liquid_soldout",
-        "joy_wishlist_wishlist_button_nbUE8r",
         "custom_liquid_be_seife",
         "custom_liquid_be_rituals_mini",
         "59cc4d46-52a3-49c7-b23b-bd4abf6853c8",
@@ -490,7 +490,7 @@
           "type": "collapsible_tab",
           "settings": {
             "heading": "Rückgabe & Umtausch",
-            "text": "<p><strong>Rückgabe & Ersatz – BLACK ELIXIR – Maison de Parfum</strong></p><p>Ein Großteil unserer angebotenen Düfte ist direkt ab Lager verfügbar. Der jeweilige Lagerstatus wird auf der Produktseite angezeigt. Für alle Bestellungen gelten die folgenden Rückgabe- und Ersatzbedingungen:</p><h3>Ersatzlieferung statt Rückerstattung</h3><p>In bestimmten Fällen bieten wir Ihnen bevorzugt eine kostenfreie Ersatzlieferung an:</p><p><br/><strong>Verlust des Pakets durch den Versanddienstleister</strong> (nach offizieller Bestätigung durch den Kurierdienst)<br/></p><p><strong>Falsch gelieferter Artikel</strong> – bitte informieren Sie uns und senden Sie den ungeöffneten Artikel innerhalb von 14 Tagen gemäß unseren Rücksendeanweisungen zurück<br/><br/><strong>Beschädigter Artikel</strong> – bitte melden Sie den Schaden umgehend und senden Sie das Produkt innerhalb von 14 Tagen nach Lieferung gemäß unseren Rücksendeanweisungen zurück<br/></p><p>Ein Ersatz erfolgt selbstverständlich ohne zusätzliche Kosten für Sie.</p><h3>Rückerstattung</h3><p>Eine finanzielle Rückerstattung erfolgt in folgenden Fällen:</p><p><br/>Das Paket gilt nach längerer Untersuchung durch den Versanddienstleister als endgültig verloren und Sie wünschen <strong>keinen Ersatzartikel</strong><br/><br/>Der bestellte Artikel ist <strong>nicht mehr lieferbar</strong> und kann nicht ersetzt werden<br/></p><h3>Standard-Rückgabe bei lagernden Artikeln</h3><p>Für sofort verfügbare Produkte gilt das reguläre Widerrufsrecht. Sie erhalten eine Rückerstattung des Kaufpreises <strong>abzüglich der Versandkosten</strong>, sofern:</p><p><br/>der Artikel <strong>ungeöffnet und unbenutzt</strong> ist<br/><br/>die <strong>Originalverpackung und Versiegelung</strong> unbeschädigt sind<br/></p><h3>Rücksendeprozess</h3><p>Bitte stellen Sie innerhalb von <strong>14 Tagen nach Erhalt der Bestellung</strong> eine Rücksendeanfrage über unseren Kundenservice und senden Sie die Ware erst nach Erhalt unserer Anweisungen zurück.</p><p>Unser Ziel ist es, jede Anfrage fair, transparent und kundenorientiert zu lösen und Ihnen jederzeit ein sicheres Einkaufserlebnis bei <strong>BLACK ELIXIR – Maison de Parfum</strong> zu bieten.</p>",
+            "text": "<p><strong>Rückgabe & Ersatz – BLACK ELIXIR – Maison de Parfum</strong></p><p>Ein Großteil unserer angebotenen Düfte ist direkt ab Lager verfügbar. Der jeweilige Lagerstatus wird auf der Produktseite angezeigt. Für alle Bestellungen gelten die folgenden Rückgabe- und Ersatzbedingungen:</p><h3>Ersatzlieferung statt Rückerstattung</h3><p>In bestimmten Fällen bieten wir Ihnen bevorzugt eine kostenfreie Ersatzlieferung an:</p><p><br/><strong>Verlust des Pakets durch den Versanddienstleister</strong> (nach offizieller Bestätigung durch den Kurierdienst)<br/></p><p><strong>Falsch gelieferter Artikel</strong> – bitte informieren Sie uns und senden Sie den ungeöffneten Artikel innerhalb von 14 Tagen gemäß unseren Rücksendeanweisungen zurück<br/><br/><strong>Beschädigter Artikel</strong> – bitte melden Sie den Schaden umgehend und senden Sie das Produkt innerhalb von 14 Tagen nach Lieferung gemäß unseren Rücksendeanweisungen zurück<br/></p><p>Ein Ersatz erfolgt selbstverständlich ohne zusätzliche Kosten für Sie.</p><h3>Rückerstattung</h3><p>Eine finanzielle Rückerstattung erfolgt in folgenden Fällen:</p><p><br/>Das Paket gilt nach längerer Untersuchung durch den Versanddienstleister als endgültig verloren und Sie wünschen <strong>keinen Ersatzartikel</strong><br/><br/>Der bestellte Artikel ist <strong>nicht mehr lieferbar</strong> und kann nicht ersetzt werden<br/></p><h3>Standard-Rückgabe bei lagernden Artikeln</h3><p>Für sofort verfügbare Produkte gilt das reguläre Widerrufsrecht. Wir tragen die Kosten der Rücksendung und erstatten den Kaufpreis <strong>einschließlich der Standard-Lieferkosten</strong>, sofern:</p><p><br/>der Artikel <strong>ungeöffnet und unbenutzt</strong> ist<br/><br/>die <strong>Originalverpackung und Versiegelung</strong> unbeschädigt sind<br/></p><h3>Rücksendeprozess</h3><p>Bitte stellen Sie innerhalb von <strong>14 Tagen nach Erhalt der Bestellung</strong> eine Rücksendeanfrage über unseren Kundenservice und senden Sie die Ware erst nach Erhalt unserer Anweisungen zurück.</p><p>Unser Ziel ist es, jede Anfrage fair, transparent und kundenorientiert zu lösen und Ihnen jederzeit ein sicheres Einkaufserlebnis bei <strong>BLACK ELIXIR – Maison de Parfum</strong> zu bieten.</p>",
             "page": ""
           }
         }
@@ -823,7 +823,8 @@
       "type": "apps",
       "settings": {
         "include_margins": true
-      }
+      },
+      "disabled": true
     },
     "06276a8b-3afe-469c-be8e-380883ba80a7": {
       "type": "recently-viewed-products",
@@ -871,7 +872,8 @@
       ],
       "settings": {
         "include_margins": true
-      }
+      },
+      "disabled": true
     },
     "be_faq": {
       "type": "be-faq",
@@ -896,10 +898,15 @@
     "claude_pdp_story": {
       "type": "claude-pdp-story",
       "settings": {}
+    },
+    "claude_pdp_lower": {
+      "type": "claude-pdp-lower",
+      "settings": {}
     }
   },
   "order": [
     "claude_pdp_style",
+    "claude_pdp_lower",
     "main-product",
     "4fe020f3-166c-4981-a456-b4a000965545",
     "44c689fe-c194-4a0f-ad9b-8fbb154be0da",
