@@ -126,6 +126,7 @@ function dust(b,big){
 function sz(u,w){u=String(u||'');if(!u)return '';if(u.indexOf('//')===0)u='https:'+u;return /[?&]width=\d+/.test(u)?u.replace(/([?&])width=\d+/,'$1width='+w):u+(u.indexOf('?')<0?'?':'&')+'width='+w}
 function pre(u){if(u){var i=new Image();i.src=sz(u,600)}}
 function photo(box,u,alt){
+  if(/placeholder/i.test(u||''))u='';
   if(!box.classList.contains('flb-bot')){box.textContent='';box.className='flb-bot'}
   var key=String(u||'-').split('?')[0].replace(/^https?:/,'');if(box._u===key)return;box._u=key;
   var f=box.querySelector('.flb-fr'),m=box.querySelector('.flb-mono');
