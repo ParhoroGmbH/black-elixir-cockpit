@@ -175,7 +175,11 @@
       var hr = h.getBoundingClientRect(), k = hr.height / h.offsetHeight || 1, tb = 0, tl = 1e9;
       o.bs.forEach(function (x) { var q = x.getBoundingClientRect(); tb = Math.max(tb, q.bottom); tl = Math.min(tl, q.left); });
       var av = (hr.bottom - tb) / k - 16, sz = Math.max(32, Math.min(48, av - 6)), x = hr.width / k / 2;
-      if (av < sz + 6) x = Math.min(x, (tl - hr.left) / k - 16 - c.offsetWidth / 2);
+      var fb = av < sz + 6, half = c.offsetWidth / 2, W = hr.width / k, bub = document.querySelector('.aimode-sbar-dock');
+      if (fb) x = Math.min(x, (tl - hr.left) / k - 16 - half);
+      // schwebende Such-Blase (Chatty) unten mittig nicht verdecken
+      if (bub) { var q = bub.getBoundingClientRect(), bl = (q.left - hr.left) / k, br = (q.right - hr.left) / k;
+        if (q.width && x + half > bl - 12 && x - half < br + 12) { var xr = br + 12 + half, xl = bl - 12 - half; x = !fb && xr + half <= W - 8 ? xr : (xl - half >= 8 ? xl : x); } }
       h.style.setProperty('--nav-s', sz.toFixed(0) + 'px'); h.style.setProperty('--nav-b', Math.max(6, Math.min(16, av - sz)).toFixed(0) + 'px'); h.style.setProperty('--nav-x', x.toFixed(0) + 'px');
     }
     function dust(o, t) {
