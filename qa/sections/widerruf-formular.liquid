@@ -1,0 +1,128 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --padding-top: {{ section.settings.desktop_padding_top }}px;
+    --padding-bottom: {{ section.settings.desktop_padding_bottom }}px;
+  }
+  @media screen and (max-width: 920px) {
+    #shopify-section-{{ section.id }} {
+      --padding-top: {{ section.settings.mobile_padding_top }}px;
+      --padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+    }
+  }
+  #shopify-section-{{ section.id }} .widerruf-formular { max-width: 700px; }
+  #shopify-section-{{ section.id }} .widerruf-formular__intro { margin-bottom: 2rem; }
+  #shopify-section-{{ section.id }} .widerruf-formular .fields-wrapper { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; }
+  #shopify-section-{{ section.id }} .widerruf-formular .field { display: flex; flex-direction: column; gap: 0.5rem; }
+  #shopify-section-{{ section.id }} .widerruf-formular .field input,
+  #shopify-section-{{ section.id }} .widerruf-formular .field textarea { width: 100%; }
+  #shopify-section-{{ section.id }} .widerruf-formular .form-status,
+  #shopify-section-{{ section.id }} .widerruf-formular .form-errors { margin-bottom: 1.5rem; }
+  #shopify-section-{{ section.id }} .widerruf-formular .contact__button { margin-bottom: 1.5rem; }
+{% endstyle %}
+{%- liquid
+  assign uppercase_body_s = false
+  assign bolder_body_s = false
+  if settings.typography_preset == 'custom'
+    if settings.uppercase_body_s
+      assign uppercase_body_s = true
+    endif
+    if settings.bolder_font_body_s
+      assign bolder_body_s = true
+    endif
+  endif
+  assign form_id = 'WiderrufForm-' | append: section.id
+-%}
+{%- capture label_class -%}label label--{{ settings.typography_preset }}{% if uppercase_body_s %} uppercase{% endif %}{% if bolder_body_s %} bolder-font{% endif %}{% if settings.dim_text %} dim{% endif %}{%- endcapture -%}
+{%- capture input_class -%}input input--{{ settings.typography_preset }}{% if uppercase_body_s %} uppercase{% endif %}{% if bolder_body_s %} bolder-font{% endif %} required{%- endcapture -%}
+{%- capture textarea_class -%}text-area input--{{ settings.typography_preset }}{% if uppercase_body_s %} uppercase{% endif %}{% if bolder_body_s %} bolder-font{% endif %} required{%- endcapture -%}
+<div class="ordinal-section ordinal-section--{{ settings.white_space }} {% if settings.show_lines %}ordinal-section--lines{% endif %} {% if settings.max_page_width == '1400' or settings.max_page_width == '1200' %}page-width {% endif %}page-width--{{ settings.max_page_width }} section-padding--{{ settings.white_space }}">
+  <div class="page page--{{ settings.white_space }} page--wide">
+    <div class="widerruf-formular" id="widerruf-online">
+      <h2 class="page__title heading--{{ settings.typography_preset }}">Widerruf online erklären</h2>
+      <p class="widerruf-formular__intro body-text--{{ settings.typography_preset }}">Hiermit widerrufe(n) ich/ wir (*) den von mir/ uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*)/ die Erbringung der folgenden Dienstleistung (*)</p>
+
+      {%- form 'contact', id: form_id, class: 'widerruf-formular__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="form-status subheading subheading--{{ settings.typography_preset }} success-color" role="status" tabindex="-1" autofocus>
+            Vielen Dank. Dein Widerruf wurde übermittelt.
+          </div>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <div class="form-errors subheading subheading--{{ settings.typography_preset }} error-color" role="alert" id="{{ form_id }}-errors">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <input type="hidden" name="contact[Betreff]" value="Widerruf">
+
+        <div class="fields-wrapper">
+          <div class="field">
+            <label class="{{ label_class }}" for="{{ form_id }}-name">Name des/ der Verbraucher(s)*</label>
+            <input id="{{ form_id }}-name" class="{{ input_class }}" type="text" name="contact[Name]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" required aria-required="true">
+          </div>
+          <div class="field">
+            <label class="{{ label_class }}" for="{{ form_id }}-anschrift">Anschrift des/ der Verbraucher(s)*</label>
+            <textarea id="{{ form_id }}-anschrift" class="{{ textarea_class }}" name="contact[Anschrift]" rows="3" autocomplete="street-address" required aria-required="true"></textarea>
+          </div>
+          <div class="field">
+            <label class="{{ label_class }}" for="{{ form_id }}-email">E-Mail (für deine Eingangsbestätigung)*</label>
+            <input id="{{ form_id }}-email" class="{{ input_class }}{% if form.errors contains 'email' %} invalid{% endif %}" type="email" name="contact[email]" autocomplete="email" dir="ltr" spellcheck="false" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" required aria-required="true"{% if form.errors contains 'email' %} aria-invalid="true" aria-describedby="{{ form_id }}-errors"{% endif %}>
+          </div>
+          <div class="field">
+            <label class="{{ label_class }}" for="{{ form_id }}-bestellnummer">Bestellnummer*</label>
+            <input id="{{ form_id }}-bestellnummer" class="{{ input_class }}" type="text" name="contact[Bestellnummer]" required aria-required="true">
+          </div>
+          <div class="field">
+            <label class="{{ label_class }}" for="{{ form_id }}-bestellt">Bestellt am*</label>
+            <input id="{{ form_id }}-bestellt" class="{{ input_class }}" type="date" name="contact[Bestellt am]" required aria-required="true">
+          </div>
+          <div class="field">
+            <label class="{{ label_class }}" for="{{ form_id }}-erhalten">Erhalten am (falls bereits erhalten)</label>
+            <input id="{{ form_id }}-erhalten" class="{{ input_class }}" type="date" name="contact[Erhalten am]">
+          </div>
+          <div class="field">
+            <label class="{{ label_class }}" for="{{ form_id }}-artikel">Betreffende Ware(n)*</label>
+            <textarea id="{{ form_id }}-artikel" class="{{ textarea_class }}" name="contact[Artikel]" rows="4" required aria-required="true"></textarea>
+          </div>
+          <div class="field">
+            <label class="{{ label_class }}" for="{{ form_id }}-datum">Datum*</label>
+            <input id="{{ form_id }}-datum" class="{{ input_class }}" type="date" name="contact[Datum]" required aria-required="true" data-default-today>
+          </div>
+        </div>
+
+        <div class="contact__button {% if settings.enable_buttons_zoom %}buttons-zoom{% endif %}">
+          <button type="submit" class="button big-button big-button--{{ settings.typography_preset }} {% if settings.typography_preset == 'custom' %}{% if settings.regular_button_size == 'default' %}button-font--default{% else %}{{ settings.regular_button_size }}{% endif %}{% endif %}">Widerruf absenden</button>
+        </div>
+        <div class="rte richtext body-secondary-text--{{ settings.typography_preset }}">
+          {{ 'shopify.online_store.spam_detection.disclaimer_html' | t }}
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    var el = document.getElementById({{ form_id | append: '-datum' | json }});
+    if (el && !el.value) {
+      var d = new Date();
+      el.value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Widerrufsformular",
+  "tag": "section",
+  "class": "widerruf-formular-section",
+  "settings": [
+    { "type": "range", "id": "desktop_padding_top", "label": "Abstand oben (Desktop)", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "desktop_padding_bottom", "label": "Abstand unten (Desktop)", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "mobile_padding_top", "label": "Abstand oben (Mobil)", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 0 },
+    { "type": "range", "id": "mobile_padding_bottom", "label": "Abstand unten (Mobil)", "min": 0, "max": 200, "step": 4, "unit": "px", "default": 32 }
+  ],
+  "presets": [
+    { "name": "Widerrufsformular" }
+  ]
+}
+{% endschema %}
