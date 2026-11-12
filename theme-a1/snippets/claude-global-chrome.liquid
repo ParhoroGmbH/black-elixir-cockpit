@@ -225,7 +225,10 @@
 
   /* Kopfzeile Mobil (bis 920 px): EINE Zeile – Menü + Neuigkeiten links, Logo mittig, Suche + Warenkorb rechts; Sprache/Währung stehen im Menü */
   @media (max-width:920px){
-    html body #shopify-section-mobile-header{--logo-height:44px;--vertical-paddings:0px;box-shadow:none}
+    html body #shopify-section-mobile-header{--logo-height:36px;--vertical-paddings:0px;box-shadow:none}
+    /* Glas (::before) bleibt auf die Kopfzeile begrenzt: die Sektion ist immer positioniert (sonst wäre sie auf Seiten ohne Überlagerung static und das Glas läge über der ganzen Seite) */
+    html body #shopify-section-mobile-header:not(.shopify-section-mobile-header-sticky){position:relative}
+    html body #shopify-section-mobile-header{isolation:isolate;overflow:clip}
     #shopify-section-mobile-header::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:rgba(14,15,18,.8);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);box-shadow:inset 0 -1px 0 rgba(241,222,168,.45);transition:background-color .35s ease}
     #shopify-section-mobile-header[data-bx-tone="dark"]::before{background:linear-gradient(180deg,rgba(8,9,12,.48),rgba(8,9,12,.3))}
     #shopify-section-mobile-header.shopify-section-mobile-header-sticky[data-bx-tone="dark"]::before{background:rgba(8,9,12,.62)}
@@ -233,7 +236,7 @@
     html body #shopify-section-mobile-header .mobile-header__content{position:relative;height:56px;padding:0 4px!important;gap:0;flex-wrap:nowrap}
     html body #shopify-section-mobile-header .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:0;border:0;z-index:1}
     html[dir="rtl"] body #shopify-section-mobile-header .logo{left:auto;right:50%;transform:translate(50%,-50%)}
-    html body #shopify-section-mobile-header .logo__image-item{height:44px;width:auto}
+    html body #shopify-section-mobile-header .logo__image-item{height:36px;width:auto}
     html body #shopify-section-mobile-header .miscellaneous-container{flex:1 1 100%;width:100%;max-width:none;margin:0;padding:0;border:0}
     html body #shopify-section-mobile-header .miscellaneous__items{width:100%;flex:1 1 100%}
     html body #shopify-section-mobile-header .miscellaneous__subblock{display:flex!important;flex-flow:row nowrap!important;align-items:center;justify-content:flex-start!important;width:100%;height:56px;margin:0;padding:0;gap:0}
@@ -241,6 +244,7 @@
     html body #shopify-section-mobile-header .localization-container{display:none!important}
     html body #shopify-section-mobile-header .burger-menu-block{order:-2}
     html body #shopify-section-mobile-header .news-block{order:-1;margin-inline-end:auto}
+    @media (max-width:400px){html body #shopify-section-mobile-header .logo__image-item{height:32px}html body #shopify-section-mobile-header .miscellaneous__subblock>*{width:40px;min-width:0;justify-content:center}html body #shopify-section-mobile-header .miscellaneous__subblock>.cart-block{width:auto}}
   }
   /* A1 12.11.2026 – Arabisch: Fragrance-Library- und DUMO-Landing gespiegelt (Glas-Leiste rechts, Inhalt hält rechts frei). Nur Seitenränder; die Dateien der Landingpages bleiben unverändert. */
   @media (min-width:921px){
@@ -395,7 +399,7 @@
     var de = document.documentElement, bar = document.querySelector('.main-sidebar');
     var heads = [].slice.call(document.querySelectorAll('#shopify-section-secondary-header,#shopify-section-mobile-header'));
     if (!bar && !heads.length) return;
-    var L = 'rgba(255,255,255,.3)', D = 'rgba(12,13,16,.1)', zones = [], lights = [], last = '', hh = -1;
+    var L = 'rgba(255,255,255,.3)', D = 'rgba(12,13,16,.1)', zones = [], lights = [], last = '', hh = -1, mh = -1;
     var els = bar ? [].slice.call(bar.querySelectorAll('a,button,summary,p,h2,h3,h4')) : [];
     function lum(c) { var m = /rgba?\(([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)(?:[,/ ]+([\d.]+))?/.exec(c || ''); return !m || +m[4] === 0 ? -1 : (.2126 * m[1] + .7152 * m[2] + .0722 * m[3]) / 255; }
     function scan() {
@@ -425,7 +429,8 @@
     function upd() {
       heads.forEach(function (h) {
         var r = h.getBoundingClientRect(); if (!r.width || !r.height) return;
-        if (h.id === 'shopify-section-secondary-header' && Math.abs(r.height - hh) > .5) { hh = r.height; de.style.setProperty('--bx-hh', hh.toFixed(1) + 'px'); }
+        if (h.id === 'shopify-section-secondary-header') { if (Math.abs(r.height - hh) > .5) { hh = r.height; de.style.setProperty('--bx-hh', hh.toFixed(1) + 'px'); } }
+        else if (Math.abs(r.height - mh) > .5) { mh = r.height; de.style.setProperty('--ch-mh', Math.round(mh) + 'px'); } /* Startseite mobil: Hero schiebt sich um genau die Kopfzeilenhöhe darunter (claude-home-fix) */
         var t = Math.max(0, r.top), y = r.height / 2; /* eingefahrene (versteckte) Kopfzeile: Ton für die Position, an der sie wieder erscheint */
         var d = dark(t, r.height, r.left, r.right).some(function (v) { return y > v[0] && y < v[1]; }) ? 'dark' : 'light';
         if (h.getAttribute('data-bx-tone') !== d) h.setAttribute('data-bx-tone', d);
