@@ -203,7 +203,7 @@
     si = (i + slides.length) % slides.length; el = 0; sw = 0; var j = si; want = j;
     dots.forEach(function (x, k) { x.classList.toggle('is-on', k === j); });
     if (!S || S.dead) { activate(j); return; }
-    S.go(j, boxes[j].i, function () { if (want === j) activate(j); });
+    S.go(j, boxes[j].i);
   }
   function pick(o, j) {
     o.i = (j + o.bs.length) % o.bs.length; var b = o.bs[o.i];
@@ -334,7 +334,7 @@
         if (my !== tok) return;
         swap(it, s, r[0], r[1]); if (done) done(); S.busy = 0;
         warmNext(s, i);
-      }).catch(function () { if (my === tok) { S.busy = 0; if (done) done(); } });
+      }).catch(function () { if (my === tok) { S.busy = 0; if (s === want) activate(s); if (done) done(); } });
     }
     function warm(s, i) { var it = itemOf(s, i); if (it) { loadPlace(it).catch(function () {}); loadModel(it).catch(function () {}); } }
     function warmNext(s, i) { // nächstes Produkt im Motiv und erstes des nächsten Motivs vorladen
@@ -366,6 +366,7 @@
       place(az, cfg.polar[1]);
       fadeT = performance.now(); trim();
       renderer.render(scene, camera);
+      if (s === want) activate(s); // Text/Chips des Motivs erst zeigen, wenn sein Ort + Produkt stehen
       if (!live) { live = 1; h.classList.add('hsc-live'); }
       else requestAnimationFrame(function () { snap.style.transition = 'opacity .7s ease'; snap.style.opacity = 0; });
       kick();
@@ -467,7 +468,7 @@
     S = { go: go, warm: warm, kick: kick, busy: 0, THREE: THREE, renderer: renderer, scene: scene, camera: camera, controls: controls, info: function () { return { it: curIt && curIt.it, az: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), places: Object.keys(places).length, models: Object.keys(models).length, mem: renderer.info.memory, view: view }; } };
     h.__hsc = S;
     size();
-    go(0, 0, function () { activate(want); });
+    go(0, 0);
   }
 
   // Kugel, deren untere Hälfte zu einer echten Bodenebene abgeflacht ist (wie three GroundedSkybox): Boden bei y = -height
