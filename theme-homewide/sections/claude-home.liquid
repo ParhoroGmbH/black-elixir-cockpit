@@ -13,9 +13,10 @@
 /* Mobil-Bedienbarkeit 12.11.2026: größere Tippfläche für Hero-Punkte (Optik gleich), Kartenlabels lesbar (mind. 12 px) */
 @media (max-width:860px){.ch .ch-dots button{height:44px;margin:-10px 0}.ch .ch-dots button::after{top:20px}.ch .ch-dots button::before{content:"";position:absolute;top:0;bottom:0;left:-4px;right:-4px}.ch .ch-card__tag,.ch .ch-card__vendor{font-size:12px}}</style>
 <style>/* 12.11.2026 Vollbreite wie Fragrance-Library-/DUMO-Landing: die Startseite läuft unter der linken Glas-Seitenleiste durch (--bx-sbw = Leistenbreite, 0 ohne Leiste/mobil/RTL);
-   alle Sektionen halten ihren Inhalt um die Leistenbreite frei, nur das Marken-Laufband läuft sichtbar darunter durch. Schriftfarbe der Leiste: sidebarTone in claude-global-chrome. */
+   alle Sektionen halten ihren Inhalt um die Leistenbreite frei, beim Marken-Laufband läuft nur das schwarze Band darunter durch (Logos enden an der Leistenkante). Schriftfarbe der Leiste: sidebarTone in claude-global-chrome. */
 .claude-home-section{width:calc(100% + var(--bx-sbw,0px));margin-left:calc(-1*var(--bx-sbw,0px))}
-.ch>:is(div,section):not(.ch-marq){padding-left:var(--bx-sbw,0px)!important}</style>
+.ch>:is(div,section):not(.ch-marq){padding-left:var(--bx-sbw,0px)!important}
+.ch .ch-marq::before{content:"";position:absolute;z-index:1;left:0;top:0;bottom:0;width:var(--bx-sbw,0px);background:#000}</style>
 <script>(function(){var de=document.documentElement,me=document.currentScript.parentNode,sb=document.querySelector('.main-sidebar-section');
 function w(){de.style.setProperty('--bx-sbw',(sb&&de.dir!=='rtl'&&getComputedStyle(sb).display!=='none'?sb.offsetWidth:0)+'px');de.style.setProperty('--ch-top',Math.max(0,Math.round(me.getBoundingClientRect().top+(window.pageYOffset||0)))+'px')}
 w();addEventListener('resize',w);addEventListener('load',w)})();</script>

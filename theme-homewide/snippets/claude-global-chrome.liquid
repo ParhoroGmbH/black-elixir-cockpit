@@ -304,16 +304,16 @@
      und auf der Startseite jede Sektion von .ch mit dunklem Grund (automatisch erkannt). Gezählt wird nur, was wirklich unter der Leiste durchläuft. */
   function sidebarTone() {
     var bar = document.querySelector('.main-sidebar'); if (!bar) return;
-    var de = document.documentElement, L = 'rgba(255,255,255,.3)', D = 'rgba(14,15,19,.42)', zones = [], raf = 0, last = '';
+    var de = document.documentElement, L = 'rgba(255,255,255,.3)', D = 'rgba(14,15,19,.42)', zones = [], last = '';
     var els = [].slice.call(bar.querySelectorAll('a,button,summary,p,h2,h3,h4'));
     function lum(c) { var m = /rgba?\(([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)(?:[,/ ]+([\d.]+))?/.exec(c || ''); return !m || +m[4] === 0 ? -1 : (.2126 * m[1] + .7152 * m[2] + .0722 * m[3]) / 255; }
     function scan() {
-      zones = [].slice.call(document.querySelectorAll('.shopify-section-footer .footer,.fl-land,.dh,.dv,.dg,[data-bx-dark]'));
+      zones = [].slice.call(document.querySelectorAll('.shopify-section-footer .footer,.shopify-section-footer .overlapping-container-js,.fl-land,.dh,.dv,.dg,[data-bx-dark]'));
       if (!document.querySelector('.shopify-section-footer .footer')) { var f = document.querySelector('.shopify-section-footer'); if (f) zones.push(f); }
       [].forEach.call(document.querySelectorAll('.ch>div,.ch>section'), function (e) { var c = getComputedStyle(e), b = lum(c.backgroundColor); if (b < 0 ? lum(c.color) > .6 : b < .25) zones.push(e); });
     }
     function upd() {
-      raf = 0; var b = bar.getBoundingClientRect(); if (!b.width || !b.height) return;
+      var b = bar.getBoundingClientRect(); if (!b.width || !b.height) return;
       var lit = de.classList.contains('fls-light'), iv = [];
       zones.forEach(function (z) {
         if (lit && z.classList.contains('fl-land')) return;
@@ -333,7 +333,7 @@
         e.classList.toggle('bx-ondark', r.height > 0 && m.some(function (v) { return y > v[0] && y < v[1]; }));
       });
     }
-    function q() { if (!raf) raf = requestAnimationFrame(upd); }
+    var q = upd; /* direkt im Scroll-Ereignis (ohnehin einmal pro Bild) – kein rAF, damit die Farbe nie hinterherhinkt */
     scan(); upd();
     window.addEventListener('scroll', q, { passive: true }); window.addEventListener('resize', q);
     window.addEventListener('load', function () { scan(); q(); });
