@@ -165,6 +165,11 @@
     .chatty-ai-mode.state-resting.pos-bottom.pos-center{right:12px!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important}
     .chatty-ai-mode.state-resting.pos-center .aimode-psc-host{max-width:calc(100vw - 24px)}
   }
+  /* Runde 3c: schmale Handys (unter 390 px) – Symbol optisch 40 px und näher am Rand, damit es den rechten Hero-Pfeil beim Scrollen nicht berührt (geprüft 360/375 px). Skaliert wird das Dock, die Innenaufteilung der App bleibt unverändert. */
+  @media (max-width:389px){
+    .chatty-ai-mode.state-resting.pos-bottom.pos-center{right:6px!important}
+    .chatty-ai-mode.state-resting .aimode-sbar-dock{transform:scale(.8334)!important;transform-origin:100% 100%!important}
+  }
 </style>
 <script>
 (function () {
