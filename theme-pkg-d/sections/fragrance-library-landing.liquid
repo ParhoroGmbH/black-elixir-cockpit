@@ -128,13 +128,16 @@ b.addEventListener('click',function(){F.open(o,b)});
 return b});
 cabs.push({el:cab,body:body,books:books,per:0});c.appendChild(cab)});
 /* Bücher auf Böden verteilen: so viele je Boden, wie in die Breite passen (höchstens 12), gleichmäßig auf die Böden verteilt */
-function lay(){cabs.forEach(function(k){
-var cs=getComputedStyle(k.body),W=k.body.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),sm=innerWidth<=700,gap=sm?4:5,pad=sm?12:28;W-=pad;if(W<=0)return;
-var n=k.books.length,minW=W>=820?86:W>=520?74:50,cols=Math.max(4,Math.min(12,Math.floor((W+gap)/(minW+gap)))),rows=Math.ceil(n/cols),per=Math.ceil(n/rows),bw=Math.min(124,(W-(per-1)*gap)/per);
-k.el.style.setProperty('--bh',(bw*3.3).toFixed(1)+'px');
-if(per===k.per)return;k.per=per;
+function lay(){var bw=124;cabs.forEach(function(k){
+var cs=getComputedStyle(k.body),W=k.body.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),sm=innerWidth<=700,gap=sm?4:5;W-=sm?12:28;k.np=0;if(W<=0)return;
+var n=k.books.length,minW=W>=700?74:W>=520?66:50,cols=Math.max(4,Math.min(12,Math.floor((W+gap)/(minW+gap)))),rows=Math.ceil(n/cols);k.np=Math.ceil(n/rows);
+bw=Math.min(bw,(W-(Math.min(cols,n)-1)*gap)/Math.min(cols,n))});
+/* alle Bücher gleich groß, in beiden Schränken */
+cabs.forEach(function(k){
+if(!k.np)return;k.el.style.setProperty('--bh',(bw*3.3).toFixed(1)+'px');
+if(k.np===k.per)return;k.per=k.np;var n=k.books.length;
 [].slice.call(k.body.querySelectorAll('.sh')).forEach(function(s){k.body.removeChild(s)});
-for(var i=0;i<n;i+=per){var sh=mk('div','sh flb-rueck'),row=mk('div','row'),br=mk('div','brett');br.appendChild(mk('span','flb-brett'));br.appendChild(mk('span','flb-kante'));k.books.slice(i,i+per).forEach(function(b){row.appendChild(b)});sh.appendChild(row);sh.appendChild(br);k.body.insertBefore(sh,k.body.lastChild)}
+for(var i=0;i<n;i+=k.per){var sh=mk('div','sh flb-rueck'),row=mk('div','row'),br=mk('div','brett');br.appendChild(mk('span','flb-brett'));br.appendChild(mk('span','flb-kante'));k.books.slice(i,i+k.per).forEach(function(b){row.appendChild(b)});sh.appendChild(row);sh.appendChild(br);k.body.insertBefore(sh,k.body.lastChild)}
 })}
 function fit(){lay();document.querySelectorAll('.fl-land .book .n').forEach(function(n){n.style.fontSize='';var fs=parseFloat(getComputedStyle(n).fontSize);var mn=innerWidth<=700?12:9;while((n.scrollHeight>n.clientHeight+1||n.scrollWidth>n.clientWidth+1)&&fs>mn){fs-=.5;n.style.fontSize=fs+'px'}})}
 /* neu verteilen, sobald sich die Breite des Regals ändert (Fenster, Seitenleiste) */
