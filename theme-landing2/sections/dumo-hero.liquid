@@ -17,14 +17,15 @@
 @media (prefers-reduced-motion:reduce){.dh{height:100vh}.dh-tx h1,.dh-tx p,.dh-be{opacity:1;letter-spacing:.08em}.dh video{display:none}}
 .dm-gate{display:none}
 .dh-skip{display:none}
-@media (max-width:760px){.dh-skip{display:inline-flex;align-items:center;min-height:44px;margin-top:18px;padding:0 22px;border:1px solid rgba(243,232,208,.55);border-radius:999px;font:500 12px Jost,system-ui,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#f3e8d0;text-decoration:none;background:rgba(11,9,7,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}.dh-skip:focus-visible{outline:2px solid #e3c27d;outline-offset:3px}}
+@media (max-width:760px){.dh-skip{position:absolute;z-index:2;top:14px;left:50%;transform:translateX(-50%);white-space:nowrap;gap:.6em;display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border:1px solid rgba(243,232,208,.55);border-radius:999px;font:500 12px Jost,system-ui,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#f3e8d0;text-decoration:none;background:rgba(11,9,7,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}.dh-skip:focus-visible{outline:2px solid #e3c27d;outline-offset:3px}}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Jost:wght@300;400;500&display=swap">
 <div class="dh" id="dh-{{ section.id }}"><div class="dh-st">
 <img class="dh-poster" src="{{ poster }}" alt="Gladiator mit Bronzehelm" width="1344" height="752" fetchpriority="high">
 <video muted playsinline loop preload="none" poster="{{ poster }}" data-src="{{ vid }}" aria-hidden="true"></video>
 <div class="dh-shade"></div>
-<div class="dh-tx"><div class="dh-be"><b>Black Elixir</b> · Maison de Parfum präsentiert</div><h1>DUMO</h1><p>{{ section.settings.subtitle }}</p><a class="dh-skip" href="#dm-shop">Direkt zur Auswahl</a></div>
+<div class="dh-tx"><div class="dh-be"><b>Black Elixir</b> · Maison de Parfum präsentiert</div><h1>DUMO</h1><p>{{ section.settings.subtitle }}</p></div>
+<a class="dh-skip" href="#dm-shop">Direkt zur Auswahl <span aria-hidden="true">↓</span></a>
 <div class="dh-hint">Scrolle nach unten</div>
 </div></div>
 <script>
