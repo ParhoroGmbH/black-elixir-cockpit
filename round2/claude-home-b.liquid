@@ -14,7 +14,7 @@
     <div class="ch-wrap">
       <div class="ch-head"><div><p class="ch-eyebrow">Haute Parfumerie</p><h2 class="ch-h2">Die Häuser der Kenner</h2><p class="ch-lead">Nischenparfums, die man nicht überall findet.</p></div><a class="ch-btn ch-btn--line" style="color:var(--acc)" href="{{ routes.collections_url }}/{{ s.col_nische }}">Alle Nischendüfte</a></div>
       <div class="ch-grid">
-        {%- assign houses = 'parfums-marc-antoine-barrois:Marc-Antoine Barrois:PARIS,signature-royale:Signature Royale:,creed:Creed:LONDON · PARIS,initio:Initio:PARIS' | split: ',' -%}
+        {%- assign houses = 'parfums-marc-antoine-barrois:Marc-Antoine Barrois:PARIS,signature-royale:Signature Royale:PARIS,creed:Creed:LONDON · PARIS,initio:Initio:PARIS' | split: ',' -%}
         {%- for h in houses -%}
           {%- assign hp = h | split: ':' -%}{%- assign hc = collections[hp[0]] -%}
           <a class="ch-arch ch-glassD ch-sheen ch-tilt" href="{{ routes.collections_url }}/{{ hp[0] }}">
