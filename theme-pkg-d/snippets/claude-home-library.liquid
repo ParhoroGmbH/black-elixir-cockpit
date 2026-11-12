@@ -147,6 +147,7 @@
     /* Foto der gewählten Größe auf der Papiertafel (snippets/fl-books): Bild der Variante, sonst Produktbild mit der Größe im Alt-Text/Dateinamen, sonst Hauptbild */
     var curD = null;
     function vimg(v, d) {
+      if (v && F && F.white && F.white(v.id)) return F.white(v.id);
       if (v && v.featured_image && v.featured_image.src) return v.featured_image.src;
       var n = String(ml(v || {}) || ''), hit = '';
       if (n && d) (d.media || []).some(function (m) { var a = String(m.alt || '').toLowerCase(), f = String(m.src || (m.preview_image || {}).src || '').split('?')[0].split('/').pop().toLowerCase(); if (a.indexOf(n + ' ml') >= 0 || a.indexOf(n + 'ml') >= 0 || f.indexOf(n + 'ml') >= 0 || f.indexOf(n + '-ml') >= 0 || (n === '3' && /probe|sample/.test(a + f))) { hit = m.src || (m.preview_image || {}).src; return true; } });
