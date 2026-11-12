@@ -32,12 +32,11 @@
     }
     function soon() { clearTimeout(tm); tm = setTimeout(load, 500); }
     /* Das Theme rendert den Inhalt von #CartDrawer nach jeder Warenkorbänderung neu (Hinzufügen, Menge, Entfernen) – das ist unser Signal; im Ruhezustand 0 Mutationen */
-    var cd = document.getElementById('CartDrawer');
-    if (cd && 'MutationObserver' in window) new MutationObserver(soon).observe(cd, { childList: true, subtree: true });
+    function watch() { var cd = document.getElementById('CartDrawer'); if (cd && 'MutationObserver' in window) new MutationObserver(soon).observe(cd, { childList: true, subtree: true }); soon(); }
     document.addEventListener('ajaxProduct:added', soon);
     document.addEventListener('cart:refresh', soon);
     addEventListener('pageshow', function (e) { if (e.persisted) load(); });
-    if (document.readyState === 'complete') soon(); else addEventListener('load', soon);
+    if (document.readyState === 'complete') watch(); else addEventListener('load', watch); /* erst nach dem Laden: der Drawer steht weiter unten im HTML, und nichts lädt vorab */
   })();
   </script>
   {%- endif -%}
