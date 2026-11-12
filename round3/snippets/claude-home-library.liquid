@@ -120,7 +120,10 @@
       /* Runde 3: Größen klein → groß; vorgewählt ist die größte lieferbare Größe (3-ml-Probe nur, wenn sonst nichts lieferbar ist) */
       var vs = d.variants.slice().sort(function (a, b) { return (ml(a) - ml(b)) || (a.price - b.price); });
       if (vs.length > 1) vs.forEach(function (v) { var c = el('button', 'cl-chip', v.title); c.type = 'button'; c.dataset.id = v.id; c.disabled = !v.available; c.addEventListener('click', function () { variant(v); }); chips.appendChild(c); });
-      variant(vs.filter(function (v) { return v.available; }).pop() || vs[vs.length - 1]);
+      /* bei gleicher Größe und gleichem Preis gewinnt die Variante, die im Produkt zuerst steht (z. B. "100 ml" vor "100 ml EXTRAIT") */
+      var av = d.variants.filter(function (v) { return v.available; }), best = av[0];
+      av.forEach(function (v) { if (ml(v) > ml(best) || (ml(v) === ml(best) && v.price > best.price)) best = v; });
+      variant(best || vs[vs.length - 1]);
     }
     function load(b) {
       var url = b.dataset.u.split('?')[0]; cur = url;
