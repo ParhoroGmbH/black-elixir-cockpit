@@ -87,13 +87,13 @@
   @media (max-width:640px){.ci-strip__t{flex:1 1 100%}.ci-strip__a{min-height:44px}}
 
   /* In den Warenkorb (Theme-Element add-to-cart) */
-  .ch add-to-cart{display:inline-flex;flex:0 0 auto}
+  .ch add-to-cart{display:inline-flex;flex:0 0 auto;width:auto;height:auto;max-width:none}
   .ch add-to-cart .ch-btn{white-space:nowrap}
   .ch add-to-cart.loading .ch-btn{opacity:.55;cursor:progress}
   .ch .ch-btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
   .ci-err{flex:1 1 100%;font-size:13px;color:#f0b9a8}
   .ci-err:empty{display:none}
-  .ca-cta{display:flex;flex-wrap:wrap;gap:10px}
+  .ca-cta{display:flex;flex-wrap:wrap;gap:10px;flex:0 0 auto;max-width:100%}
   .ca .ca-cta .ch-btn--line{color:var(--accL)}
 
   /* Bibliothek: Duftnoten, Größe, Warenkorb */
@@ -109,7 +109,7 @@
   .cl-gp{font-size:12px;color:#a79f8e}
   .cl-acts{display:flex;flex-direction:column;gap:8px}
   .cl-acts .ch-btn{min-height:44px;padding:0 18px;font-size:12px}
-  .cl-acts add-to-cart{display:flex}
+  .cl-acts add-to-cart{display:flex;width:100%}
   .cl-acts add-to-cart .ch-btn{flex:1 1 auto}
   .cl .cl-acts .ch-btn--line{color:var(--gold)}
   @media (min-width:861px){.cl .cl-panel img{aspect-ratio:auto;height:180px}}
