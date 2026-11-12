@@ -25,7 +25,9 @@
   .ch .ch-h3 .ch-ctrl{gap:8px}.ch .ch-h3 .ch-ctrl>button{width:44px;height:44px}.ch .ch-h3 .ch-dots button{width:18px}.ch .ch-h3 .ch-dots button.is-on{width:40px}
   .ch .m3-tabs button{flex:0 0 auto;min-height:calc(36px / var(--m3s));padding:0 calc(14px / var(--m3s));font-size:calc(12px / var(--m3s));letter-spacing:.08em}
 }
-@media (max-width:400px){.ch .m3{--m3s:.56}}</style>
+@media (max-width:400px){.ch .m3{--m3s:.56}}
+/* A1 12.11.2026: niedrige Handys (bis 700 px Höhe, z. B. 375×667): Text kompakter und Hero genau fensterhoch, damit Text, Produkt, Chips und Pfeile in die erste Ansicht passen */
+@media (max-width:860px) and (max-height:700px){.ch .ch-hero.ch-h3{height:clamp(580px,calc(100vh - var(--ch-top,32px)),820px);height:clamp(580px,calc(100svh - var(--ch-top,32px)),820px)}.ch .ch-h3 .h3-slide{padding-top:calc(var(--ch-mh,56px) + 8px)}.ch .ch-h3 .h3-text{gap:8px}.ch .ch-h3 .h3-title{font-size:30px}.ch .ch-h3 .h3-text p.d{font-size:14px;line-height:1.5}.ch .ch-h3 .h3-btns .ch-btn{min-height:44px;padding-top:10px;padding-bottom:10px}}</style>
 <div class="ch-hero ch-h3" data-ch-hero>
   {%- for i in (1..14) -%}
     <span class="ch-dust" style="left:{{ i | times: 37 | modulo: 100 }}%;width:{{ i | modulo: 3 | plus: 2 }}px;height:{{ i | modulo: 3 | plus: 2 }}px;animation-delay:-{{ i | times: 0.61 }}s" aria-hidden="true"></span>
