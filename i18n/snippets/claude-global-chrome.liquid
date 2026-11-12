@@ -170,6 +170,12 @@
     .chatty-ai-mode.state-resting.pos-bottom.pos-center{right:6px!important}
     .chatty-ai-mode.state-resting .aimode-sbar-dock{transform:scale(.8334)!important;transform-origin:100% 100%!important}
   }
+  /* Claude 12.11.2026: kein seitliches Scrollen am Desktop – Basis-Theme setzt body{width:100vw} (inkl. Scrollbalken) */
+  html{overflow-x:clip}
+  html body{width:100%}
+  /* Claude 12.11.2026 (i18n): Arabisch – Sperrung trennt die verbundenen Buchstaben, daher in den neuen Bereichen aus */
+  html[dir="rtl"] .ch,html[dir="rtl"] .ch *,html[dir="rtl"] .dm *,html[dir="rtl"] .dh *,html[dir="rtl"] .dv *,html[dir="rtl"] .dg *,html[dir="rtl"] .fl-land *,html[dir="rtl"] .fls *,
+  html[dir="rtl"] body .shopify-section-footer .menus__item-title,html[dir="rtl"] body .shopify-section-footer .newsletter__title,html[dir="rtl"] body sticky-secondary-header .menu__item-link{letter-spacing:0!important}
 </style>
 <script>
 (function () {

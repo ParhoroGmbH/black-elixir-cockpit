@@ -76,7 +76,10 @@
       "hours": "Std",
       "minutes": "Min",
       "seconds": "Sek",
-      "days_minimized": "T"
+      "days_minimized": "T",
+      "hours_minimized": "T",
+      "minutes_minimized": "M",
+      "seconds_minimized": "S"
     },
     "stories_slideshow": {
       "products_promotion_label": "Produkter fra kampagnen"
@@ -85,6 +88,73 @@
   "general": {
     "links": {
       "link_to_button_label": "Link til {{ label }}"
+    },
+    "breadcrumbs": {
+      "home": "Forside",
+      "collections": "Kollektioner"
+    },
+    "burger_menu": "Åbn menu",
+    "news_drawer": "Åbn nyhedspanel",
+    "anchor_link": {
+      "title": "Ankerlink",
+      "text": "Denne sektion er usynlig uden for tematilpasningen"
+    },
+    "pagination": {
+      "label": "Sideinddeling",
+      "page": "Side {{ number }}",
+      "next": "Næste side",
+      "previous": "Forrige side",
+      "load_more": "Indlæs flere"
+    },
+    "password_page": {
+      "login_password_button": "Gå ind med adgangskode",
+      "login_form_heading": "Gå ind i butikken med adgangskode:",
+      "login_form_password_label": "Adgangskode",
+      "login_form_submit": "Gå ind",
+      "admin_link": "Er du butiksejer?",
+      "admin_link_html": "Er du butiksejer? <a href=\"/admin\" class=\"link underlined-link\">Log ind her</a>",
+      "login": "Log ind her"
+    },
+    "slider": {
+      "of": "af",
+      "next_slide": "Næste slide",
+      "previous_slide": "Forrige slide"
+    },
+    "social_media": {
+      "text": {
+        "instagram": "Instagram",
+        "twitter": "Twitter",
+        "tiktok": "TikTok",
+        "snapchat": "Snapchat",
+        "pinterest": "Pinterest",
+        "tumblr": "Tumblr",
+        "facebook": "Facebook",
+        "linkedin": "LinkedIn",
+        "youtube": "YouTube",
+        "vimeo": "Vimeo",
+        "reddit": "Reddit",
+        "trustpilot": "Trustpilot",
+        "tripadvisor": "Tripadvisor",
+        "telegram": "Telegram",
+        "line": "Line"
+      },
+      "short_text": {
+        "instagram": "IG",
+        "twitter": "TW",
+        "tiktok": "TT",
+        "snapchat": "SNAP",
+        "pinterest": "PIN",
+        "tumblr": "TU",
+        "facebook": "FB",
+        "linkedin": "LI",
+        "youtube": "YT",
+        "vimeo": "VM",
+        "reddit": "REDDIT",
+        "trustpilot": "TP",
+        "tripadvisor": "TA",
+        "telegram": "TG",
+        "line": "LN"
+      }
     }
   },
   "templates": {
