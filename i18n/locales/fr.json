@@ -896,6 +896,15 @@
       "t_pay_html": "Paiement sécurisé",
       "prev_html": "Précédent",
       "next_html": "Suivant"
+    },
+    "pdp": {
+      "delivery_html": "Livraison : 2 à 4 jours ouvrés (Allemagne) · UE : 2 à 8 jours ouvrés · Autres pays : voir au moment du paiement",
+      "gw_link_html": "Garantie légale – voir la notice",
+      "gw_html": "Garantie légale",
+      "close_html": "Fermer"
+    },
+    "sp": {
+      "all_gifts_html": "Voir toutes les idées cadeaux"
     }
   }
 }

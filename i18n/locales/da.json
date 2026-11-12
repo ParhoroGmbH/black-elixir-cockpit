@@ -896,6 +896,15 @@
       "t_pay_html": "Sikker betaling",
       "prev_html": "Tilbage",
       "next_html": "Næste"
+    },
+    "pdp": {
+      "delivery_html": "Leveringstid: 2–4 hverdage (Tyskland) · EU: 2–8 hverdage · Øvrige lande: se ved kassen",
+      "gw_link_html": "Lovpligtig reklamationsret – se oplysning",
+      "gw_html": "Lovpligtig reklamationsret",
+      "close_html": "Luk"
+    },
+    "sp": {
+      "all_gifts_html": "Se alle gaveidéer"
     }
   }
 }

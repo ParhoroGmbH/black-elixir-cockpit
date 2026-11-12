@@ -907,6 +907,15 @@
       "t_pay_html": "Sichere Zahlung",
       "prev_html": "Zurück",
       "next_html": "Weiter"
+    },
+    "pdp": {
+      "delivery_html": "Lieferzeit: 2–4 Werktage (Deutschland) · EU: 2–8 Werktage · Weitere Länder: siehe Checkout",
+      "gw_link_html": "Gesetzliche Gewährleistung – Hinweis ansehen",
+      "gw_html": "Gesetzliche Gewährleistung",
+      "close_html": "Schließen"
+    },
+    "sp": {
+      "all_gifts_html": "Alle Geschenkideen ansehen"
     }
   }
 }

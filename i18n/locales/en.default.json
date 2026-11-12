@@ -896,6 +896,15 @@
       "t_pay_html": "Secure payment",
       "prev_html": "Back",
       "next_html": "Next"
+    },
+    "pdp": {
+      "delivery_html": "Delivery: 2–4 working days (Germany) · EU: 2–8 working days · Other countries: see checkout",
+      "gw_link_html": "Statutory warranty – view notice",
+      "gw_html": "Statutory warranty",
+      "close_html": "Close"
+    },
+    "sp": {
+      "all_gifts_html": "View all gift ideas"
     }
   }
 }

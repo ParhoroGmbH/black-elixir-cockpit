@@ -896,6 +896,15 @@
       "t_pay_html": "Pagamento sicuro",
       "prev_html": "Indietro",
       "next_html": "Avanti"
+    },
+    "pdp": {
+      "delivery_html": "Consegna: 2–4 giorni lavorativi (Germania) · UE: 2–8 giorni lavorativi · Altri paesi: vedi al checkout",
+      "gw_link_html": "Garanzia legale – visualizza l’informativa",
+      "gw_html": "Garanzia legale",
+      "close_html": "Chiudi"
+    },
+    "sp": {
+      "all_gifts_html": "Scopri tutte le idee regalo"
     }
   }
 }
