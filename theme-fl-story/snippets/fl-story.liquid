@@ -1,5 +1,5 @@
 {%- comment -%} fl-story – Scroll-Story der Fragrance-Library-Landingpage: "Die Bibliothek bei Nacht" + vier Welten (The Alchemist, Romeo and Juliet, Rebecca, Hard Times). Claude · 12.11.2026.
-  Einbau: {% render 'fl-story' %} (ersetzt den alten Block <section class="scene">…</section>). Eigenständig, alle Klassen .fls-.
+  Einbau in sections/fragrance-library-landing.liquid: {% render 'fl-story' %} direkt nach <div class="fl-land"> anstelle des alten Blocks <section class="scene" …>…</section>. Eigenständig, alle Klassen .fls-.
   Videos (Shopify-Dateien be-fl-story-<szene>-2026-11-12.mp4) sind KI-Szenen OHNE Flakon; der Flakon ist immer echt: 3D-Modell (GLB) des Produkts oder, ohne Modell (Hard Times), das freigestellte echte Produktfoto.
   Produktdaten (Preis, Variante, Noten) kommen live aus Shopify; ein nicht lieferbares Produkt blendet sein Kapitel aus. {%- endcomment -%}
 <style>
@@ -35,6 +35,8 @@
 .fls-shadow{position:absolute;z-index:1;left:50%;top:84%;width:min(46%,300px);height:30px;transform:translate(-50%,-45%);background:radial-gradient(ellipse at center,rgba(0,0,0,.85),rgba(0,0,0,.35) 45%,transparent 70%);opacity:0;transition:opacity .9s;pointer-events:none}
 .fls-stage.is-set .fls-shadow{opacity:1}
 .fls-ship{display:block;margin-top:2px;font-size:.8rem;color:var(--mut)}
+/* volle Breite in .fl-land: die Fläche läuft unter der linken Seitenleiste durch (--fl-sbw setzt die Landing-Sektion; ohne sie 0) */
+.fls-cap,.fls-prod,.fls-end{padding-left:calc(var(--fl-sbw,0px) + clamp(16px,6cqw,80px))}
 .fls-info{max-width:500px}
 .fls-name{font-family:var(--serif);font-weight:400;line-height:1.02;color:var(--fg);font-size:clamp(2rem,5cqw,3.7rem);margin-top:8px;letter-spacing:0;text-transform:none}
 .fls-sub{margin-top:6px;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
@@ -56,7 +58,7 @@
 .fls-end .fls-h{font-size:clamp(2.2rem,6cqw,4.5rem)}.fls-end p{max-width:46ch;margin:14px auto 0;color:#d8cfbb}
 .fls-end i{display:block;width:1px;height:56px;margin:26px auto 0;background:linear-gradient(180deg,var(--gold),transparent)}
 @container fls (max-width:860px){
-.fls-prod{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;align-items:stretch;gap:6px;padding:106px 16px 18px}
+.fls-prod{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;align-items:stretch;gap:6px;padding:106px 16px 18px calc(var(--fl-sbw,0px) + 16px)}
 .fls-stage{height:auto}.fls-info{max-width:none}
 .fls-stage--photo{--gy:91%}.fls-stage--photo .fls-photo{bottom:9%;height:86%}.fls-stage--photo .fls-shadow{top:91%}
 .fls-name{font-size:clamp(1.7rem,8.4cqw,2.4rem);margin-top:4px}.fls-sub{font-size:.7rem;margin-top:2px}
