@@ -61,7 +61,7 @@
       <figure class="ci-rv__c ch-glassL">
         <span class="ci-rv__s" role="img" aria-label="{{ r.rating }} von 5 Sternen">{%- for i in (1..r.rating) -%}★{%- endfor -%}</span>
         <blockquote class="ci-rv__q">„{{ r.body | strip_html | strip | truncatewords: 38 | escape }}“</blockquote>
-        <figcaption class="ci-rv__n">{{ r.reviewer_name | strip_html | escape }}{%- if r.verified_buyer -%} · Verifizierter Kauf{%- endif -%}<small>{{ r.product_title | strip_html | truncate: 60 }} · {{ r.created_at | date: '%d.%m.%Y' }}</small></figcaption>
+        <figcaption class="ci-rv__n">{{ r.reviewer_name | strip_html | escape }}{%- if r.verified_buyer -%}&nbsp;· Verifizierter Kauf{%- endif -%}<small>{{ r.product_title | strip_html | truncate: 60 }} · {{ r.created_at | date: '%d.%m.%Y' }}</small></figcaption>
       </figure>
     {%- endfor -%}
   {%- endcapture -%}
@@ -79,7 +79,7 @@
   .ci-strip{background:#0d0b09;color:#f3e9d2;font-size:14px;border-bottom:1px solid rgba(200,164,92,.35)}
   .ci-strip .ch-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;min-height:48px;padding-top:8px;padding-bottom:8px}
   .ci-strip__t{letter-spacing:.04em}
-  .ci-strip__bar{position:relative;flex:1 1 160px;height:3px;border-radius:3px;background:rgba(255,255,255,.16)}
+  .ci-strip__bar{position:relative;flex:1 1 160px;height:4px;border-radius:4px;background:rgba(255,255,255,.16)}
   .ci-strip__bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--accD),var(--acc),var(--accL));transition:width .8s cubic-bezier(.2,.8,.2,1)}
   .ci-strip__bar b{position:absolute;left:59.6%;top:-3px;width:1px;height:9px;background:var(--accL)}
   .ci-strip__a{display:inline-flex;align-items:center;min-height:32px;color:var(--accL);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px;white-space:nowrap}
@@ -87,8 +87,8 @@
   @media (max-width:640px){.ci-strip__t{flex:1 1 100%}.ci-strip__a{min-height:44px}}
 
   /* In den Warenkorb (Theme-Element add-to-cart) */
-  .ch add-to-cart{display:inline-flex}
-  .ch add-to-cart .ch-btn{width:100%}
+  .ch add-to-cart{display:inline-flex;flex:0 0 auto}
+  .ch add-to-cart .ch-btn{white-space:nowrap}
   .ch add-to-cart.loading .ch-btn{opacity:.55;cursor:progress}
   .ch .ch-btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
   .ci-err{flex:1 1 100%;font-size:13px;color:#f0b9a8}
@@ -109,6 +109,8 @@
   .cl-gp{font-size:12px;color:#a79f8e}
   .cl-acts{display:flex;flex-direction:column;gap:8px}
   .cl-acts .ch-btn{min-height:44px;padding:0 18px;font-size:12px}
+  .cl-acts add-to-cart{display:flex}
+  .cl-acts add-to-cart .ch-btn{flex:1 1 auto}
   .cl .cl-acts .ch-btn--line{color:var(--gold)}
   @media (min-width:861px){.cl .cl-panel img{aspect-ratio:auto;height:180px}}
 
