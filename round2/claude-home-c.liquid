@@ -1,4 +1,4 @@
-{%- comment -%} Teil der Section claude-home (Claude · Neue Homepage 11.11.2026 – nicht anfassen). 12.11.2026: Video-Lounge je Karte eigenes Produktvideo, Geschenke-Karten als echte Geschenke mit Satinschleife, Geschenkbox-Film + echte Seifenbilder + Marmor/Samt-Hintergrund. Runde 2: part 'gifts' (Advent, Budget, Rabatt) wird aus claude-home-b vor DUMO gerendert, ohne part nur Video-Lounge + Journal; Seifenkarten mit be-seife-*-2026-11-12.jpg (echtes Produktfoto auf Marmor). {%- endcomment -%}
+{%- comment -%} Teil der Section claude-home (Claude · Neue Homepage 11.11.2026 – nicht anfassen). 12.11.2026: Video-Lounge je Karte eigenes Produktvideo, Geschenke-Karten als echte Geschenke mit Satinschleife, Geschenkbox-Film + echte Seifenbilder + Marmor/Samt-Hintergrund. Runde 2: part 'gifts' (Advent, Budget, Rabatt) wird aus claude-home-b vor DUMO gerendert, ohne part nur Video-Lounge + Journal; Seifenkarten mit be-seife-*-weiss-2026-11-12.jpg (echtes Produktfoto freigestellt auf reinem Weiß, Karte weiß). {%- endcomment -%}
 {%- liquid
   assign s = sec.settings
   assign c_soap = collections[s.col_soaps]
@@ -71,9 +71,9 @@
   .ch .cr .ch-soap{background:linear-gradient(160deg,rgba(255,252,245,.96),rgba(234,223,201,.92))!important;border:1px solid rgba(241,222,168,.7)!important;color:#1a130b}
   .cr-sim{display:block;width:100%;max-width:170px;height:104px;overflow:hidden;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px rgba(200,164,92,.35),0 8px 18px rgba(0,0,0,.12)}
   .ch .cr .cr-sim img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.85)}
-  .ch .cr .cr-sim.cr-sim--n{background:#0d0a07;box-shadow:inset 0 0 0 1px rgba(200,164,92,.45),0 8px 18px rgba(0,0,0,.25)}
-  .ch .cr .cr-sim.cr-sim--n{height:auto;aspect-ratio:4/3}
-  .ch .cr .cr-sim--n img{transform:none;object-position:50% 45%}
+  .ch .cr .ch-soap.ch-soap--w{background:#fff!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .ch .cr .cr-sim.cr-sim--w{width:100%;max-width:none;height:auto;aspect-ratio:1.635;background:#fff;border-radius:0;box-shadow:none}
+  .ch .cr .cr-sim--w img{transform:none;object-fit:contain}
   .ch .cr .ch-soap small{font-weight:600}
   .ch .cr .ch-soap:focus-visible{outline:2px solid var(--accL);outline-offset:3px}
   @media (max-width:860px){.ch .cr.cr{background:linear-gradient(180deg,rgba(6,4,3,.82),rgba(6,4,3,.6)),url({{ bg_marmor | image_url: width: 1200 }}) 35% 50%/cover no-repeat,#0a0705!important}.ch .cr .cr-stage.cr-film{max-width:300px}}
@@ -150,7 +150,19 @@
         <script>(function () { var st = document.currentScript.previousElementSibling, v = st.querySelector('video'), f = st.querySelector('.cr-frame'), rm = matchMedia('(prefers-reduced-motion:reduce)').matches; if (rm) return; if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) v.play().catch(function () {}); else v.pause(); }); }, { rootMargin: '150px' }).observe(st); if (matchMedia('(hover:hover)').matches) { st.addEventListener('pointermove', function (e) { var r = st.getBoundingClientRect(); f.style.setProperty('--ry', ((e.clientX - r.left) / r.width - .5) * 14 + 'deg'); f.style.setProperty('--rx', -((e.clientY - r.top) / r.height - .5) * 10 + 'deg'); }); st.addEventListener('pointerleave', function () { f.style.setProperty('--ry', '0deg'); f.style.setProperty('--rx', '0deg'); }); } })();</script>
         <div class="ch-soaps" data-ch-soaps data-level="0">
           {%- for p in c_soap.products limit: 4 -%}
-            <a class="ch-soap ch-glassL ch-sheen" href="{{ p.url }}">{%- assign simg = p.featured_image -%}{%- if p.media.size > 1 -%}{%- assign simg = p.media[1].preview_image -%}{%- endif -%}{%- assign sk = p.handle | remove: 'saponifico-aquaviva-' | replace: 'mandarinoface', 'mandarino-face' | remove: '-face-body-soap' | remove: '-body-soap' | remove: '-hand-seife' -%}{%- assign snew = 'be-seife-' | append: sk | append: '-2026-11-12.jpg' -%}{%- assign snimg = images[snew] -%}{%- if snimg -%}{%- assign simg = snimg -%}{%- endif -%}{%- if simg -%}<span class="cr-sim{% if snimg %} cr-sim--n{% endif %}">{{ simg | image_url: width: 400 | image_tag: loading: 'lazy', alt: p.title }}</span>{%- endif -%}<small>{{ p.title | remove: 'Saponificio Aquaviva ' | truncate: 30 }}</small></a>
+            {%- liquid
+              assign simg = p.featured_image
+              if p.media.size > 1
+                assign simg = p.media[1].preview_image
+              endif
+              assign sk = p.handle | remove: 'saponifico-aquaviva-' | replace: 'mandarinoface', 'mandarino-face' | remove: '-face-body-soap' | remove: '-body-soap' | remove: '-hand-seife'
+              assign snew = 'be-seife-' | append: sk | append: '-weiss-2026-11-12.jpg'
+              assign snimg = images[snew]
+              if snimg
+                assign simg = snimg
+              endif
+            -%}
+            <a class="ch-soap ch-glassL ch-sheen{% if snimg %} ch-soap--w{% endif %}" href="{{ p.url }}">{%- if simg -%}<span class="cr-sim{% if snimg %} cr-sim--w{% endif %}">{{ simg | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title }}</span>{%- endif -%}<small>{{ p.title | remove: 'Saponificio Aquaviva ' | truncate: 30 }}</small></a>
           {%- endfor -%}
         </div>
       </div>
