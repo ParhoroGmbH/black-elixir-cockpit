@@ -19,7 +19,7 @@
           {%- assign hp = h | split: ':' -%}{%- assign hc = collections[hp[0]] -%}
           <a class="ch-arch ch-glassD ch-sheen ch-tilt" href="{{ routes.collections_url }}/{{ hp[0] }}">
             {%- if hc.products.first.featured_image -%}{{ hc.products.first.featured_image | image_url: width: 500 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
-            {%- if hp[2] != blank -%}<span class="ch-arch__k">{{ hp[2] }}</span>{%- endif -%}
+            {%- if hp[2] != blank -%}<span class="ch-arch__k">{{ hp[2] }}</span>{%- else -%}<span class="ch-arch__k" aria-hidden="true">&nbsp;</span>{%- endif -%}
             <span class="ch-arch__t">{{ hp[1] }}</span>
             <span class="ch-arch__d">{% if hc.products_count > 0 %}{{ hc.products_count }} Düfte{% endif %} <span style="color:var(--acc)">→</span></span>
           </a>
