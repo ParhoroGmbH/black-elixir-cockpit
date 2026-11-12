@@ -1,0 +1,224 @@
+{%- comment -%}
+  Teil der Section claude-home – Ideen-Runde 12.11.2026 (Claude).
+  Ohne part: Styles für Warenkorb-Leiste, Warenkorb-Buttons (Advent, Bibliothek), Stimmungs-Produkte, Kundenstimmen, Mobil-Layouts, Scrollbars.
+  part 'strip': Geschenk-Fortschritt direkt unter dem Hero. Quelle = sections/be-seife-state (dieselbe Basis wie Warenkorb/Rabatte), kein eigenes Rechnen.
+  part 'reviews': echte Kundenstimmen – in Judge.me als Featured markierte, sonst fest hinterlegte Auswahl (Runde 3; nichts erfunden, nur gekürzt).
+  part 'deadline': Bestellfrist-Hinweis Nikolaus/Heiligabend (Runde 3), Grenzen dl_e1/dl_e2 oben.
+  In den Warenkorb = Theme-Element <add-to-cart class="cart-drawer"> (AJAX + Warenkorb-Drawer des Themes).
+{%- endcomment -%}
+{%- liquid
+  assign dl_e1 = 1796079599
+  assign dl_e2 = 1797548399
+  assign dl_a = 'Bis 30.11. bestellt – voraussichtlich rechtzeitig zum Nikolaus bei dir.'
+  assign dl_b = 'Bis 17.12. bestellt – voraussichtlich rechtzeitig zu Heiligabend bei dir.'
+-%}
+{%- if part == 'strip' -%}
+  {%- assign be_now = 'now' | date: '%s' | plus: 0 -%}
+  {%- comment -%} Aktionsfenster wie be-seife-hint / be-seife-state: 18.10.–31.12.2026 23:59:59 Berlin {%- endcomment -%}
+  {%- if be_now >= 1792274400 and be_now <= 1798757999 -%}
+  <div class="ci-strip" data-ci-strip><div class="ch-wrap">
+    <span class="ci-strip__t" data-ci-t role="status">Ab 59 € eine Gratis-Seife, ab 99 € zwei Seifen + Duftprobe</span>
+    <span class="ci-strip__bar" aria-hidden="true"><i data-ci-bar></i><b></b></span>
+    <a class="ci-strip__a" href="#ch-geschenk">Seife wählen</a>
+  </div></div>
+  <script>
+  (function () {
+    var el = document.querySelector('[data-ci-strip]'); if (!el) return;
+    var t = el.querySelector('[data-ci-t]'), bar = el.querySelector('[data-ci-bar]'), tm;
+    var T1 = 5900, T2 = 9900; /* Schwellen wie sections/be-seife-state (allowed 1 ab 59 €, 2 ab 99 €) */
+    function eur(c) { return (c / 100).toLocaleString('de-DE', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 }) + ' €'; }
+    function load() {
+      fetch({{ routes.root_url | json }} + '?sections=be-seife-state', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+        var m = /\{[\s\S]*\}/.exec((j['be-seife-state'] || '').replace(/<[^>]+>/g, '')); if (!m) return;
+        var s = JSON.parse(m[0]), b = s.base;
+        if (!s.active) { el.hidden = true; return; }
+        t.textContent = b < T1 ? 'Noch ' + eur(T1 - b) + ' bis zur Gratis-Seife' : (b < T2 ? 'Seife gesichert – noch ' + eur(T2 - b) + ' bis zur zweiten Seife + Duftprobe' : 'Zwei Seifen + Duftprobe gesichert');
+        bar.style.width = Math.min(100, b / T2 * 100) + '%';
+        el.setAttribute('data-base', b);
+      }).catch(function () {});
+    }
+    function soon() { clearTimeout(tm); tm = setTimeout(load, 500); }
+    /* Das Theme rendert den Inhalt von #CartDrawer nach jeder Warenkorbänderung neu (Hinzufügen, Menge, Entfernen) – das ist unser Signal; im Ruhezustand 0 Mutationen */
+    function watch() { var cd = document.getElementById('CartDrawer'); if (cd && 'MutationObserver' in window) new MutationObserver(soon).observe(cd, { childList: true, subtree: true }); soon(); }
+    document.addEventListener('ajaxProduct:added', soon);
+    document.addEventListener('cart:refresh', soon);
+    addEventListener('pageshow', function (e) { if (e.persisted) load(); });
+    if (document.readyState === 'complete') watch(); else addEventListener('load', watch); /* erst nach dem Laden: der Drawer steht weiter unten im HTML, und nichts lädt vorab */
+  })();
+  </script>
+  {%- endif -%}
+{%- elsif part == 'deadline' -%}
+  {%- comment -%} Runde 3 (12.11.2026): Bestellfrist-Hinweis. Bis 30.11.2026 23:59 Nikolaus, 1.–17.12.2026 Heiligabend, danach nichts (Shop-Zeit Europe/Berlin). JS unten prüft bei gecachten Seiten nach. Kein Countdown, keine Garantie. {%- endcomment -%}
+  {%- assign dl_now = 'now' | date: '%s' | plus: 0 -%}
+  {%- if dl_now <= dl_e2 -%}
+  {%- if wrap -%}<div class="ci-dlw"><div class="ch-wrap">{%- endif -%}
+  <p class="ci-dl" data-ci-dl><span>{%- if dl_now <= dl_e1 -%}{{ dl_a }}{%- else -%}{{ dl_b }}{%- endif -%}</span><small>Lieferzeit in Deutschland 1–3 Werktage</small></p>
+  {%- if wrap -%}</div></div>{%- endif -%}
+  {%- endif -%}
+{%- elsif part == 'reviews' -%}
+  {%- liquid
+    assign jg = shop.metafields.judgeme.reviews_grid.value
+    assign rv = jg.featured_reviews.reviews
+    assign rn = 0
+  -%}
+  {%- comment -%}
+    Runde 3 (12.11.2026): NUR ausgewählte Bewertungen, keine automatische Auswahl mehr.
+    1) Sind in Judge.me mindestens 3 Bewertungen als "Featured" markiert, werden genau diese gezeigt (max. 6).
+    2) Sonst die unten fest hinterlegten 6 echten Judge.me-Bewertungen (5 Sterne, verifizierter Kauf, Wortlaut unverändert, nur gekürzt).
+       Judge.me-IDs: e2204c2c-fce5-4a4d-99ac-c739cc1c771d, 68141876-dcc5-5df9-b8a0-fcb6bdfe0a34, 768c0233-1689-40cc-8fd7-723ef706f2cc,
+       c0779057-b6cc-48ea-b269-5c01294040be, bdb07b30-c4c0-4cc4-9dbd-72e150eb2be1, 551f7aed-0afc-4792-8854-f2dcbaf8ec10
+    Format je Zeile: Name|Datum|Produkt|Text
+  {%- endcomment -%}
+  {%- capture rpins -%}
+Artis Murmanis|21.07.2026|CASA AMALFI ACQUA DI ISCHIA BODY SOAP - Jasmin & Sea Salt|Der Kauf war sehr gut. Service und Lieferung waren ausgezeichnet und schnell. Ich werde den Online-Shop auf jeden Fall weiterempfehlen!
+Minjeong|11.01.2026|FREDERIC MALLE Portrait of Lady|Einfach mein Duftfavorit geworden. Schnelle Lieferung. Gerne wieder
+Gabi Stang|18.11.2025|MARC-ANTOINE BARROIS Aldebaran Eau de Parfum|Ich dachte nach Ganymede kann man es nicht steigern und dann kam Aldebaran. Es ist das absolute Gegenteil und dabei auf seine Art magisch. Für mich und auf meiner Haut grandios welches man sogar im Sommer tragen kann.
+Alexander A.|30.10.2024|Fragrance Library Lost Illusions Extrait de Parfum|Ich bin durch Zufall auf diesen Duft gestoßen. Er hat eine total interessante Kombination von Duftnoten, welcher super zu mir passen. Eine solche Kombination habe ich bisher nicht gefunden.
+Peggy Neumann|30.08.2024|Rituals Anti-Ageing Serum The Ritual of Namaste Glow Radiance|Super. Meine Bestellung war super verpackt und innerhalb von 2 Tagen da.
+U.D.|11.10.2024|Rituals Homme Beard Shampoo & Conditioner|Schnelle Lieferung und sehr gutes Produkt- ich bin sehr zufrieden!
+  {%- endcapture -%}
+  {%- capture rcards -%}
+    {%- if rv != blank and rv.size >= 3 -%}
+      {%- for r in rv limit: 6 -%}
+        {%- if r.rating < 5 or r.body == blank -%}{%- continue -%}{%- endif -%}
+        {%- assign rn = rn | plus: 1 -%}{%- assign rq = r.body -%}{%- assign rname = r.reviewer_name -%}{%- assign rprod = r.product_title -%}{%- assign rdate = r.created_at | date: '%d.%m.%Y' -%}
+      <figure class="ci-rv__c ch-glassL">
+        <span class="ci-rv__s" role="img" aria-label="5 von 5 Sternen">★★★★★</span>
+        <blockquote class="ci-rv__q">„{{ rq | strip_html | strip | truncatewords: 38 | escape }}“</blockquote>
+        <figcaption class="ci-rv__n">{{ rname | strip_html | escape }}&nbsp;· Verifizierter Kauf<small>{{ rprod | strip_html | truncate: 60 | escape_once }} · {{ rdate }}</small></figcaption>
+      </figure>
+      {%- endfor -%}
+    {%- else -%}
+      {%- assign rlines = rpins | strip | newline_to_br | split: '<br />' -%}
+      {%- for l in rlines -%}
+        {%- assign rf = l | strip | split: '|' -%}{%- if rf.size < 4 -%}{%- continue -%}{%- endif -%}
+        {%- assign rn = rn | plus: 1 -%}{%- assign rname = rf[0] -%}{%- assign rdate = rf[1] -%}{%- assign rprod = rf[2] -%}{%- assign rq = rf[3] -%}
+      <figure class="ci-rv__c ch-glassL">
+        <span class="ci-rv__s" role="img" aria-label="5 von 5 Sternen">★★★★★</span>
+        <blockquote class="ci-rv__q">„{{ rq | strip_html | strip | truncatewords: 38 | escape }}“</blockquote>
+        <figcaption class="ci-rv__n">{{ rname | strip_html | escape }}&nbsp;· Verifizierter Kauf<small>{{ rprod | strip_html | truncate: 60 | escape_once }} · {{ rdate }}</small></figcaption>
+      </figure>
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- if rn >= 3 -%}
+  <section class="ch-sec ch-light ci-rvs">
+    <div class="ch-wrap">
+      <div class="ch-head"><div><p class="ch-eyebrow">Kundenstimmen</p><h2 class="ch-h2">Was andere über uns sagen</h2>{%- if jg.number_of_reviews > 0 -%}<p class="ch-lead">{{ jg.average_rating | replace: '.', ',' }} von 5 Sternen aus {{ jg.number_of_reviews }} Bewertungen bei Judge.me.</p>{%- endif -%}</div></div>
+      <div class="ci-rv">{{ rcards }}</div>
+    </div>
+  </section>
+  {%- endif -%}
+{%- else -%}
+<style>
+  /* Warenkorb-Leiste unter dem Hero */
+  .ci-strip{background:#0d0b09;color:#f3e9d2;font-size:14px;border-bottom:1px solid rgba(200,164,92,.35)}
+  .ci-strip .ch-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;min-height:48px;padding-top:8px;padding-bottom:8px}
+  .ci-strip__t{letter-spacing:.04em}
+  .ci-strip__bar{position:relative;flex:1 1 160px;height:4px;border-radius:4px;background:rgba(255,255,255,.16)}
+  .ci-strip__bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--accD),var(--acc),var(--accL));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+  .ci-strip__bar b{position:absolute;left:59.6%;top:-3px;width:1px;height:9px;background:var(--accL)}
+  .ci-strip__a{display:inline-flex;align-items:center;min-height:32px;color:var(--accL);font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px;white-space:nowrap}
+  .ci-strip__a:focus-visible{outline:2px solid var(--accL);outline-offset:3px}
+  @media (max-width:640px){.ci-strip__t{flex:1 1 100%}.ci-strip__a{min-height:44px}}
+
+  /* In den Warenkorb (Theme-Element add-to-cart) */
+  .ch add-to-cart{display:inline-flex;flex:0 0 auto;width:auto;height:auto;max-width:none}
+  .ch add-to-cart .ch-btn{white-space:nowrap}
+  .ch add-to-cart.loading .ch-btn{opacity:.55;cursor:progress}
+  .ch .ch-btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+  .ci-err{flex:1 1 100%;font-size:13px;color:#f0b9a8}
+  .ci-err:empty{display:none}
+  .ca-cta{display:flex;flex-wrap:wrap;gap:10px;flex:0 0 auto;max-width:100%}
+  .ca .ca-cta .ch-btn--line{color:var(--accL)}
+
+  /* Bibliothek: Duftnoten, Größe, Warenkorb */
+  .cl-notes{display:grid;gap:5px;font-size:13px;line-height:1.4;color:#d8cdb6}
+  .cl-notes:empty,.cl-chips:empty,.cl-gp:empty{display:none}
+  .cl-notes div{display:grid;grid-template-columns:76px 1fr;gap:8px}
+  .cl-notes span:first-child{padding-top:2px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .cl-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .cl-chip{min-height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(201,164,92,.55);background:transparent;color:#f1eadb;font:inherit;font-size:13px;cursor:pointer}
+  .cl-chip.on{background:var(--gold);border-color:var(--gold);color:#000}
+  .cl-chip[disabled]{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+  .cl-chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .cl-gp{font-size:12px;color:#a79f8e}
+  .cl-acts{display:flex;flex-direction:column;gap:8px}
+  .cl-acts .ch-btn{min-height:44px;padding:0 18px;font-size:12px}
+  .cl-acts add-to-cart{display:flex;width:100%}
+  .cl-acts add-to-cart .ch-btn{flex:1 1 auto}
+  .cl .cl-acts .ch-btn--line{color:var(--gold)}
+  @media (min-width:861px){.cl .cl-panel img{aspect-ratio:auto;height:180px}}
+
+  /* Duft-Finder: drei Düfte zur Stimmung */
+  .ci-mpw{margin-top:30px}
+  .ci-mp__h{margin:0 0 12px;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--accD)}
+  .ci-mp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;min-height:110px}
+  .ci-mp__c{display:flex;align-items:center;gap:14px;padding:12px;border-radius:22px;background:rgba(255,255,255,.72);border:1px solid rgba(200,164,92,.35);color:inherit;transition:box-shadow .4s,border-color .4s;animation:ciIn .6s cubic-bezier(.2,.8,.2,1) both}
+  .ci-mp__c:nth-child(2){animation-delay:.08s}.ci-mp__c:nth-child(3){animation-delay:.16s}
+  @keyframes ciIn{from{opacity:0;transform:translateY(10px)}}
+  .ci-mp__c:hover,.ci-mp__c:focus-visible{border-color:var(--acc);box-shadow:0 16px 34px rgba(0,0,0,.1)}
+  .ci-mp__c:focus-visible{outline:2px solid var(--accD);outline-offset:3px}
+  .ci-mp__c img{flex:0 0 84px;width:84px;height:84px;object-fit:contain;background:#fff;border-radius:14px}
+  .ci-mp__c>span{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .ci-mp__c small{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accD)}
+  .ci-mp__c b{font-size:15px;font-weight:500;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .ci-mp__c i{font-style:normal;font-size:14px;font-weight:600}
+  @media (max-width:860px){.ci-mpw{margin-top:22px}.ci-mp{grid-template-columns:1fr;gap:10px;min-height:340px}}
+  @media (prefers-reduced-motion:reduce){.ci-mp__c{animation:none}}
+
+  /* Kundenstimmen */
+  .ci-rv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+  .ci-rv__c{margin:0;padding:28px 26px;border-radius:28px;display:flex;flex-direction:column;gap:12px}
+  .ci-rv__s{color:var(--accD);letter-spacing:3px;font-size:14px}
+  .ci-rv__q{margin:0;padding:0;border:0;font-family:"Cormorant Garamond","Bodoni Moda",Georgia,serif;font-size:24px;font-weight:500;line-height:1.25;font-style:normal;color:inherit}
+  .ci-rv__n{margin-top:auto;font-size:13px;font-weight:600}
+  .ci-rv__n small{display:block;margin-top:2px;font-size:12px;font-weight:400;color:#55504a}
+  @media (max-width:860px){
+    .ci-rv{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 calc(-1 * clamp(16px,4vw,56px)) 0 -4px;padding:4px 16px 26px 4px}
+    .ci-rv::-webkit-scrollbar{display:none}
+    .ci-rv__c{flex:0 0 82%;scroll-snap-align:start;padding:22px 20px;box-shadow:0 8px 18px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.95)}
+    .ci-rv__q{font-size:21px}
+  }
+
+  /* Mobil (≤480 px): Kenner als 2 Spalten, Journal als Wischreihe */
+  @media (max-width:480px){
+    .ch .ck .ch-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .ch .ck .ch-arch{min-height:230px;padding:40px 10px 16px;border-radius:120px 120px 20px 20px}
+    .ch .ck .ch-arch__t{font-size:19px;line-height:1.12;text-align:center;text-wrap:balance}
+    .ch .ck .ch-arch__k{font-size:10px;letter-spacing:.18em}
+    .ch .ck .ch-arch__d{font-size:12px}
+    .ch .ch-journal{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 calc(-1 * clamp(16px,4vw,56px)) 0 -4px;padding:4px 16px 26px 4px}
+    .ch .ch-journal .ch-art{box-shadow:0 8px 18px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.95)!important}
+    .ch .ch-journal::-webkit-scrollbar{display:none}
+    .ch .ch-journal>.ch-hov{flex:0 0 78%;scroll-snap-align:start}
+    .ch .ch-journal .ch-art img{height:190px}
+  }
+
+  /* Scrollbars der Wischreihen: dünn und goldgetönt statt Standard-Weiß (Stories ganz ohne) – bleibt scrollbar */
+  .ch .ch-scroll,.ch .ca-picks{scrollbar-width:thin;scrollbar-color:rgba(200,164,92,.55) transparent}
+  .ch .ch-scroll::-webkit-scrollbar,.ch .ca-picks::-webkit-scrollbar{height:4px;background:transparent}
+  .ch .ch-scroll::-webkit-scrollbar-thumb,.ch .ca-picks::-webkit-scrollbar-thumb{background:rgba(200,164,92,.55);border-radius:4px}
+  .ch .ch-stories .ch-scroll{scrollbar-width:none}
+  .ch .ch-stories .ch-scroll::-webkit-scrollbar{display:none}
+
+  /* Runde 3: Bestellfrist-Hinweis (ruhig, eine Zeile) */
+  .ci-dlw{border-bottom:1px solid #ece7de;padding:12px 0}
+  .ci-dl{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:2px 16px;font-size:14px;line-height:1.5;text-align:center}
+  .ci-dl small{font-size:12px;color:#6b655d}
+  .cg .ci-dl{justify-content:flex-start;text-align:left;margin-top:12px;color:#e9dfc8}
+  .cg .ci-dl small{color:#b9ad96}
+</style>
+<script>
+  /* Fehlermeldung des Themes (z. B. nicht mehr auf Lager) am gedrückten Button zeigen */
+  document.addEventListener('ajaxProduct:error', function (e) { var a = document.querySelector('.ch add-to-cart.loading'), m = a && a.parentElement.querySelector('[data-ci-err]'); if (m) m.textContent = (e.detail && e.detail.errorMessage) || 'Das hat leider nicht geklappt. Bitte versuche es noch einmal.'; });
+  document.addEventListener('ajaxProduct:added', function () { document.querySelectorAll('.ch [data-ci-err]').forEach(function (m) { m.textContent = ''; }); });
+  /* Runde 3: Bestellfrist-Hinweis bei gecachten Seiten nachprüfen (Zeitpunkte = Europe/Berlin, als Unix-Sekunden aus Liquid) */
+  (function () {
+    var E1 = {{ dl_e1 }}, E2 = {{ dl_e2 }}, A = {{ dl_a | json }}, B = {{ dl_b | json }};
+    function dl() { var n = Date.now() / 1000; document.querySelectorAll('[data-ci-dl]').forEach(function (e) { if (n > E2) (e.closest('.ci-dlw') || e).hidden = true; else e.firstElementChild.textContent = n <= E1 ? A : B; }); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dl); else dl();
+    addEventListener('pageshow', function (e) { if (e.persisted) dl(); });
+  })();
+</script>
+{%- endif -%}

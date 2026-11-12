@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "be-rituals-geschenke",
+      "settings": {
+        "layout": "guide",
+        "eyebrow": "Geschenkideen",
+        "heading": "Rituals-Geschenke nach Budget",
+        "heading_h1": true,
+        "intro": "Fertig verpackte Rituals-Sets für jedes Budget – alle vorrätig.",
+        "products": [
+          "rituals-the-ritual-of-sakura-geschenkset-s-2026",
+          "rituals-the-ritual-of-karma-geschenkset-s-2026",
+          "rituals-the-ritual-of-ayurveda-geschenkset-s-2026",
+          "rituals-the-ritual-of-ayurveda-me-time-set-joyful-reset",
+          "rituals-homme-geschenkset-s-2026",
+          "rituals-trial-set-sakura-2025",
+          "rituals-karma-sun-trial-set-2023",
+          "rituals-the-ritual-of-jing-me-time-pflegeset",
+          "rituals-the-ritual-of-jing-trial-gift-set-s",
+          "rituals-the-rituals-of-ayurveda-trial-set-s",
+          "rituals-homme-skin-care-set-daily-routine",
+          "rituals-homme-geschenkset-m-2026",
+          "rituals-the-ritual-of-sakura-geschenkset-m-2026",
+          "rituals-the-ritual-of-ayurveda-geschenkset-m-2026",
+          "rituals-the-ritual-of-jing-geschenkset-m-2026",
+          "rituals-the-ritual-of-sakura-geschenkset-l-2026",
+          "rituals-the-ritual-of-ayurveda-geschenkset-l-2026",
+          "rituals-the-ritual-of-karma-geschenkset-l-2026",
+          "rituals-homme-geschenkset-l-2026",
+          "rituals-the-ritual-of-jing-geschenkset-l-2026"
+        ],
+        "tier1_max": 30,
+        "tier2_max": 40,
+        "tier3_max": 65,
+        "tier1_label": "Unter 30 €",
+        "tier2_label": "Bis 40 €",
+        "tier3_label": "Bis 65 €",
+        "link": "",
+        "link_label": "",
+        "combo_heading": "",
+        "note": "Ab 59 € Warenwert wählst du eine Seife als Geschenk dazu, ab 99 € zwei Seifen und eine Duftprobe. Bis 31.12.2026, solange der Vorrat reicht.",
+        "pad_top": 152,
+        "pad_top_mobile": 112,
+        "pad_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

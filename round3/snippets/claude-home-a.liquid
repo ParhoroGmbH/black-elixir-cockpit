@@ -1,0 +1,103 @@
+{%- comment -%} Teil der Section claude-home (Claude · Neue Homepage 11.11.2026 – nicht anfassen) {%- endcomment -%}
+{%- liquid
+  assign s = sec.settings
+  assign c_best = collections[s.col_best]
+  assign c_new = collections[s.col_new]
+  assign c_damen = collections[s.col_damen]
+  assign c_herren = collections[s.col_herren]
+  assign c_nische = collections[s.col_nische]
+  assign c_sale = collections[s.col_sale]
+  assign c_dumo = collections[s.col_dumo]
+  assign c_lib = collections[s.col_library]
+-%}
+
+  {%- comment -%} 1 · HERO mit 3D-Bühne {%- endcomment -%}
+  {%- render 'claude-home-hero3d', sec: sec -%}
+
+  {%- comment -%} 1b · WARENKORB-LEISTE: Fortschritt zur Gratis-Seife (12.11.2026) {%- endcomment -%}
+  {%- render 'claude-home-ideas', sec: sec, part: 'strip' -%}
+
+  {%- comment -%} 2 · VERTRAUENSSTREIFEN {%- endcomment -%}
+  <div class="ch-trust"><div class="ch-wrap">
+    <span><b style="color:var(--accD);letter-spacing:2px">★★★★★</b>Bewertet bei Trusted Shops &amp; Judge.me</span>
+    <span><i></i>Gratis-Seife ab 59 €</span>
+    <span><i></i>Kostenloser Versand in Deutschland</span>
+    <span><i></i>Mitglied beim Händlerbund</span>
+    <span><i></i>idealo Partner seit 2023</span>
+  </div></div>
+  {%- render 'claude-home-ideas', sec: sec, part: 'deadline', wrap: true -%}
+
+  {%- comment -%} 3 · STORIES {%- endcomment -%}
+  <div class="ch-stories"><div class="ch-wrap"><div class="ch-scroll">
+    {%- assign st_imgs = 'be-story-kreis-bestseller-2026-11-03.jpg,be-story-kreis-geschenksets-2026-11-03.jpg,be-story-kreis-zuhause-2026-11-03.jpg,be-story-kreis-advent-2026-11-03.jpg' | split: ',' -%}
+    {%- assign st_names = 'Bestseller,Geschenksets,Zuhause,Advent' | split: ',' -%}
+    {%- capture st_links -%}{{ routes.collections_url }}/{{ s.col_best }},{{ routes.collections_url }}/parfum-geschenksets,{{ routes.search_url }}?q=Duftkerze,{{ routes.collections_url }}/{{ s.col_advent }}{%- endcapture -%}
+    {%- assign st_links = st_links | split: ',' -%}
+    {%- for nm in st_names -%}
+      <a class="ch-story" href="{{ st_links[forloop.index0] }}"><span class="ring">{%- assign si = images[st_imgs[forloop.index0]] -%}{%- if si -%}{{ si | image_url: width: 200 | image_tag: loading: 'lazy', alt: nm }}{%- endif -%}</span>{{ nm }}</a>
+    {%- endfor -%}
+    {%- if c_dumo.products.size > 0 -%}<a class="ch-story" href="{{ c_dumo.url }}"><span class="ring">{{ c_dumo.products.first.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: 'DUMO' }}</span>DUMO</a>{%- endif -%}
+    {%- if c_lib.products.size > 0 -%}<a class="ch-story" href="{{ c_lib.url }}"><span class="ring">{{ c_lib.products.first.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: 'Fragrance Library' }}</span>Library</a>{%- endif -%}
+  </div></div></div>
+
+  {%- comment -%} 4 · MARKEN-LAUFBAND (echte Logos aus den Marken-Kollektionen) {%- endcomment -%}
+  {%- assign brands = 'CHANEL:chanel,DIOR:dior,TOM FORD:tom-ford,HERMÈS:hermes,GUERLAIN:guerlain,CARTIER:cartier-parfum,PRADA:prada,KILIAN:kilian,INITIO:initio,MARC-ANTOINE BARROIS:parfums-marc-antoine-barrois,FRÉDÉRIC MALLE:frederic-malle,TIZIANA TERENZI:tiziana-terenzi,PARFUMS DE MARLY:parfums-de-marly,CREED:creed,DUMO:dumo' | split: ',' -%}
+  <div class="ch-marq" aria-label="Marken"><div>
+    {%- for r in (1..2) -%}{%- for b in brands -%}{%- assign bp = b | split: ':' -%}{%- assign bcol = collections[bp[1]] -%}<a class="mq-l" href="{{ routes.collections_url }}/{{ bp[1] }}"{% if r == 2 %} aria-hidden="true" tabindex="-1"{% endif %}>{%- if bcol.id and bcol.image -%}<img src="{{ bcol.image | image_url: width: 800 }}" alt="{{ bp[0] }}" width="540" height="540" loading="lazy">{%- else -%}{{ bp[0] }}{%- endif -%}</a>{%- endfor -%}{%- endfor -%}
+  </div></div>
+
+  {%- comment -%} 5 · KURATIERT (Tabs, echte Produkte, bis 12 lieferbare; Damen/Herren nur Düfte) {%- endcomment -%}
+  <section class="ch-sec ch-light">
+    <span class="ch-blob" style="width:520px;height:520px;left:-140px;top:140px;background:var(--acc)"></span>
+    <span class="ch-blob" style="width:420px;height:420px;right:-100px;bottom:-80px;background:var(--accD);animation-delay:-9s"></span>
+    <div class="ch-wrap">
+      <div class="ch-head"><div><p class="ch-eyebrow">Kuratiert von Black Elixir</p><h2 class="ch-h2">Erlesene Empfehlungen</h2></div></div>
+      <div class="ch-tabs" role="tablist">
+        {%- assign tab_names = 'Bestseller,Neuheiten,Damen,Herren,Nischendüfte,Sale' | split: ',' -%}
+        {%- for t in tab_names -%}<button type="button" role="tab" data-ch-tab="{{ forloop.index0 }}"{% if forloop.first %} class="is-on" aria-selected="true"{% endif %}>{{ t }}</button>{%- endfor -%}
+      </div>
+      {%- for k in (0..5) -%}
+        {%- liquid
+          case k
+            when 0
+              assign col = c_best
+            when 1
+              assign col = c_new
+            when 2
+              assign col = c_damen
+            when 3
+              assign col = c_herren
+            when 4
+              assign col = c_nische
+            else
+              assign col = c_sale
+          endcase
+        -%}
+        <div class="ch-scroll ch-panel{% if k == 0 %} is-on{% endif %}" data-ch-panel="{{ k }}">
+          {%- assign shown = 0 -%}
+          {%- for p in col.products limit: 50 -%}
+            {%- unless p.available -%}{%- continue -%}{%- endunless -%}
+            {%- if k == 2 or k == 3 -%}{%- unless p.title contains 'Parfum' or p.title contains 'Toilette' or p.title contains 'Cologne' or p.title contains 'Extrait' -%}{%- continue -%}{%- endunless -%}{%- endif -%}
+            {%- if shown >= 12 -%}{%- break -%}{%- endif -%}{%- assign shown = shown | plus: 1 -%}
+            <div class="ch-hov"><article class="ch-card ch-glassL ch-sheen ch-tilt">
+              <a class="ch-card__img" href="{{ p.url }}">
+                {%- if p.compare_at_price > p.price -%}<span class="ch-card__tag">SALE</span>{%- elsif k == 1 -%}<span class="ch-card__tag">NEU</span>{%- elsif k == 0 -%}<span class="ch-card__tag">BESTSELLER</span>{%- endif -%}
+                {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: p.title, widths: '300,450,600', sizes: '280px' }}{%- endif -%}
+              </a>
+              <div class="ch-card__body">
+                <span class="ch-card__vendor">{{ p.vendor }}</span>
+                <a class="ch-card__title" href="{{ p.url }}">{{ p.title | truncate: 60 }}</a>
+                <div class="ch-card__price"><b>{% if p.price_varies %}ab {% endif %}{{ p.price | money }}</b>{%- if p.compare_at_price > p.price -%}<s>UVP {{ p.compare_at_price | money }}</s>{%- endif -%}</div>
+                {%- if p.has_only_default_variant -%}
+                  <form method="post" action="{{ routes.cart_add_url }}"><input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}"><button class="ch-btn ch-btn--dark" type="submit">In den Warenkorb</button></form>
+                {%- else -%}
+                  <a class="ch-btn ch-btn--dark" href="{{ p.url }}" style="margin-top:10px">Größe wählen</a>
+                {%- endif -%}
+              </div>
+            </article></div>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+      <div style="margin-top:14px"><a class="ch-btn ch-btn--line" href="{{ c_best.url }}">Alle Bestseller</a></div>
+    </div>
+  </section>

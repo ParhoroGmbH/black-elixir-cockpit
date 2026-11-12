@@ -1,0 +1,46 @@
+{%- comment -%}
+  BE Black-Week-Vorschau mit Deal-Alarm (KW45-Briefing Punkt 4, CEO-Freigabe 02.11.2026 10:38). Template templates/page.black-week.json.
+  Shopify-Kundenformular (Newsletter) mit Tag deal-alarm-bw2026. Double-Opt-in kommt aus den Shopify-Einstellungen (nicht im Theme).
+  Checkbox nicht vorangekreuzt, Pflichtfeld. Kein Rabatt, kein Prozentsatz, keine Fremdmarken.
+{%- endcomment -%}
+<div class="be-bw page-width body-text--{{ settings.typography_preset }}">
+  <h1 class="be-bw__title page__title heading--{{ settings.typography_preset }}">{{ page.title | escape }}</h1>
+  <div class="be-bw__text page__content body-text--{{ settings.typography_preset }} rte">{{ page.content }}</div>
+  {%- form 'customer', id: 'BeDealAlarm', class: 'be-bw__form' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter,deal-alarm-bw2026">
+    {%- if form.posted_successfully? -%}
+      <p class="be-bw__ok" role="status" tabindex="-1" autofocus>Nach dem Absenden erhältst du eine E-Mail mit Bestätigungslink. Angemeldet bist du erst nach deiner Bestätigung.</p>
+    {%- else -%}
+      {%- if form.errors -%}<div class="be-bw__err" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+      <div class="be-bw__row">
+        <label class="visually-hidden" for="BeDealAlarm-email">E-Mail-Adresse</label>
+        <input id="BeDealAlarm-email" class="be-bw__email" type="email" name="contact[email]" required autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="E-Mail-Adresse" value="{{ form.email }}">
+        <button type="submit" class="be-bw__btn button solid-button button--{{ settings.typography_preset }}">Deal-Alarm aktivieren</button>
+      </div>
+      <label class="be-bw__consent">
+        <input type="checkbox" id="BeDealAlarm-consent" required>
+        <span>Ja, ich möchte den BLACK-ELIXIR-Newsletter mit Angeboten und Neuheiten per E-Mail erhalten. Ich kann meine Einwilligung jederzeit über den Abmeldelink widerrufen. Hinweise in der <a href="{{ shop.privacy_policy.url | default: '/policies/privacy-policy' }}">Datenschutzerklärung</a>.</span>
+      </label>
+      <p class="be-bw__note">Nach dem Absenden erhältst du eine E-Mail mit Bestätigungslink. Angemeldet bist du erst nach deiner Bestätigung.</p>
+    {%- endif -%}
+  {%- endform -%}
+</div>
+<style>
+  .be-bw{max-width:720px;margin:0 auto;padding:clamp(120px,14vw,170px) 20px 64px}
+  .be-bw__title{margin:0 0 20px;line-height:1.25}
+  .be-bw__text p{margin:0 0 14px;line-height:1.6}
+  .be-bw__form{margin-top:24px}
+  .be-bw__row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .be-bw__email{flex:1 1 240px;min-height:46px;padding:0 14px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit}
+  .be-bw__btn{min-height:46px;padding:0 22px;border:1px solid rgb(var(--color-foreground,0,0,0));background:rgb(var(--color-foreground,0,0,0));color:rgb(var(--color-background,255,255,255));text-transform:uppercase;letter-spacing:.06em;cursor:pointer;font:inherit}
+  .be-bw__consent{display:flex;gap:10px;align-items:flex-start;line-height:1.5;font-size:.92em;cursor:pointer}
+  .be-bw__consent input{margin-top:4px;width:18px;height:18px;flex:0 0 18px}
+  .be-bw__consent a,.be-bw__note a{color:inherit;text-decoration:underline}
+  .be-bw__note{margin:12px 0 0;font-size:.88em;opacity:.8;line-height:1.5}
+  .be-bw__ok{padding:14px;border:1px solid currentColor;line-height:1.5}
+  .be-bw__err{margin-bottom:12px}
+  @media (max-width:749px){.be-bw{padding-top:120px}.be-bw__btn{flex:1 1 100%}}
+</style>
+{% schema %}
+{"name":"BE Deal-Alarm","settings":[]}
+{% endschema %}

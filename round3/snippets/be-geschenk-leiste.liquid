@@ -1,0 +1,123 @@
+{%- comment -%}
+  BE Geschenk-Leiste im Warenkorb (KW45-Briefing Punkt 2, CEO-Freigabe 02.11.2026 10:38). Sie-Form, Ziel 99 €.
+  Gerendert in sections/main-cart.liquid und snippets/cart-drawer.liquid (neben free-shipping-bar). Aktualisiert sich ohne Neuladen,
+  weil das Theme main-cart bzw. #CartDrawer nach jeder Warenkorbänderung per Section Rendering neu lädt.
+  Basis = wie snippets/be-probe-auto.liquid: Zeilensumme nach Rabatten ohne Seifen (Saponifico Aquaviva), ohne Duftprobe 67736019075463,
+  ohne Gutscheine, ohne 0-€-Zeilen, ohne bereits rabattierte Zeilen und ohne Tag be-seife-ausschluss (Kaufbedingung der Rabatte).
+  Seifen kommen NICHT automatisch in den Warenkorb (Test 02.11.2026) -> Link "Geschenk auswählen". Die Probe legt das Theme/AOV.ai ab 99 € selbst dazu.
+  Anzeige bis 31.12.2026 23:59:59 Berlin (1798757999), ab 01.01.2027 ausgeblendet. Rabatte unverändert.
+{%- endcomment -%}
+{%- liquid
+  assign be_now = 'now' | date: '%s' | plus: 0
+  assign be_show = false
+  if be_now <= 1798757999 and cart.item_count > 0
+    assign be_show = true
+  endif
+  assign be_base = 0
+  assign be_soaps = 0
+  assign be_sample = false
+  for item in cart.items
+    assign be_is_soap = false
+    for be_col in item.product.collections
+      if be_col.handle == 'geschenk-seifen'
+        assign be_is_soap = true
+      endif
+    endfor
+    if be_is_soap
+      assign be_soaps = be_soaps | plus: item.quantity
+      continue
+    endif
+    if item.variant_id == 67736019075463
+      assign be_sample = true
+    endif
+    if item.variant_id == 67736019075463 or item.gift_card or item.final_line_price <= 0
+      continue
+    endif
+    if item.product.tags contains 'be-seife-ausschluss'
+      continue
+    endif
+    assign be_disc = 0
+    for a in item.line_level_discount_allocations
+      assign be_disc = be_disc | plus: a.amount
+    endfor
+    if be_disc > 0
+      continue
+    endif
+    assign be_base = be_base | plus: item.final_line_price
+  endfor
+  assign be_t1 = 5900
+  assign be_t2 = 9900
+  if be_base < be_t1
+    assign be_rest = be_t1 | minus: be_base
+    assign be_state = 1
+  elsif be_base < be_t2
+    assign be_rest = be_t2 | minus: be_base
+    assign be_state = 2
+  else
+    assign be_rest = 0
+    assign be_state = 3
+  endif
+  assign be_eu = be_rest | divided_by: 100
+  assign be_ct = be_rest | modulo: 100
+  if be_ct < 10
+    assign be_x = be_eu | append: ',0' | append: be_ct
+  else
+    assign be_x = be_eu | append: ',' | append: be_ct
+  endif
+  assign be_pct = be_base | times: 100 | divided_by: be_t2
+  if be_pct > 100
+    assign be_pct = 100
+  endif
+  comment
+    KW45-4 (CEO 02.11.2026 22:12): Link "Geschenk auswählen" in jedem Zustand mit fehlenden Gratis-Seifen und dezent auch unter 59 €.
+  endcomment
+  assign be_need_link = false
+  if be_state == 1
+    assign be_need_link = true
+  elsif be_state == 2 and be_soaps < 1
+    assign be_need_link = true
+  elsif be_state == 3 and be_soaps < 2
+    assign be_need_link = true
+  endif
+-%}
+{%- if be_show -%}
+<div class="be-gift-bar body-text--{{ settings.typography_preset }}" role="status" aria-live="polite" data-base="{{ be_base }}" data-state="{{ be_state }}">
+  {%- if be_state == 1 -%}
+    <p class="body-text--{{ settings.typography_preset }} be-gift-bar__title">Noch {{ be_x }}&nbsp;€ bis zu deinem Geschenk</p>
+    <p class="body-text--{{ settings.typography_preset }} be-gift-bar__sub">Ab 59&nbsp;€ eine Seife, ab 99&nbsp;€ zwei Seifen und eine Duftprobe, bis 31.12.2026, solange der Vorrat reicht.</p>
+  {%- elsif be_state == 2 -%}
+    {%- comment -%} KW45-4: 59–<99 € = eine Seife (vorher fälschlich "zwei Seifen und eine Duftprobe"). {%- endcomment -%}
+    <p class="body-text--{{ settings.typography_preset }} be-gift-bar__title">Dein Geschenk: eine Seife deiner Wahl – ab 99&nbsp;€ zwei Seifen und eine Duftprobe</p>
+    <p class="body-text--{{ settings.typography_preset }} be-gift-bar__sub">Noch {{ be_x }}&nbsp;€ bis 99&nbsp;€. Bis 31.12.2026, solange der Vorrat reicht.</p>
+  {%- else -%}
+    {%- comment -%} KW45-2 (CEO 02.11.2026 18:50): "Ihr Geschenk ist dabei" nur mit 2 Seifen im Warenkorb. {%- endcomment -%}
+    {%- if be_sample -%}{%- assign be_probe_txt = 'Die Duftprobe ist dabei' -%}{%- else -%}{%- assign be_probe_txt = 'Die Duftprobe kommt automatisch dazu' -%}{%- endif -%}
+    {%- if be_soaps >= 2 and be_sample -%}
+      <p class="body-text--{{ settings.typography_preset }} be-gift-bar__title">Dein Geschenk ist dabei: zwei Seifen und eine Duftprobe To The Lighthouse (3&nbsp;ml).</p>
+    {%- elsif be_soaps >= 2 -%}
+      <p class="body-text--{{ settings.typography_preset }} be-gift-bar__title">Deine zwei Gratis-Seifen sind dabei – die Duftprobe To The Lighthouse (3&nbsp;ml) kommt automatisch dazu.</p>
+    {%- elsif be_soaps == 1 -%}
+      <p class="body-text--{{ settings.typography_preset }} be-gift-bar__title">{{ be_probe_txt }} – bitte wähle noch eine zweite Seife aus, dann sind beide Seifen gratis.</p>
+    {%- else -%}
+      <p class="body-text--{{ settings.typography_preset }} be-gift-bar__title">{{ be_probe_txt }} – bitte wähle jetzt deine zwei Gratis-Seifen aus.</p>
+    {%- endif -%}
+    <p class="body-text--{{ settings.typography_preset }} be-gift-bar__sub">Bis 31.12.2026, solange der Vorrat reicht.</p>
+  {%- endif -%}
+  <div class="be-gift-bar__track" aria-hidden="true"><span class="be-gift-bar__fill" style="width:{{ be_pct }}%"></span><i class="be-gift-bar__mark"></i></div>
+  {%- if be_need_link -%}
+    <p class="body-text--{{ settings.typography_preset }} be-gift-bar__link"><a href="{{ routes.collections_url }}/geschenk-seifen"{% if be_state == 1 %} class="be-gift-bar__link--soft"{% endif %}>Geschenk auswählen</a></p>
+  {%- endif -%}
+</div>
+<style>
+  .be-gift-bar{margin:0 0 16px;padding:12px 14px;border:1px solid currentColor;border-radius:4px;text-align:left}
+  .be-gift-bar p{margin:0 0 6px;line-height:1.45}
+  .be-gift-bar__title{font-weight:600}
+  .be-gift-bar__sub{font-size:.88em;opacity:.8}
+  .be-gift-bar__track{position:relative;height:4px;margin:8px 0 6px;background:rgba(var(--color-foreground,0,0,0),.15)}
+  .be-gift-bar__fill{position:absolute;inset:0 auto 0 0;background:currentColor;transition:width .3s ease}
+  .be-gift-bar__mark{position:absolute;left:59.6%;top:-3px;width:1px;height:10px;background:currentColor}
+  .be-gift-bar__link{margin:6px 0 0!important}
+  .be-gift-bar__link a{color:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+  .be-gift-bar__link a.be-gift-bar__link--soft{font-weight:400;opacity:.85}
+</style>
+{%- endif -%}

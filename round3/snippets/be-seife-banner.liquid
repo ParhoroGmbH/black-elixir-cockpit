@@ -1,0 +1,155 @@
+{%- comment -%}
+  BE Gratis-Seife Banner auf der Produktseite (GM-Auftrag 21.10.2026, CEO-Freigabe nur Vorschau).
+  Kunde wählt seine Saponifico-Aquaviva-Seife direkt auf der Produktseite (/cart/add.js, ohne Seitenwechsel).
+  Logik unverändert (Rabatte BXGY 2432663060871 / 2432663093639, AOV.ai-Duftprobe): ab 59 € 1 Seife, ab 99 € 2 Seifen + Duftprobe.
+  Buttons sind erst ab erreichtem Schwellenwert aktiv, damit niemand versehentlich 13,95 € zahlt.
+  Anzeige durchgehend 18.10.-31.12.2026 23:59:59 Berlin wie snippets/be-seife-hint.liquid (CEO-Entscheidung 01.11.2026 22:03; vorher Phasen bis 08.11., 10.-11.11., 23.-30.11., 01.-22.12.; Duftprobe-Hinweis vorher nur bis 08.11.). Eingebunden per custom_liquid-Block in templates/product.json.
+{%- endcomment -%}
+{%- liquid
+  assign be_now = 'now' | date: '%s' | plus: 0
+  assign be_show = false
+  if be_now >= 1792274400 and be_now <= 1798757999
+    assign be_show = true
+  endif
+  assign be_soaps = collections['geschenk-seifen']
+  if product == blank or product.available == false or product.gift_card? or be_soaps == blank
+    assign be_show = false
+  endif
+  assign be_coll_handles = product.collections | map: 'handle' | join: ','
+  if product.handle contains 'saponifico-aquaviva' or be_coll_handles contains 'saponifico-aquaviva'
+    assign be_show = false
+  endif
+  assign be_counts = true
+  if product.tags contains 'be-seife-ausschluss'
+    assign be_counts = false
+  endif
+  assign be_sample = false
+  if be_now <= 1798757999
+    assign be_sample = true
+  endif
+-%}
+{%- if be_show -%}
+<div class="be-soap" id="BeSoap-{{ product.id }}" data-product-id="{{ product.id }}" data-counts="{{ be_counts }}">
+  <p class="be-soap__eyebrow label--{{ settings.typography_preset }}">Dein Geschenk</p>
+  <p class="be-soap__title">Eine Saponificio Aquaviva Seife – als Geschenk zu deinem Duft</p>
+  <p class="be-soap__lead body-secondary-text--{{ settings.typography_preset }}">Ab 59&nbsp;€ Warenwert schenken wir dir eine Seife deiner Wahl, ab 99&nbsp;€ zwei{% if be_sample %} – dazu legen wir automatisch eine Gratis-Duftprobe Fragrance Library (3&nbsp;ml) in den Warenkorb{% endif %}. Wähle deine Sorte direkt hier.</p>
+  <div class="be-soap__progress" aria-live="polite">
+    <div class="be-soap__bar" role="progressbar" aria-valuemin="0" aria-valuemax="99" aria-valuenow="0"><span class="be-soap__fill"></span><i class="be-soap__mark" style="left:59.6%"></i></div>
+    <p class="be-soap__status body-secondary-text--{{ settings.typography_preset }}">Dein Warenwert wird berechnet …</p>
+  </div>
+  <ul class="be-soap__list" role="list">
+    {%- for s in be_soaps.products limit: 12 -%}
+      {%- assign sv = s.selected_or_first_available_variant -%}
+      {%- if s.available and sv.available -%}
+      <li class="be-soap__item">
+        {%- if s.featured_image -%}<img class="be-soap__img" src="{{ s.featured_image | image_url: width: 160 }}" alt="{{ s.title | escape }}" width="80" height="80" loading="lazy">{%- endif -%}
+        <span class="be-soap__name">{{ s.title | remove: 'Saponificio Aquaviva ' | remove: 'Saponifico Aquaviva ' | remove: ' Face & Body Soap' | remove: ' Face &amp; Body Soap' | escape }}</span>
+        <button type="button" class="be-soap__btn button--{{ settings.typography_preset }}" data-variant="{{ sv.id }}" disabled>Ab 59&nbsp;€ gratis</button>
+      </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+  <p class="be-soap__msg body-secondary-text--{{ settings.typography_preset }}" role="status" hidden></p>
+  <p class="be-soap__cond">Die Seife ist erst ab Erreichen des Mindestwarenwerts gratis und wird an der Kasse mit 0&nbsp;€ berechnet. Bereits rabattierte Artikel zählen nicht zum Mindestwarenwert. Solange der Vorrat reicht.</p>
+  <script type="application/json" class="be-soap__data">{"variants":{ {%- for v in product.variants -%}"{{ v.id }}":{{ v.price }}{% unless forloop.last %},{% endunless %}{%- endfor -%} },"sample":{{ be_sample }}}</script>
+</div>
+<style>
+  .be-soap{margin:20px 0 4px;padding:18px 16px;border:1px solid rgba(var(--color-foreground,0,0,0),.85);text-align:left}
+  .be-soap p{margin:0}
+  .be-soap__eyebrow{letter-spacing:.14em;text-transform:uppercase;opacity:.7;font-size:.75em;margin-bottom:6px!important}
+  .be-soap__title{font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:.95em;line-height:1.4;margin-bottom:8px!important}
+  .be-soap__lead{line-height:1.5;margin-bottom:14px!important}
+  .be-soap__bar{position:relative;height:4px;background:rgba(var(--color-foreground,0,0,0),.12);margin:4px 0 8px}
+  .be-soap__fill{position:absolute;inset:0 auto 0 0;width:0;background:rgb(var(--color-foreground,0,0,0));transition:width .4s ease}
+  .be-soap__mark{position:absolute;top:-3px;width:1px;height:10px;background:rgb(var(--color-foreground,0,0,0))}
+  .be-soap__status{line-height:1.45;margin-bottom:14px!important}
+  .be-soap__list{list-style:none;margin:0 0 10px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .be-soap__item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:10px 6px;border:1px solid rgba(var(--color-foreground,0,0,0),.15)}
+  .be-soap__item.is-picked{border-color:rgb(var(--color-foreground,0,0,0))}
+  .be-soap__img{width:72px;height:72px;object-fit:contain}
+  .be-soap__name{font-size:.78em;line-height:1.3;text-transform:uppercase;letter-spacing:.04em;min-height:2.6em;display:flex;align-items:center}
+  .be-soap__btn{width:100%;min-height:36px;padding:6px 4px;font-size:.72em;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:1px solid rgb(var(--color-foreground,0,0,0));background:rgb(var(--color-foreground,0,0,0));color:rgb(var(--color-background,255,255,255))}
+  .be-soap__btn[disabled]{cursor:default;background:transparent;color:inherit;opacity:.55}
+  .be-soap__msg{margin:4px 0 8px!important;font-weight:600}
+  .be-soap__msg a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+  .be-soap__cond{font-size:.78em;line-height:1.45;opacity:.7}
+  @media (max-width:749px){.be-soap{padding:16px 12px}.be-soap__list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<script>
+(function(){
+  var root=document.getElementById('BeSoap-{{ product.id }}'); if(!root||root.dataset.init) return; root.dataset.init='1';
+  var data=JSON.parse(root.querySelector('.be-soap__data').textContent);
+  var counts=root.dataset.counts==='true', pid=+root.dataset.productId, busy=false, cart=null;
+  var rate=parseFloat(window.Shopify&&Shopify.currency&&Shopify.currency.rate)||1;
+  var T1=Math.round(5900*rate),T2=Math.round(9900*rate);
+  var fmt=function(c){return new Intl.NumberFormat('de-DE',{style:'currency',currency:(cart&&cart.currency)||'EUR'}).format(c/100);};
+  var soapIds=[].map.call(root.querySelectorAll('.be-soap__btn'),function(b){return +b.dataset.variant;});
+  function form(){return document.querySelector('product-form form[action*="/cart/add"]')||document.querySelector('form[action*="/cart/add"][data-type="add-to-cart-form"]');}
+  function selVariant(){var f=form(),i=f&&f.querySelector('[name="id"]');return i?+i.value:0;}
+  function selQty(){var q=document.querySelector('quantity-input input[name="quantity"], input[name="quantity"]');var n=q?parseInt(q.value,10):1;return n>0?n:1;}
+  function isSoap(it){return soapIds.indexOf(it.variant_id)>-1||(it.handle||'').indexOf('saponifico-aquaviva')===0;}
+  function discounted(it){return (it.line_level_discount_allocations||[]).some(function(a){return a.amount>0;});}
+  function state(){
+    var base=0,soaps=0,inCart=false;
+    (cart.items||[]).forEach(function(it){
+      if(isSoap(it)){soaps+=it.quantity;return;}
+      if(it.product_id===pid) inCart=true;
+      if(it.final_price>0&&!discounted(it)) base+=it.final_line_price;
+    });
+    var add=0; if(!inCart&&counts){var p=data.variants[selVariant()]; if(p) add=p*selQty();}
+    var total=base+add, allowed=total>=T2?2:(total>=T1?1:0);
+    return {total:total,inCart:inCart,add:add,soaps:soaps,left:Math.max(0,allowed-soaps),allowed:allowed};
+  }
+  function render(){
+    if(!cart) return; var s=state(), st=root.querySelector('.be-soap__status'), incl=s.add>0?' inklusive dieses Dufts':'';
+    root.querySelector('.be-soap__fill').style.width=Math.min(100,s.total/T2*100)+'%';
+    root.querySelector('.be-soap__bar').setAttribute('aria-valuenow',Math.round(s.total/100));
+    var head='Dein Warenwert'+incl+': <strong>'+fmt(s.total)+'</strong>. ', txt;
+    if(s.allowed===0) txt='Noch '+fmt(T1-s.total)+' bis zu deiner Gratis-Seife.';
+    else if(s.allowed===1&&s.left>0) txt='Deine Gratis-Seife ist freigeschaltet – wähle deine Sorte. Noch '+fmt(T2-s.total)+' bis zur zweiten Seife'+(data.sample?' und deiner Duftprobe':'')+'.';
+    else if(s.allowed===1) txt='Deine Gratis-Seife ist gewählt. Noch '+fmt(T2-s.total)+' bis zur zweiten Seife'+(data.sample?' und deiner Duftprobe':'')+'.';
+    else if(s.left===2) txt='Zwei Gratis-Seifen'+(data.sample?' und deine Duftprobe sind':' sind')+' freigeschaltet – wähle deine Sorten.';
+    else if(s.left===1) txt='Deine zweite Gratis-Seife ist freigeschaltet – wähle deine Sorte.';
+    else txt='Deine beiden Gratis-Seifen sind gewählt.';
+    if(s.add>0&&s.left>0) txt+=' Ein Klick legt deinen Duft und deine Seife gemeinsam in den Warenkorb.';
+    st.innerHTML=head+txt;
+    root.querySelectorAll('.be-soap__btn').forEach(function(b){
+      var picked=(cart.items||[]).some(function(it){return it.variant_id===+b.dataset.variant;});
+      b.closest('.be-soap__item').classList.toggle('is-picked',picked);
+      b.disabled=busy||s.left===0;
+      var t;
+      if(s.allowed===0) t='Ab 59 € gratis';
+      else if(s.left===0) t=picked?'Gewählt':(s.allowed===1?'Gratis ab 99 €':'Auswahl vollständig');
+      else if(picked) t='Noch eine wählen';
+      else t=s.inCart||s.add===0?'Gratis wählen':'Mit Duft wählen';
+      b.textContent=t;
+    });
+  }
+  function load(){return fetch((window.routes&&routes.cart_url||'/cart')+'.js',{credentials:'same-origin',headers:{Accept:'application/json'}}).then(function(r){return r.json();}).then(function(c){cart=c;render();});}
+  function msg(t){var m=root.querySelector('.be-soap__msg');m.innerHTML=t;m.hidden=!t;}
+  root.addEventListener('click',function(e){
+    var b=e.target.closest('.be-soap__btn'); if(!b||b.disabled) return;
+    var s=state(); if(s.left<1) return;
+    var items=[{id:+b.dataset.variant,quantity:1}];
+    if(!s.inCart&&s.add>0) items.unshift({id:selVariant(),quantity:selQty()});
+    var drawer=document.querySelector('cart-drawer'), body={items:items};
+    if(drawer&&drawer.getSectionsToRender){body.sections=drawer.getSectionsToRender().map(function(x){return x.id;});body.sections_url=window.location.pathname;}
+    busy=true; render(); msg('');
+    fetch((window.routes&&routes.cart_add_url||'/cart/add')+'.js',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(body)})
+      .then(function(r){return r.json().then(function(j){if(!r.ok) throw j; return j;});})
+      .then(function(j){
+        msg(items.length>1?'Dein Duft und deine Gratis-Seife liegen im Warenkorb.':'Deine Gratis-Seife liegt im Warenkorb.');
+        if(drawer&&j.sections&&drawer.renderContents){try{drawer.renderContents(j);}catch(err){}}
+        if(window.publish&&window.PUB_SUB_EVENTS){try{publish(PUB_SUB_EVENTS.cartUpdate,{source:'be-soap'});}catch(err){}}
+        document.dispatchEvent(new CustomEvent('cart:refresh'));
+      })
+      .catch(function(err){msg((err&&err.description)||'Die Seife konnte gerade nicht hinzugefügt werden. Bitte versuche es erneut.');})
+      .then(function(){busy=false;return load();});
+  });
+  document.addEventListener('change',function(e){if(e.target.closest&&e.target.closest('product-form, variant-selects, variant-radios, quantity-input, .product-form__input')) setTimeout(render,50);});
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.quantity__button')) setTimeout(render,50);});
+  if(window.subscribe&&window.PUB_SUB_EVENTS){try{subscribe(PUB_SUB_EVENTS.cartUpdate,function(ev){if(!ev||ev.source!=='be-soap') load();});}catch(err){}}
+  load();
+})();
+</script>
+{%- endif -%}

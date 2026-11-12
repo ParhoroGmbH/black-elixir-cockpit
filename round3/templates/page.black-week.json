@@ -1,0 +1,82 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "be-deal-alarm",
+      "settings": {}
+    },
+    "be_rituals_black_week": {
+      "type": "be-rituals-geschenke",
+      "blocks": {
+        "combo_1": {
+          "type": "combo",
+          "settings": {
+            "label": "Sakura S + M",
+            "product_a": "rituals-the-ritual-of-sakura-geschenkset-s-2026",
+            "product_b": "rituals-the-ritual-of-sakura-geschenkset-m-2026"
+          }
+        },
+        "combo_2": {
+          "type": "combo",
+          "settings": {
+            "label": "Ayurveda S + M",
+            "product_a": "rituals-the-ritual-of-ayurveda-geschenkset-s-2026",
+            "product_b": "rituals-the-ritual-of-ayurveda-geschenkset-m-2026"
+          }
+        },
+        "combo_3": {
+          "type": "combo",
+          "settings": {
+            "label": "Homme S + M",
+            "product_a": "rituals-homme-geschenkset-s-2026",
+            "product_b": "rituals-homme-geschenkset-m-2026"
+          }
+        }
+      },
+      "block_order": [
+        "combo_1",
+        "combo_2",
+        "combo_3"
+      ],
+      "settings": {
+        "layout": "grid",
+        "eyebrow": "Black Week",
+        "heading": "Rituals-Geschenksets",
+        "heading_h1": false,
+        "intro": "Black Week auf unsere Art – ohne Code: Mit einem Rituals-Set L oder S + M kombiniert erreichst du 59 € und wählst eine Seife als Geschenk dazu.",
+        "products": [
+          "rituals-the-ritual-of-sakura-geschenkset-l-2026",
+          "rituals-the-ritual-of-ayurveda-geschenkset-l-2026",
+          "rituals-the-ritual-of-karma-geschenkset-l-2026",
+          "rituals-homme-geschenkset-l-2026",
+          "rituals-the-ritual-of-jing-geschenkset-l-2026"
+        ],
+        "tier1_max": 30,
+        "tier2_max": 40,
+        "tier3_max": 65,
+        "tier1_label": "Unter 30 €",
+        "tier2_label": "Bis 40 €",
+        "tier3_label": "Bis 65 €",
+        "link": "",
+        "link_label": "",
+        "combo_heading": "S + M kombiniert",
+        "note": "Ab 59 € Warenwert wählst du eine Seife als Geschenk dazu, ab 99 € zwei Seifen und eine Duftprobe. Bis 31.12.2026, solange der Vorrat reicht.",
+        "pad_top": 24,
+        "pad_top_mobile": 16,
+        "pad_bottom": 64
+      }
+    }
+  },
+  "order": [
+    "main",
+    "be_rituals_black_week"
+  ]
+}
