@@ -114,7 +114,7 @@
       si = (i + slides.length) % slides.length; el = 0; sw = 0;
       slides.forEach(function (x, k) { x.classList.toggle('is-on', k === si); });
       dots.forEach(function (x, k) { x.classList.toggle('is-on', k === si); });
-      go();
+      enter(boxes.filter(function (o) { return o.sl === slides[si]; })[0] || null); go();
     }
     var pv = h.querySelector('[data-h3-prev]'), nx = h.querySelector('[data-h3-next]');
     if (pv) pv.addEventListener('click', function () { hold(); show(si - 1); });
