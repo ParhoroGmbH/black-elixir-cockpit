@@ -286,7 +286,7 @@
       box.style.maxHeight=(open?full:COL)+'px';
       btn.setAttribute('aria-expanded',open?'true':'false');lab.textContent=btn.getAttribute(open?'data-less':'data-more');
       root.classList.toggle('is-reading',open);pills.forEach(function(p){p.tabIndex=open?0:-1});
-      if(!open){var top=root.getBoundingClientRect().top;if(top<0)window.scrollTo({top:window.pageYOffset+top-90,behavior:'smooth'})}
+      if(!open){var top=root.getBoundingClientRect().top;if(top<0)window.scrollTo({top:window.pageYOffset+top-90,behavior:'instant'})}
     };
     box.addEventListener('transitionend',function(e){if(e.target===box&&box.classList.contains('is-open'))box.style.maxHeight='none'});
     btn.addEventListener('click',function(){set(btn.getAttribute('aria-expanded')!=='true')});
