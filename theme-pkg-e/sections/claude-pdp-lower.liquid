@@ -166,9 +166,10 @@
 [id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .banner__content-wrapper{border-inline-start:1px solid var(--cp-gold);padding-inline-start:28px}
 [id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .content-heading{font-family:var(--cp-serif)!important;font-weight:600!important;font-size:clamp(40px,5vw,76px)!important;line-height:1!important;letter-spacing:.06em!important;color:#fff!important}
 [id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .content-text{font-size:12px!important;letter-spacing:.32em!important;text-transform:uppercase;color:var(--cp-gold-l,#f1dea8)!important;opacity:1!important;margin-top:10px}
-[id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .video-button{border-radius:999px!important;background:rgba(255,255,255,.08)!important;border:1px solid rgba(241,222,168,.6)!important;color:#fff!important;backdrop-filter:blur(10px);transition:background-color .3s,color .3s}
-[id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .video-button:hover{background:var(--cp-gold)!important;color:#121110!important}
-[id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .video-button__text{letter-spacing:.2em}
+[id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .video-button.video-button.solid-button{border-radius:999px!important;background:rgba(255,255,255,.08)!important;border:1px solid rgba(241,222,168,.6)!important;color:#fff!important;backdrop-filter:blur(10px);transition:background-color .3s,color .3s}
+[id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .video-button.video-button.solid-button:hover{background:var(--cp-gold)!important;color:#121110!important}
+[id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .video-button__text{letter-spacing:.2em;color:inherit!important}
+[id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .video-button.video-button.solid-button::before,[id$="__5f396e91-f049-4d30-969d-0a6f7dcde2b9"] .video-button.video-button.solid-button::after{display:none!important}
 
 /* ---------- 5) Kollektionen: Bühne ---------- */
 [id$="__4e58a0ea-60de-47bd-bed6-2f45f4e0323e"] .featured-collection-grid{padding-top:72px!important;padding-bottom:72px!important}
@@ -195,9 +196,9 @@
 .cpl-row__t{display:block;margin-top:6px;font-size:11.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 /* ---------- 6) Joy „Merken“ als Herz am Titel ---------- */
-.main-product .product__info-container > .app:has(joy-wishlist-button){float:inline-end;width:46px;height:46px;margin:0 0 6px 12px!important;position:relative;z-index:2}
-[dir="rtl"] .main-product .product__info-container > .app:has(joy-wishlist-button){margin:0 12px 6px 0!important}
-.main-product .product__info-container > .app:has(joy-wishlist-button) + .product__text{margin-top:6px!important}
+.main-product .product__info-container > .app:has(.Joy-Wishlist-ButtonWrapper){float:inline-end;width:46px;height:46px;margin:0 0 6px 12px!important;position:relative;z-index:2}
+[dir="rtl"] .main-product .product__info-container > .app:has(.Joy-Wishlist-ButtonWrapper){margin:0 12px 6px 0!important}
+.main-product .product__info-container > .app:has(.Joy-Wishlist-ButtonWrapper) + .product__text{margin-top:6px!important}
 
 @media (max-width:989px){
   .cpl-film{padding:48px 20px 40px}
@@ -220,6 +221,7 @@
 
 <script>
 (function(){
+var init=function(){
   var T={prev:{{ t_prev | json }},next:{{ t_next | json }},to:{{ t_to | json }},fe:{{ t_film_e | json }},fh:{{ t_film_h | json }},s:[{{ t_s1 | json }},{{ t_s2 | json }},{{ t_s3 | json }}],more:{{ t_more | json }}};
   var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var sec=function(k){return document.querySelector('.shopify-section[id$="__'+k+'"]')};
@@ -294,7 +296,11 @@
   /* 6) Joy-Herz: Text ausblenden, rund, Gold (nur Stil im Shadow DOM, Logik bleibt bei Joy) */
   var CSS='.Joy-Wishlist__Button{width:46px!important;min-width:46px!important;height:46px!important;padding:0!important;border-radius:50%!important;border:1px solid rgba(200,164,92,.7)!important;background:rgba(255,255,255,.9)!important;justify-content:center!important;gap:0!important;transition:background-color .25s,border-color .25s!important}.Joy-Wishlist__Button:hover{background:#141414!important;border-color:#141414!important}.Joy-Wishlist__Button:hover svg path{stroke:#fff!important}.Joy-Wishlist-WishlistButton__Text{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}.Joy-Wishlist-WishlistButton__Icon{margin:0!important}.Joy-Wishlist-WishlistButton__Icon svg{width:20px!important;height:20px!important}';
   var styleJoy=function(){[].slice.call(document.querySelectorAll('.product__info-container joy-wishlist-button')).forEach(function(b){var sr=b.shadowRoot;if(sr&&!sr.querySelector('#cpl-joy')){var s=document.createElement('style');s.id='cpl-joy';s.textContent=CSS;sr.appendChild(s)}})};
-  styleJoy();var n=0,iv=setInterval(function(){styleJoy();if(++n>20)clearInterval(iv)},500);
+  var jw=document.querySelector('.product__info-container .Joy-Wishlist-ButtonWrapper');
+  var burst=function(){var n=0,iv=setInterval(function(){styleJoy();if(++n>12)clearInterval(iv)},250)};
+  if(jw){styleJoy();if('MutationObserver' in window)new MutationObserver(burst).observe(jw,{childList:true,subtree:true});burst()}
+};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
 
