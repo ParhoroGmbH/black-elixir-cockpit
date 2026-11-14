@@ -558,6 +558,12 @@ html body #urgent .chip,html body #urgent .chip:hover,html body #urgent .chip:ac
 .auf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .frei-empty{padding:18px 4px;color:var(--mut);font-size:14px}
+/* Auswahllisten: die aufgeklappte Liste zeichnet das System; Farben pro Thema fest setzen, damit sie lesbar bleibt */
+html[data-theme=dark] select{color-scheme:dark}
+html[data-theme=light] select{color-scheme:light}
+html[data-theme=dark] select option{background:#2c2c2e;color:#f5f5f7}
+html[data-theme=light] select option{background:#fff;color:#1d1d1f}
+#aufMsg.live{color:var(--bad);font-weight:600}
 .chip.green{flex:0 1 auto;margin-top:12px;min-height:36px!important;padding:6px 12px!important;border-radius:999px!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
 .chip.green .l{font-size:13px!important;color:var(--mut)!important}
 .chip.green .ico{width:20px!important;height:20px!important}
@@ -1064,7 +1070,7 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
         <label for="aufBot">Bot</label><select id="aufBot"></select>
         <label for="aufText">Auftrag</label><textarea id="aufText" rows="5" maxlength="4000" placeholder="Was soll der Bot tun?"></textarea>
         <div class="auf-mic"><button type="button" id="aufMic" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM5 11a7 7 0 0014 0M12 18v3"/></svg><span class="mt">Diktieren</span></button>
-          <label for="aufLang" class="vh">Sprache der Spracheingabe</label><select id="aufLang"><option value="ar-LB">Arabisch</option><option value="de-DE">Deutsch</option></select></div>
+          <label for="aufLang" class="vh">Sprache der Spracheingabe</label><select id="aufLang"><option value="ar-LB">Arabisch</option><option value="de-DE">Deutsch</option><option value="en-US">Englisch</option></select></div>
         <div class="auf-row"><div><label for="aufPrio">Priorität</label><select id="aufPrio"><option value="normal">normal</option><option value="hoch">hoch</option><option value="niedrig">niedrig</option></select></div>
           <div><label for="aufDue">Fällig (optional)</label><input type="date" id="aufDue"></div></div>
         <div class="auf-a"><button type="button" class="primary" id="aufSend">Auftrag speichern</button><span id="aufMsg" role="status"></span></div>
@@ -1534,20 +1540,33 @@ $("aufSend").onclick = async () => {
   $("aufText").value = ""; $("aufDue").value = ""; msg.textContent = "Gespeichert. Der Bot sieht den Auftrag in seiner Liste."; load();
 };
 // Diktieren: Spracheingabe des Browsers (Chrome, Edge, Safari). Der Ton geht dafür an den Sprachdienst des Browsers.
+// Robust: „Stopp" reagiert sofort; endet der Browser-Dienst von selbst (Pause, ~60 s), startet er still neu, solange nicht gestoppt.
 (function dictate() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition, b = $("aufMic");
-  if (!SR) { b.hidden = true; $("aufLang").hidden = true; return; }
-  let rec = null, base = "";
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition, b = $("aufMic"), ta = $("aufText"), msg = $("aufMsg");
+  if (!SR) { b.hidden = true; $("aufLang").hidden = true; msg.textContent = "Spracheingabe gibt es in diesem Browser nicht. Tipp: Windows-Taste + H oder das Mikrofon der Handy-Tastatur."; return; }
+  let rec = null, want = false, base = "", fin = "", killT = 0, fails = 0;
+  const ui = (on, text) => { b.setAttribute("aria-pressed", String(on)); b.querySelector(".mt").textContent = on ? "Stopp" : "Diktieren"; msg.classList.toggle("live", on); if (text !== undefined) msg.textContent = text; };
+  const write = (interim) => { ta.value = (base + fin + (interim || "")).slice(0, 4000); };
+  const ERR = { "not-allowed": "Mikrofon ist für diese Seite nicht erlaubt.", "service-not-allowed": "Mikrofon ist für diese Seite nicht erlaubt.", "audio-capture": "Kein Mikrofon gefunden.", network: "Der Sprachdienst des Browsers ist nicht erreichbar.", "language-not-supported": "Diese Sprache unterstützt der Browser nicht." };
+  function startOne() {
+    const r = new SR(); rec = r;
+    r.lang = $("aufLang").value; r.interimResults = true; r.continuous = true; r.maxAlternatives = 1;
+    r.onresult = (e) => { fails = 0; let int = ""; for (let i = e.resultIndex; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t.trim() + " "; else int += t; } write(int); };
+    r.onerror = (e) => { if (e.error === "no-speech" || e.error === "aborted") return; want = false; ui(false, ERR[e.error] || "Spracheingabe abgebrochen."); };
+    r.onend = () => { if (rec === r) rec = null; write(); if (want && ++fails < 4) { try { startOne(); } catch (_) { want = false; ui(false, ""); } } else if (want) { want = false; ui(false, "Spracheingabe beendet."); } };
+    r.start();
+  }
   b.onclick = () => {
-    if (rec) { rec.stop(); return; }
-    rec = new SR(); rec.lang = $("aufLang").value; rec.interimResults = true; rec.continuous = true;
-    base = $("aufText").value.trim() ? $("aufText").value.trim() + " " : "";
-    rec.onresult = (e) => { let fin = "", int = ""; for (let i = 0; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t + " "; else int += t; } $("aufText").value = (base + fin + int).slice(0, 4000); };
-    rec.onerror = (e) => { $("aufMsg").textContent = e.error === "not-allowed" ? "Mikrofon ist für diese Seite nicht erlaubt." : e.error === "no-speech" ? "Nichts gehört." : "Spracheingabe abgebrochen."; };
-    rec.onend = () => { rec = null; b.setAttribute("aria-pressed", "false"); b.querySelector(".mt").textContent = "Diktieren"; if ($("aufMsg").textContent === "Ich höre zu …") $("aufMsg").textContent = ""; };
-    try { rec.start(); } catch (_) { rec = null; return; }
-    b.setAttribute("aria-pressed", "true"); b.querySelector(".mt").textContent = "Stopp"; $("aufMsg").textContent = "Ich höre zu …";
+    if (want) { // sofort zurücksetzen, Dienst im Hintergrund beenden
+      want = false; ui(false, "Fertig. Text prüfen und speichern.");
+      const r = rec; if (r) { try { r.stop(); } catch (_) {} clearTimeout(killT); killT = setTimeout(() => { try { r.abort(); } catch (_) {} }, 1500); }
+      return;
+    }
+    base = ta.value.trim() ? ta.value.trim() + " " : ""; fin = ""; fails = 0; want = true;
+    ui(true, "Ich höre zu … zum Beenden auf Stopp tippen.");
+    try { startOne(); } catch (_) { want = false; ui(false, "Spracheingabe konnte nicht starten."); }
   };
+  $("aufLang").onchange = () => { if (want && rec) { try { rec.stop(); } catch (_) {} } }; // Neustart mit neuer Sprache
 })();
 
 // ---------- Bereiche als eigene Seiten ----------
