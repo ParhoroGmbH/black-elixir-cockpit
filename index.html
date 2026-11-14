@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BE Cockpit">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://avsjxexvqgrgxeujkbei.supabase.co wss://avsjxexvqgrgxeujkbei.supabase.co; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src https://avsjxexvqgrgxeujkbei.supabase.co wss://avsjxexvqgrgxeujkbei.supabase.co; style-src 'unsafe-inline'; img-src 'self' data: blob: https://avsjxexvqgrgxeujkbei.supabase.co; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -1051,6 +1051,8 @@ html[dir=rtl] #navToggle .ico-chev{margin-left:0;margin-right:auto}
 .auf-foto-item img{width:100%;height:100%;object-fit:cover;display:block}
 .auf-foto-item button{position:absolute;top:2px;right:2px;width:20px;height:20px;line-height:18px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:14px;padding:0}
 html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
+.foto-ph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-width:64px;min-height:64px;font:600 12px/1 system-ui,sans-serif;letter-spacing:.05em;color:#cfd2da;background:rgba(255,255,255,.08)}
+.foto-overlay-grid .foto-ph{width:140px;height:140px;border-radius:10px;font-size:16px}
 
 /* Export (CSV/PDF) und „Verbinden“-Knöpfe in Kartentiteln */
 .exp{display:inline-flex;gap:6px;margin-inline-start:8px;vertical-align:middle}
@@ -1472,6 +1474,10 @@ function fotoLink(bilder) {
 // gerade auf dem Handy, sonst stillschweigend blockiert.
 let fotoOverlay = null;
 function closeFotoOverlay() { if (fotoOverlay) { fotoOverlay.remove(); fotoOverlay = null; } }
+function fotoPlatzhalter(img, label) {
+  const ph = document.createElement("span"); ph.className = "foto-ph"; ph.textContent = String(label).slice(0, 5).toUpperCase();
+  img.replaceWith(ph);
+}
 async function showAufFotos(paths) {
   closeFotoOverlay();
   fotoOverlay = document.createElement("div"); fotoOverlay.className = "foto-overlay";
@@ -1485,6 +1491,7 @@ async function showAufFotos(paths) {
   const grid = fotoOverlay.querySelector(".foto-overlay-grid");
   if (error) { grid.textContent = T("Fotos konnten nicht geladen werden: ") + (error.message || error); return; }
   grid.innerHTML = data.map(d => d.signedUrl ? `<a href="${esc(d.signedUrl)}" target="_blank" rel="noopener noreferrer"><img src="${esc(d.signedUrl)}" alt=""></a>` : "").join("");
+  grid.querySelectorAll("img").forEach((img, i) => img.onerror = () => fotoPlatzhalter(img, (paths[i] || "").split(".").pop() || "Foto"));
 }
 // spanId: Platzhalter-<span>, dataFn: () => {headers, rows} frisch bei jedem Klick (Filter/Stand können sich geändert haben)
 function exportButtons(spanId, filenameBase, title, dataFn) {
@@ -1808,6 +1815,7 @@ const AUF_FOTO_MAX = 5, AUF_FOTO_MB = 10;
 let aufFotos = []; // { file, url (Vorschau, lokal) }
 function renderAufFotos() {
   $("aufFotoList").innerHTML = aufFotos.map((f, i) => `<div class="auf-foto-item"><img src="${f.url}" alt=""><button type="button" data-i="${i}" aria-label="${esc(T("Entfernen"))}">×</button></div>`).join("");
+  $("aufFotoList").querySelectorAll("img").forEach((img, i) => img.onerror = () => fotoPlatzhalter(img, (aufFotos[i]?.file.name.split(".").pop() || aufFotos[i]?.file.type.split("/").pop() || "Foto")));
   $("aufFotoList").querySelectorAll("button[data-i]").forEach(b => b.onclick = () => { URL.revokeObjectURL(aufFotos[+b.dataset.i].url); aufFotos.splice(+b.dataset.i, 1); renderAufFotos(); });
   $("aufFotoInput").disabled = aufFotos.length >= AUF_FOTO_MAX;
 }
