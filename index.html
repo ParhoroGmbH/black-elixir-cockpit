@@ -525,7 +525,39 @@ html body{background:var(--wolken) fixed,var(--bg)}
 .chip.red .n,.chip.yellow .n{font-size:17px!important;font-weight:650!important;justify-self:end;min-width:28px;text-align:right}
 .chip.red .n{color:var(--bad)!important}.chip.yellow .n{color:var(--warn)!important}
 .chip.red::after,.chip.yellow::after{content:"Ansehen"!important;display:flex!important;position:static!important;inset:auto!important;grid-area:go;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;background:var(--g-strong)!important;box-shadow:var(--g-hi),0 1px 3px rgba(0,0,0,.08);color:var(--acc);font-size:13px;font-weight:600;opacity:1!important}
-.chip.red:hover,.chip.yellow:hover{background:var(--g-bg2)!important}
+/* Zeilen bleiben an ihrem Platz: kein Vorspringen, nur leichte Farbe und ein kurzes Rütteln */
+html body #urgent .chip,html body #urgent .chip:hover,html body #urgent .chip:active,html body #urgent .chip:focus-visible{transform:none!important;z-index:auto!important;--lift:0px;--rx:0deg;--ry:0deg}
+.chip.red:hover,.chip.yellow:hover,.chip.red:focus-visible,.chip.yellow:focus-visible{background:color-mix(in srgb,var(--acc) 9%,transparent)!important;animation:rowShake .28s ease-in-out 1}
+.chip.red:active,.chip.yellow:active{background:color-mix(in srgb,var(--acc) 16%,transparent)!important}
+.chip.green:hover{background:var(--g-strong)!important}
+@keyframes rowShake{25%{translate:-3px 0}50%{translate:3px 0}75%{translate:-2px 0}100%{translate:0 0}}
+@media (prefers-reduced-motion:reduce){.chip.red:hover,.chip.yellow:hover{animation:none}}
+/* Freigaben und Aufträge */
+.frei{padding:16px 2px;border-top:1px solid var(--g-line)}
+.frei:first-child{border-top:0;padding-top:4px}
+.frei-h{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.frei-t{margin-left:auto;font-size:12px;color:var(--mut)}
+.frei-ti{font-size:16px;font-weight:600;margin-top:8px}
+.frei-d{margin-top:6px;font-size:14px;line-height:1.5;color:var(--txt);white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;padding:10px 12px;border-radius:12px;background:var(--g-bg2);border:1px solid var(--g-edge)}
+.frei-k{display:block;margin-top:10px;font-size:12px;color:var(--mut)}
+.frei-k input,.auf select,.auf textarea,.auf input{display:block;width:100%;box-sizing:border-box;margin-top:4px;min-height:44px;padding:10px 12px;border-radius:12px;border:1px solid var(--g-line);background:var(--g-strong);color:var(--txt);font:inherit;font-size:15px}
+.auf textarea{min-height:120px;resize:vertical;line-height:1.5}
+.frei-a,.auf-a{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}
+.frei-a button,.auf-a button,#aufMic{min-height:44px;padding:0 18px;border-radius:999px;font-size:14px;font-weight:600}
+.frei-a button:not(.primary),#aufMic{background:var(--g-strong)!important;color:var(--acc);box-shadow:var(--g-hi),0 1px 3px rgba(0,0,0,.08)}
+.frei-a button[data-dec=abgelehnt]{color:var(--bad)}
+.frei-a button[data-arm]{outline:2px solid currentColor;outline-offset:2px}
+.frei-m,#aufMsg{font-size:13px;color:var(--mut)}
+.auf label{display:block;margin-top:12px;font-size:12px;color:var(--mut)}
+.auf label:first-child{margin-top:0}
+.auf-mic{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.auf-mic select{width:auto;margin-top:0}
+#aufMic{display:inline-flex;align-items:center;gap:8px}
+#aufMic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#aufMic[aria-pressed=true]{background:var(--bad)!important;color:#fff}
+.auf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.frei-empty{padding:18px 4px;color:var(--mut);font-size:14px}
 .chip.green{flex:0 1 auto;margin-top:12px;min-height:36px!important;padding:6px 12px!important;border-radius:999px!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
 .chip.green .l{font-size:13px!important;color:var(--mut)!important}
 .chip.green .ico{width:20px!important;height:20px!important}
@@ -1000,6 +1032,7 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
   <div class="shell">
   <nav class="side" id="secNav" aria-label="Bereiche">
     <button type="button" data-area-go="home" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/></svg><span class="nl">Übersicht</span></button>
+    <button type="button" data-area-go="freigaben"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span class="nl">Freigaben</span></button>
     <div class="lbl">Geschäft</div>
     <button type="button" data-area-go="verkauf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg><span class="nl">Verkauf</span></button>
     <button type="button" data-area-go="rechnungen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/></svg><span class="nl">Rechnungen</span></button>
@@ -1024,6 +1057,21 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
 
   <main>
   <div class="dash">
+    <div class="sec-h t-link" id="sec-frei"><h2 class="metal">Freigaben</h2><span class="rule"></span></div>
+    <div class="card s12" id="card-frei"><h3>Wartet auf deine Entscheidung <span class="sub">Anfragen der Bots · deine Entscheidung wird mit Uhrzeit gespeichert und kann nicht mehr geändert werden</span></h3><div id="freiList"></div></div>
+    <div class="card s6 m12" id="card-auftrag"><h3>Auftrag an Bot <span class="sub">schreiben oder diktieren · der Bot liest ihn in seiner Aufgabenliste</span></h3>
+      <div class="auf">
+        <label for="aufBot">Bot</label><select id="aufBot"></select>
+        <label for="aufText">Auftrag</label><textarea id="aufText" rows="5" maxlength="4000" placeholder="Was soll der Bot tun?"></textarea>
+        <div class="auf-mic"><button type="button" id="aufMic" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM5 11a7 7 0 0014 0M12 18v3"/></svg><span class="mt">Diktieren</span></button>
+          <label for="aufLang" class="vh">Sprache der Spracheingabe</label><select id="aufLang"><option value="ar-LB">Arabisch</option><option value="de-DE">Deutsch</option></select></div>
+        <div class="auf-row"><div><label for="aufPrio">Priorität</label><select id="aufPrio"><option value="normal">normal</option><option value="hoch">hoch</option><option value="niedrig">niedrig</option></select></div>
+          <div><label for="aufDue">Fällig (optional)</label><input type="date" id="aufDue"></div></div>
+        <div class="auf-a"><button type="button" class="primary" id="aufSend">Auftrag speichern</button><span id="aufMsg" role="status"></span></div>
+      </div></div>
+    <div class="card s6 m12" id="card-auftraege"><h3>Aufträge <span class="sub">offen und zuletzt erledigt</span></h3><div class="scroll tall"><table class="tbl" id="tblAuftr"></table></div></div>
+    <div class="card s12" id="card-freiDone"><h3>Zuletzt entschieden</h3><div class="scroll tall"><table class="tbl" id="tblFreiDone"></table></div></div>
+
     <div class="sec-h t-sales" id="sec-sales"><h2 class="metal">Umsatz netto</h2><span class="rule"></span><span class="fresh" id="fr-sales"></span></div>
     <div id="kpis" style="display:contents"></div>
 
@@ -1236,7 +1284,7 @@ async function load() {
 
     const today = berlinDate(); state.today = today; state.err = {};
     const from60 = addDays(today, -60), mailFrom = new Date(Date.now() - 30 * 864e5).toISOString();
-    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp, ship] = await Promise.all([
+    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp, ship, frei, auftr] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
       safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
       safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value").eq("source", "jtl"))),
@@ -1257,9 +1305,11 @@ async function load() {
       safe("sig", res(sb.from("bot_quellen_signale").select("quelle,signal,schwere,received_at,mailbox,absender_domain,betreff,thread_id").order("received_at", { ascending: false }).limit(500))),
       safe("mp", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at").eq("category", "Marktplatz").gte("received_at", mailFrom).order("received_at", { ascending: false }).limit(1500))),
       safe("ship", fetchAll(() => sb.from("shipments").select("number,order_ref,channel,carrier,status,shipped_at,in_transit_at,delivered_at,eta").gte("shipped_at", new Date(Date.now() - 35 * 864e5).toISOString()).order("shipped_at", { ascending: false }))),
+      safe("frei", res(sb.from("freigaben").select("id,erstellt_at,bot,typ,titel,details,bezug,status,entschieden_at,kommentar,ausgefuehrt_at,ergebnis").order("erstellt_at", { ascending: false }).limit(200))),
+      safe("auftr", res(sb.from("auftraege").select("id,erstellt_at,bot,auftrag,prioritaet,faellig,status,antwort,aktualisiert_at").order("erstellt_at", { ascending: false }).limit(200))),
     ]);
     state.sales = sales;
-    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp, ship };
+    state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, tools, sig, mp, ship, frei, auftr };
     renderAll();
     const failed = Object.keys(state.err);
     if (failed.length) warn = (warn ? warn + " " : "") + "Teilweise nicht geladen: " + failed.join(", ") + ". Übrige Bereiche sind aktuell.";
@@ -1286,7 +1336,7 @@ function renderAll() {
   state.U = computeUrgent(d);
   renderUrgent();
   renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
-  renderShip(d.ship); renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d); requestAnimationFrame(countUp);
+  renderShip(d.ship); renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d); renderFrei(d.frei, d.auftr); requestAnimationFrame(countUp);
   bindTilt();
 }
 
@@ -1438,11 +1488,74 @@ const GAL = [
   { name: "Quellen", go: "sec-quellen", ico: "bell", c: "#ffcc00", ids: ["idealo_budget", "higgs_low", "sig_high"] },
   { name: "Verbindungen", go: "sec-data", ico: "sync", c: "#64d2ff", ids: ["sync_red", "sync_yel"] },
 ];
+// ---------- Freigaben & Aufträge ----------
+// Bots stellen Anfragen (Tabelle freigaben), der CEO entscheidet hier; Aufträge gehen vom CEO an einen Bot (Tabelle auftraege).
+// Schreiben geht nur über die Datenbankfunktionen cockpit_freigabe_entscheiden / cockpit_auftrag_erstellen (Login + Allowlist).
+const BOTS = ["General Manager", "Customer Service", "Return Manager", "JTL-Wawi", "Market Places", "Pricing", "eSagu", "Shopify", "Idealo", "Accounting / Emails", "Social Media", "Marketing", "Photo & Video", "Google Operator", "SEO", "Händlerbund", "Qogita", "N8N Workflow"];
+$("aufBot").innerHTML = BOTS.map(b => `<option>${esc(b)}</option>`).join("");
+const FREI_ST = { freigegeben: ["Freigegeben", "ok"], abgelehnt: ["Abgelehnt", "bad"], ausgefuehrt: ["Ausgeführt", "ok"], zurueckgezogen: ["Zurückgezogen", ""], offen: ["Offen", "warn"] };
+const AUF_ST = { offen: ["Offen", "warn"], in_arbeit: ["In Arbeit", ""], erledigt: ["Erledigt", "ok"], abgebrochen: ["Abgebrochen", ""] };
+function renderFrei(frei, auftr) {
+  frei = frei || []; auftr = auftr || [];
+  const open = frei.filter(f => f.status === "offen");
+  $("freiList").innerHTML = open.length ? open.map(f => `<div class="frei" data-id="${f.id}">
+      <div class="frei-h">${pill(f.bot, "")}${pill(f.typ, "")}${f.bezug ? pill(f.bezug, "") : ""}<span class="frei-t">${fmtDT(f.erstellt_at)}</span></div>
+      <div class="frei-ti">${esc(f.titel)}</div>${f.details ? `<div class="frei-d">${esc(f.details)}</div>` : ""}
+      <label class="frei-k">Notiz an den Bot (optional)<input type="text" maxlength="500"></label>
+      <div class="frei-a"><button type="button" class="primary" data-dec="freigegeben">Freigeben</button><button type="button" data-dec="abgelehnt">Ablehnen</button><span class="frei-m" role="status"></span></div>
+    </div>`).join("") : `<div class="frei-empty">${esc(errTxt("frei", "Keine offenen Anfragen. Sobald ein Bot eine Freigabe braucht, steht sie hier."))}</div>`;
+  $("freiList").querySelectorAll("button[data-dec]").forEach(b => b.onclick = async () => {
+    const box = b.closest(".frei"), msg = box.querySelector(".frei-m"), dec = b.dataset.dec;
+    if (!b.dataset.arm) { // zweiter Klick bestätigt
+      box.querySelectorAll("button[data-arm]").forEach(x => { delete x.dataset.arm; x.textContent = x.dataset.dec === "freigegeben" ? "Freigeben" : "Ablehnen"; });
+      b.dataset.arm = "1"; b.textContent = dec === "freigegeben" ? "Sicher? Freigeben" : "Sicher? Ablehnen"; msg.textContent = "Noch einmal klicken zum Bestätigen.";
+      setTimeout(() => { if (b.isConnected && b.dataset.arm) { delete b.dataset.arm; b.textContent = dec === "freigegeben" ? "Freigeben" : "Ablehnen"; msg.textContent = ""; } }, 5000);
+      return;
+    }
+    box.querySelectorAll("button").forEach(x => x.disabled = true); msg.textContent = "Speichere …";
+    const { error } = await sb.rpc("cockpit_freigabe_entscheiden", { p_id: Number(box.dataset.id), p_entscheidung: dec, p_kommentar: box.querySelector("input").value.trim() || null });
+    if (error) { msg.textContent = "Nicht gespeichert: " + (error.message || error); box.querySelectorAll("button").forEach(x => x.disabled = false); return; }
+    msg.textContent = dec === "freigegeben" ? "Freigegeben." : "Abgelehnt."; load();
+  });
+  table("tblFreiDone", [{ t: "Bot" }, { t: "Anfrage" }, { t: "Entscheidung" }, { t: "Wann", r: 1 }, { t: "Notiz / Ergebnis" }],
+    frei.filter(f => f.status !== "offen").slice(0, 60).map(f => [esc(f.bot), `<b>${esc(f.titel)}</b>${f.bezug ? " · " + esc(f.bezug) : ""}`, pill((FREI_ST[f.status] || [f.status, ""])[0], (FREI_ST[f.status] || ["", ""])[1]), fmtDT(f.ausgefuehrt_at || f.entschieden_at), esc([f.kommentar, f.ergebnis].filter(Boolean).join(" · "))]),
+    errTxt("frei", "Noch keine Entscheidungen."));
+  table("tblAuftr", [{ t: "Bot" }, { t: "Auftrag" }, { t: "Prio" }, { t: "Fällig", r: 1 }, { t: "Status" }, { t: "Antwort" }],
+    auftr.slice(0, 80).map(a => ({ hl: a.status === "offen" && a.prioritaet === "hoch", c: [esc(a.bot), esc(a.auftrag), esc(a.prioritaet), a.faellig ? fmtD(a.faellig) : "–", pill((AUF_ST[a.status] || [a.status, ""])[0], (AUF_ST[a.status] || ["", ""])[1]), esc(a.antwort || "")] })),
+    errTxt("auftr", "Noch keine Aufträge."));
+}
+$("aufSend").onclick = async () => {
+  const text = $("aufText").value.trim(), msg = $("aufMsg");
+  if (!text) { msg.textContent = "Bitte zuerst den Auftrag schreiben oder diktieren."; return; }
+  $("aufSend").disabled = true; msg.textContent = "Speichere …";
+  const { error } = await sb.rpc("cockpit_auftrag_erstellen", { p_bot: $("aufBot").value, p_auftrag: text, p_prioritaet: $("aufPrio").value, p_faellig: $("aufDue").value || null });
+  $("aufSend").disabled = false;
+  if (error) { msg.textContent = "Nicht gespeichert: " + (error.message || error); return; }
+  $("aufText").value = ""; $("aufDue").value = ""; msg.textContent = "Gespeichert. Der Bot sieht den Auftrag in seiner Liste."; load();
+};
+// Diktieren: Spracheingabe des Browsers (Chrome, Edge, Safari). Der Ton geht dafür an den Sprachdienst des Browsers.
+(function dictate() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition, b = $("aufMic");
+  if (!SR) { b.hidden = true; $("aufLang").hidden = true; return; }
+  let rec = null, base = "";
+  b.onclick = () => {
+    if (rec) { rec.stop(); return; }
+    rec = new SR(); rec.lang = $("aufLang").value; rec.interimResults = true; rec.continuous = true;
+    base = $("aufText").value.trim() ? $("aufText").value.trim() + " " : "";
+    rec.onresult = (e) => { let fin = "", int = ""; for (let i = 0; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t + " "; else int += t; } $("aufText").value = (base + fin + int).slice(0, 4000); };
+    rec.onerror = (e) => { $("aufMsg").textContent = e.error === "not-allowed" ? "Mikrofon ist für diese Seite nicht erlaubt." : e.error === "no-speech" ? "Nichts gehört." : "Spracheingabe abgebrochen."; };
+    rec.onend = () => { rec = null; b.setAttribute("aria-pressed", "false"); b.querySelector(".mt").textContent = "Diktieren"; if ($("aufMsg").textContent === "Ich höre zu …") $("aufMsg").textContent = ""; };
+    try { rec.start(); } catch (_) { rec = null; return; }
+    b.setAttribute("aria-pressed", "true"); b.querySelector(".mt").textContent = "Stopp"; $("aufMsg").textContent = "Ich höre zu …";
+  };
+})();
+
 // ---------- Bereiche als eigene Seiten ----------
 // Jeder Bereich zeigt nur seine Abschnitte. Übersicht = Galaxie + „Was ist dringend?“ + Umsatz-Kennzahlen.
 // Kein Abschnitt wurde entfernt; die Zuordnung steht nur hier. Adresse: #/verkauf, #/versand … (Zurück-Taste funktioniert).
 const AREAS = [
   { k: "home", name: "Übersicht", secs: [] },
+  { k: "freigaben", name: "Freigaben & Aufträge", secs: ["sec-frei"] },
   { k: "verkauf", name: "Verkauf", secs: ["sec-sales", "sec-oo", "sec-prod"] },
   { k: "rechnungen", name: "Rechnungen", secs: ["sec-bills"] },
   { k: "versand", name: "Versand & Retouren", secs: ["sec-kpi"], extra: ["card-dhl"] },
@@ -1664,6 +1777,7 @@ function renderUrgent() {
   // Seitenleiste: offene Punkte je Bereich (rot = dringend, gelb = beachten)
   const cnt = {};
   U.filter(u => !u.empty && u.n > 0 && u.lvl !== "green").forEach(u => { const el = $(u.sec); if (!el) return; const k = areaOfEl(el), c = cnt[k] || (cnt[k] = { n: 0, lvl: "yellow" }); c.n += u.n; if (u.lvl === "red") c.lvl = "red"; });
+  { const fo = ((state.d && state.d.frei) || []).filter(f => f.status === "offen").length; if (fo) cnt.freigaben = { n: fo, lvl: "red" }; }
   document.querySelectorAll("#secNav [data-area-go]").forEach(b => {
     const c = cnt[b.dataset.areaGo]; let s = b.querySelector(".cnt");
     if (!s) { s = document.createElement("span"); b.appendChild(s); }
