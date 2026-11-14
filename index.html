@@ -512,7 +512,10 @@ html body{background:var(--wolken) fixed,var(--bg)}
 .chips{display:flex!important;flex-wrap:wrap;gap:0 8px!important}
 .chip.red,.chip.yellow{flex:1 1 100%;display:grid!important;grid-template-columns:10px minmax(0,1fr) auto auto!important;grid-template-areas:"ico l n go"!important;align-items:center!important;gap:14px!important;min-height:56px;padding:12px 4px!important;border:0!important;border-top:1px solid var(--g-line)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;transform:none!important}
 .chip.red,.chip.yellow{min-height:56px!important;height:auto!important;grid-template-rows:auto!important}
-.chip.red{order:1}.chip.yellow{order:2}.chip.green{order:3}
+.chip.red{order:1}.chip.yellow{order:3}.chip.green{order:4}
+.chips.fold .chip.yellow{display:none!important}
+.urg-more{order:2;flex:1 1 100%;min-height:44px;margin:6px 0 0;padding:0 16px;border-radius:999px;background:var(--g-strong)!important;color:var(--acc)!important;font-size:13px;font-weight:600;border:0;box-shadow:var(--g-hi),0 1px 3px rgba(0,0,0,.08);cursor:pointer}
+.chips:not(.fold) .urg-more{order:5;margin-top:12px}
 .chip.red::before,.chip.yellow::before{display:none!important}
 .card.kpi,.kpi .v,.v.reflect{-webkit-box-reflect:unset!important}
 .chip.red .ico,.chip.yellow .ico{width:8px!important;height:8px!important;border-radius:50%;background:var(--bad)!important}
@@ -1650,6 +1653,14 @@ function renderUrgent() {
   $("urgent").innerHTML = U.map(x => `<button type="button" class="chip ${x.lvl}" data-id="${x.id}" aria-label="${esc(x.label)}: ${x.n}">
       <span class="ico" aria-hidden="true">${chipIcon(x)}</span><span class="n">${x.empty ? "✓" : num(x.n)}</span><span class="l">${esc(x.label)}${x.hint ? `<span class="h">${esc(x.hint)}</span>` : ""}</span>${x.lvl !== "green" ? '<span class="dot"></span>' : ""}</button>`).join("");
   $("urgent").querySelectorAll(".chip").forEach(b => b.onclick = () => focusRule(b.dataset.id));
+  // „Mehr anzeigen": Gelbes bleibt eingeklappt, solange es Rotes gibt (Liste bleibt kurz)
+  if (c.red && c.yellow) {
+    const more = document.createElement("button"); more.type = "button"; more.className = "urg-more"; more.setAttribute("aria-expanded", String(!!state.urgAll));
+    more.textContent = state.urgAll ? "Weniger anzeigen" : `Mehr anzeigen · ${c.yellow} zum Beachten`;
+    more.onclick = () => { state.urgAll = !state.urgAll; renderUrgent(); };
+    $("urgent").appendChild(more);
+  }
+  $("urgent").classList.toggle("fold", !!(c.red && c.yellow && !state.urgAll));
   // Seitenleiste: offene Punkte je Bereich (rot = dringend, gelb = beachten)
   const cnt = {};
   U.filter(u => !u.empty && u.n > 0 && u.lvl !== "green").forEach(u => { const el = $(u.sec); if (!el) return; const k = areaOfEl(el), c = cnt[k] || (cnt[k] = { n: 0, lvl: "yellow" }); c.n += u.n; if (u.lvl === "red") c.lvl = "red"; });
