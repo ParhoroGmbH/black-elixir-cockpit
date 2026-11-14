@@ -442,6 +442,94 @@ svg text{font-family:var(--sans)}
 @media(max-width:520px){.chip{padding:10px 10px 10px 12px;gap:8px}.chip .n{font-size:21px;min-width:22px}.chip .l{font-size:12.5px;overflow-wrap:anywhere;hyphens:auto;padding-right:10px}.card{padding:16px}.card h3{font-size:17px}.card h3 .sub{margin-left:0}}
 @media (prefers-reduced-motion: reduce){.pt:hover{transform:none}}
 </style>
+<style id="apple-glas-ruhig">
+/* =====================================================================
+   BLACK ELIXIR · „Apple-Glas, ruhig" (14.11.2026) – letzte Ebene, nur Optik.
+   Ruhiger Hintergrund aus weichen Lichtwolken statt Sternenhimmel, Glas-Seitenleiste mit Symbolen und Zählern,
+   Begrüßung oben, Kennzahlen, darunter „Was ist dringend?" als Liste. Galaxie bleibt auf der Übersicht (unten).
+   ===================================================================== */
+html:root,html[data-theme=light]{
+  --bg:#F4F1EA;--txt:#1B1815;--mut:#5F584E;--t0:#1B1815;--m0:#5F584E;--acc:#0A63E0;
+  --g-bg:rgba(255,255,255,.54);--g-bg2:rgba(255,255,255,.42);--g-strong:rgba(255,255,255,.74);--g-edge:rgba(255,255,255,.78);--g-hi:inset 0 1px 0 rgba(255,255,255,.9);
+  --g-sh:0 1px 2px rgba(27,24,21,.04),0 18px 40px -22px rgba(60,45,30,.28);--g-line:rgba(27,24,21,.09);
+  --bad:#C2281F;--warn:#9A5A00;--ok:#1D7A46;--bad-bg:rgba(194,40,31,.12);--warn-bg:rgba(154,90,0,.13);
+  --wolken:radial-gradient(60vw 50vh at 12% 8%,rgba(255,214,186,.75),transparent 62%),radial-gradient(55vw 55vh at 88% 14%,rgba(205,196,255,.62),transparent 62%),radial-gradient(60vw 60vh at 70% 92%,rgba(186,222,255,.6),transparent 62%),radial-gradient(50vw 50vh at 18% 88%,rgba(240,222,180,.6),transparent 62%)}
+html[data-theme=dark]{
+  --bg:#121110;--txt:#F1ECE2;--mut:#B5ADA0;--t0:#F1ECE2;--m0:#B5ADA0;--acc:#5EA8FF;
+  --g-bg:rgba(255,255,255,.07);--g-bg2:rgba(255,255,255,.05);--g-strong:rgba(255,255,255,.13);--g-edge:rgba(255,255,255,.14);--g-hi:inset 0 1px 0 rgba(255,255,255,.16);
+  --g-sh:0 1px 2px rgba(0,0,0,.3),0 22px 44px -24px rgba(0,0,0,.75);--g-line:rgba(255,255,255,.1);
+  --bad:#FF7A70;--warn:#FFB84D;--ok:#5FD68A;--bad-bg:rgba(255,122,112,.16);--warn-bg:rgba(255,184,77,.15);
+  --wolken:radial-gradient(60vw 50vh at 12% 8%,rgba(150,92,56,.42),transparent 62%),radial-gradient(55vw 55vh at 88% 14%,rgba(84,70,170,.4),transparent 62%),radial-gradient(60vw 60vh at 70% 92%,rgba(40,92,140,.38),transparent 62%),radial-gradient(50vw 50vh at 18% 88%,rgba(120,96,40,.32),transparent 62%)}
+html body{background:var(--wolken) fixed,var(--bg)}
+#stars{display:none}
+/* Schrift: Überschriften mit Serife (ruhig, elegant), Zahlen und Bedienung in Systemschrift */
+.greet .hi,#areaTitle,.sec-h h2,.sec-h h2.metal,.usum .t{font-family:var(--serifd)!important;font-weight:400!important;letter-spacing:-.005em!important}
+.greet .hi{font-size:clamp(30px,3.4vw,42px);line-height:1.1;margin-bottom:8px}
+#areaTitle{font-size:clamp(28px,3.2vw,40px)}
+.sec-h h2,.sec-h h2.metal{font-size:clamp(22px,2.1vw,27px)}
+.usum .t{font-size:24px}
+.card h3{font-weight:600;letter-spacing:-.012em}
+/* Glasflächen */
+.card,[data-theme=dark] .sheet .card,.chip,.chip.red,.chip.yellow,.chip.green{background:var(--g-bg)!important;border:1px solid var(--g-edge)!important;box-shadow:var(--g-hi),var(--g-sh)!important;-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5)}
+.card{border-radius:22px!important}
+.kgrid .kpi,.pt{background:var(--g-bg2)!important;border:1px solid var(--g-edge)!important;box-shadow:var(--g-hi)!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+.tbl th,[data-theme=dark] .tbl th{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.tbl td,.tbl th{border-color:var(--g-line)!important}
+.top{background:var(--g-bg)!important;border-bottom:1px solid var(--g-edge)!important;-webkit-backdrop-filter:blur(26px) saturate(1.6);backdrop-filter:blur(26px) saturate(1.6)}
+/* Seitenleiste als Glasfläche mit Symbolen und Zählern */
+.side{background:var(--g-bg)!important;border:1px solid var(--g-edge)!important;box-shadow:var(--g-hi),var(--g-sh)!important;-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);border-radius:22px!important;padding:12px 10px!important}
+.side button{display:flex;align-items:center;gap:10px;min-height:40px;border-radius:12px!important;color:var(--mut)!important;font-size:14px;background:transparent!important;box-shadow:none!important}
+.side button svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.side button:hover{background:var(--g-bg2)!important;color:var(--txt)!important}
+.side button[aria-current=true]{background:var(--g-strong)!important;color:var(--txt)!important;font-weight:600!important;box-shadow:var(--g-hi),0 1px 3px rgba(0,0,0,.08)!important}
+.side .cnt{margin-left:auto;font-size:12px;font-weight:600;min-width:22px;padding:1px 7px;border-radius:999px;text-align:center;font-variant-numeric:tabular-nums}
+.side .cnt.red{background:var(--bad-bg);color:var(--bad)}.side .cnt.yellow{background:var(--warn-bg);color:var(--warn)}
+.side .cnt[hidden]{display:none}
+@media(max-width:1099px){.side{border-radius:999px!important;padding:6px!important}.side button{min-height:44px;padding:8px 14px;white-space:nowrap}}
+/* Übersicht: Begrüßung, Kennzahlen, Dringend-Liste, Galaxie zuletzt */
+.sheet.is-home{display:flex;flex-direction:column}
+.sheet.is-home>.hero:not(.area-off){display:contents}
+.sheet.is-home .hero .eyebrow{order:1;font-size:13px;color:var(--mut)}
+.sheet.is-home .hero h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sheet.is-home .greet{order:2;margin:4px 0 22px;max-width:70ch;text-align:left;text-shadow:none;color:var(--mut);font-size:16px}
+.sheet.is-home .greet .hi,.sheet.is-home .greet b{color:var(--txt)}
+.sheet.is-home #banner{order:3}
+.sheet.is-home>main{order:4}
+.sheet.is-home #urgentWrap{order:5;margin-top:22px}
+.sheet.is-home .galaxy{order:6;margin-top:28px;width:100%}
+.sheet.is-home>main{display:contents}
+.sheet.is-home .dash{order:4}
+.sheet.is-home .foot{order:9}
+#kpis .kpi:first-child{background:#1F1C19!important;border-color:#1F1C19!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 22px 44px -22px rgba(27,24,21,.55)!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+#kpis .kpi:first-child::before,#kpis .kpi:first-child::after{display:none!important}
+#kpis .kpi:first-child,#kpis .kpi:first-child *{color:#F4F1EA!important;-webkit-text-fill-color:#F4F1EA!important}
+#kpis .kpi:first-child .l,#kpis .kpi:first-child .s,#kpis .kpi:first-child .d,#kpis .kpi:first-child .d *,#kpis .kpi:first-child .s *{color:rgba(244,241,234,.78)!important;-webkit-text-fill-color:rgba(244,241,234,.78)!important}
+#kpis .kpi:first-child svg path,#kpis .kpi:first-child svg polyline,#kpis .kpi:first-child svg line{stroke:#F4F1EA!important}
+[data-theme=dark] #kpis .kpi:first-child{background:rgba(255,255,255,.17)!important;border-color:rgba(255,255,255,.28)!important}
+.side{scrollbar-width:none}.side::-webkit-scrollbar{display:none}
+/* „Was ist dringend?" als ruhige Liste; Erledigtes als kleine Pillen darunter */
+.urgent{background:var(--g-bg);border:1px solid var(--g-edge);box-shadow:var(--g-hi),var(--g-sh);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);border-radius:22px;padding:20px 22px!important}
+.chips{display:flex!important;flex-wrap:wrap;gap:0 8px!important}
+.chip.red,.chip.yellow{flex:1 1 100%;display:grid!important;grid-template-columns:10px minmax(0,1fr) auto auto!important;grid-template-areas:"ico l n go"!important;align-items:center!important;gap:14px!important;min-height:56px;padding:12px 4px!important;border:0!important;border-top:1px solid var(--g-line)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;transform:none!important}
+.chip.red,.chip.yellow{min-height:56px!important;height:auto!important;grid-template-rows:auto!important}
+.chip.red{order:1}.chip.yellow{order:2}.chip.green{order:3}
+.chip.red::before,.chip.yellow::before{display:none!important}
+.card.kpi,.kpi .v,.v.reflect{-webkit-box-reflect:unset!important}
+.chip.red .ico,.chip.yellow .ico{width:8px!important;height:8px!important;border-radius:50%;background:var(--bad)!important}
+.chip.yellow .ico{background:var(--warn)!important}
+.chip.red .ico svg,.chip.yellow .ico svg{display:none}
+.chip.red .l,.chip.yellow .l{align-self:center!important;font-size:15px!important;font-weight:600!important}
+.chip.red .n,.chip.yellow .n{font-size:17px!important;font-weight:650!important;justify-self:end;min-width:28px;text-align:right}
+.chip.red .n{color:var(--bad)!important}.chip.yellow .n{color:var(--warn)!important}
+.chip.red::after,.chip.yellow::after{content:"Ansehen"!important;display:flex!important;position:static!important;inset:auto!important;grid-area:go;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;background:var(--g-strong)!important;box-shadow:var(--g-hi),0 1px 3px rgba(0,0,0,.08);color:var(--acc);font-size:13px;font-weight:600;opacity:1!important}
+.chip.red:hover,.chip.yellow:hover{background:var(--g-bg2)!important}
+.chip.green{flex:0 1 auto;margin-top:12px;min-height:36px!important;padding:6px 12px!important;border-radius:999px!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+.chip.green .l{font-size:13px!important;color:var(--mut)!important}
+.chip.green .ico{width:20px!important;height:20px!important}
+@media(max-width:520px){.chip.red,.chip.yellow{grid-template-columns:10px minmax(0,1fr) auto!important;grid-template-areas:"ico l n"!important}.chip.red::after,.chip.yellow::after{display:none!important}}
+.areabar button{background:var(--g-strong)!important;border:0!important;color:var(--acc)!important;font-weight:600;box-shadow:var(--g-hi),0 1px 3px rgba(0,0,0,.08)}
+@media (prefers-reduced-transparency:reduce){.card,.side,.urgent,.top{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--card)!important}}
+</style>
 </head>
 <style>
 /* =====================================================================
@@ -908,22 +996,18 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
 
   <div class="shell">
   <nav class="side" id="secNav" aria-label="Bereiche">
-    <div class="lbl">Überblick</div>
-    <button type="button" class="t-link" data-area-go="home" aria-current="true">Übersicht</button>
-    <button type="button" class="t-sales" data-go="urgentWrap">Dringend</button>
-    <button type="button" class="t-sales" data-go="sec-sales">Umsatz</button>
-    <button type="button" class="t-bills" data-go="sec-bills">Rechnungen</button>
-    <button type="button" class="t-sales" data-go="sec-oo">Offene Bestellungen</button>
-    <button type="button" class="t-ship" data-go="sec-kpi">Retouren · Versand</button>
-    <button type="button" class="t-ship" data-go="sec-mp">Marktplätze</button>
+    <button type="button" data-area-go="home" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/></svg><span class="nl">Übersicht</span></button>
+    <div class="lbl">Geschäft</div>
+    <button type="button" data-area-go="verkauf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg><span class="nl">Verkauf</span></button>
+    <button type="button" data-area-go="rechnungen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/></svg><span class="nl">Rechnungen</span></button>
+    <button type="button" data-area-go="versand"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7M7 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg><span class="nl">Versand &amp; Retouren</span></button>
+    <button type="button" data-area-go="marktplaetze"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/></svg><span class="nl">Marktplätze</span></button>
     <div class="lbl">Betrieb</div>
-    <button type="button" class="t-stock" data-go="sec-stock">Bestand</button>
-    <button type="button" class="t-mail" data-go="sec-tp">Aufgaben &amp; Postfach</button>
-    <button type="button" class="t-sales" data-go="sec-prod">Produkte</button>
+    <button type="button" data-area-go="lager"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg><span class="nl">Lager</span></button>
+    <button type="button" data-area-go="aufgaben"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3 8-8M20 12v7H4V5h11"/></svg><span class="nl">Aufgaben &amp; Postfach</span></button>
     <div class="lbl">Wachstum</div>
-    <button type="button" class="t-mkt" data-go="sec-social">Social</button>
-    <button type="button" class="t-tools" data-go="sec-quellen">Quellen &amp; Tools</button>
-    <button type="button" class="t-link" data-go="sec-data">Verbindungen</button>
+    <button type="button" data-area-go="wachstum"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="nl">Wachstum</span></button>
+    <button type="button" data-area-go="verbindungen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 01-12 0zM12 18v4"/></svg><span class="nl">Verbindungen</span></button>
   </nav>
   <div class="sheet">
   <header class="hero" id="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><div class="galaxy" id="galaxy" role="navigation" aria-label="Bereiche als Galaxie"></div><p class="greet" id="greet" aria-live="polite"></p></header>
@@ -1385,7 +1469,8 @@ function showArea(k, opt = {}) {
   });
   $("hero").classList.toggle("area-off", !home); $("urgentWrap").classList.toggle("area-off", !home);
   $("areaBar").classList.toggle("hidden", home); $("areaTitle").textContent = A.name;
-  document.querySelectorAll("#secNav button").forEach(b => b.setAttribute("aria-current", String(home ? b.dataset.areaGo === "home" : b.dataset.go === A.secs[0])));
+  document.querySelectorAll("#secNav button").forEach(b => b.setAttribute("aria-current", String(b.dataset.areaGo === area)));
+  document.querySelector(".sheet").classList.toggle("is-home", home);
   if (!opt.noHash) { const h = home ? "" : "#/" + area; if (location.hash !== h) history.pushState(null, "", h || location.pathname + location.search); }
   if (state.d) renderAll(); // Diagramme messen ihre Breite erst, wenn der Bereich sichtbar ist
   if (!opt.keepScroll) window.scrollTo({ top: 0, behavior: "auto" });
@@ -1565,6 +1650,15 @@ function renderUrgent() {
   $("urgent").innerHTML = U.map(x => `<button type="button" class="chip ${x.lvl}" data-id="${x.id}" aria-label="${esc(x.label)}: ${x.n}">
       <span class="ico" aria-hidden="true">${chipIcon(x)}</span><span class="n">${x.empty ? "✓" : num(x.n)}</span><span class="l">${esc(x.label)}${x.hint ? `<span class="h">${esc(x.hint)}</span>` : ""}</span>${x.lvl !== "green" ? '<span class="dot"></span>' : ""}</button>`).join("");
   $("urgent").querySelectorAll(".chip").forEach(b => b.onclick = () => focusRule(b.dataset.id));
+  // Seitenleiste: offene Punkte je Bereich (rot = dringend, gelb = beachten)
+  const cnt = {};
+  U.filter(u => !u.empty && u.n > 0 && u.lvl !== "green").forEach(u => { const el = $(u.sec); if (!el) return; const k = areaOfEl(el), c = cnt[k] || (cnt[k] = { n: 0, lvl: "yellow" }); c.n += u.n; if (u.lvl === "red") c.lvl = "red"; });
+  document.querySelectorAll("#secNav [data-area-go]").forEach(b => {
+    const c = cnt[b.dataset.areaGo]; let s = b.querySelector(".cnt");
+    if (!s) { s = document.createElement("span"); b.appendChild(s); }
+    s.className = "cnt" + (c ? " " + c.lvl : ""); s.textContent = c ? (c.n > 99 ? "99+" : c.n) : ""; s.hidden = !c;
+    if (c) s.setAttribute("aria-label", c.n + (c.lvl === "red" ? " dringend" : " beachten"));
+  });
   renderGalaxy();
 }
 
