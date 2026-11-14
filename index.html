@@ -1039,6 +1039,31 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
 html[dir=rtl] #navToggle{text-align:right}
 html[dir=rtl] #navToggle .ico-chev{margin-left:0;margin-right:auto}
 @media(max-width:680px){html[dir=rtl] #secNav.side{right:0;left:0}}
+
+/* Fotos am Auftrag */
+.auf-foto{margin-top:6px}
+#aufFotoInput{display:none!important}
+.auf-foto-add{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;border:1px dashed var(--line,var(--g-edge));color:var(--txt);font-size:13px;font-weight:600;cursor:pointer}
+.auf-foto-add:hover{background:var(--g-bg2,rgba(0,0,0,.04))}
+.auf-foto-add svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.auf-foto-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.auf-foto-item{position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;border:1px solid var(--line,var(--g-edge))}
+.auf-foto-item img{width:100%;height:100%;object-fit:cover;display:block}
+.auf-foto-item button{position:absolute;top:2px;right:2px;width:20px;height:20px;line-height:18px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:14px;padding:0}
+html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
+
+/* Export (CSV/PDF) und „Verbinden“-Knöpfe in Kartentiteln */
+.exp{display:inline-flex;gap:6px;margin-inline-start:8px;vertical-align:middle}
+.exp-btn{display:inline-flex;align-items:center;gap:5px;min-height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--line,var(--g-edge));background:transparent;color:var(--mut);font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.exp-btn:hover{color:var(--txt);border-color:var(--acc,var(--gold))}
+.exp-btn svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Foto-Ansicht als Overlay (statt Pop-up, das auf dem Handy oft blockiert wird) */
+.foto-overlay{position:fixed;inset:0;z-index:200;background:rgba(10,10,12,.82);display:flex;flex-direction:column;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.foto-overlay-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;color:#fff;font-size:14px;font-weight:600}
+.foto-overlay-x{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.foto-overlay-grid{flex:1;overflow:auto;display:flex;flex-wrap:wrap;gap:12px;padding:0 18px 24px;align-content:flex-start;color:#ccc;font-size:14px}
+.foto-overlay-grid img{max-width:min(90vw,420px);max-height:70vh;border-radius:10px;object-fit:contain;display:block}
 </style>
 <body class="bx intro">
 <canvas id="stars" aria-hidden="true"></canvas>
@@ -1131,6 +1156,12 @@ html[dir=rtl] #navToggle .ico-chev{margin-left:0;margin-right:auto}
         <label for="aufText">Auftrag</label><textarea id="aufText" rows="5" maxlength="4000" placeholder="Was soll der Bot tun?"></textarea>
         <div class="auf-mic"><button type="button" id="aufMic" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM5 11a7 7 0 0014 0M12 18v3"/></svg><span class="mt">Diktieren</span></button>
           <label for="aufLang" class="vh">Sprache der Spracheingabe</label><select id="aufLang"><option value="ar-LB">Arabisch</option><option value="de-DE">Deutsch</option><option value="en-US">Englisch</option></select></div>
+        <label>Fotos (optional) <span class="sub">z. B. ein beschädigtes Paket für Return Manager</span></label>
+        <div class="auf-foto">
+          <label class="auf-foto-add" for="aufFotoInput"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Foto hinzufügen</span></label>
+          <input type="file" id="aufFotoInput" accept="image/*" multiple hidden>
+          <div id="aufFotoList" class="auf-foto-list"></div>
+        </div>
         <div class="auf-row"><div><label for="aufPrio">Priorität</label><select id="aufPrio"><option value="normal">normal</option><option value="hoch">hoch</option><option value="niedrig">niedrig</option></select></div>
           <div><label for="aufDue">Fällig (optional)</label><input type="date" id="aufDue"></div></div>
         <div class="auf-a"><button type="button" class="primary" id="aufSend">Auftrag speichern</button><span id="aufMsg" role="status"></span></div>
@@ -1171,8 +1202,8 @@ html[dir=rtl] #navToggle .ico-chev{margin-left:0;margin-right:auto}
 
     <div class="sec-h t-stock" id="sec-stock"><h2 class="metal">Bestand &amp; Lagerwert</h2><span class="rule"></span><span class="fresh" id="fr-stock"></span></div>
     <div id="invKpis" style="display:contents"></div>
-    <div class="card s6" id="card-cover"><h3>Nachbestellen · Reichweite unter 14 Tagen <span id="f-cover"></span></h3><div class="scroll tall"><table class="tbl" id="tblCover"></table></div></div>
-    <div class="card s6" id="card-oos"><h3>Ausverkauft, aber verkauft (30 T) <span id="f-oos"></span></h3><div class="scroll tall"><table class="tbl" id="tblOos"></table></div></div>
+    <div class="card s6" id="card-cover"><h3>Nachbestellen · Reichweite unter 14 Tagen <span id="f-cover"></span><span class="exp" id="expCover"></span></h3><div class="scroll tall"><table class="tbl" id="tblCover"></table></div></div>
+    <div class="card s6" id="card-oos"><h3>Ausverkauft, aber verkauft (30 T) <span id="f-oos"></span><span class="exp" id="expOos"></span></h3><div class="scroll tall"><table class="tbl" id="tblOos"></table></div></div>
 
     <div class="sec-h t-mail" id="sec-tp"><h2 class="metal">Aufgaben &amp; Postfach</h2><span class="rule"></span><span class="fresh" id="fr-tasks"></span></div>
     <div class="card s8 m12" id="sec-tasks"><h3>Aufgaben <span id="f-tasks"></span></h3><div class="scroll tall"><table class="tbl" id="tblTasks"></table></div></div>
@@ -1195,7 +1226,7 @@ html[dir=rtl] #navToggle .ico-chev{margin-left:0;margin-right:auto}
 
     <div class="sec-h t-link" id="sec-data"><h2 class="metal">Datenstand &amp; Verbindungen</h2><span class="rule"></span></div>
     <div class="card s6" id="sec-sync"><h3>Synchronisierung je Quelle <span id="f-sync"></span></h3><div class="scroll"><table class="tbl" id="tblSync"></table></div></div>
-    <div class="card s6"><h3>Verbindungen</h3><div class="scroll tall"><table class="tbl" id="tblConn"></table></div></div>
+    <div class="card s6"><h3>Verbindungen</h3><p class="sub" style="margin:-6px 0 10px">„Verbinden“ bringt dich zur richtigen Stelle; verbunden wird es erst, wenn du dort den Schlüssel holst und ihn mir zum Eintragen gibst.</p><div class="scroll tall"><table class="tbl" id="tblConn"></table></div></div>
   </div>
   <div class="foot">Angemeldet als <span id="who"></span> · Live aus Supabase (black-elixir-cockpit) · Beträge netto in € (de-DE) · Zeiten Europe/Berlin · Auto-Aktualisierung alle 5 Min.</div>
   </main>
@@ -1274,6 +1305,11 @@ const I18N = {
     "Freigeben": "Approve", "Ablehnen": "Reject", "Sicher? Freigeben": "Sure? Approve", "Sicher? Ablehnen": "Sure? Reject",
     "normal": "normal", "hoch": "high", "niedrig": "low", "Arabisch": "Arabic", "Deutsch": "German", "Englisch": "English",
     "Was soll der Bot tun?": "What should the bot do?", "Noch einmal klicken zum Bestätigen.": "Click again to confirm.", "Speichere …": "Saving …",
+    "Fotos (optional)": "Photos (optional)", "z. B. ein beschädigtes Paket für Return Manager": "e.g. a damaged package for Return Manager",
+    "Foto hinzufügen": "Add photo", "Entfernen": "Remove", "Nicht alle Fotos passten (höchstens": "Not all photos fit (at most",
+    " je Bild)": " per image)", "Lade Fotos hoch …": "Uploading photos …",
+    "Fotos zum Auftrag": "Photos for the task", "Fotos konnten nicht geladen werden: ": "Photos could not be loaded: ", "Lädt …": "Loading …",
+    "Bitte Pop-ups für diese Seite erlauben.": "Please allow pop-ups for this page.", "Schließen": "Close",
     "Nicht gespeichert: ": "Not saved: ", "Freigegeben.": "Approved.", "Abgelehnt.": "Rejected.",
     "Keine offenen Anfragen. Sobald ein Bot eine Freigabe braucht, steht sie hier.": "No open requests. When a bot needs approval, it will appear here.",
     "Bitte zuerst den Auftrag schreiben oder diktieren.": "Please write or dictate the task first.", "Gespeichert. Der Bot sieht den Auftrag in seiner Liste.": "Saved. The bot will see the task in its list.",
@@ -1317,6 +1353,11 @@ const I18N = {
     "Freigeben": "موافقة", "Ablehnen": "رفض", "Sicher? Freigeben": "متأكد؟ موافقة", "Sicher? Ablehnen": "متأكد؟ رفض",
     "normal": "عادية", "hoch": "عالية", "niedrig": "منخفضة", "Arabisch": "عربي", "Deutsch": "ألماني", "Englisch": "إنجليزي",
     "Was soll der Bot tun?": "ماذا يجب أن يفعل البوت؟", "Noch einmal klicken zum Bestätigen.": "اضغط مرة أخرى للتأكيد.", "Speichere …": "جارٍ الحفظ …",
+    "Fotos (optional)": "صور (اختياري)", "z. B. ein beschädigtes Paket für Return Manager": "مثلاً طرد تالف لـ Return Manager",
+    "Foto hinzufügen": "إضافة صورة", "Entfernen": "حذف", "Nicht alle Fotos passten (höchstens": "ما انضافت كل الصور (الحد الأقصى",
+    " je Bild)": " لكل صورة)", "Lade Fotos hoch …": "جارٍ رفع الصور …",
+    "Fotos zum Auftrag": "صور المهمة", "Fotos konnten nicht geladen werden: ": "تعذّر تحميل الصور: ", "Lädt …": "جارٍ التحميل …",
+    "Bitte Pop-ups für diese Seite erlauben.": "الرجاء السماح بالنوافذ المنبثقة لهذه الصفحة.", "Schließen": "إغلاق",
     "Nicht gespeichert: ": "لم يُحفظ: ", "Freigegeben.": "تمت الموافقة.", "Abgelehnt.": "تم الرفض.",
     "Keine offenen Anfragen. Sobald ein Bot eine Freigabe braucht, steht sie hier.": "لا توجد طلبات مفتوحة. عندما يحتاج بوت إلى موافقة، ستظهر هنا.",
     "Bitte zuerst den Auftrag schreiben oder diktieren.": "اكتب المهمة أو أملِها أولاً.", "Gespeichert. Der Bot sieht den Auftrag in seiner Liste.": "تم الحفظ. سيرى البوت المهمة في قائمته.",
@@ -1333,7 +1374,7 @@ const I18N = {
 };
 let LANG = (() => { try { const l = localStorage.getItem("be-lang"); return l === "en" || l === "ar" ? l : "de"; } catch (e) { return "de"; } })();
 const T = (s) => (LANG !== "de" && I18N[LANG] && I18N[LANG][s]) || s;
-const I18N_SEL = ".side .lbl, .side .nl, .sec-h h2, .card h3, #card-frei h3 .sub, #card-auftrag h3 .sub, #card-auftraege h3 .sub, .auf label, .usum .t, #btnRefresh .tx, #btnLogout .tx, .modeBtn .tx, #aufSend, #aufPrio option, #aufLang option";
+const I18N_SEL = ".side .lbl, .side .nl, .sec-h h2, .card h3, #card-frei h3 .sub, #card-auftrag h3 .sub, #card-auftraege h3 .sub, .auf label, .auf label .sub, .auf-foto-add span, .usum .t, #btnRefresh .tx, #btnLogout .tx, .modeBtn .tx, #aufSend, #aufPrio option, #aufLang option";
 const i18nOrig = new WeakMap();
 function applyStatic() {
   document.querySelectorAll(I18N_SEL).forEach(el => {
@@ -1399,6 +1440,59 @@ function table(el, head, rows, emptyText) {
     rows.map(r => { const c = Array.isArray(r) ? r : r.c; return `<tr class="${r.hl ? "hl" : ""}">` + c.map((x, i) => `<td class="${head[i].r ? "r" : ""}">${x}</td>`).join("") + "</tr>"; }).join("") + "</tbody>";
 }
 const pill = (txt, cls) => `<span class="pill ${cls}">${esc(txt)}</span>`;
+
+// ---------- Export: CSV und PDF (über den Druckdialog des Browsers, kein Dienst, keine Kosten) ----------
+function csvCell(v) { const s = String(v ?? ""); return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+function downloadCsv(filename, headers, rows) {
+  const lines = [headers.map(csvCell).join(";")].concat(rows.map(r => r.map(csvCell).join(";")));
+  const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename + ".csv";
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function printPdf(title, headers, rows) {
+  const w = window.open("", "_blank"); if (!w) { alert("Bitte Pop-ups für diese Seite erlauben."); return; }
+  const now = fmtDT(new Date().toISOString());
+  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${esc(title)}</title><style>
+    body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;color:#1d1d1f;margin:28px}
+    h1{font-size:18px;margin:0 0 2px}.meta{font-size:12px;color:#666;margin-bottom:16px}
+    table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:6px 8px;border-bottom:1px solid #ddd;text-align:left}
+    th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#666}td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+    @media print{body{margin:0}}
+  </style></head><body><h1>${esc(title)}</h1><div class="meta">Black Elixir Cockpit · Stand ${esc(now)}</div>
+  <table><thead><tr>${headers.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>
+  <script>onload=()=>setTimeout(()=>print(),200)<\/script></body></html>`);
+  w.document.close();
+}
+// Fotos eines Auftrags ansehen: Bucket ist privat, also kurz gültige Signatur-URLs holen statt fester Links
+function fotoLink(bilder) {
+  if (!bilder || !bilder.length) return "";
+  return `<button type="button" class="exp-btn" data-fotos='${JSON.stringify(bilder).replace(/'/g, "&#39;")}'><svg viewBox="0 0 24 24" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/></svg>${bilder.length}</button>`;
+}
+// Bild-Ansicht direkt auf der Seite (kein window.open): Pop-ups werden von vielen Browsern,
+// gerade auf dem Handy, sonst stillschweigend blockiert.
+let fotoOverlay = null;
+function closeFotoOverlay() { if (fotoOverlay) { fotoOverlay.remove(); fotoOverlay = null; } }
+async function showAufFotos(paths) {
+  closeFotoOverlay();
+  fotoOverlay = document.createElement("div"); fotoOverlay.className = "foto-overlay";
+  fotoOverlay.innerHTML = `<div class="foto-overlay-bar"><span>${esc(T("Fotos zum Auftrag"))}</span><button type="button" class="foto-overlay-x" aria-label="${esc(T("Schließen"))}">×</button></div><div class="foto-overlay-grid">${esc(T("Lädt …"))}</div>`;
+  fotoOverlay.querySelector(".foto-overlay-x").onclick = closeFotoOverlay;
+  fotoOverlay.onclick = (e) => { if (e.target === fotoOverlay) closeFotoOverlay(); };
+  document.addEventListener("keydown", function esc1(e) { if (e.key === "Escape") { closeFotoOverlay(); document.removeEventListener("keydown", esc1); } });
+  document.body.appendChild(fotoOverlay);
+  const { data, error } = await sb.storage.from("auftrag-bilder").createSignedUrls(paths, 300);
+  if (!fotoOverlay) return; // zwischenzeitlich geschlossen
+  const grid = fotoOverlay.querySelector(".foto-overlay-grid");
+  if (error) { grid.textContent = T("Fotos konnten nicht geladen werden: ") + (error.message || error); return; }
+  grid.innerHTML = data.map(d => d.signedUrl ? `<a href="${esc(d.signedUrl)}" target="_blank" rel="noopener noreferrer"><img src="${esc(d.signedUrl)}" alt=""></a>` : "").join("");
+}
+// spanId: Platzhalter-<span>, dataFn: () => {headers, rows} frisch bei jedem Klick (Filter/Stand können sich geändert haben)
+function exportButtons(spanId, filenameBase, title, dataFn) {
+  const el = $(spanId); if (!el) return;
+  el.innerHTML = `<button type="button" class="exp-btn" data-k="csv" title="Als CSV (Excel) herunterladen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>CSV</button><button type="button" class="exp-btn" data-k="pdf" title="Als PDF (über den Druckdialog)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h6M9 17h4"/></svg>PDF</button>`;
+  el.querySelector('[data-k="csv"]').onclick = () => { const { headers, rows } = dataFn(); downloadCsv(filenameBase, headers, rows); };
+  el.querySelector('[data-k="pdf"]').onclick = () => { const { headers, rows } = dataFn(); printPdf(title, headers, rows); };
+}
 
 async function fetchAll(build, page = 1000, max = 20000) {
   let out = [];
@@ -1704,18 +1798,55 @@ function renderFrei(frei, auftr) {
   table("tblFreiDone", [{ t: T("Bot") }, { t: T("Anfrage") }, { t: T("Entscheidung") }, { t: T("Wann"), r: 1 }, { t: T("Notiz / Ergebnis") }],
     frei.filter(f => f.status !== "offen").slice(0, 60).map(f => [esc(f.bot), `<b>${esc(f.titel)}</b>${f.bezug ? " · " + esc(f.bezug) : ""}`, pill(T((FREI_ST[f.status] || [f.status, ""])[0]), (FREI_ST[f.status] || ["", ""])[1]), fmtDT(f.ausgefuehrt_at || f.entschieden_at), esc([f.kommentar, f.ergebnis].filter(Boolean).join(" · "))]),
     errTxt("frei", T("Noch keine Entscheidungen.")));
-  table("tblAuftr", [{ t: T("Bot") }, { t: T("Auftrag") }, { t: T("Prio") }, { t: T("Fällig"), r: 1 }, { t: T("Status") }, { t: T("Antwort") }],
-    auftr.slice(0, 80).map(a => ({ hl: a.status === "offen" && a.prioritaet === "hoch", c: [esc(a.bot), esc(a.auftrag), T(PRIO_T[a.prioritaet] || a.prioritaet), a.faellig ? fmtD(a.faellig) : "–", pill(T((AUF_ST[a.status] || [a.status, ""])[0]), (AUF_ST[a.status] || ["", ""])[1]), esc(a.antwort || "")] })),
+  table("tblAuftr", [{ t: T("Bot") }, { t: T("Auftrag") }, { t: T("Prio") }, { t: T("Fällig"), r: 1 }, { t: T("Status") }, { t: T("Antwort") }, { t: "" }],
+    auftr.slice(0, 80).map(a => ({ hl: a.status === "offen" && a.prioritaet === "hoch", c: [esc(a.bot), esc(a.auftrag), T(PRIO_T[a.prioritaet] || a.prioritaet), a.faellig ? fmtD(a.faellig) : "–", pill(T((AUF_ST[a.status] || [a.status, ""])[0]), (AUF_ST[a.status] || ["", ""])[1]), esc(a.antwort || ""), fotoLink(a.bilder)] })),
     errTxt("auftr", T("Noch keine Aufträge.")));
+  $("tblAuftr").querySelectorAll("button[data-fotos]").forEach(b => b.onclick = () => showAufFotos(JSON.parse(b.dataset.fotos)));
+}
+// Fotos zum Auftrag (z. B. Retouren-Paket): bis zu 5, bis 10 MB je Bild; hochgeladen wird erst beim Speichern.
+const AUF_FOTO_MAX = 5, AUF_FOTO_MB = 10;
+let aufFotos = []; // { file, url (Vorschau, lokal) }
+function renderAufFotos() {
+  $("aufFotoList").innerHTML = aufFotos.map((f, i) => `<div class="auf-foto-item"><img src="${f.url}" alt=""><button type="button" data-i="${i}" aria-label="${esc(T("Entfernen"))}">×</button></div>`).join("");
+  $("aufFotoList").querySelectorAll("button[data-i]").forEach(b => b.onclick = () => { URL.revokeObjectURL(aufFotos[+b.dataset.i].url); aufFotos.splice(+b.dataset.i, 1); renderAufFotos(); });
+  $("aufFotoInput").disabled = aufFotos.length >= AUF_FOTO_MAX;
+}
+$("aufFotoInput").onchange = () => {
+  const msg = $("aufMsg"); let skipped = 0;
+  for (const file of $("aufFotoInput").files) {
+    if (aufFotos.length >= AUF_FOTO_MAX) { skipped++; continue; }
+    if (!file.type.startsWith("image/")) { skipped++; continue; }
+    if (file.size > AUF_FOTO_MB * 1024 * 1024) { skipped++; continue; }
+    aufFotos.push({ file, url: URL.createObjectURL(file) });
+  }
+  $("aufFotoInput").value = ""; renderAufFotos();
+  msg.textContent = skipped ? `${T("Nicht alle Fotos passten (höchstens")} ${AUF_FOTO_MAX}, ${AUF_FOTO_MB} MB${T(" je Bild)")}.` : "";
+};
+async function uploadAufFotos() {
+  const paths = [];
+  for (const f of aufFotos) {
+    const ext = (f.file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+    const path = `auftraege/${new Date().toISOString().slice(0, 10)}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await sb.storage.from("auftrag-bilder").upload(path, f.file, { contentType: f.file.type || "image/jpeg" });
+    if (error) throw new Error(f.file.name + ": " + (error.message || error));
+    paths.push(path);
+  }
+  return paths;
 }
 $("aufSend").onclick = async () => {
   const text = $("aufText").value.trim(), msg = $("aufMsg");
   if (!text) { msg.textContent = T("Bitte zuerst den Auftrag schreiben oder diktieren."); return; }
-  $("aufSend").disabled = true; msg.textContent = T("Speichere …");
-  const { error } = await sb.rpc("cockpit_auftrag_erstellen", { p_bot: $("aufBot").value, p_auftrag: text, p_prioritaet: $("aufPrio").value, p_faellig: $("aufDue").value || null });
-  $("aufSend").disabled = false;
-  if (error) { msg.textContent = T("Nicht gespeichert: ") + (error.message || error); return; }
-  $("aufText").value = ""; $("aufDue").value = ""; msg.textContent = T("Gespeichert. Der Bot sieht den Auftrag in seiner Liste."); load();
+  $("aufSend").disabled = true;
+  try {
+    msg.textContent = aufFotos.length ? T("Lade Fotos hoch …") : T("Speichere …");
+    const bilder = aufFotos.length ? await uploadAufFotos() : null;
+    msg.textContent = T("Speichere …");
+    const { error } = await sb.rpc("cockpit_auftrag_erstellen", { p_bot: $("aufBot").value, p_auftrag: text, p_prioritaet: $("aufPrio").value, p_faellig: $("aufDue").value || null, p_bilder: bilder });
+    if (error) throw error;
+    $("aufText").value = ""; $("aufDue").value = ""; aufFotos.forEach(f => URL.revokeObjectURL(f.url)); aufFotos = []; renderAufFotos();
+    msg.textContent = T("Gespeichert. Der Bot sieht den Auftrag in seiner Liste."); load();
+  } catch (error) { msg.textContent = T("Nicht gespeichert: ") + (error.message || error); }
+  finally { $("aufSend").disabled = false; }
 };
 // Diktieren: Spracheingabe des Browsers (Chrome, Edge, Safari). Der Ton geht dafür an den Sprachdienst des Browsers.
 // Robust: „Stopp" reagiert sofort; endet der Browser-Dienst von selbst (Pause, ~60 s), startet er still neu, solange nicht gestoppt.
@@ -2263,12 +2394,19 @@ function renderInventory(inv) {
   table("tblCover", [{ t: "Produkt" }, { t: "Bestand", r: 1 }, { t: "Verk. 30T", r: 1 }, { t: "Tage", r: 1 }],
     coverRows.map(r => ({ hl: !!fc, c: [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.stock), num(r.sold_30d), r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })] })), errTxt("inv", "Alles ausreichend bevorratet."));
   filterChip("f-cover", fc);
+  exportButtons("expCover", "nachbestellen", "Nachbestellen · Reichweite unter 14 Tagen", () => ({
+    headers: ["Produkt", "Bestand", "Verkauft 30T", "Reichweite Tage"],
+    rows: coverRows.map(r => [r.title || r.product, num(r.stock), num(r.sold_30d), r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })]),
+  }));
   const fo = F(["oos_best"]);
   const oosS = oos.sort((a, b) => b.sold_30d - a.sold_30d);
   const oosRows = fo ? oosS.filter(r => Number(r.sold_30d) >= RULE.BESTSELLER_SOLD30) : oosS.slice(0, 12);
   table("tblOos", [{ t: "Produkt" }, { t: "Verk. 30T", r: 1 }],
     oosRows.map(r => ({ hl: Number(r.sold_30d) >= RULE.BESTSELLER_SOLD30 && !!fo, c: [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.sold_30d)] })), errTxt("inv", "Nichts ausverkauft."));
   filterChip("f-oos", fo);
+  exportButtons("expOos", "ausverkauft-bestseller", "Ausverkauft, aber verkauft (30 Tage)", () => ({
+    headers: ["Produkt", "Verkauft 30T"], rows: oosRows.map(r => [r.title || r.product, num(r.sold_30d)]),
+  }));
 }
 
 function renderOpenOrders(oo) {
@@ -2437,9 +2575,20 @@ function renderSync(runs, conn) {
   filterChip("f-sync", f);
   const cls = (s) => s === "live" ? "p-ok" : s === "error" ? "p-bad" : "p-off";
   const lbl = (s) => s === "live" ? "live" : s === "error" ? "Fehler" : s === "not_connected" ? "nicht verbunden" : (s || "–");
-  table("tblConn", [{ t: "Verbindung" }, { t: "Status" }, { t: "Aktualisiert" }],
+  table("tblConn", [{ t: "Verbindung" }, { t: "Status" }, { t: "Aktualisiert" }, { t: "" }],
     [...conn].sort((a, b) => (a.status === "error" ? -1 : a.status === "live" ? 0 : 1) - (b.status === "error" ? -1 : b.status === "live" ? 0 : 1) || a.channel.localeCompare(b.channel))
-      .map(c => ({ hl: !!want && want === "red" && c.status === "error", c: [`${esc(c.channel)}<div class="small muted">${esc(c.kind || "")}</div>`, pill(lbl(c.status), cls(c.status)), esc(fmtDT(c.updated_at))] })), errTxt("conn", "Keine Verbindungen."));
+      .map(c => ({ hl: !!want && want === "red" && c.status === "error", c: [`${esc(c.channel)}<div class="small muted">${esc(c.kind || "")}</div>`, pill(lbl(c.status), cls(c.status)), esc(fmtDT(c.updated_at)), connectLink(c.channel, c.status)] })), errTxt("conn", "Keine Verbindungen."));
+}
+// Ziel-Seite, wo man den jeweiligen API-Schlüssel oder Zugang holt. Zeigt nur hin – verbindet nichts von selbst;
+// den Schlüssel trägst du danach selbst in Supabase ein (oder gibst ihn mir dafür).
+const CONNECT_URL = {
+  "Google": "https://ads.google.com/aw/apicenter", "DHL Express": "https://developer.dhl.com/", "PayPal": "https://developer.paypal.com/dashboard/applications",
+  "Metricool": "https://app.metricool.com/settings", "Claude": "https://console.anthropic.com/settings/keys", "Grok (xAI)": "https://console.x.ai/",
+  "idealo": "https://www.idealo.de/business/", "Qogita": "https://sellers.qogita.com/", "eSagu": "https://esagu.app/",
+};
+function connectLink(channel, status) {
+  const url = CONNECT_URL[channel]; if (!url || status === "live") return "";
+  return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="exp-btn" style="text-decoration:none">Verbinden ↗</a>`;
 }
 
 // ---------- Quellen & Tools (DHL, idealo, Shop-Traffic, Tools & Credits, Signale) ----------
