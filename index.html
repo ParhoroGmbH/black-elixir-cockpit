@@ -44,6 +44,13 @@ html,body{margin:0;min-height:100%;background:var(--bg);color:var(--txt);font:15
 body{background:var(--bgimg) fixed,var(--bg);min-height:100vh;min-height:100dvh}
 a{color:var(--gold)}
 .hidden{display:none!important}
+/* Bereiche als eigene Seiten: nur der gewählte Bereich ist sichtbar */
+.area-off{display:none!important}
+.areabar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:2px 2px 4px}
+.areabar h2{margin:0;font-family:var(--serifd);font-weight:400;font-size:clamp(26px,3vw,38px);line-height:1.05;color:var(--txt)}
+.areabar button{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--txt) 8%,transparent);color:var(--txt);font:inherit;font-size:14px;cursor:pointer}
+.areabar button:hover,.areabar button:focus-visible{background:color-mix(in srgb,var(--txt) 16%,transparent);outline:none}
+.sheet .dash>.sec-h.area-first{margin-top:8px;padding-top:0;border-top:0}
 .muted{color:var(--mut)}.small{font-size:12px}
 .num{font-variant-numeric:tabular-nums}
 .serif{font-family:Didot,"Bodoni 72","Bodoni MT","Playfair Display",Georgia,"Times New Roman",serif}
@@ -902,6 +909,7 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
   <div class="shell">
   <nav class="side" id="secNav" aria-label="Bereiche">
     <div class="lbl">Überblick</div>
+    <button type="button" class="t-link" data-area-go="home" aria-current="true">Übersicht</button>
     <button type="button" class="t-sales" data-go="urgentWrap">Dringend</button>
     <button type="button" class="t-sales" data-go="sec-sales">Umsatz</button>
     <button type="button" class="t-bills" data-go="sec-bills">Rechnungen</button>
@@ -918,13 +926,14 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
     <button type="button" class="t-link" data-go="sec-data">Verbindungen</button>
   </nav>
   <div class="sheet">
-  <header class="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><div class="galaxy" id="galaxy" role="navigation" aria-label="Bereiche als Galaxie"></div><p class="greet" id="greet" aria-live="polite"></p></header>
+  <header class="hero" id="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><div class="galaxy" id="galaxy" role="navigation" aria-label="Bereiche als Galaxie"></div><p class="greet" id="greet" aria-live="polite"></p></header>
   <!-- DRINGEND: rot / gelb / grün -->
   <div class="urgent" id="urgentWrap">
     <div class="usum"><span class="t">Was ist dringend?</span><span id="usum" class="small"></span><span id="standM" class="small muted"></span></div>
     <div class="chips" id="urgent"></div>
   </div>
   <div id="banner" class="banner hidden"></div>
+  <div class="areabar hidden" id="areaBar"><button type="button" id="areaBack">‹ Übersicht</button><h2 id="areaTitle"></h2></div>
 
   <main>
   <div class="dash">
@@ -1047,11 +1056,7 @@ document.querySelectorAll(".themeBtn").forEach(b => b.onclick = () => setTheme(d
 document.querySelectorAll(".modeBtn").forEach(b => b.onclick = () => setTheme(b.dataset.mode));
 syncTheme();
 // Seitenleiste: springt zum Bereich (Abstand wie bei der Dringend-Leiste)
-document.querySelectorAll("#secNav [data-go]").forEach(b => b.onclick = () => {
-  const el = $(b.dataset.go); if (!el) return;
-  const top = el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18);
-  window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
-});
+document.querySelectorAll("#secNav [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
 
 // Seitenleiste: markiert den Bereich, der gerade sichtbar ist
 (function () {
@@ -1346,7 +1351,56 @@ const GAL = [
   { name: "Quellen", go: "sec-quellen", ico: "bell", c: "#ffcc00", ids: ["idealo_budget", "higgs_low", "sig_high"] },
   { name: "Verbindungen", go: "sec-data", ico: "sync", c: "#64d2ff", ids: ["sync_red", "sync_yel"] },
 ];
-const goTo = (id) => { const el = $(id); if (!el) return; window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18), behavior: reduceMotion ? "auto" : "smooth" }); };
+// ---------- Bereiche als eigene Seiten ----------
+// Jeder Bereich zeigt nur seine Abschnitte. Übersicht = Galaxie + „Was ist dringend?“ + Umsatz-Kennzahlen.
+// Kein Abschnitt wurde entfernt; die Zuordnung steht nur hier. Adresse: #/verkauf, #/versand … (Zurück-Taste funktioniert).
+const AREAS = [
+  { k: "home", name: "Übersicht", secs: [] },
+  { k: "verkauf", name: "Verkauf", secs: ["sec-sales", "sec-oo", "sec-prod"] },
+  { k: "rechnungen", name: "Rechnungen", secs: ["sec-bills"] },
+  { k: "versand", name: "Versand & Retouren", secs: ["sec-kpi"], extra: ["card-dhl"] },
+  { k: "marktplaetze", name: "Marktplätze", secs: ["sec-mp"] },
+  { k: "lager", name: "Lager", secs: ["sec-stock"] },
+  { k: "aufgaben", name: "Aufgaben & Postfach", secs: ["sec-tp"] },
+  { k: "wachstum", name: "Wachstum", secs: ["sec-social", "sec-quellen"] },
+  { k: "verbindungen", name: "Verbindungen", secs: ["sec-data"] },
+];
+let area = "home";
+(function tagAreas() {
+  let cur = "";
+  [...document.querySelector(".dash").children].forEach(el => {
+    if (el.classList.contains("sec-h")) cur = (AREAS.find(a => a.secs.includes(el.id)) || { k: cur }).k;
+    el.dataset.area = cur;
+  });
+  AREAS.forEach(a => (a.extra || []).forEach(id => { const el = $(id); if (el) el.dataset.area = a.k; }));
+  const k = $("kpis"); if (k) k.dataset.area = "verkauf home"; // Umsatz-Kennzahlen auch auf der Übersicht
+})();
+const areaOfEl = (el) => { const d = el.closest("[data-area]"); return d ? d.dataset.area.split(" ")[0] : "home"; };
+function showArea(k, opt = {}) {
+  const A = AREAS.find(a => a.k === k) || AREAS[0]; area = A.k; const home = area === "home";
+  let first = true;
+  document.querySelectorAll(".dash > *").forEach(el => {
+    const on = (el.dataset.area || "").split(" ").includes(area); el.classList.toggle("area-off", !on);
+    if (el.classList.contains("sec-h")) { el.classList.toggle("area-first", on && first); if (on) first = false; }
+  });
+  $("hero").classList.toggle("area-off", !home); $("urgentWrap").classList.toggle("area-off", !home);
+  $("areaBar").classList.toggle("hidden", home); $("areaTitle").textContent = A.name;
+  document.querySelectorAll("#secNav button").forEach(b => b.setAttribute("aria-current", String(home ? b.dataset.areaGo === "home" : b.dataset.go === A.secs[0])));
+  if (!opt.noHash) { const h = home ? "" : "#/" + area; if (location.hash !== h) history.pushState(null, "", h || location.pathname + location.search); }
+  if (state.d) renderAll(); // Diagramme messen ihre Breite erst, wenn der Bereich sichtbar ist
+  if (!opt.keepScroll) window.scrollTo({ top: 0, behavior: "auto" });
+}
+const goTo = (id) => {
+  const el = $(id); if (!el) return;
+  const k = areaOfEl(el); if (k !== area) showArea(k, { keepScroll: true });
+  const top = (el.classList.contains("area-first") || id === "urgentWrap") ? 0 : el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 18);
+  window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+};
+const routeFromHash = () => { const m = location.hash.match(/^#\/([a-z]+)$/); showArea(m ? m[1] : "home", { noHash: true }); };
+addEventListener("popstate", routeFromHash);
+$("areaBack").onclick = () => showArea("home");
+document.querySelectorAll("#secNav [data-area-go]").forEach(b => b.onclick = () => showArea(b.dataset.areaGo));
+routeFromHash();
 const galaxy = { a: 0, vel: 0, drag: null, justDragged: false, last: 0, raf: 0, paused: false, visible: true, built: false, geo: null };
 const SPIN = Math.PI * 2 / 80; // eine Umdrehung in 80 s
 // Prozedurale Planeten-Oberfläche (Bänder + Wirbel), horizontal nahtlos → Drehung per translateX
@@ -1518,6 +1572,7 @@ const LVLC = { red: ["var(--bad)", "rgba(239,95,80,.22)"], yellow: ["var(--warn)
 function focusRule(id) {
   const x = state.U.find(u => u.id === id); if (!x) return;
   state.focus = x.empty ? null : { id, lvl: x.lvl, label: x.label };
+  { const t = $(x.sec); if (t) { const k = areaOfEl(t); if (k !== area) showArea(k, { keepScroll: true }); } }
   renderAll();
   const el = $(x.sec); if (!el) return;
   const top = el.getBoundingClientRect().top + scrollY - (document.querySelector(".top").offsetHeight + 10);
