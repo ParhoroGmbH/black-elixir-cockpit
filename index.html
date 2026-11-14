@@ -524,7 +524,7 @@ html body{background:var(--wolken) fixed,var(--bg)}
 .chip.red .l,.chip.yellow .l{align-self:center!important;font-size:15px!important;font-weight:600!important}
 .chip.red .n,.chip.yellow .n{font-size:17px!important;font-weight:650!important;justify-self:end;min-width:28px;text-align:right}
 .chip.red .n{color:var(--bad)!important}.chip.yellow .n{color:var(--warn)!important}
-.chip.red::after,.chip.yellow::after{content:"Ansehen"!important;display:flex!important;position:static!important;inset:auto!important;grid-area:go;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;background:var(--g-strong)!important;box-shadow:var(--g-hi),0 1px 3px rgba(0,0,0,.08);color:var(--acc);font-size:13px;font-weight:600;opacity:1!important}
+.chip.red::after,.chip.yellow::after{content:var(--t-ansehen,"Ansehen")!important;display:flex!important;position:static!important;inset:auto!important;grid-area:go;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;background:var(--g-strong)!important;box-shadow:var(--g-hi),0 1px 3px rgba(0,0,0,.08);color:var(--acc);font-size:13px;font-weight:600;opacity:1!important}
 /* Zeilen bleiben an ihrem Platz: kein Vorspringen, nur leichte Farbe und ein kurzes Rütteln */
 html body #urgent .chip,html body #urgent .chip:hover,html body #urgent .chip:active,html body #urgent .chip:focus-visible{transform:none!important;z-index:auto!important;--lift:0px;--rx:0deg;--ry:0deg}
 .chip.red:hover,.chip.yellow:hover,.chip.red:focus-visible,.chip.yellow:focus-visible{background:color-mix(in srgb,var(--acc) 9%,transparent)!important;animation:rowShake .28s ease-in-out 1}
@@ -564,6 +564,25 @@ html[data-theme=light] select{color-scheme:light}
 html[data-theme=dark] select option{background:#2c2c2e;color:#f5f5f7}
 html[data-theme=light] select option{background:#fff;color:#1d1d1f}
 #aufMsg.live{color:var(--bad);font-weight:600}
+.bx-lang{margin-inline-start:4px}
+.bx-lang .langBtn{border:0;background:transparent;color:var(--mut);padding:6px 10px;font-size:12px;border-radius:7px}
+.bx-lang .langBtn[aria-pressed=true]{background:var(--segon,var(--g-strong));color:var(--txt);font-weight:600}
+/* Arabisch: Seite rechts-nach-links, Zahlen und Namen bleiben links-nach-rechts (bdi/dir=ltr oben im Code) */
+html[dir=rtl] body{direction:rtl}
+/* Nur ab der Breite, wo .shell überhaupt eine Zeile ist (siehe @media(max-width:1099px){.shell{flex-direction:column}}); darunter nichts anfassen, sonst schiebt es die Seite aus dem Bild. */
+@media(min-width:1100px){html[dir=rtl] .shell{flex-direction:row-reverse}}
+@media(max-width:1099px){html[dir=rtl] .side{flex-direction:row-reverse}}
+html[dir=rtl] .side button{text-align:right}
+html[dir=rtl] .side .cnt{margin-left:0;margin-right:auto}
+html[dir=rtl] .sec-h h2::before{order:2}
+html[dir=rtl] .chip.red,html[dir=rtl] .chip.yellow{grid-template-areas:"go n l ico"!important;grid-template-columns:auto auto minmax(0,1fr) 10px!important}
+html[dir=rtl] .chip.red .n,html[dir=rtl] .chip.yellow .n{justify-self:start}
+html[dir=rtl] .tbl th,html[dir=rtl] .tbl td{text-align:right}
+html[dir=rtl] .tbl .r{text-align:left}
+html[dir=rtl] #areaBar{flex-direction:row-reverse}
+html[dir=rtl] .frei-h{flex-direction:row-reverse;justify-content:flex-end}
+html[dir=rtl] .frei-t{margin-left:0;margin-right:auto}
+html[dir=rtl] .auf-row{direction:rtl}
 .chip.green{flex:0 1 auto;margin-top:12px;min-height:36px!important;padding:6px 12px!important;border-radius:999px!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
 .chip.green .l{font-size:13px!important;color:var(--mut)!important}
 .chip.green .ico{width:20px!important;height:20px!important}
@@ -986,6 +1005,41 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
 .ct-r u{position:absolute;left:18px;bottom:1px;height:2px;width:calc((100% - 18px) * var(--w) / 100);border-radius:1px;opacity:.6;text-decoration:none}
 @media (prefers-reduced-motion: reduce){#chart .c-now-halo{animation:none}}
 </style>
+<style id="mobil-kopf-und-menu">
+/* =====================================================================
+   Handy (14.11.2026): Kopfzeile in zwei Zeilen statt Überlappung,
+   Bereiche-Leiste als Klapp-Menü statt Zeile zum seitlichen Wischen.
+   Das hier steht als LETZTER Block, damit nichts Älteres es überschreibt.
+   ===================================================================== */
+#navToggle{display:none}
+@media(max-width:680px){
+  /* Kopfzeile: „BLACK ELIXIR“ allein in der ersten Zeile, alles Bedienbare in der zweiten */
+  .hrow{flex-wrap:wrap!important;row-gap:8px}
+  .brandwrap{flex:1 1 100%!important}
+  .hbtn{flex:1 1 100%!important;flex-wrap:wrap!important;justify-content:flex-end!important;row-gap:6px}
+  .bx-lang{margin-inline-start:0}
+
+  /* Bereiche-Leiste: zu statt einer Zeile zum Wischen ein Knopf, der die Liste aufklappt */
+  #navToggle{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;box-sizing:border-box;
+    padding:0 14px;margin-bottom:8px;border-radius:14px;border:1px solid var(--line,var(--g-edge));
+    background:var(--card,var(--g-bg));color:var(--txt);font:inherit;font-size:14px;font-weight:600;text-align:left}
+  #navToggle .ico-burger{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  #navToggle .ico-chev{width:16px;height:16px;flex:none;margin-left:auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+  #navToggle[aria-expanded=true] .ico-chev{transform:rotate(180deg)}
+  #navToggleLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  .shell{position:relative}
+  #secNav.side{display:none;position:absolute;top:52px;left:0;right:0;z-index:60;
+    flex-direction:column!important;width:auto;max-height:min(70vh,520px);overflow:auto;
+    border-radius:16px!important;padding:8px!important;box-shadow:0 24px 48px -20px rgba(0,0,0,.45)}
+  #secNav.side.open{display:flex}
+  #secNav.side .lbl{display:block!important}
+  #secNav.side button{width:100%!important;flex-shrink:0!important;white-space:normal!important;min-height:44px}
+}
+html[dir=rtl] #navToggle{text-align:right}
+html[dir=rtl] #navToggle .ico-chev{margin-left:0;margin-right:auto}
+@media(max-width:680px){html[dir=rtl] #secNav.side{right:0;left:0}}
+</style>
 <body class="bx intro">
 <canvas id="stars" aria-hidden="true"></canvas>
 
@@ -1029,6 +1083,7 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
       <div class="hbtn">
         <span id="loadedAt" class="small muted"></span>
         <div class="bx-mode" role="group" aria-label="Darstellung"><button type="button" class="modeBtn" data-mode="light" aria-pressed="false" title="Tag">☀<span class="tx"> Tag</span></button><button type="button" class="modeBtn" data-mode="dark" aria-pressed="true" title="Nacht">☾<span class="tx"> Nacht</span></button></div>
+        <div class="bx-mode bx-lang" role="group" aria-label="Sprache / Language / اللغة"><button type="button" class="langBtn" data-lang="de" lang="de" aria-pressed="true">DE</button><button type="button" class="langBtn" data-lang="en" lang="en" aria-pressed="false">EN</button><button type="button" class="langBtn" data-lang="ar" lang="ar" aria-pressed="false">AR</button></div>
         <button id="btnRefresh" class="txt" type="button" title="Aktualisieren"><span class="tx">Aktualisieren</span><span class="ic">↻</span></button>
         <button id="btnLogout" class="txt" type="button" title="Abmelden"><span class="tx">Abmelden</span><span class="ic">⏻</span></button>
       </div>
@@ -1036,6 +1091,11 @@ body.intro .sp-area{animation:fadein 1.4s .5s both}
   </div>
 
   <div class="shell">
+  <button type="button" id="navToggle" aria-expanded="false" aria-controls="secNav">
+    <svg class="ico-burger" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <span id="navToggleLabel">Übersicht</span>
+    <svg class="ico-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
   <nav class="side" id="secNav" aria-label="Bereiche">
     <button type="button" data-area-go="home" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/></svg><span class="nl">Übersicht</span></button>
     <button type="button" data-area-go="freigaben"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span class="nl">Freigaben</span></button>
@@ -1180,6 +1240,123 @@ const pct = (v, d = 0) => (Number(v) || 0).toLocaleString("de-DE", { maximumFrac
 const tsd = (v) => v >= 1000 ? (v / 1000).toLocaleString("de-DE", { maximumFractionDigits: v >= 10000 ? 0 : 1 }) + " Tsd." : Math.round(v).toLocaleString("de-DE");
 const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// ---------- Sprache (DE / EN / AR), Stufe 1: Menü, Überschriften, Knöpfe, Begrüßung, Freigaben ----------
+// Schlüssel = deutscher Text. Nicht übersetzt: Marken-, Produkt- und Plattformnamen, Bot-Namen, Daten aus Bots und E-Mails.
+// Zahlen und Beträge bleiben im deutschen Format.
+const I18N = {
+  en: {
+    "Tag": "Day", "Nacht": "Night", "Aktualisieren": "Refresh", "Abmelden": "Sign out", "Stand": "As of",
+    "Übersicht": "Overview", "Freigaben": "Approvals", "Freigaben & Aufträge": "Approvals & tasks", "Verkauf": "Sales", "Rechnungen": "Invoices",
+    "Versand & Retouren": "Shipping & returns", "Marktplätze": "Marketplaces", "Lager": "Inventory", "Aufgaben & Postfach": "Tasks & inbox",
+    "Wachstum": "Growth", "Verbindungen": "Connections", "Geschäft": "Business", "Betrieb": "Operations",
+    "Was ist dringend?": "What's urgent?", "dringend": "urgent", "beachten": "to watch", "ok": "ok",
+    "Mehr anzeigen": "Show more", "zum Beachten": "to watch", "Weniger anzeigen": "Show less", "Ansehen": "View",
+    "Umsatz netto": "Net sales", "Rechnungen & Zahlungserinnerungen": "Invoices & payment reminders", "Offene Bestellungen": "Open orders",
+    "Retouren, Zahlung, Versand": "Returns, payment, shipping", "Marktplätze · Kontozustand": "Marketplaces · account health",
+    "Bestand & Lagerwert": "Stock & inventory value", "Produkte · 30 Tage": "Products · 30 days", "Social": "Social",
+    "Quellen & Tools": "Sources & tools", "Datenstand & Verbindungen": "Data status & connections",
+    "Wartet auf deine Entscheidung": "Waiting for your decision", "Auftrag an Bot": "Task for a bot", "Aufträge": "Tasks", "Zuletzt entschieden": "Recently decided",
+    "Umsatz je Plattform · 30 Tage": "Sales by platform · 30 days", "Tagesumsatz netto · 30 Tage": "Daily net sales · 30 days", "Umsatz je Kanal": "Sales by channel",
+    "Überblick": "Summary", "Neue Rechnungen / Zahlungserinnerungen": "New invoices / payment reminders", "Älteste offene Bestellungen": "Oldest open orders",
+    "Je Plattform": "By platform", "Sendungen · alle Kanäle": "Shipments · all channels", "Unbezahlt / ohne Sendungsnummer": "Unpaid / no tracking number",
+    "Hinweise der Plattformen": "Platform notices", "Nachbestellen · Reichweite unter 14 Tagen": "Reorder · cover under 14 days",
+    "Ausverkauft, aber verkauft (30 T)": "Sold out but selling (30 d)", "Aufgaben": "Tasks", "Postfach · Kategorien 7 Tage": "Inbox · categories 7 days",
+    "Neueste E-Mails": "Latest emails", "Top 10 nach Nettoumsatz": "Top 10 by net sales", "Flop 10 · Lagerwert ohne Verkauf (30 T)": "Bottom 10 · stock value without sales (30 d)",
+    "DHL-Fälle": "DHL cases", "Shop-Traffic": "Shop traffic", "Tools & Credits": "Tools & credits", "Signale aus Postfächern · 30 Tage": "Signals from mailboxes · 30 days",
+    "Synchronisierung je Quelle": "Sync by source",
+    "Heute": "Today", "7 Tage": "7 days", "30 Tage": "30 days", "Ø Bestellwert 30 T": "Avg. order value 30 d", "Lagerwert (EK, JTL)": "Stock value (cost, JTL)",
+    "Ohne Verkauf 30 T": "No sales 30 d", "Reichweite < 14 T": "Cover < 14 d", "Ausverkauft": "Sold out",
+    "Anfragen der Bots · deine Entscheidung wird mit Uhrzeit gespeichert und kann nicht mehr geändert werden": "Requests from the bots · your decision is saved with the time and cannot be changed later",
+    "schreiben oder diktieren · der Bot liest ihn in seiner Aufgabenliste": "write or dictate · the bot reads it in its task list",
+    "offen und zuletzt erledigt": "open and recently done",
+    "Bot": "Bot", "Auftrag": "Task", "Priorität": "Priority", "Fällig (optional)": "Due (optional)", "Sprache der Spracheingabe": "Dictation language",
+    "Notiz an den Bot (optional)": "Note to the bot (optional)", "Auftrag speichern": "Save task", "Diktieren": "Dictate", "Stopp": "Stop",
+    "Freigeben": "Approve", "Ablehnen": "Reject", "Sicher? Freigeben": "Sure? Approve", "Sicher? Ablehnen": "Sure? Reject",
+    "normal": "normal", "hoch": "high", "niedrig": "low", "Arabisch": "Arabic", "Deutsch": "German", "Englisch": "English",
+    "Was soll der Bot tun?": "What should the bot do?", "Noch einmal klicken zum Bestätigen.": "Click again to confirm.", "Speichere …": "Saving …",
+    "Nicht gespeichert: ": "Not saved: ", "Freigegeben.": "Approved.", "Abgelehnt.": "Rejected.",
+    "Keine offenen Anfragen. Sobald ein Bot eine Freigabe braucht, steht sie hier.": "No open requests. When a bot needs approval, it will appear here.",
+    "Bitte zuerst den Auftrag schreiben oder diktieren.": "Please write or dictate the task first.", "Gespeichert. Der Bot sieht den Auftrag in seiner Liste.": "Saved. The bot will see the task in its list.",
+    "Anfrage": "Request", "Entscheidung": "Decision", "Wann": "When", "Notiz / Ergebnis": "Note / result", "Prio": "Priority", "Fällig": "Due", "Status": "Status", "Antwort": "Reply",
+    "Noch keine Entscheidungen.": "No decisions yet.", "Noch keine Aufträge.": "No tasks yet.",
+    "Freigegeben": "Approved", "Abgelehnt": "Rejected", "Ausgeführt": "Done", "Zurückgezogen": "Withdrawn", "Offen": "Open", "In Arbeit": "In progress", "Erledigt": "Done", "Abgebrochen": "Cancelled",
+    "Entwurf": "Draft", "Storno": "Cancellation", "Refund": "Refund", "Preisrunde": "Price round", "Sonstiges": "Other",
+    "Ich höre zu … zum Beenden auf Stopp tippen.": "Listening … tap Stop to finish.", "Fertig. Text prüfen und speichern.": "Done. Check the text and save.",
+    "Spracheingabe beendet.": "Dictation ended.", "Spracheingabe abgebrochen.": "Dictation stopped.", "Spracheingabe konnte nicht starten.": "Dictation could not start.",
+    "Mikrofon ist für diese Seite nicht erlaubt.": "The microphone is not allowed for this page.", "Kein Mikrofon gefunden.": "No microphone found.",
+    "Der Sprachdienst des Browsers ist nicht erreichbar.": "The browser's speech service is not reachable.", "Diese Sprache unterstützt der Browser nicht.": "The browser does not support this language.",
+    "Spracheingabe gibt es in diesem Browser nicht. Tipp: Windows-Taste + H oder das Mikrofon der Handy-Tastatur.": "This browser has no dictation. Tip: Windows key + H or the phone keyboard's microphone.",
+  },
+  ar: {
+    "Tag": "نهار", "Nacht": "ليل", "Aktualisieren": "تحديث", "Abmelden": "تسجيل الخروج", "Stand": "آخر تحديث",
+    "Übersicht": "نظرة عامة", "Freigaben": "الموافقات", "Freigaben & Aufträge": "الموافقات والمهام", "Verkauf": "المبيعات", "Rechnungen": "الفواتير",
+    "Versand & Retouren": "الشحن والمرتجعات", "Marktplätze": "المنصات", "Lager": "المخزون", "Aufgaben & Postfach": "المهام والبريد",
+    "Wachstum": "النمو", "Verbindungen": "الاتصالات", "Geschäft": "العمل", "Betrieb": "التشغيل",
+    "Was ist dringend?": "ما المستعجل؟", "dringend": "مستعجل", "beachten": "للمتابعة", "ok": "سليم",
+    "Mehr anzeigen": "عرض المزيد", "zum Beachten": "للمتابعة", "Weniger anzeigen": "عرض أقل", "Ansehen": "عرض",
+    "Umsatz netto": "صافي المبيعات", "Rechnungen & Zahlungserinnerungen": "الفواتير وتذكيرات الدفع", "Offene Bestellungen": "الطلبات المفتوحة",
+    "Retouren, Zahlung, Versand": "المرتجعات والدفع والشحن", "Marktplätze · Kontozustand": "المنصات · حالة الحسابات",
+    "Bestand & Lagerwert": "المخزون وقيمته", "Produkte · 30 Tage": "المنتجات · 30 يوماً", "Social": "التواصل الاجتماعي",
+    "Quellen & Tools": "المصادر والأدوات", "Datenstand & Verbindungen": "حالة البيانات والاتصالات",
+    "Wartet auf deine Entscheidung": "بانتظار قرارك", "Auftrag an Bot": "مهمة لبوت", "Aufträge": "المهام", "Zuletzt entschieden": "آخر القرارات",
+    "Umsatz je Plattform · 30 Tage": "المبيعات حسب المنصة · 30 يوماً", "Tagesumsatz netto · 30 Tage": "صافي المبيعات اليومية · 30 يوماً", "Umsatz je Kanal": "المبيعات حسب القناة",
+    "Überblick": "ملخص", "Neue Rechnungen / Zahlungserinnerungen": "فواتير جديدة / تذكيرات دفع", "Älteste offene Bestellungen": "أقدم الطلبات المفتوحة",
+    "Je Plattform": "حسب المنصة", "Sendungen · alle Kanäle": "الشحنات · كل القنوات", "Unbezahlt / ohne Sendungsnummer": "غير مدفوع / بلا رقم تتبع",
+    "Hinweise der Plattformen": "تنبيهات المنصات", "Nachbestellen · Reichweite unter 14 Tagen": "إعادة الطلب · يكفي أقل من 14 يوماً",
+    "Ausverkauft, aber verkauft (30 T)": "نفد لكنه يُباع (30 يوماً)", "Aufgaben": "المهام", "Postfach · Kategorien 7 Tage": "البريد · التصنيفات 7 أيام",
+    "Neueste E-Mails": "أحدث الرسائل", "Top 10 nach Nettoumsatz": "أفضل 10 حسب صافي المبيعات", "Flop 10 · Lagerwert ohne Verkauf (30 T)": "أضعف 10 · قيمة مخزون بلا مبيعات (30 يوماً)",
+    "DHL-Fälle": "حالات DHL", "Shop-Traffic": "زيارات المتجر", "Tools & Credits": "الأدوات والرصيد", "Signale aus Postfächern · 30 Tage": "إشارات من صناديق البريد · 30 يوماً",
+    "Synchronisierung je Quelle": "المزامنة حسب المصدر",
+    "Heute": "اليوم", "7 Tage": "7 أيام", "30 Tage": "30 يوماً", "Ø Bestellwert 30 T": "متوسط قيمة الطلب 30 يوماً", "Lagerwert (EK, JTL)": "قيمة المخزون (سعر الشراء، JTL)",
+    "Ohne Verkauf 30 T": "بلا مبيعات 30 يوماً", "Reichweite < 14 T": "يكفي أقل من 14 يوماً", "Ausverkauft": "نفد",
+    "Anfragen der Bots · deine Entscheidung wird mit Uhrzeit gespeichert und kann nicht mehr geändert werden": "طلبات البوتات · يُحفظ قرارك مع الوقت ولا يمكن تغييره بعدها",
+    "schreiben oder diktieren · der Bot liest ihn in seiner Aufgabenliste": "اكتب أو أملِ بالصوت · يقرؤها البوت في قائمة مهامه",
+    "offen und zuletzt erledigt": "المفتوحة وآخر المنجزة",
+    "Bot": "البوت", "Auftrag": "المهمة", "Priorität": "الأولوية", "Fällig (optional)": "الموعد (اختياري)", "Sprache der Spracheingabe": "لغة الإملاء",
+    "Notiz an den Bot (optional)": "ملاحظة للبوت (اختياري)", "Auftrag speichern": "حفظ المهمة", "Diktieren": "إملاء", "Stopp": "إيقاف",
+    "Freigeben": "موافقة", "Ablehnen": "رفض", "Sicher? Freigeben": "متأكد؟ موافقة", "Sicher? Ablehnen": "متأكد؟ رفض",
+    "normal": "عادية", "hoch": "عالية", "niedrig": "منخفضة", "Arabisch": "عربي", "Deutsch": "ألماني", "Englisch": "إنجليزي",
+    "Was soll der Bot tun?": "ماذا يجب أن يفعل البوت؟", "Noch einmal klicken zum Bestätigen.": "اضغط مرة أخرى للتأكيد.", "Speichere …": "جارٍ الحفظ …",
+    "Nicht gespeichert: ": "لم يُحفظ: ", "Freigegeben.": "تمت الموافقة.", "Abgelehnt.": "تم الرفض.",
+    "Keine offenen Anfragen. Sobald ein Bot eine Freigabe braucht, steht sie hier.": "لا توجد طلبات مفتوحة. عندما يحتاج بوت إلى موافقة، ستظهر هنا.",
+    "Bitte zuerst den Auftrag schreiben oder diktieren.": "اكتب المهمة أو أملِها أولاً.", "Gespeichert. Der Bot sieht den Auftrag in seiner Liste.": "تم الحفظ. سيرى البوت المهمة في قائمته.",
+    "Anfrage": "الطلب", "Entscheidung": "القرار", "Wann": "متى", "Notiz / Ergebnis": "ملاحظة / نتيجة", "Prio": "الأولوية", "Fällig": "الموعد", "Status": "الحالة", "Antwort": "الرد",
+    "Noch keine Entscheidungen.": "لا توجد قرارات بعد.", "Noch keine Aufträge.": "لا توجد مهام بعد.",
+    "Freigegeben": "موافق عليه", "Abgelehnt": "مرفوض", "Ausgeführt": "منفّذ", "Zurückgezogen": "مسحوب", "Offen": "مفتوح", "In Arbeit": "قيد التنفيذ", "Erledigt": "منجز", "Abgebrochen": "ملغى",
+    "Entwurf": "مسودة", "Storno": "إلغاء", "Refund": "استرداد", "Preisrunde": "جولة أسعار", "Sonstiges": "أخرى",
+    "Ich höre zu … zum Beenden auf Stopp tippen.": "أستمع … اضغط إيقاف للإنهاء.", "Fertig. Text prüfen und speichern.": "انتهى. راجع النص واحفظه.",
+    "Spracheingabe beendet.": "انتهى الإملاء.", "Spracheingabe abgebrochen.": "توقف الإملاء.", "Spracheingabe konnte nicht starten.": "تعذّر بدء الإملاء.",
+    "Mikrofon ist für diese Seite nicht erlaubt.": "الميكروفون غير مسموح لهذه الصفحة.", "Kein Mikrofon gefunden.": "لم يُعثر على ميكروفون.",
+    "Der Sprachdienst des Browsers ist nicht erreichbar.": "خدمة الصوت في المتصفح غير متاحة.", "Diese Sprache unterstützt der Browser nicht.": "المتصفح لا يدعم هذه اللغة.",
+    "Spracheingabe gibt es in diesem Browser nicht. Tipp: Windows-Taste + H oder das Mikrofon der Handy-Tastatur.": "هذا المتصفح لا يدعم الإملاء. نصيحة: زر ويندوز + H أو ميكروفون لوحة مفاتيح الهاتف.",
+  },
+};
+let LANG = (() => { try { const l = localStorage.getItem("be-lang"); return l === "en" || l === "ar" ? l : "de"; } catch (e) { return "de"; } })();
+const T = (s) => (LANG !== "de" && I18N[LANG] && I18N[LANG][s]) || s;
+const I18N_SEL = ".side .lbl, .side .nl, .sec-h h2, .card h3, #card-frei h3 .sub, #card-auftrag h3 .sub, #card-auftraege h3 .sub, .auf label, .usum .t, #btnRefresh .tx, #btnLogout .tx, .modeBtn .tx, #aufSend, #aufPrio option, #aufLang option";
+const i18nOrig = new WeakMap();
+function applyStatic() {
+  document.querySelectorAll(I18N_SEL).forEach(el => {
+    let n = null; for (const c of el.childNodes) if (c.nodeType === 3 && c.nodeValue.trim()) { n = c; break; }
+    if (!n) return; if (!i18nOrig.has(n)) i18nOrig.set(n, n.nodeValue);
+    const m = i18nOrig.get(n).match(/^(\s*)([\s\S]*?)(\s*)$/); n.nodeValue = m[1] + T(m[2]) + m[3];
+  });
+  [["#btnRefresh", "Aktualisieren"], ["#btnLogout", "Abmelden"], ['.modeBtn[data-mode="light"]', "Tag"], ['.modeBtn[data-mode="dark"]', "Nacht"]].forEach(([s, k]) => { const e = document.querySelector(s); if (e) e.title = T(k); });
+  const ta = $("aufText"); if (ta) ta.placeholder = T("Was soll der Bot tun?");
+  const ab = $("areaBack"); if (ab) ab.textContent = (LANG === "ar" ? "› " : "‹ ") + T("Übersicht");
+  const mt = document.querySelector("#aufMic .mt"); if (mt) mt.textContent = T($("aufMic").getAttribute("aria-pressed") === "true" ? "Stopp" : "Diktieren");
+  document.documentElement.style.setProperty("--t-ansehen", JSON.stringify(T("Ansehen")));
+  document.querySelectorAll(".langBtn").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
+}
+function setLang(l, first) {
+  LANG = l === "en" || l === "ar" ? l : "de";
+  try { localStorage.setItem("be-lang", LANG); } catch (e) {}
+  document.documentElement.lang = LANG; document.documentElement.dir = LANG === "ar" ? "rtl" : "ltr";
+  if (!first && typeof showArea === "function") showArea(area, { noHash: true, keepScroll: true });
+  applyStatic();
+  if ($("loadedAt").textContent) $("loadedAt").textContent = $("standM").textContent = T("Stand") + " " + fmtDT(new Date().toISOString());
+}
+
 // ---------- Theme (Schwarz ↔ Weiß) ----------
 function setTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
@@ -1320,7 +1497,7 @@ async function load() {
     const failed = Object.keys(state.err);
     if (failed.length) warn = (warn ? warn + " " : "") + "Teilweise nicht geladen: " + failed.join(", ") + ". Übrige Bereiche sind aktuell.";
     $("banner").textContent = warn; $("banner").classList.toggle("hidden", !warn);
-    $("loadedAt").textContent = $("standM").textContent = "Stand " + fmtDT(new Date().toISOString());
+    $("loadedAt").textContent = $("standM").textContent = T("Stand") + " " + fmtDT(new Date().toISOString());
   } catch (e) {
     $("banner").textContent = "Daten konnten nicht geladen werden: " + (e && e.message ? e.message : e);
     $("banner").classList.remove("hidden");
@@ -1501,70 +1678,71 @@ const BOTS = ["General Manager", "Customer Service", "Return Manager", "JTL-Wawi
 $("aufBot").innerHTML = BOTS.map(b => `<option>${esc(b)}</option>`).join("");
 const FREI_ST = { freigegeben: ["Freigegeben", "ok"], abgelehnt: ["Abgelehnt", "bad"], ausgefuehrt: ["Ausgeführt", "ok"], zurueckgezogen: ["Zurückgezogen", ""], offen: ["Offen", "warn"] };
 const AUF_ST = { offen: ["Offen", "warn"], in_arbeit: ["In Arbeit", ""], erledigt: ["Erledigt", "ok"], abgebrochen: ["Abgebrochen", ""] };
+const PRIO_T = { hoch: "hoch", normal: "normal", niedrig: "niedrig" };
 function renderFrei(frei, auftr) {
   frei = frei || []; auftr = auftr || [];
   const open = frei.filter(f => f.status === "offen");
   $("freiList").innerHTML = open.length ? open.map(f => `<div class="frei" data-id="${f.id}">
       <div class="frei-h">${pill(f.bot, "")}${pill(f.typ, "")}${f.bezug ? pill(f.bezug, "") : ""}<span class="frei-t">${fmtDT(f.erstellt_at)}</span></div>
       <div class="frei-ti">${esc(f.titel)}</div>${f.details ? `<div class="frei-d">${esc(f.details)}</div>` : ""}
-      <label class="frei-k">Notiz an den Bot (optional)<input type="text" maxlength="500"></label>
-      <div class="frei-a"><button type="button" class="primary" data-dec="freigegeben">Freigeben</button><button type="button" data-dec="abgelehnt">Ablehnen</button><span class="frei-m" role="status"></span></div>
-    </div>`).join("") : `<div class="frei-empty">${esc(errTxt("frei", "Keine offenen Anfragen. Sobald ein Bot eine Freigabe braucht, steht sie hier."))}</div>`;
+      <label class="frei-k">${T("Notiz an den Bot (optional)")}<input type="text" maxlength="500"></label>
+      <div class="frei-a"><button type="button" class="primary" data-dec="freigegeben">${T("Freigeben")}</button><button type="button" data-dec="abgelehnt">${T("Ablehnen")}</button><span class="frei-m" role="status"></span></div>
+    </div>`).join("") : `<div class="frei-empty">${esc(errTxt("frei", T("Keine offenen Anfragen. Sobald ein Bot eine Freigabe braucht, steht sie hier.")))}</div>`;
   $("freiList").querySelectorAll("button[data-dec]").forEach(b => b.onclick = async () => {
     const box = b.closest(".frei"), msg = box.querySelector(".frei-m"), dec = b.dataset.dec;
     if (!b.dataset.arm) { // zweiter Klick bestätigt
-      box.querySelectorAll("button[data-arm]").forEach(x => { delete x.dataset.arm; x.textContent = x.dataset.dec === "freigegeben" ? "Freigeben" : "Ablehnen"; });
-      b.dataset.arm = "1"; b.textContent = dec === "freigegeben" ? "Sicher? Freigeben" : "Sicher? Ablehnen"; msg.textContent = "Noch einmal klicken zum Bestätigen.";
-      setTimeout(() => { if (b.isConnected && b.dataset.arm) { delete b.dataset.arm; b.textContent = dec === "freigegeben" ? "Freigeben" : "Ablehnen"; msg.textContent = ""; } }, 5000);
+      box.querySelectorAll("button[data-arm]").forEach(x => { delete x.dataset.arm; x.textContent = T(x.dataset.dec === "freigegeben" ? "Freigeben" : "Ablehnen"); });
+      b.dataset.arm = "1"; b.textContent = T(dec === "freigegeben" ? "Sicher? Freigeben" : "Sicher? Ablehnen"); msg.textContent = T("Noch einmal klicken zum Bestätigen.");
+      setTimeout(() => { if (b.isConnected && b.dataset.arm) { delete b.dataset.arm; b.textContent = T(dec === "freigegeben" ? "Freigeben" : "Ablehnen"); msg.textContent = ""; } }, 5000);
       return;
     }
-    box.querySelectorAll("button").forEach(x => x.disabled = true); msg.textContent = "Speichere …";
+    box.querySelectorAll("button").forEach(x => x.disabled = true); msg.textContent = T("Speichere …");
     const { error } = await sb.rpc("cockpit_freigabe_entscheiden", { p_id: Number(box.dataset.id), p_entscheidung: dec, p_kommentar: box.querySelector("input").value.trim() || null });
-    if (error) { msg.textContent = "Nicht gespeichert: " + (error.message || error); box.querySelectorAll("button").forEach(x => x.disabled = false); return; }
-    msg.textContent = dec === "freigegeben" ? "Freigegeben." : "Abgelehnt."; load();
+    if (error) { msg.textContent = T("Nicht gespeichert: ") + (error.message || error); box.querySelectorAll("button").forEach(x => x.disabled = false); return; }
+    msg.textContent = T(dec === "freigegeben" ? "Freigegeben." : "Abgelehnt."); load();
   });
-  table("tblFreiDone", [{ t: "Bot" }, { t: "Anfrage" }, { t: "Entscheidung" }, { t: "Wann", r: 1 }, { t: "Notiz / Ergebnis" }],
-    frei.filter(f => f.status !== "offen").slice(0, 60).map(f => [esc(f.bot), `<b>${esc(f.titel)}</b>${f.bezug ? " · " + esc(f.bezug) : ""}`, pill((FREI_ST[f.status] || [f.status, ""])[0], (FREI_ST[f.status] || ["", ""])[1]), fmtDT(f.ausgefuehrt_at || f.entschieden_at), esc([f.kommentar, f.ergebnis].filter(Boolean).join(" · "))]),
-    errTxt("frei", "Noch keine Entscheidungen."));
-  table("tblAuftr", [{ t: "Bot" }, { t: "Auftrag" }, { t: "Prio" }, { t: "Fällig", r: 1 }, { t: "Status" }, { t: "Antwort" }],
-    auftr.slice(0, 80).map(a => ({ hl: a.status === "offen" && a.prioritaet === "hoch", c: [esc(a.bot), esc(a.auftrag), esc(a.prioritaet), a.faellig ? fmtD(a.faellig) : "–", pill((AUF_ST[a.status] || [a.status, ""])[0], (AUF_ST[a.status] || ["", ""])[1]), esc(a.antwort || "")] })),
-    errTxt("auftr", "Noch keine Aufträge."));
+  table("tblFreiDone", [{ t: T("Bot") }, { t: T("Anfrage") }, { t: T("Entscheidung") }, { t: T("Wann"), r: 1 }, { t: T("Notiz / Ergebnis") }],
+    frei.filter(f => f.status !== "offen").slice(0, 60).map(f => [esc(f.bot), `<b>${esc(f.titel)}</b>${f.bezug ? " · " + esc(f.bezug) : ""}`, pill(T((FREI_ST[f.status] || [f.status, ""])[0]), (FREI_ST[f.status] || ["", ""])[1]), fmtDT(f.ausgefuehrt_at || f.entschieden_at), esc([f.kommentar, f.ergebnis].filter(Boolean).join(" · "))]),
+    errTxt("frei", T("Noch keine Entscheidungen.")));
+  table("tblAuftr", [{ t: T("Bot") }, { t: T("Auftrag") }, { t: T("Prio") }, { t: T("Fällig"), r: 1 }, { t: T("Status") }, { t: T("Antwort") }],
+    auftr.slice(0, 80).map(a => ({ hl: a.status === "offen" && a.prioritaet === "hoch", c: [esc(a.bot), esc(a.auftrag), T(PRIO_T[a.prioritaet] || a.prioritaet), a.faellig ? fmtD(a.faellig) : "–", pill(T((AUF_ST[a.status] || [a.status, ""])[0]), (AUF_ST[a.status] || ["", ""])[1]), esc(a.antwort || "")] })),
+    errTxt("auftr", T("Noch keine Aufträge.")));
 }
 $("aufSend").onclick = async () => {
   const text = $("aufText").value.trim(), msg = $("aufMsg");
-  if (!text) { msg.textContent = "Bitte zuerst den Auftrag schreiben oder diktieren."; return; }
-  $("aufSend").disabled = true; msg.textContent = "Speichere …";
+  if (!text) { msg.textContent = T("Bitte zuerst den Auftrag schreiben oder diktieren."); return; }
+  $("aufSend").disabled = true; msg.textContent = T("Speichere …");
   const { error } = await sb.rpc("cockpit_auftrag_erstellen", { p_bot: $("aufBot").value, p_auftrag: text, p_prioritaet: $("aufPrio").value, p_faellig: $("aufDue").value || null });
   $("aufSend").disabled = false;
-  if (error) { msg.textContent = "Nicht gespeichert: " + (error.message || error); return; }
-  $("aufText").value = ""; $("aufDue").value = ""; msg.textContent = "Gespeichert. Der Bot sieht den Auftrag in seiner Liste."; load();
+  if (error) { msg.textContent = T("Nicht gespeichert: ") + (error.message || error); return; }
+  $("aufText").value = ""; $("aufDue").value = ""; msg.textContent = T("Gespeichert. Der Bot sieht den Auftrag in seiner Liste."); load();
 };
 // Diktieren: Spracheingabe des Browsers (Chrome, Edge, Safari). Der Ton geht dafür an den Sprachdienst des Browsers.
 // Robust: „Stopp" reagiert sofort; endet der Browser-Dienst von selbst (Pause, ~60 s), startet er still neu, solange nicht gestoppt.
 (function dictate() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition, b = $("aufMic"), ta = $("aufText"), msg = $("aufMsg");
-  if (!SR) { b.hidden = true; $("aufLang").hidden = true; msg.textContent = "Spracheingabe gibt es in diesem Browser nicht. Tipp: Windows-Taste + H oder das Mikrofon der Handy-Tastatur."; return; }
+  if (!SR) { b.hidden = true; $("aufLang").hidden = true; msg.textContent = T("Spracheingabe gibt es in diesem Browser nicht. Tipp: Windows-Taste + H oder das Mikrofon der Handy-Tastatur."); return; }
   let rec = null, want = false, base = "", fin = "", killT = 0, fails = 0;
-  const ui = (on, text) => { b.setAttribute("aria-pressed", String(on)); b.querySelector(".mt").textContent = on ? "Stopp" : "Diktieren"; msg.classList.toggle("live", on); if (text !== undefined) msg.textContent = text; };
+  const ui = (on, text) => { b.setAttribute("aria-pressed", String(on)); b.querySelector(".mt").textContent = T(on ? "Stopp" : "Diktieren"); msg.classList.toggle("live", on); if (text !== undefined) msg.textContent = text; };
   const write = (interim) => { ta.value = (base + fin + (interim || "")).slice(0, 4000); };
-  const ERR = { "not-allowed": "Mikrofon ist für diese Seite nicht erlaubt.", "service-not-allowed": "Mikrofon ist für diese Seite nicht erlaubt.", "audio-capture": "Kein Mikrofon gefunden.", network: "Der Sprachdienst des Browsers ist nicht erreichbar.", "language-not-supported": "Diese Sprache unterstützt der Browser nicht." };
+  const ERR = { "not-allowed": T("Mikrofon ist für diese Seite nicht erlaubt."), "service-not-allowed": T("Mikrofon ist für diese Seite nicht erlaubt."), "audio-capture": T("Kein Mikrofon gefunden."), network: T("Der Sprachdienst des Browsers ist nicht erreichbar."), "language-not-supported": T("Diese Sprache unterstützt der Browser nicht.") };
   function startOne() {
     const r = new SR(); rec = r;
     r.lang = $("aufLang").value; r.interimResults = true; r.continuous = true; r.maxAlternatives = 1;
     r.onresult = (e) => { fails = 0; let int = ""; for (let i = e.resultIndex; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t.trim() + " "; else int += t; } write(int); };
-    r.onerror = (e) => { if (e.error === "no-speech" || e.error === "aborted") return; want = false; ui(false, ERR[e.error] || "Spracheingabe abgebrochen."); };
-    r.onend = () => { if (rec === r) rec = null; write(); if (want && ++fails < 4) { try { startOne(); } catch (_) { want = false; ui(false, ""); } } else if (want) { want = false; ui(false, "Spracheingabe beendet."); } };
+    r.onerror = (e) => { if (e.error === "no-speech" || e.error === "aborted") return; want = false; ui(false, ERR[e.error] || T("Spracheingabe abgebrochen.")); };
+    r.onend = () => { if (rec === r) rec = null; write(); if (want && ++fails < 4) { try { startOne(); } catch (_) { want = false; ui(false, ""); } } else if (want) { want = false; ui(false, T("Spracheingabe beendet.")); } };
     r.start();
   }
   b.onclick = () => {
     if (want) { // sofort zurücksetzen, Dienst im Hintergrund beenden
-      want = false; ui(false, "Fertig. Text prüfen und speichern.");
+      want = false; ui(false, T("Fertig. Text prüfen und speichern."));
       const r = rec; if (r) { try { r.stop(); } catch (_) {} clearTimeout(killT); killT = setTimeout(() => { try { r.abort(); } catch (_) {} }, 1500); }
       return;
     }
     base = ta.value.trim() ? ta.value.trim() + " " : ""; fin = ""; fails = 0; want = true;
-    ui(true, "Ich höre zu … zum Beenden auf Stopp tippen.");
-    try { startOne(); } catch (_) { want = false; ui(false, "Spracheingabe konnte nicht starten."); }
+    ui(true, T("Ich höre zu … zum Beenden auf Stopp tippen."));
+    try { startOne(); } catch (_) { want = false; ui(false, T("Spracheingabe konnte nicht starten.")); }
   };
   $("aufLang").onchange = () => { if (want && rec) { try { rec.stop(); } catch (_) {} } }; // Neustart mit neuer Sprache
 })();
@@ -1603,9 +1781,11 @@ function showArea(k, opt = {}) {
     if (el.classList.contains("sec-h")) { el.classList.toggle("area-first", on && first); if (on) first = false; }
   });
   $("hero").classList.toggle("area-off", !home); $("urgentWrap").classList.toggle("area-off", !home);
-  $("areaBar").classList.toggle("hidden", home); $("areaTitle").textContent = A.name;
+  $("areaBar").classList.toggle("hidden", home); $("areaTitle").textContent = T(A.name);
   document.querySelectorAll("#secNav button").forEach(b => b.setAttribute("aria-current", String(b.dataset.areaGo === area)));
   document.querySelector(".sheet").classList.toggle("is-home", home);
+  const ntl = $("navToggleLabel"); if (ntl) ntl.textContent = T(A.name);
+  closeNavMenu();
   if (!opt.noHash) { const h = home ? "" : "#/" + area; if (location.hash !== h) history.pushState(null, "", h || location.pathname + location.search); }
   if (state.d) renderAll(); // Diagramme messen ihre Breite erst, wenn der Bereich sichtbar ist
   if (!opt.keepScroll) window.scrollTo({ top: 0, behavior: "auto" });
@@ -1620,7 +1800,17 @@ const routeFromHash = () => { const m = location.hash.match(/^#\/([a-z]+)$/); sh
 addEventListener("popstate", routeFromHash);
 $("areaBack").onclick = () => showArea("home");
 document.querySelectorAll("#secNav [data-area-go]").forEach(b => b.onclick = () => showArea(b.dataset.areaGo));
+// Handy: Bereiche-Leiste als Klapp-Menü statt Zeile zum Wischen
+function closeNavMenu() { $("secNav").classList.remove("open"); $("navToggle").setAttribute("aria-expanded", "false"); }
+$("navToggle").onclick = () => {
+  const open = !$("secNav").classList.contains("open");
+  $("secNav").classList.toggle("open", open); $("navToggle").setAttribute("aria-expanded", String(open));
+};
+document.addEventListener("click", (e) => { if ($("secNav").classList.contains("open") && !e.target.closest("#secNav") && !e.target.closest("#navToggle")) closeNavMenu(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeNavMenu(); });
 routeFromHash();
+document.querySelectorAll(".langBtn").forEach(b => b.onclick = () => setLang(b.dataset.lang));
+setLang(LANG, true);
 const galaxy = { a: 0, vel: 0, drag: null, justDragged: false, last: 0, raf: 0, paused: false, visible: true, built: false, geo: null };
 const SPIN = Math.PI * 2 / 80; // eine Umdrehung in 80 s
 // Prozedurale Planeten-Oberfläche (Bänder + Wirbel), horizontal nahtlos → Drehung per translateX
@@ -1643,11 +1833,20 @@ function planetTex(hex, seed) {
 function renderGreet(U, red) {
   const el = $("greet"); if (!el || !state.sales) return;
   const h = Number(new Intl.DateTimeFormat("de-DE", { timeZone: TZ, hour: "numeric", hour12: false }).format(new Date()));
-  const hi = h < 5 ? "Gute Nacht" : h < 11 ? "Guten Morgen" : h < 18 ? "Guten Tag" : "Guten Abend";
   const td = state.sales.filter(r => r.day === state.today), net = td.reduce((a, r) => a + Number(r.net_sales || 0), 0), ord = td.reduce((a, r) => a + Number(r.orders || 0), 0);
-  const yel = U.filter(u => u.lvl === "yellow").length;
-  el.innerHTML = `<span class="hi">${hi}, Ihssan.</span>Heute bisher <b>${eur(net)}</b> aus <b>${num(ord)} Bestellungen</b>. ` +
-    (red ? `<b style="color:var(--bad)">${red} ${red === 1 ? "Sache braucht" : "Dinge brauchen"} dich jetzt</b>${yel ? `, ${yel} im Blick behalten` : ""} – der Rest läuft.` : yel ? `Nichts Dringendes – ${yel} im Blick behalten.` : "Alles ruhig. Der Laden läuft.");
+  const yel = U.filter(u => u.lvl === "yellow").length, B = (x) => `<b><bdi dir="ltr">${x}</bdi></b>`, R = (x) => `<b style="color:var(--bad)">${x}</b>`;
+  const G = {
+    de: () => { const hi = h < 5 ? "Gute Nacht" : h < 11 ? "Guten Morgen" : h < 18 ? "Guten Tag" : "Guten Abend";
+      return `<span class="hi">${hi}, Ihssan.</span>Heute bisher ${B(eur(net))} aus <b>${num(ord)} Bestellungen</b>. ` +
+        (red ? `${R(`${red} ${red === 1 ? "Sache braucht" : "Dinge brauchen"} dich jetzt`)}${yel ? `, ${yel} im Blick behalten` : ""} – der Rest läuft.` : yel ? `Nichts Dringendes – ${yel} im Blick behalten.` : "Alles ruhig. Der Laden läuft."); },
+    en: () => { const hi = h < 5 ? "Good night" : h < 11 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+      return `<span class="hi">${hi}, Ihssan.</span>So far today ${B(eur(net))} from <b>${num(ord)} orders</b>. ` +
+        (red ? `${R(`${red} ${red === 1 ? "thing needs" : "things need"} you now`)}${yel ? `, ${yel} to keep an eye on` : ""} – the rest is running.` : yel ? `Nothing urgent – ${yel} to keep an eye on.` : "All calm. The shop is running."); },
+    ar: () => { const hi = h < 11 && h >= 5 ? "صباح الخير" : h >= 5 && h < 18 ? "نهارك سعيد" : "مساء الخير";
+      return `<span class="hi">${hi} يا إحسان.</span>مبيعات اليوم حتى الآن ${B(eur(net))} من <b><bdi dir="ltr">${num(ord)}</bdi> طلب</b>. ` +
+        (red ? `${R(`<bdi dir="ltr">${red}</bdi> ${red === 1 ? "أمر يحتاجك" : "أمور تحتاجك"} الآن`)}${yel ? `، و<bdi dir="ltr">${yel}</bdi> للمتابعة` : ""}، والباقي ماشٍ.` : yel ? `لا شيء مستعجل، <bdi dir="ltr">${yel}</bdi> للمتابعة.` : "كل شيء هادئ. المتجر يعمل."); },
+  };
+  el.innerHTML = (G[LANG] || G.de)();
 }
 function renderGalaxy() {
   const g = $("galaxy"); if (!g) return;
@@ -1781,14 +1980,14 @@ function startGalaxy() {
 function renderUrgent() {
   const U = state.U, c = { red: 0, yellow: 0, green: 0 };
   U.forEach(x => c[x.lvl]++);
-  $("usum").innerHTML = `<b style="color:var(--bad)">${c.red} dringend</b> · <b style="color:var(--warn)">${c.yellow} beachten</b> · <b style="color:var(--ok)">${c.green} ok</b>`;
+  $("usum").innerHTML = `<b style="color:var(--bad)">${c.red} ${T("dringend")}</b> · <b style="color:var(--warn)">${c.yellow} ${T("beachten")}</b> · <b style="color:var(--ok)">${c.green} ${T("ok")}</b>`;
   $("urgent").innerHTML = U.map(x => `<button type="button" class="chip ${x.lvl}" data-id="${x.id}" aria-label="${esc(x.label)}: ${x.n}">
       <span class="ico" aria-hidden="true">${chipIcon(x)}</span><span class="n">${x.empty ? "✓" : num(x.n)}</span><span class="l">${esc(x.label)}${x.hint ? `<span class="h">${esc(x.hint)}</span>` : ""}</span>${x.lvl !== "green" ? '<span class="dot"></span>' : ""}</button>`).join("");
   $("urgent").querySelectorAll(".chip").forEach(b => b.onclick = () => focusRule(b.dataset.id));
   // „Mehr anzeigen": Gelbes bleibt eingeklappt, solange es Rotes gibt (Liste bleibt kurz)
   if (c.red && c.yellow) {
     const more = document.createElement("button"); more.type = "button"; more.className = "urg-more"; more.setAttribute("aria-expanded", String(!!state.urgAll));
-    more.textContent = state.urgAll ? "Weniger anzeigen" : `Mehr anzeigen · ${c.yellow} zum Beachten`;
+    more.textContent = state.urgAll ? T("Weniger anzeigen") : `${T("Mehr anzeigen")} · ${c.yellow} ${T("zum Beachten")}`;
     more.onclick = () => { state.urgAll = !state.urgAll; renderUrgent(); };
     $("urgent").appendChild(more);
   }
@@ -1884,7 +2083,7 @@ function trend(cur, prev, ok, lbl, missTxt = "Vorperiode fehlt") {
   return `<span class="dl ${c}" title="${esc(eur(cur) + " vs. " + eur(prev))}">${a} ${p > 0 ? "+" : ""}${pct(p, Math.abs(p) < 10 ? 1 : 0)}</span>${k}`;
 }
 function kpiCard(l, v, d, s, sp, extra = "") {
-  return `<div class="card kpi s3 kp ${extra}"><div class="l">${esc(l)}</div><div class="v reflect">${v}</div>${d ? `<div class="d">${d}</div>` : ""}${s ? `<div class="s">${esc(s)}</div>` : ""}${sp ? `<div class="sp">${sp}</div>` : ""}</div>`;
+  return `<div class="card kpi s3 kp ${extra}"><div class="l">${esc(T(l))}</div><div class="v reflect">${v}</div>${d ? `<div class="d">${d}</div>` : ""}${s ? `<div class="s">${esc(s)}</div>` : ""}${sp ? `<div class="sp">${sp}</div>` : ""}</div>`;
 }
 
 // ---------- Umsatz ----------
