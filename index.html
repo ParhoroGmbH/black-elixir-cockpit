@@ -1149,6 +1149,7 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
     <button type="button" data-area-go="aufgaben"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3 8-8M20 12v7H4V5h11"/></svg><span class="nl">Aufgaben &amp; Postfach</span></button>
     <div class="lbl">Wachstum</div>
     <button type="button" data-area-go="wachstum"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="nl">Wachstum</span></button>
+    <div class="lbl">System</div>
     <button type="button" data-area-go="verbindungen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 01-12 0zM12 18v4"/></svg><span class="nl">Verbindungen</span></button>
   </nav>
   <div class="sheet">
@@ -1229,7 +1230,7 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
 
     <div class="sec-h t-sales" id="sec-prod"><h2 class="metal">Produkte · 30 Tage</h2><span class="rule"></span></div>
     <div class="card s6"><h3>Top 10 nach Nettoumsatz</h3><div class="scroll"><table class="tbl" id="tblTop"></table></div></div>
-    <div class="card s6"><h3>Flop 10 · Lagerwert ohne Verkauf (30 T)</h3><div class="scroll"><table class="tbl" id="tblFlop"></table></div></div>
+    <div class="card s6" id="card-flop"><h3>Flop 10 · Lagerwert ohne Verkauf (30 T)</h3><div class="scroll"><table class="tbl" id="tblFlop"></table></div></div>
 
     <div class="sec-h t-mkt" id="sec-social"><h2 class="metal">Social</h2><span class="rule"></span><span class="fresh" id="fr-social"></span></div>
     <div class="card s12"><div class="scroll"><table class="tbl" id="tblSocial"></table></div></div>
@@ -1237,12 +1238,12 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
     <div class="sec-h t-tools" id="sec-quellen"><h2 class="metal">Quellen &amp; Tools</h2><span class="rule"></span><span class="fresh" id="fr-quellen"></span></div>
     <div class="card s6 m12" id="card-dhl"><h3>DHL-Fälle <span class="sub">Nachforschungen, Schäden, Ersatzleistungen</span></h3><div class="kgrid" id="dhlKpis"></div><div class="scroll tall"><table class="tbl" id="tblDhl"></table></div><div class="note">Quelle: DHL-/Deutsche-Post-Mails (IONOS/Gmail) und Fallliste des Accounting-Bots. Zustellstatus je Sendung steht unter Sendungen · alle Kanäle.</div></div>
     <div class="card s6 m12" id="card-idealo"><h3>idealo <span class="sub">Klicks, Kosten, Budget</span></h3><div class="kgrid" id="idealoKpis"></div><div id="idealoSpark" class="sp"></div><div class="scroll"><table class="tbl" id="tblIdealo"></table></div><div class="note" id="idealoNote">Quelle: Berichte aus idealo Business (Browser-Login des Idealo-Bots) + Shopify-Bestellungen mit idealo-Attribution. Kein idealo-API.</div></div>    <div class="card s6 m12" id="card-traffic"><h3>Shop-Traffic <span class="sub">Shopify-Sitzungen · Ersatz für Google Analytics (GA4)</span></h3><div class="kgrid" id="trafficKpis"></div><div id="trafficSpark" class="sp"></div><div class="note">Quelle: Shopify-Analytics (vorhandener Connector). Echte GA4-Zahlen bräuchten ein neues Google-API – bewusst nicht angebunden.</div></div>
-    <div class="card s6 m12" id="card-tools"><h3>Tools &amp; Credits</h3><div class="kgrid" id="toolKpis"></div><div class="scroll"><table class="tbl" id="tblTools"></table></div></div>
     <div class="card s12" id="card-signale"><h3>Signale aus Postfächern · 30 Tage <span class="sub">idealo, DHL, Qogita, eSagu, Metricool, Higgsfield, Grok</span> <span id="f-sig"></span></h3><div class="kgrid" id="sigKpis"></div><div class="scroll tall"><table class="tbl" id="tblSig"></table></div></div>
 
     <div class="sec-h t-link" id="sec-data"><h2 class="metal">Datenstand &amp; Verbindungen</h2><span class="rule"></span></div>
     <div class="card s6" id="sec-sync"><h3>Synchronisierung je Quelle <span id="f-sync"></span></h3><div class="scroll"><table class="tbl" id="tblSync"></table></div></div>
     <div class="card s6"><h3>Verbindungen</h3><p class="sub" style="margin:-6px 0 10px">„Verbinden“ bringt dich zur richtigen Stelle; verbunden wird es erst, wenn du dort den Schlüssel holst und ihn mir zum Eintragen gibst.</p><div class="scroll tall"><table class="tbl" id="tblConn"></table></div></div>
+    <div class="card s12" id="card-tools"><h3>Tools &amp; Credits</h3><div class="kgrid" id="toolKpis"></div><div class="scroll"><table class="tbl" id="tblTools"></table></div></div>
   </div>
   <div class="foot">Angemeldet als <span id="who"></span> · Live aus Supabase (black-elixir-cockpit) · Beträge netto in € (de-DE) · Zeiten Europe/Berlin · Auto-Aktualisierung alle 5 Min.</div>
   </main>
@@ -1295,7 +1296,7 @@ const I18N = {
     "Tag": "Day", "Nacht": "Night", "Aktualisieren": "Refresh", "Abmelden": "Sign out", "Stand": "As of",
     "Übersicht": "Overview", "Freigaben": "Approvals", "Freigaben & Aufträge": "Approvals & tasks", "Verkauf": "Sales", "Rechnungen": "Invoices",
     "Versand & Retouren": "Shipping & returns", "Marktplätze": "Marketplaces", "Lager": "Inventory", "Aufgaben & Postfach": "Tasks & inbox",
-    "Wachstum": "Growth", "Verbindungen": "Connections", "Geschäft": "Business", "Betrieb": "Operations",
+    "Wachstum": "Growth", "Verbindungen": "Connections", "Geschäft": "Business", "Betrieb": "Operations", "System": "System",
     "Was ist dringend?": "What's urgent?", "dringend": "urgent", "beachten": "to watch", "ok": "ok",
     "Mehr anzeigen": "Show more", "zum Beachten": "to watch", "Weniger anzeigen": "Show less", "Ansehen": "View",
     "Umsatz netto": "Net sales", "Rechnungen & Zahlungserinnerungen": "Invoices & payment reminders", "Offene Bestellungen": "Open orders",
@@ -1344,7 +1345,7 @@ const I18N = {
     "Tag": "نهار", "Nacht": "ليل", "Aktualisieren": "تحديث", "Abmelden": "تسجيل الخروج", "Stand": "آخر تحديث",
     "Übersicht": "نظرة عامة", "Freigaben": "الموافقات", "Freigaben & Aufträge": "الموافقات والمهام", "Verkauf": "المبيعات", "Rechnungen": "الفواتير",
     "Versand & Retouren": "الشحن والمرتجعات", "Marktplätze": "المنصات", "Lager": "المخزون", "Aufgaben & Postfach": "المهام والبريد",
-    "Wachstum": "النمو", "Verbindungen": "الاتصالات", "Geschäft": "العمل", "Betrieb": "التشغيل",
+    "Wachstum": "النمو", "Verbindungen": "الاتصالات", "Geschäft": "العمل", "Betrieb": "التشغيل", "System": "النظام",
     "Was ist dringend?": "ما المستعجل؟", "dringend": "مستعجل", "beachten": "للمتابعة", "ok": "سليم",
     "Mehr anzeigen": "عرض المزيد", "zum Beachten": "للمتابعة", "Weniger anzeigen": "عرض أقل", "Ansehen": "عرض",
     "Umsatz netto": "صافي المبيعات", "Rechnungen & Zahlungserinnerungen": "الفواتير وتذكيرات الدفع", "Offene Bestellungen": "الطلبات المفتوحة",
@@ -1789,7 +1790,7 @@ const GAL = [
   { name: "Bestand", go: "sec-stock", ico: "tag", c: "#30b0c7", ids: ["oos_best", "cover"] },
   { name: "Aufgaben", go: "sec-tp", ico: "check", c: "#af52de", ids: ["task_red", "task_ceo", "mail_biz"] },
   { name: "Social", go: "sec-social", ico: "person", c: "#ff2d55", ids: [] },
-  { name: "Quellen", go: "sec-quellen", ico: "bell", c: "#ffcc00", ids: ["idealo_budget", "higgs_low", "sig_high"] },
+  { name: "Quellen", go: "card-signale", ico: "bell", c: "#ffcc00", ids: ["idealo_budget", "higgs_low", "sig_high"] },
   { name: "Verbindungen", go: "sec-data", ico: "sync", c: "#64d2ff", ids: ["sync_red", "sync_yel"] },
 ];
 // ---------- Freigaben & Aufträge ----------
@@ -2010,14 +2011,14 @@ $("aufSend").onclick = async () => {
 const AREAS = [
   { k: "home", name: "Übersicht", secs: [] },
   { k: "freigaben", name: "Freigaben & Aufträge", secs: ["sec-frei"] },
-  { k: "verkauf", name: "Verkauf", secs: ["sec-sales", "sec-oo", "sec-prod"] },
+  { k: "verkauf", name: "Verkauf", secs: ["sec-sales", "sec-oo", "sec-prod"], extra: ["card-idealo", "card-traffic"] }, // idealo und Shop-Traffic sind Verkaufskanäle
   { k: "rechnungen", name: "Rechnungen", secs: ["sec-bills"] },
   { k: "versand", name: "Versand & Retouren", secs: ["sec-kpi"], extra: ["card-dhl"] },
-  { k: "marktplaetze", name: "Marktplätze", secs: ["sec-mp"] },
-  { k: "lager", name: "Lager", secs: ["sec-stock"] },
+  { k: "marktplaetze", name: "Marktplätze", secs: ["sec-mp"], extra: ["card-signale"] }, // Signale aus Postfächern gehören zu den Plattform-Hinweisen
+  { k: "lager", name: "Lager", secs: ["sec-stock"], extra: ["card-flop"] }, // Flop 10 = Lagerwert ohne Verkauf
   { k: "aufgaben", name: "Aufgaben & Postfach", secs: ["sec-tp"] },
-  { k: "wachstum", name: "Wachstum", secs: ["sec-social", "sec-quellen"] },
-  { k: "verbindungen", name: "Verbindungen", secs: ["sec-data"] },
+  { k: "wachstum", name: "Wachstum", secs: ["sec-social"] },
+  { k: "verbindungen", name: "Verbindungen", secs: ["sec-data"], extra: ["card-tools"] }, // Tools & Credits = System
 ];
 let area = "home";
 (function tagAreas() {
@@ -2028,6 +2029,7 @@ let area = "home";
   });
   AREAS.forEach(a => (a.extra || []).forEach(id => { const el = $(id); if (el) el.dataset.area = a.k; }));
   const k = $("kpis"); if (k) k.dataset.area = "verkauf home"; // Umsatz-Kennzahlen auch auf der Übersicht
+  const q = $("sec-quellen"); if (q) q.dataset.area = ""; // Überschrift „Quellen & Tools“ ist leer, seit alle ihre Karten auf die passenden Seiten gezogen sind
 })();
 const areaOfEl = (el) => { const d = el.closest("[data-area]"); return d ? d.dataset.area.split(" ")[0] : "home"; };
 function showArea(k, opt = {}) {
