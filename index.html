@@ -1526,6 +1526,7 @@ async function fetchAll(build, page = 1000, max = 20000) {
     out = out.concat(data || []);
     if (!data || data.length < page) break;
   }
+  if (out.length >= max) state.capHit = true;
   return out;
 }
 
@@ -1572,11 +1573,13 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden && ti
 const state = { period: "30", sales: [], today: "", d: null, focus: null, err: {} };
 // Jede Quelle einzeln laden: ein Fehler legt nicht das ganze Cockpit lahm.
 const res = (p) => p.then(r => { if (r.error) throw r.error; return r.data || []; });
-async function safe(name, p) { try { return await p; } catch (e) { state.err[name] = (e && e.message) ? e.message : String(e); return []; } }
+// 15 s Zeitlimit je Quelle: eine hängende Abfrage hält sonst das ganze Cockpit auf
+async function safe(name, p) { try { return await Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("Zeitüberschreitung nach 15 s")), 15000))]); } catch (e) { state.err[name] = (e && e.message) ? e.message : String(e); return []; } }
 const errTxt = (name, fallback) => state.err[name] ? "⚠ Konnte nicht geladen werden (" + state.err[name] + ")" : fallback;
 
+let reloadPending = false; // Ladewunsch während eines laufenden Ladens nicht verlieren (z. B. nach einer Entscheidung)
 async function load() {
-  if (loading) return; loading = true; $("btnRefresh").disabled = true; $("btnRefresh").classList.add("busy");
+  if (loading) { reloadPending = true; return; } loading = true; state.capHit = false; $("btnRefresh").disabled = true; $("btnRefresh").classList.add("busy");
   try {
     const { data: allowed, error: ae } = await sb.rpc("cockpit_is_allowed");
     let warn = "";
@@ -1587,8 +1590,8 @@ async function load() {
     const from60 = addDays(today, -60), mailFrom = new Date(Date.now() - 30 * 864e5).toISOString();
     const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, qogita, tools, sig, mp, ship, frei, auftr, eanRows] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
-      safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
-      safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value,sku,unit_cost,ean").eq("source", "jtl"))),
+      safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders").order("product").order("channel"))),
+      safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value,sku,unit_cost,ean").eq("source", "jtl").order("product"))),
       safe("oo", fetchAll(() => sb.from("open_orders").select("order_ref,channel,created_at,items,total,financial_status").eq("is_open", true).order("created_at"))),
       safe("inbox", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at,messages").order("received_at", { ascending: false }).limit(300))),
       safe("bills", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at,messages,anhaenge")
@@ -1598,7 +1601,7 @@ async function load() {
       safe("social", res(sb.from("social_daily").select("day,network,followers,reach,content,interactions,followers_gained").gte("day", addDays(today, -60)).order("day"))),
       safe("runs", res(sb.from("sync_runs").select("source,started_at,finished_at,ok,rows_written,message").order("finished_at", { ascending: false, nullsFirst: false }).limit(300))),
       safe("conn", res(sb.from("channel_status").select("channel,kind,status,note,updated_at"))),
-      safe("kpi", fetchAll(() => sb.from("channel_kpi_daily").select("day,channel,kpi,anzahl,order_refs,aeltester"))),
+      safe("kpi", fetchAll(() => sb.from("channel_kpi_daily").select("day,channel,kpi,anzahl,order_refs,aeltester").order("day").order("channel").order("kpi"))),
       safe("dhl", res(sb.from("dhl_cases").select("case_key,sendung,anliegen,ticket,order_ref,kanal,problem,status,betrag_gefordert_eur,betrag_erstattet_eur,eroeffnet,letztes_ereignis_at,letztes_ereignis,naechster_schritt").order("letztes_ereignis_at", { ascending: false, nullsFirst: false }).limit(200))),
       safe("traffic", res(sb.from("traffic_daily").select("day,source,sessions,visitors,cart_sessions,checkout_sessions,completed_sessions,conversion_rate").gte("day", from60).order("day"))),
       safe("idealo", res(sb.from("idealo_daily").select("day,clicks,cost_eur,orders,revenue_eur,budget_used_mtd_eur,budget_cap_eur,fetched_at").gte("day", from60).order("day"))),
@@ -1606,16 +1609,17 @@ async function load() {
       safe("tools", res(sb.from("tool_usage").select("vendor,item,amount,unit,action,at,fetched_at").order("at", { ascending: false }).limit(300))),
       safe("sig", res(sb.from("bot_quellen_signale").select("quelle,signal,schwere,received_at,mailbox,absender_domain,betreff,thread_id").order("received_at", { ascending: false }).limit(500))),
       safe("mp", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at").eq("category", "Marktplatz").gte("received_at", mailFrom).order("received_at", { ascending: false }).limit(1500))),
-      safe("ship", fetchAll(() => sb.from("shipments").select("number,order_ref,channel,carrier,status,shipped_at,in_transit_at,delivered_at,eta").gte("shipped_at", new Date(Date.now() - 35 * 864e5).toISOString()).order("shipped_at", { ascending: false }))),
+      safe("ship", fetchAll(() => sb.from("shipments").select("number,order_ref,channel,carrier,status,shipped_at,in_transit_at,delivered_at,eta").gte("shipped_at", new Date(Date.now() - 35 * 864e5).toISOString()).order("shipped_at", { ascending: false }).order("number"))),
       safe("frei", res(sb.from("freigaben").select("id,erstellt_at,bot,typ,titel,details,bezug,status,entschieden_at,kommentar,ausgefuehrt_at,ergebnis,anhaenge").order("erstellt_at", { ascending: false }).limit(200))),
       safe("auftr", res(sb.from("auftraege").select("id,erstellt_at,bot,auftrag,prioritaet,faellig,status,antwort,aktualisiert_at,bilder").order("erstellt_at", { ascending: false }).limit(200))),
-      safe("ean", fetchAll(() => sb.from("artikel_ean").select("sku,ean"))),
+      safe("ean", fetchAll(() => sb.from("artikel_ean").select("sku,ean").order("sku"))),
     ]);
     // EAN je Artikelnummer (aus Shopify-Barcodes) an die JTL-Artikel hängen; JTL-eigene EAN hat Vorrang
     { const eanBy = {}; (eanRows || []).forEach(r => eanBy[r.sku] = r.ean); (inv || []).forEach(r => { if (!r.ean) r.ean = eanBy[r.sku] || null; }); }
     state.sales = sales;
     state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, qogita, tools, sig, mp, ship, frei, auftr };
     renderAll();
+    if (state.capHit) warn = (warn ? warn + " " : "") + "Hinweis: Ein Datenabruf hat das Limit von 20.000 Zeilen erreicht, Zahlen können unvollständig sein.";
     const failed = Object.keys(state.err);
     if (failed.length) warn = (warn ? warn + " " : "") + "Teilweise nicht geladen: " + failed.join(", ") + ". Übrige Bereiche sind aktuell.";
     $("banner").textContent = warn; $("banner").classList.toggle("hidden", !warn);
@@ -1623,7 +1627,7 @@ async function load() {
   } catch (e) {
     $("banner").textContent = "Daten konnten nicht geladen werden: " + (e && e.message ? e.message : e);
     $("banner").classList.remove("hidden");
-  } finally { loading = false; $("btnRefresh").disabled = false; $("btnRefresh").classList.remove("busy"); }
+  } finally { loading = false; $("btnRefresh").disabled = false; $("btnRefresh").classList.remove("busy"); if (reloadPending) { reloadPending = false; setTimeout(load, 0); } }
 }
 
 function countUp() {
@@ -1639,10 +1643,12 @@ function countUp() {
 function renderAll() {
   const d = state.d; if (!d) return;
   state.U = computeUrgent(d);
-  renderUrgent();
-  renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv, d.prod); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
-  renderShip(d.ship); renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d); renderFrei(d.frei, d.auftr); requestAnimationFrame(countUp);
-  bindTilt();
+  // Jeder Abschnitt einzeln abgesichert: ein Fehler in einem Abschnitt stoppt die übrigen nicht mehr
+  const R = (name, f) => { try { f(); } catch (e) { console.error("Abschnitt " + name + ":", e); state.err["render_" + name] = (e && e.message) || String(e); } };
+  R("urgent", renderUrgent);
+  R("sales", renderSales); R("bills", () => renderBills(d.bills)); R("products", () => renderProducts(d.prod, d.inv)); R("inventory", () => renderInventory(d.inv, d.prod)); R("oo", () => renderOpenOrders(d.oo)); R("kpi", () => renderKpi(d.kpi)); R("inbox", () => renderInbox(d.inbox));
+  R("ship", () => renderShip(d.ship)); R("mp", () => renderMp(d.mp)); R("tasks", () => renderTasks(d.tasks)); R("social", () => renderSocial(d.social)); R("sync", () => renderSync(d.runs, d.conn)); R("fresh", () => renderFresh(d.runs)); R("quellen", () => renderQuellen(d)); R("frei", () => renderFrei(d.frei, d.auftr)); requestAnimationFrame(countUp);
+  R("tilt", bindTilt);
 }
 
 // ============================================================
@@ -1735,21 +1741,21 @@ function computeUrgent(d) {
     { id: "higgs_low", lvl: "yellow", n: Q.higgs && Q.higgs.amount < RULE.HIGGS_LOW_CREDITS ? 1 : 0, label: "Higgsfield-Credits niedrig", ok: "", hint: Q.higgs ? `${Number(Q.higgs.amount).toLocaleString("de-DE")} Credits übrig` : "", sec: "card-tools", rows: [] },
     { id: "sig_high", lvl: "yellow", n: Q.sigHigh7.length, label: "Quellen-Signale (hoch)", ok: "", hint: "letzte 7 Tage · idealo/Qogita/eSagu/Metricool/DHL", sec: "card-signale", rows: Q.sigHigh7 },
     { id: "bill_mahn", lvl: "red", n: mahn.length, label: "Mahnung / Zahlungserinnerung", ok: billsErr ? "" : "Keine Mahnungen", hint: `letzte ${RULE.BILL_MAHN_DAYS} Tage · prüfen & zahlen`, sec: "card-bills", rows: mahn },
-    { id: "oo_red", lvl: "red", n: ooRed.length, label: `Bestellungen > ${RULE.OO_RED_DAYS} Tage offen`, ok: "Keine alten Bestellungen", hint: "Versand prüfen", sec: "card-ooOld", rows: ooRed },
+    { id: "oo_red", lvl: "red", n: ooRed.length, label: `Bestellungen > ${RULE.OO_RED_DAYS} Tage offen`, ok: state.err.oo ? "" : "Keine alten Bestellungen", hint: "Versand prüfen", sec: "card-ooOld", rows: ooRed },
     { id: "kpi_unp_red", lvl: "red", n: kpiSum(unpRed), label: `Unbezahlt > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Keine alten Unbezahlten", hint: "Zahlung prüfen", sec: "card-kpiList", rows: unpRed },
     { id: "kpi_trk_red", lvl: "red", n: kpiSum(trkRed), label: `Ohne Sendungsnr. > ${RULE.KPI_RED_DAYS} Tage`, ok: kpiErr ? "" : "Sendungsnummern vollständig", hint: "Tracking nachtragen", sec: "card-kpiList", rows: trkRed },
-    { id: "oos_best", lvl: "red", n: oosBest.length, label: "Bestseller ausverkauft", ok: "Bestseller lieferbar", hint: `≥ ${RULE.BESTSELLER_SOLD30} verkauft / 30 T`, sec: "card-oos", rows: oosBest },
+    { id: "oos_best", lvl: "red", n: oosBest.length, label: "Bestseller ausverkauft", ok: state.err.inv ? "" : "Bestseller lieferbar", hint: `≥ ${RULE.BESTSELLER_SOLD30} verkauft / 30 T`, sec: "card-oos", rows: oosBest },
     { id: "ship_bad", lvl: "red", n: shipStats(d.ship).bad.length, label: "Pakete mit Problem", ok: state.err.ship ? "" : "Alle Pakete im Plan", hint: "nicht zugestellt / überfällig · DHL & GLS", sec: "card-ship", rows: [] },
     { id: "ship_noscan", lvl: "yellow", n: shipStats(d.ship).noScan.length, label: "Pakete ohne Scan > 3 Tage", ok: "", hint: "Label da, aber noch nicht bei DHL/GLS erfasst", sec: "card-ship", rows: [] },
     { id: "mp_health", lvl: "red", n: mpStats(d.mp).reduce((a, x) => a + x.h7.length, 0), label: "Marktplatz-Konto-Hinweise", ok: state.err.mp ? "" : "Marktplatz-Konten ohne Hinweis", hint: "letzte 7 Tage · " + mpStats(d.mp).filter(x => x.h7.length).map(x => x.name).join(", "), sec: "card-mp", rows: [] },
     { id: "sync_red", lvl: "red", n: syncRed.length, label: "Sync gestört", ok: "", hint: "Fehler oder > 2 Std. alt", sec: "sec-sync", rows: syncRed },
-    { id: "task_red", lvl: "red", n: taskRed.length, label: "Dringende Aufgaben", ok: "Keine dringenden Aufgaben", hint: "Prio hoch / CEO überfällig", sec: "sec-tasks", rows: taskRed },
+    { id: "task_red", lvl: "red", n: taskRed.length, label: "Dringende Aufgaben", ok: state.err.tasks ? "" : "Keine dringenden Aufgaben", hint: "Prio hoch / CEO überfällig", sec: "sec-tasks", rows: taskRed },
     { id: "bill_new", lvl: "yellow", n: billNew.length, label: "Neue Rechnungen", ok: "", hint: `letzte ${RULE.BILL_NEW_DAYS} Tage`, sec: "card-bills", rows: billNew },
     { id: "oo_yel", lvl: "yellow", n: ooYel.length, label: `Bestellungen ${RULE.OO_YELLOW_DAYS}–${RULE.OO_RED_DAYS} Tage`, ok: "", hint: "bald verschicken", sec: "card-ooOld", rows: ooYel },
     { id: "kpi_unp_yel", lvl: "yellow", n: kpiSum(unpYel), label: `Unbezahlt ${RULE.KPI_YELLOW_DAYS}–${RULE.KPI_RED_DAYS} Tage`, ok: "", hint: "Zahlung prüfen", sec: "card-kpiList", rows: unpYel },
     { id: "kpi_trk_yel", lvl: "yellow", n: kpiSum(trkYel), label: `Ohne Sendungsnr. ${RULE.KPI_YELLOW_DAYS}–${RULE.KPI_RED_DAYS} Tage`, ok: "", hint: "Tracking nachtragen", sec: "card-kpiList", rows: trkYel },
-    { id: "cover", lvl: "yellow", n: lowCover.length, label: "Reichweite < 14 Tage", ok: "Bestand reicht", hint: "nachbestellen", sec: "card-cover", rows: lowCover },
-    { id: "task_ceo", lvl: "yellow", n: taskCeo.length, label: "Wartet auf dich", ok: "Nichts wartet auf dich", hint: "Freigabe / Login", sec: "sec-tasks", rows: taskCeo },
+    { id: "cover", lvl: "yellow", n: lowCover.length, label: "Reichweite < 14 Tage", ok: state.err.inv ? "" : "Bestand reicht", hint: "nachbestellen", sec: "card-cover", rows: lowCover },
+    { id: "task_ceo", lvl: "yellow", n: taskCeo.length, label: "Wartet auf dich", ok: state.err.tasks ? "" : "Nichts wartet auf dich", hint: "Freigabe / Login", sec: "sec-tasks", rows: taskCeo },
     { id: "mail_biz", lvl: "yellow", n: mailBiz.length, label: "Kunde / Marktplatz · Mails", ok: "", hint: `letzte ${RULE.MAIL_DAYS} Tage`, sec: "card-inbox", rows: mailBiz },
     { id: "sync_yel", lvl: "yellow", n: syncYel.length, label: "Daten veraltet", ok: "", hint: "Tagesquelle > 26 Std.", sec: "sec-sync", rows: syncYel },
     { id: "sync_ok", lvl: "green", n: syncOk.length, label: "Syncs ok", ok: "", hint: syncOk.map(x => x.key).join(", "), sec: "sec-sync", rows: syncOk, always: true },
@@ -2679,7 +2685,7 @@ function renderMp(mp) {
     <div class="mpt-v">${num(x.h7.length)}<small> Meldungen · 7 T</small></div>
     <div class="mpt-s">${num(x.h.length)} in 30 T · ${num(x.c7.length)} Kundennachr. 7 T</div>
     <div class="mpt-l">${x.last ? esc(x.last.subject) : "Keine Konto-Hinweise"}</div></div>`).join("");
-  const rows = S.flatMap(x => (f ? x.h7 : x.h).map(r => ({ ...r, pf: x.name }))).sort((a, b) => b.received_at.localeCompare(a.received_at)).slice(0, 60);
+  const rows = S.flatMap(x => (f ? x.h7 : x.h).map(r => ({ ...r, pf: x.name }))).sort((a, b) => String(b.received_at || "").localeCompare(String(a.received_at || ""))).slice(0, 60);
   table("tblMp", [{ t: "Eingang" }, { t: "Plattform" }, { t: "Hinweis" }, { t: "Postfach" }],
     rows.map(r => ({ hl: !!f, c: [esc(fmtDT(r.received_at)), esc(r.pf), `<div class="name">${esc(r.subject)}</div><div class="small muted">${esc(r.sender)}</div>`, `<span class="small muted">${esc(r.mailbox || "–")}</span>`] })),
     errTxt("mp", "Keine Konto-Hinweise in den letzten 30 Tagen."));
@@ -2740,7 +2746,7 @@ function renderSync(runs, conn) {
   const cls = (s) => s === "live" ? "p-ok" : s === "error" ? "p-bad" : "p-off";
   const lbl = (s) => s === "live" ? "live" : s === "error" ? "Fehler" : s === "not_connected" ? "nicht verbunden" : (s || "–");
   table("tblConn", [{ t: "Verbindung" }, { t: "Status" }, { t: "Aktualisiert" }, { t: "" }],
-    [...conn].sort((a, b) => (a.status === "error" ? -1 : a.status === "live" ? 0 : 1) - (b.status === "error" ? -1 : b.status === "live" ? 0 : 1) || a.channel.localeCompare(b.channel))
+    [...conn].sort((a, b) => (a.status === "error" ? -1 : a.status === "live" ? 0 : 1) - (b.status === "error" ? -1 : b.status === "live" ? 0 : 1) || String(a.channel || "").localeCompare(String(b.channel || "")))
       .map(c => ({ hl: !!want && want === "red" && c.status === "error", c: [`${esc(c.channel)}<div class="small muted">${esc(c.kind || "")}</div>`, pill(lbl(c.status), cls(c.status)), esc(fmtDT(c.updated_at)), connectLink(c.channel, c.status)] })), errTxt("conn", "Keine Verbindungen."));
 }
 // Ziel-Seite, wo man den jeweiligen API-Schlüssel oder Zugang holt. Zeigt nur hin – verbindet nichts von selbst;
@@ -2845,7 +2851,7 @@ function renderQuellen(d) {
     mini("Stand", H || G ? esc(fmtDT((H || G).at)) : "–", "", "Bot-Routine 07:30 / 12:30 / 18:30")].join("");
   const lastBy = {}; tools.forEach(r => { const k = r.vendor + "|" + r.item; if (!lastBy[k] || new Date(r.at) > new Date(lastBy[k].at)) lastBy[k] = r; });
   table("tblTools", [{ t: "Tool" }, { t: "Wert", r: 1 }, { t: "Stand" }],
-    Object.values(lastBy).sort((a, b) => a.vendor.localeCompare(b.vendor) || a.item.localeCompare(b.item)).map(r => [`${esc(r.vendor)}<div class="small muted">${esc(r.item)}</div>`, `${Number(r.amount).toLocaleString("de-DE")} <span class="muted">${esc(r.unit || "")}</span>`, esc(fmtDT(r.at))]),
+    Object.values(lastBy).sort((a, b) => String(a.vendor || "").localeCompare(String(b.vendor || "")) || String(a.item || "").localeCompare(String(b.item || ""))).map(r => [`${esc(r.vendor)}<div class="small muted">${esc(r.item)}</div>`, `${Number(r.amount).toLocaleString("de-DE")} <span class="muted">${esc(r.unit || "")}</span>`, esc(fmtDT(r.at))]),
     errTxt("tools", "Noch keine Tool-Daten im Cockpit."));
 
   // --- Signale aus Postfächern ---
@@ -2856,7 +2862,7 @@ function renderQuellen(d) {
   const f = F(["sig_high"]);
   const seen = new Set();
   const list = (f ? Q.sigHigh7 : sig).filter(r => { const k = r.quelle + "|" + r.signal + "|" + String(r.betreff || "").toLowerCase().replace(/^((aw|re|fwd|wg):\s*)+/g, ""); if (seen.has(k)) return false; seen.add(k); return true; })
-    .sort((a, b) => sevR[a.schwere] - sevR[b.schwere] || new Date(b.received_at) - new Date(a.received_at)).slice(0, 40);
+    .sort((a, b) => (sevR[a.schwere] ?? 3) - (sevR[b.schwere] ?? 3) || new Date(b.received_at) - new Date(a.received_at)).slice(0, 40);
   table("tblSig", [{ t: "Quelle" }, { t: "Signal" }, { t: "Betreff" }, { t: "Eingang" }],
     list.map(r => ({ hl: !!f, c: [esc(r.quelle), pill(r.signal, sevCls[r.schwere] || "p-off"), `<div class="name">${esc(r.betreff || "–")}</div><div class="small muted">${esc(r.absender_domain || "")} · ${esc(r.mailbox || "")}</div>`, esc(fmtDT(r.received_at))] })),
     errTxt("sig", "Keine Signale in den letzten 30 Tagen."));
