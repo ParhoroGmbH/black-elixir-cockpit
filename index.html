@@ -1077,6 +1077,10 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
 .det-f img,.det-f .foto-ph{width:150px;height:110px;border-radius:10px;object-fit:cover;display:flex}
 .det-fn{margin-top:6px;font-size:12px;overflow-wrap:anywhere;color:var(--mut)}.det-fb{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
 .det-a{margin-top:18px}
+/* Übersicht: sechs Kennzahlen (Heute, 7 Tage + vier neue); 30 T und Ø Bestellwert bleiben unter „Verkauf“ */
+.sheet.is-home .only-verkauf{display:none}
+.kpi[data-go]{cursor:pointer}
+.kpi[data-go]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .mp-links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
 .mp-links a.exp-btn{text-decoration:none;min-height:34px}
 </style>
@@ -1187,6 +1191,7 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
 
     <div class="sec-h t-sales" id="sec-sales"><h2 class="metal">Umsatz netto</h2><span class="rule"></span><span class="fresh" id="fr-sales"></span></div>
     <div id="kpis" style="display:contents"></div>
+    <div id="homeStrip" style="display:contents"></div>
 
     <div class="card s12" id="card-plat"><h3>Umsatz je Plattform · 30 Tage <span class="sub">Anteil, Verlauf und Trend (7 volle Tage vs. Vorwoche)</span></h3>
       <div class="share" id="shareBar" role="img" aria-label="Umsatzanteil je Plattform"></div>
@@ -1296,7 +1301,7 @@ const I18N = {
     "Tag": "Day", "Nacht": "Night", "Aktualisieren": "Refresh", "Abmelden": "Sign out", "Stand": "As of",
     "Übersicht": "Overview", "Freigaben": "Approvals", "Freigaben & Aufträge": "Approvals & tasks", "Verkauf": "Sales", "Rechnungen": "Invoices",
     "Versand & Retouren": "Shipping & returns", "Marktplätze": "Marketplaces", "Lager": "Inventory", "Aufgaben & Postfach": "Tasks & inbox",
-    "Wachstum": "Growth", "Verbindungen": "Connections", "Geschäft": "Business", "Betrieb": "Operations", "System": "System",
+    "Wachstum": "Growth", "Verbindungen": "Connections", "Geschäft": "Business", "Betrieb": "Operations", "System": "System", "Offene Bestellungen": "Open orders", "Dringend (rot)": "Urgent (red)", "Wartet auf Freigabe": "Awaiting approval", "Bestseller ausverkauft": "Bestsellers sold out", "älteste": "oldest", "Tg.": "days", "zum Beachten": "to watch", "Anfragen der Bots": "requests from bots", "mit Reichweite < 14 T": "with cover < 14 d",
     "Was ist dringend?": "What's urgent?", "dringend": "urgent", "beachten": "to watch", "ok": "ok",
     "Mehr anzeigen": "Show more", "zum Beachten": "to watch", "Weniger anzeigen": "Show less", "Ansehen": "View",
     "Umsatz netto": "Net sales", "Rechnungen & Zahlungserinnerungen": "Invoices & payment reminders", "Offene Bestellungen": "Open orders",
@@ -1345,7 +1350,7 @@ const I18N = {
     "Tag": "نهار", "Nacht": "ليل", "Aktualisieren": "تحديث", "Abmelden": "تسجيل الخروج", "Stand": "آخر تحديث",
     "Übersicht": "نظرة عامة", "Freigaben": "الموافقات", "Freigaben & Aufträge": "الموافقات والمهام", "Verkauf": "المبيعات", "Rechnungen": "الفواتير",
     "Versand & Retouren": "الشحن والمرتجعات", "Marktplätze": "المنصات", "Lager": "المخزون", "Aufgaben & Postfach": "المهام والبريد",
-    "Wachstum": "النمو", "Verbindungen": "الاتصالات", "Geschäft": "العمل", "Betrieb": "التشغيل", "System": "النظام",
+    "Wachstum": "النمو", "Verbindungen": "الاتصالات", "Geschäft": "العمل", "Betrieb": "التشغيل", "System": "النظام", "Offene Bestellungen": "طلبات مفتوحة", "Dringend (rot)": "عاجل (أحمر)", "Wartet auf Freigabe": "بانتظار الموافقة", "Bestseller ausverkauft": "الأكثر مبيعاً نفد", "älteste": "الأقدم", "Tg.": "يوم", "zum Beachten": "للمتابعة", "Anfragen der Bots": "طلبات من البوتات", "mit Reichweite < 14 T": "يكفي أقل من 14 يوماً",
     "Was ist dringend?": "ما المستعجل؟", "dringend": "مستعجل", "beachten": "للمتابعة", "ok": "سليم",
     "Mehr anzeigen": "عرض المزيد", "zum Beachten": "للمتابعة", "Weniger anzeigen": "عرض أقل", "Ansehen": "عرض",
     "Umsatz netto": "صافي المبيعات", "Rechnungen & Zahlungserinnerungen": "الفواتير وتذكيرات الدفع", "Offene Bestellungen": "الطلبات المفتوحة",
@@ -1646,7 +1651,7 @@ function renderAll() {
   // Jeder Abschnitt einzeln abgesichert: ein Fehler in einem Abschnitt stoppt die übrigen nicht mehr
   const R = (name, f) => { try { f(); } catch (e) { console.error("Abschnitt " + name + ":", e); state.err["render_" + name] = (e && e.message) || String(e); } };
   R("urgent", renderUrgent);
-  R("sales", renderSales); R("bills", () => renderBills(d.bills)); R("products", () => renderProducts(d.prod, d.inv)); R("inventory", () => renderInventory(d.inv, d.prod)); R("oo", () => renderOpenOrders(d.oo)); R("kpi", () => renderKpi(d.kpi)); R("inbox", () => renderInbox(d.inbox));
+  R("sales", renderSales); R("home", renderHome); R("bills", () => renderBills(d.bills)); R("products", () => renderProducts(d.prod, d.inv)); R("inventory", () => renderInventory(d.inv, d.prod)); R("oo", () => renderOpenOrders(d.oo)); R("kpi", () => renderKpi(d.kpi)); R("inbox", () => renderInbox(d.inbox));
   R("ship", () => renderShip(d.ship)); R("mp", () => renderMp(d.mp)); R("tasks", () => renderTasks(d.tasks)); R("social", () => renderSocial(d.social)); R("sync", () => renderSync(d.runs, d.conn)); R("fresh", () => renderFresh(d.runs)); R("quellen", () => renderQuellen(d)); R("frei", () => renderFrei(d.frei, d.auftr)); requestAnimationFrame(countUp);
   R("tilt", bindTilt);
 }
@@ -2035,6 +2040,7 @@ let area = "home";
   });
   AREAS.forEach(a => (a.extra || []).forEach(id => { const el = $(id); if (el) el.dataset.area = a.k; }));
   const k = $("kpis"); if (k) k.dataset.area = "verkauf home"; // Umsatz-Kennzahlen auch auf der Übersicht
+  const hs = $("homeStrip"); if (hs) hs.dataset.area = "home"; // die vier übrigen Kennzahlen nur auf der Übersicht
   const q = $("sec-quellen"); if (q) q.dataset.area = ""; // Überschrift „Quellen & Tools“ ist leer, seit alle ihre Karten auf die passenden Seiten gezogen sind
 })();
 const areaOfEl = (el) => { const d = el.closest("[data-area]"); return d ? d.dataset.area.split(" ")[0] : "home"; };
@@ -2351,6 +2357,27 @@ function kpiCard(l, v, d, s, sp, extra = "") {
   return `<div class="card kpi s3 kp ${extra}"><div class="l">${esc(T(l))}</div><div class="v reflect">${v}</div>${d ? `<div class="d">${d}</div>` : ""}${s ? `<div class="s">${esc(s)}</div>` : ""}${sp ? `<div class="sp">${sp}</div>` : ""}</div>`;
 }
 
+// ---------- Übersicht: vier weitere Kennzahlen neben Heute und 7 Tage ----------
+function renderHome() {
+  const d = state.d; if (!d || !$("homeStrip")) return;
+  const U = state.U || [], n = (id) => { const x = U.find(u => u.id === id); return x && !x.empty ? x.n : 0; };
+  const oo = d.oo || [], oldest = oo.reduce((m, r) => Math.max(m, ageDays(r.created_at) || 0), 0);
+  const red = U.filter(u => !u.empty && u.n > 0 && u.lvl === "red").length, yel = U.filter(u => !u.empty && u.n > 0 && u.lvl === "yellow").length;
+  const fo = (d.frei || []).filter(f => f.status === "offen").length;
+  const ooErr = !!state.err.oo, invErr = !!state.err.inv, freiErr = !!state.err.frei;
+  const cards = [
+    ["Offene Bestellungen", ooErr ? "–" : num(oo.length), oo.length ? `${T("älteste")} ${Math.floor(oldest)} ${T("Tg.")}` : "", oldest > RULE.OO_RED_DAYS ? "red" : "", "verkauf"],
+    ["Dringend (rot)", num(red), `${num(yel)} ${T("zum Beachten")}`, red ? "red" : "", "urgentWrap"],
+    ["Wartet auf Freigabe", freiErr ? "–" : num(fo), T("Anfragen der Bots"), fo ? "yellow" : "", "freigaben"],
+    ["Bestseller ausverkauft", invErr ? "–" : num(n("oos_best")), invErr ? "" : `${num(n("cover"))} ${T("mit Reichweite < 14 T")}`, n("oos_best") ? "red" : n("cover") ? "yellow" : "", "lager"],
+  ];
+  $("homeStrip").innerHTML = cards.map(([l, v, s, extra, go]) => kpiCard(l, v, "", s, "", extra).replace('class="card kpi', `data-go="${go}" role="button" tabindex="0" class="card kpi`)).join("");
+  $("homeStrip").querySelectorAll(".kpi[data-go]").forEach(el => {
+    const go = () => { const k = el.dataset.go; if (k === "urgentWrap") goTo("urgentWrap"); else showArea(k); };
+    el.onclick = go; el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
+  });
+}
+
 // ---------- Umsatz ----------
 function renderSales() {
   const t = state.today, y = addDays(t, -1), rows = state.sales;
@@ -2377,8 +2404,8 @@ function renderSales() {
   $("kpis").innerHTML = [
     kpiCard("Heute", eur(s0.n), `<span class="k muted">gestern</span> <b class="num">${eur(sy.n)}</b>`, `${num(s0.o)} Bestellungen · laufender Tag`, spark(daily.slice(-14), "var(--txt)", { partialLast: true })),
     kpiCard("7 Tage", eur(s7.n), trend(c7.n, p7.n, ok7, "vs. Vorwoche"), `${num(s7.o)} Bestellungen`, spark(daily, "var(--txt)", { partialLast: true })),
-    kpiCard("30 Tage", eur(s30.n), trend(c30.n, p30.n, ok30, "vs. Vorperiode", firstAll ? `Vorperiode fehlt · Import seit ${fmtD(firstAll)}` : "Vorperiode fehlt"), `${num(s30.o)} Bestellungen`, spark(daily, "var(--gold)", { partialLast: true })),
-    kpiCard("Ø Bestellwert 30 T", eur(s30.o ? s30.n / s30.o : 0), trend(aovC, aovP, ok7 && p7.o > 0, "7 T vs. Vorwoche"), "netto je Bestellung · Linie = gleitend 7 T", spark(aov7, "var(--txt)")),
+    kpiCard("30 Tage", eur(s30.n), trend(c30.n, p30.n, ok30, "vs. Vorperiode", firstAll ? `Vorperiode fehlt · Import seit ${fmtD(firstAll)}` : "Vorperiode fehlt"), `${num(s30.o)} Bestellungen`, spark(daily, "var(--gold)", { partialLast: true }), "only-verkauf"),
+    kpiCard("Ø Bestellwert 30 T", eur(s30.o ? s30.n / s30.o : 0), trend(aovC, aovP, ok7 && p7.o > 0, "7 T vs. Vorwoche"), "netto je Bestellung · Linie = gleitend 7 T", spark(aov7, "var(--txt)"), "only-verkauf"),
   ].join("");
 
   // --- Plattform-Gruppen (feste Farbe je Plattform) ---
