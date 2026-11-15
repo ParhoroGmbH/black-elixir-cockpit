@@ -1077,6 +1077,8 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
 .det-f img,.det-f .foto-ph{width:150px;height:110px;border-radius:10px;object-fit:cover;display:flex}
 .det-fn{margin-top:6px;font-size:12px;overflow-wrap:anywhere;color:var(--mut)}.det-fb{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
 .det-a{margin-top:18px}
+.mp-links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.mp-links a.exp-btn{text-decoration:none;min-height:34px}
 </style>
 <body class="bx intro">
 <canvas id="stars" aria-hidden="true"></canvas>
@@ -1210,6 +1212,7 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
 
     <div class="sec-h t-ship" id="sec-mp"><h2 class="metal">Marktplätze · Kontozustand</h2><span class="rule"></span><span class="fresh" id="fr-mp"></span></div>
     <div class="card s12" id="card-mp"><h3>Hinweise der Plattformen <span class="sub">aus den Plattform-Mails der letzten 30 Tage · Sperrungen, Verstöße, deaktivierte Angebote, Kundennachrichten</span> <span id="f-mp"></span></h3>
+      <div class="mp-links" id="mpLinks"></div>
       <div class="mpgrid" id="mpTiles"></div><div class="scroll tall" style="margin-top:14px"><table class="tbl" id="tblMp"></table></div>
       <div class="note">Quelle: IONOS/Gmail-Postfächer (alle 30 Min.). Ohne Plattform-API: zeigt, was Amazon, eBay, OTTO, Kaufland, TikTok Shop und idealo per E-Mail melden. Gleiche Meldungen zählen einmal. Rot = Konto-Hinweis in den letzten 7 Tagen, Gelb = in 30 Tagen.</div></div>
     <div class="card s12" id="card-qogita"><h3>Qogita · Verkäufer <span class="sub">Bestellungen aus sellers.qogita.com</span></h3><div class="kgrid" id="qogitaKpis"></div><div class="scroll"><table class="tbl" id="tblQogita"></table></div><div class="note" id="qogitaNote">Stand per Hand aus dem Verkäuferportal. Automatischer Abruf folgt, sobald Qogita die Verkäufer-API freischaltet.</div></div>
@@ -1581,13 +1584,13 @@ async function load() {
 
     const today = berlinDate(); state.today = today; state.err = {};
     const from60 = addDays(today, -60), mailFrom = new Date(Date.now() - 30 * 864e5).toISOString();
-    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, qogita, tools, sig, mp, ship, frei, auftr] = await Promise.all([
+    const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, qogita, tools, sig, mp, ship, frei, auftr, eanRows] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
       safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
       safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value,sku,unit_cost,ean").eq("source", "jtl"))),
       safe("oo", fetchAll(() => sb.from("open_orders").select("order_ref,channel,created_at,items,total,financial_status").eq("is_open", true).order("created_at"))),
       safe("inbox", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at,messages").order("received_at", { ascending: false }).limit(300))),
-      safe("bills", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at,messages")
+      safe("bills", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at,messages,anhaenge")
         .or("category.ilike.%rechnung%,category.ilike.%mahnung%,category.ilike.%zahlung%,subject.ilike.%mahnung%,subject.ilike.%zahlungserinnerung%")
         .gte("received_at", mailFrom).order("received_at", { ascending: false }).limit(300))),
       safe("tasks", fetchAll(() => sb.from("tasks").select("key,source,nr,platform,topic,priority,status,who,next_step,due").order("due", { ascending: true, nullsFirst: false }))),
@@ -1605,7 +1608,10 @@ async function load() {
       safe("ship", fetchAll(() => sb.from("shipments").select("number,order_ref,channel,carrier,status,shipped_at,in_transit_at,delivered_at,eta").gte("shipped_at", new Date(Date.now() - 35 * 864e5).toISOString()).order("shipped_at", { ascending: false }))),
       safe("frei", res(sb.from("freigaben").select("id,erstellt_at,bot,typ,titel,details,bezug,status,entschieden_at,kommentar,ausgefuehrt_at,ergebnis,anhaenge").order("erstellt_at", { ascending: false }).limit(200))),
       safe("auftr", res(sb.from("auftraege").select("id,erstellt_at,bot,auftrag,prioritaet,faellig,status,antwort,aktualisiert_at,bilder").order("erstellt_at", { ascending: false }).limit(200))),
+      safe("ean", fetchAll(() => sb.from("artikel_ean").select("sku,ean"))),
     ]);
+    // EAN je Artikelnummer (aus Shopify-Barcodes) an die JTL-Artikel hängen; JTL-eigene EAN hat Vorrang
+    { const eanBy = {}; (eanRows || []).forEach(r => eanBy[r.sku] = r.ean); (inv || []).forEach(r => { if (!r.ean) r.ean = eanBy[r.sku] || null; }); }
     state.sales = sales;
     state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, qogita, tools, sig, mp, ship, frei, auftr };
     renderAll();
@@ -2464,9 +2470,21 @@ function renderBills(bills) {
   const sorted = [...bills].sort((a, b) => (isMahn(b) - isMahn(a)) || (new Date(b.received_at) - new Date(a.received_at)));
   const list = f ? (f.id === "bill_mahn" ? mahn : b7) : sorted.slice(0, 40);
   const kind = (r) => isMahn(r) ? pill("Mahnung", "p-bad") : isBill(r) ? pill("Rechnung", ago(r.received_at) < RULE.BILL_NEW_DAYS * 1440 ? "p-warn" : "p-off") : pill(r.category || "Zahlung", "p-off");
-  table("tblBills", [{ t: "Eingang" }, { t: "Absender / Betreff" }, { t: "Art" }, { t: "Quelle" }],
-    list.map(r => ({ hl: !!f, c: [esc(fmtDT(r.received_at)) + `<div class="small muted">vor ${agoTxt(ago(r.received_at))}</div>`, `<div class="name">${esc(r.subject || "–")}</div><div class="small muted">${esc(r.sender || "")}</div>`, kind(r), `<span class="small muted">${esc(billSrc(r))}<br>${esc(r.mailbox || "")}</span>`] })),
+  // PDF-Anhänge: liegen im privaten Bucket freigabe-anhaenge (Pfad in inbox.anhaenge), Gmail-Mails zusätzlich als Direktlink ins Postfach
+  const billAct = (r) => {
+    const pdfs = (r.anhaenge || []).map((p, i) => `<button type="button" class="exp-btn" data-bdl="${esc(p)}" title="${esc(fileName(p))}">PDF${(r.anhaenge.length > 1) ? " " + (i + 1) : ""} ↓</button>`).join("");
+    const m = /^gmail:([0-9a-f]+)$/i.exec(r.thread_id || "");
+    const mail = m ? `<a class="exp-btn" href="https://mail.google.com/mail/u/0/#all/${m[1]}" target="_blank" rel="noopener noreferrer">${esc(T("Mail öffnen"))} ↗</a>` : "";
+    return `<span class="auf-act">${pdfs}${mail}</span>`;
+  };
+  table("tblBills", [{ t: "Eingang" }, { t: "Absender / Betreff" }, { t: "Art" }, { t: "Quelle" }, { t: "" }],
+    list.map(r => ({ hl: !!f, c: [esc(fmtDT(r.received_at)) + `<div class="small muted">vor ${agoTxt(ago(r.received_at))}</div>`, `<div class="name">${esc(r.subject || "–")}</div><div class="small muted">${esc(r.sender || "")}</div>`, kind(r), `<span class="small muted">${esc(billSrc(r))}<br>${esc(r.mailbox || "")}</span>`, billAct(r)] })),
     errTxt("bills", "Noch keine Rechnungen oder Mahnungen im Cockpit. Sie erscheinen hier, sobald der Postfach-Abgleich (IONOS / Gmail) sie mit Kategorie „Rechnung“ oder „Mahnung“ liefert."));
+  $("tblBills").querySelectorAll("button[data-bdl]").forEach(b => b.onclick = async () => {
+    const p = b.dataset.bdl, { data: d, error: e } = await sb.storage.from("freigabe-anhaenge").createSignedUrl(p, 120, { download: fileName(p) });
+    if (e || !d) { b.textContent = T("Fehler"); return; }
+    const a = document.createElement("a"); a.href = d.signedUrl; a.download = fileName(p); document.body.appendChild(a); a.click(); a.remove();
+  });
   filterChip("f-bills", f);
 }
 
@@ -2528,11 +2546,11 @@ function renderInventory(inv, prod) {
   const fc = F(["cover"]);
   const coverRows = fc ? cover.filter(r => Number(r.sold_30d) >= RULE.COVER_MIN_SOLD30) : cover.slice(0, 12);
   table("tblCover", [{ t: "Produkt" }, { t: "Bestand", r: 1 }, { t: "Verk. 30T", r: 1 }, { t: "Tage", r: 1 }],
-    coverRows.map(r => ({ hl: !!fc, c: [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.stock), num(r.sold_30d), r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })] })), errTxt("inv", "Alles ausreichend bevorratet."));
+    coverRows.map(r => ({ hl: !!fc, c: [`<div class="name">${esc(r.title || r.product)}</div><div class="small muted">${esc(T("Art.-Nr."))} ${esc(r.sku || r.product || "–")} · EAN ${esc(r.ean || "–")}</div>`, num(r.stock), num(r.sold_30d), r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })] })), errTxt("inv", "Alles ausreichend bevorratet."));
   filterChip("f-cover", fc);
   exportButtons("expCover", "nachbestellen", "Nachbestellen · Reichweite unter 14 Tagen", () => ({
-    headers: ["Produkt", "Bestand", "Verkauft 30T", "Reichweite Tage"],
-    rows: coverRows.map(r => [r.title || r.product, num(r.stock), num(r.sold_30d), r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })]),
+    headers: ["Produkt", "Artikelnummer (SKU)", "EAN", "Bestand", "Verkauft 30T", "Einkaufspreis EK", "Reichweite Tage"],
+    rows: coverRows.map(r => [r.title || r.product, r.sku || r.product || "", r.ean || "", num(r.stock), num(r.sold_30d), r.unit_cost != null ? eur(r.unit_cost, 2) : "", r.days.toLocaleString("de-DE", { maximumFractionDigits: 1 })]),
   }));
   const fo = F(["oos_best"]);
   const oosS = oos.sort((a, b) => b.sold_30d - a.sold_30d);
@@ -2649,7 +2667,10 @@ function mpStats(mp) {
     return { name, all, h, h7, c7, lvl: h7.length ? "red" : h.length ? "yellow" : "green", last: h[0] };
   });
 }
+// Direkt in die Händlerportale (öffnet in neuem Tab; Anmeldung dort wie gewohnt)
+const MP_LINKS = [["Amazon", "https://sellercentral.amazon.de"], ["eBay", "https://www.ebay.de/sh/ovw"], ["OTTO", "https://partner.otto.market"], ["Kaufland", "https://sellerportal.kaufland.de"], ["TikTok Shop", "https://seller-de.tiktok.com"], ["idealo", "https://business.idealo.com"], ["Qogita", "https://sellers.qogita.com"], ["Shopify", "https://admin.shopify.com"]];
 function renderMp(mp) {
+  $("mpLinks").innerHTML = MP_LINKS.map(([n, u]) => `<a class="exp-btn" href="${u}" target="_blank" rel="noopener noreferrer"><i class="sw" style="--pc:${pc(n)};width:8px;height:8px;box-shadow:none"></i>${esc(n)} ↗</a>`).join("");
   const S = mpStats(mp), f = F(["mp_health"]);
   const word = { red: "Handeln", yellow: "Beobachten", green: "In Ordnung" };
   $("mpTiles").innerHTML = S.map(x => `<div class="mpt ${x.lvl}"><div class="mpt-h"><span class="nm">${esc(x.name)}</span><span class="st">${word[x.lvl]}</span></div>
