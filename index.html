@@ -1051,6 +1051,9 @@ html[dir=rtl] #navToggle .ico-chev{margin-left:0;margin-right:auto}
 .auf-foto-item img{width:100%;height:100%;object-fit:cover;display:block}
 .auf-foto-item button{position:absolute;top:2px;right:2px;width:20px;height:20px;line-height:18px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:14px;padding:0}
 html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
+.auf-act{display:inline-flex;gap:6px;margin-inline-start:6px;vertical-align:middle}
+.exp-btn.danger{color:#ff6b6b;border-color:currentColor}
+#aufCancel{margin-inline-start:8px;background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer;font:inherit}
 .foto-ph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-width:64px;min-height:64px;font:600 12px/1 system-ui,sans-serif;letter-spacing:.05em;color:#cfd2da;background:rgba(255,255,255,.08)}
 .foto-overlay-grid .foto-ph{width:140px;height:140px;border-radius:10px;font-size:16px}
 
@@ -1310,6 +1313,7 @@ const I18N = {
     "Fotos (optional)": "Photos (optional)", "z. B. ein beschädigtes Paket für Return Manager": "e.g. a damaged package for Return Manager",
     "Foto hinzufügen": "Add photo", "Entfernen": "Remove", "Nicht alle Fotos passten (höchstens": "Not all photos fit (at most",
     " je Bild)": " per image)", "Lade Fotos hoch …": "Uploading photos …",
+    "Änderung speichern": "Save changes", "Abbrechen": "Cancel", "Bearbeiten": "Edit", "Löschen": "Delete", "Wirklich löschen?": "Really delete?", "Gelöscht.": "Deleted.", "Auftrag wird bearbeitet. Bot und Fotos bleiben, wie sie sind.": "Editing task. Bot and photos stay as they are.", "Geändert.": "Changed.", "Nicht gelöscht: ": "Not deleted: ",
     "Fotos zum Auftrag": "Photos for the task", "Fotos konnten nicht geladen werden: ": "Photos could not be loaded: ", "Lädt …": "Loading …",
     "Bitte Pop-ups für diese Seite erlauben.": "Please allow pop-ups for this page.", "Schließen": "Close",
     "Nicht gespeichert: ": "Not saved: ", "Freigegeben.": "Approved.", "Abgelehnt.": "Rejected.",
@@ -1358,6 +1362,7 @@ const I18N = {
     "Fotos (optional)": "صور (اختياري)", "z. B. ein beschädigtes Paket für Return Manager": "مثلاً طرد تالف لـ Return Manager",
     "Foto hinzufügen": "إضافة صورة", "Entfernen": "حذف", "Nicht alle Fotos passten (höchstens": "ما انضافت كل الصور (الحد الأقصى",
     " je Bild)": " لكل صورة)", "Lade Fotos hoch …": "جارٍ رفع الصور …",
+    "Änderung speichern": "حفظ التعديل", "Abbrechen": "إلغاء", "Bearbeiten": "تعديل", "Löschen": "مسح", "Wirklich löschen?": "متأكد بدك تمسح؟", "Gelöscht.": "انمسح.", "Auftrag wird bearbeitet. Bot und Fotos bleiben, wie sie sind.": "عم تعدّل الأمر. البوت والصور بتضل متل ما هنّ.", "Geändert.": "اتعدّل.", "Nicht gelöscht: ": "ما انمسح: ",
     "Fotos zum Auftrag": "صور المهمة", "Fotos konnten nicht geladen werden: ": "تعذّر تحميل الصور: ", "Lädt …": "جارٍ التحميل …",
     "Bitte Pop-ups für diese Seite erlauben.": "الرجاء السماح بالنوافذ المنبثقة لهذه الصفحة.", "Schließen": "إغلاق",
     "Nicht gespeichert: ": "لم يُحفظ: ", "Freigegeben.": "تمت الموافقة.", "Abgelehnt.": "تم الرفض.",
@@ -1591,7 +1596,7 @@ async function load() {
       safe("mp", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at").eq("category", "Marktplatz").gte("received_at", mailFrom).order("received_at", { ascending: false }).limit(1500))),
       safe("ship", fetchAll(() => sb.from("shipments").select("number,order_ref,channel,carrier,status,shipped_at,in_transit_at,delivered_at,eta").gte("shipped_at", new Date(Date.now() - 35 * 864e5).toISOString()).order("shipped_at", { ascending: false }))),
       safe("frei", res(sb.from("freigaben").select("id,erstellt_at,bot,typ,titel,details,bezug,status,entschieden_at,kommentar,ausgefuehrt_at,ergebnis").order("erstellt_at", { ascending: false }).limit(200))),
-      safe("auftr", res(sb.from("auftraege").select("id,erstellt_at,bot,auftrag,prioritaet,faellig,status,antwort,aktualisiert_at").order("erstellt_at", { ascending: false }).limit(200))),
+      safe("auftr", res(sb.from("auftraege").select("id,erstellt_at,bot,auftrag,prioritaet,faellig,status,antwort,aktualisiert_at,bilder").order("erstellt_at", { ascending: false }).limit(200))),
     ]);
     state.sales = sales;
     state.d = { prod, inv, oo, inbox, bills: bills.filter(r => isMahn(r) || isBill(r) || isPay(r)), tasks, social, runs, conn, kpi, dhl, traffic, idealo, qogita, tools, sig, mp, ship, frei, auftr };
@@ -1807,9 +1812,49 @@ function renderFrei(frei, auftr) {
     frei.filter(f => f.status !== "offen").slice(0, 60).map(f => [esc(f.bot), `<b>${esc(f.titel)}</b>${f.bezug ? " · " + esc(f.bezug) : ""}`, pill(T((FREI_ST[f.status] || [f.status, ""])[0]), (FREI_ST[f.status] || ["", ""])[1]), fmtDT(f.ausgefuehrt_at || f.entschieden_at), esc([f.kommentar, f.ergebnis].filter(Boolean).join(" · "))]),
     errTxt("frei", T("Noch keine Entscheidungen.")));
   table("tblAuftr", [{ t: T("Bot") }, { t: T("Auftrag") }, { t: T("Prio") }, { t: T("Fällig"), r: 1 }, { t: T("Status") }, { t: T("Antwort") }, { t: "" }],
-    auftr.slice(0, 80).map(a => ({ hl: a.status === "offen" && a.prioritaet === "hoch", c: [esc(a.bot), esc(a.auftrag), T(PRIO_T[a.prioritaet] || a.prioritaet), a.faellig ? fmtD(a.faellig) : "–", pill(T((AUF_ST[a.status] || [a.status, ""])[0]), (AUF_ST[a.status] || ["", ""])[1]), esc(a.antwort || ""), fotoLink(a.bilder)] })),
+    auftr.slice(0, 80).map(a => ({ hl: a.status === "offen" && a.prioritaet === "hoch", c: [esc(a.bot), esc(a.auftrag), T(PRIO_T[a.prioritaet] || a.prioritaet), a.faellig ? fmtD(a.faellig) : "–", pill(T((AUF_ST[a.status] || [a.status, ""])[0]), (AUF_ST[a.status] || ["", ""])[1]), esc(a.antwort || ""), fotoLink(a.bilder) + aufActions(a)] })),
     errTxt("auftr", T("Noch keine Aufträge.")));
   $("tblAuftr").querySelectorAll("button[data-fotos]").forEach(b => b.onclick = () => showAufFotos(JSON.parse(b.dataset.fotos)));
+  $("tblAuftr").querySelectorAll("button[data-edit]").forEach(b => b.onclick = () => aufEditStart(auftr.find(x => x.id === Number(b.dataset.edit))));
+  $("tblAuftr").querySelectorAll("button[data-del]").forEach(b => b.onclick = async () => {
+    if (!b.dataset.armed) { // erst Rückfrage am Knopf selbst, zweiter Klick löscht
+      const old = b.innerHTML; b.dataset.armed = "1"; b.classList.add("danger"); b.textContent = T("Wirklich löschen?");
+      setTimeout(() => { if (b.isConnected) { b.innerHTML = old; b.classList.remove("danger"); delete b.dataset.armed; } }, 4000);
+      return;
+    }
+    b.disabled = true;
+    const { error } = await sb.rpc("cockpit_auftrag_loeschen", { p_id: Number(b.dataset.del) });
+    if (error) { $("aufMsg").textContent = T("Nicht gelöscht: ") + (error.message || error); b.disabled = false; return; }
+    if (aufEditId === Number(b.dataset.del)) aufEditEnd();
+    $("aufMsg").textContent = T("Gelöscht."); load();
+  });
+}
+// Auftrag ändern/löschen: Ändern nur solange der Bot ihn nicht begonnen hat (Status offen), Löschen immer.
+let aufEditId = null;
+function aufActions(a) {
+  const ico = (p) => `<svg viewBox="0 0 24 24" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const edit = a.status === "offen" ? `<button type="button" class="exp-btn" data-edit="${a.id}" aria-label="${esc(T("Bearbeiten"))}" title="${esc(T("Bearbeiten"))}">${ico('<path d="M4 20h4L19 9l-4-4L4 16z"/>')}</button>` : "";
+  return `<span class="auf-act">${edit}<button type="button" class="exp-btn" data-del="${a.id}" aria-label="${esc(T("Löschen"))}" title="${esc(T("Löschen"))}">${ico('<path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/>')}</button></span>`;
+}
+function aufEditStart(a) {
+  if (!a) return;
+  aufEditId = a.id;
+  $("aufBot").value = a.bot; $("aufBot").disabled = true;
+  $("aufText").value = a.auftrag; $("aufPrio").value = a.prioritaet; $("aufDue").value = a.faellig || "";
+  aufFotos.forEach(f => URL.revokeObjectURL(f.url)); aufFotos = []; renderAufFotos();
+  const fw = document.querySelector("#card-auftrag .auf-foto"); if (fw) fw.style.display = "none";
+  $("aufSend").textContent = T("Änderung speichern");
+  if (!$("aufCancel")) { const c = document.createElement("button"); c.type = "button"; c.id = "aufCancel"; c.textContent = T("Abbrechen"); c.onclick = aufEditEnd; $("aufSend").after(c); }
+  $("aufMsg").textContent = T("Auftrag wird bearbeitet. Bot und Fotos bleiben, wie sie sind.");
+  $("card-auftrag").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function aufEditEnd() {
+  aufEditId = null;
+  $("aufBot").disabled = false; $("aufText").value = ""; $("aufDue").value = ""; $("aufPrio").value = "normal";
+  const fw = document.querySelector("#card-auftrag .auf-foto"); if (fw) fw.style.display = "";
+  $("aufSend").textContent = T("Auftrag speichern");
+  const c = $("aufCancel"); if (c) c.remove();
+  $("aufMsg").textContent = "";
 }
 // Fotos zum Auftrag (z. B. Retouren-Paket): bis zu 5, bis 10 MB je Bild; hochgeladen wird erst beim Speichern.
 const AUF_FOTO_MAX = 5, AUF_FOTO_MB = 10;
@@ -1846,6 +1891,16 @@ $("aufSend").onclick = async () => {
   const text = $("aufText").value.trim(), msg = $("aufMsg");
   if (!text) { msg.textContent = T("Bitte zuerst den Auftrag schreiben oder diktieren."); return; }
   $("aufSend").disabled = true;
+  if (aufEditId) {
+    try {
+      msg.textContent = T("Speichere …");
+      const { error } = await sb.rpc("cockpit_auftrag_aendern", { p_id: aufEditId, p_auftrag: text, p_prioritaet: $("aufPrio").value, p_faellig: $("aufDue").value || null });
+      if (error) throw error;
+      aufEditEnd(); msg.textContent = T("Geändert."); load();
+    } catch (error) { msg.textContent = T("Nicht gespeichert: ") + (error.message || error); }
+    finally { $("aufSend").disabled = false; }
+    return;
+  }
   try {
     msg.textContent = aufFotos.length ? T("Lade Fotos hoch …") : T("Speichere …");
     const bilder = aufFotos.length ? await uploadAufFotos() : null;
