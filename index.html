@@ -1584,7 +1584,7 @@ async function load() {
     const [sales, prod, inv, oo, inbox, bills, tasks, social, runs, conn, kpi, dhl, traffic, idealo, qogita, tools, sig, mp, ship, frei, auftr] = await Promise.all([
       safe("sales", fetchAll(() => sb.from("sales_daily").select("day,channel,orders,net_sales").gte("day", from60).order("day"))),
       safe("prod", fetchAll(() => sb.from("product_sales_30d").select("product,channel,net_sales,orders"))),
-      safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value").eq("source", "jtl"))),
+      safe("inv", fetchAll(() => sb.from("inventory").select("product,source,title,stock,sold_30d,stock_value,sku,unit_cost,ean").eq("source", "jtl"))),
       safe("oo", fetchAll(() => sb.from("open_orders").select("order_ref,channel,created_at,items,total,financial_status").eq("is_open", true).order("created_at"))),
       safe("inbox", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at,messages").order("received_at", { ascending: false }).limit(300))),
       safe("bills", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at,messages")
@@ -1633,7 +1633,7 @@ function renderAll() {
   const d = state.d; if (!d) return;
   state.U = computeUrgent(d);
   renderUrgent();
-  renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
+  renderSales(); renderBills(d.bills); renderProducts(d.prod, d.inv); renderInventory(d.inv, d.prod); renderOpenOrders(d.oo); renderKpi(d.kpi); renderInbox(d.inbox);
   renderShip(d.ship); renderMp(d.mp); renderTasks(d.tasks); renderSocial(d.social); renderSync(d.runs, d.conn); renderFresh(d.runs); renderQuellen(d); renderFrei(d.frei, d.auftr); requestAnimationFrame(countUp);
   bindTilt();
 }
@@ -2497,7 +2497,23 @@ function renderProducts(prod, inv) {
     flop.map(r => [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.stock), eur(r.stock_value)]), errTxt("inv", "Keine Ladenhüter."));
 }
 
-function renderInventory(inv) {
+// Verkäufe je Artikel und Plattform: Abgleich über den Produktnamen oder eine im Namen stehende Amazon-SKU (BE…); nicht gefundene Artikel zeigen „–“.
+function chanByItem(prod) {
+  const byTitle = {}, bySku = {};
+  (prod || []).forEach(r => {
+    const rows = [byTitle[String(r.product || "").trim().toLowerCase()] ||= []];
+    const m = String(r.product || "").match(/BE\d{3,6}/); if (m) rows.push(bySku[m[0]] ||= []);
+    rows.forEach(a => a.push(r));
+  });
+  return (r) => {
+    const seen = new Set(), all = [...(byTitle[String(r.title || "").trim().toLowerCase()] || []), ...(bySku[r.sku] || [])].filter(x => !seen.has(x) && seen.add(x));
+    const ch = {}; all.forEach(x => { const c = ch[x.channel] ||= { o: 0, n: 0 }; c.o += Number(x.orders || 0); c.n += Number(x.net_sales || 0); });
+    const list = Object.entries(ch).sort((a, b) => b[1].o - a[1].o || b[1].n - a[1].n);
+    return { list, net: list.reduce((a, [, v]) => a + v.n, 0) };
+  };
+}
+function renderInventory(inv, prod) {
+  const itemCh = chanByItem(prod);
   const inS = inv.filter(r => r.stock > 0), val = inS.reduce((a, r) => a + Number(r.stock_value || 0), 0), units = inS.reduce((a, r) => a + Number(r.stock), 0);
   const dead = inS.filter(r => Number(r.sold_30d) === 0), deadVal = dead.reduce((a, r) => a + Number(r.stock_value || 0), 0);
   const oos = inv.filter(r => r.stock <= 0 && Number(r.sold_30d) > 0);
@@ -2521,11 +2537,16 @@ function renderInventory(inv) {
   const fo = F(["oos_best"]);
   const oosS = oos.sort((a, b) => b.sold_30d - a.sold_30d);
   const oosRows = fo ? oosS.filter(r => Number(r.sold_30d) >= RULE.BESTSELLER_SOLD30) : oosS.slice(0, 12);
-  table("tblOos", [{ t: "Produkt" }, { t: "Verk. 30T", r: 1 }],
-    oosRows.map(r => ({ hl: Number(r.sold_30d) >= RULE.BESTSELLER_SOLD30 && !!fo, c: [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.sold_30d)] })), errTxt("inv", "Nichts ausverkauft."));
+  const oosInfo = oosRows.map(r => ({ r, ch: itemCh(r) }));
+  const chTxt = (ch) => ch.list.length ? ch.list.slice(0, 3).map(([c, v]) => `${c} ${num(v.o)}`).join(" · ") : "–";
+  table("tblOos", [{ t: "Produkt" }, { t: "Verk. 30T", r: 1 }, { t: "EK", r: 1 }, { t: "Umsatz netto", r: 1 }, { t: "Plattform (Bestellungen)" }],
+    oosInfo.map(({ r, ch }) => ({ hl: Number(r.sold_30d) >= RULE.BESTSELLER_SOLD30 && !!fo, c: [
+      `<div class="name">${esc(r.title || r.product)}</div><div class="small muted">${esc(T("Art.-Nr."))} ${esc(r.sku || r.product || "–")} · EAN ${esc(r.ean || "–")}</div>`,
+      num(r.sold_30d), r.unit_cost != null ? eur(r.unit_cost, 2) : "–", ch.list.length ? eur(ch.net) : "–", esc(chTxt(ch))] })), errTxt("inv", "Nichts ausverkauft."));
   filterChip("f-oos", fo);
   exportButtons("expOos", "ausverkauft-bestseller", "Ausverkauft, aber verkauft (30 Tage)", () => ({
-    headers: ["Produkt", "Verkauft 30T"], rows: oosRows.map(r => [r.title || r.product, num(r.sold_30d)]),
+    headers: ["Produkt", "Artikelnummer (SKU)", "EAN", "Verkauft 30T", "Einkaufspreis EK", "Umsatz netto (Plattformen)", "Plattform und Bestellungen"],
+    rows: oosInfo.map(({ r, ch }) => [r.title || r.product, r.sku || r.product || "", r.ean || "", num(r.sold_30d), r.unit_cost != null ? eur(r.unit_cost, 2) : "", ch.list.length ? eur(ch.net) : "", chTxt(ch)]),
   }));
 }
 
