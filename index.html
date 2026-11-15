@@ -1069,6 +1069,14 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
 .foto-overlay-x{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:22px;line-height:1;cursor:pointer}
 .foto-overlay-grid{flex:1;overflow:auto;display:flex;flex-wrap:wrap;gap:12px;padding:0 18px 24px;align-content:flex-start;color:#ccc;font-size:14px}
 .foto-overlay-grid img{max-width:min(90vw,420px);max-height:70vh;border-radius:10px;object-fit:contain;display:block}
+.det-card{flex:1;overflow:auto;margin:0 auto 18px;width:min(720px,calc(100% - 32px));box-sizing:border-box;padding:18px;border-radius:16px;background:var(--g-strong);color:var(--txt);border:1px solid var(--g-edge)}
+.det-t{font-size:18px;font-weight:700;line-height:1.35}.det-p{margin:8px 0 4px;display:flex;gap:8px;align-items:center}
+.det-r{margin-top:14px}.det-r>span{display:block;font-size:12px;color:var(--mut);margin-bottom:4px}
+.det-r>div:not(.det-files){white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px;line-height:1.55}
+.det-files{display:flex;flex-wrap:wrap;gap:12px}.det-f{width:150px}
+.det-f img,.det-f .foto-ph{width:150px;height:110px;border-radius:10px;object-fit:cover;display:flex}
+.det-fn{margin-top:6px;font-size:12px;overflow-wrap:anywhere;color:var(--mut)}.det-fb{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
+.det-a{margin-top:18px}
 </style>
 <body class="bx intro">
 <canvas id="stars" aria-hidden="true"></canvas>
@@ -1595,7 +1603,7 @@ async function load() {
       safe("sig", res(sb.from("bot_quellen_signale").select("quelle,signal,schwere,received_at,mailbox,absender_domain,betreff,thread_id").order("received_at", { ascending: false }).limit(500))),
       safe("mp", res(sb.from("inbox").select("thread_id,mailbox,category,sender,subject,received_at").eq("category", "Marktplatz").gte("received_at", mailFrom).order("received_at", { ascending: false }).limit(1500))),
       safe("ship", fetchAll(() => sb.from("shipments").select("number,order_ref,channel,carrier,status,shipped_at,in_transit_at,delivered_at,eta").gte("shipped_at", new Date(Date.now() - 35 * 864e5).toISOString()).order("shipped_at", { ascending: false }))),
-      safe("frei", res(sb.from("freigaben").select("id,erstellt_at,bot,typ,titel,details,bezug,status,entschieden_at,kommentar,ausgefuehrt_at,ergebnis").order("erstellt_at", { ascending: false }).limit(200))),
+      safe("frei", res(sb.from("freigaben").select("id,erstellt_at,bot,typ,titel,details,bezug,status,entschieden_at,kommentar,ausgefuehrt_at,ergebnis,anhaenge").order("erstellt_at", { ascending: false }).limit(200))),
       safe("auftr", res(sb.from("auftraege").select("id,erstellt_at,bot,auftrag,prioritaet,faellig,status,antwort,aktualisiert_at,bilder").order("erstellt_at", { ascending: false }).limit(200))),
     ]);
     state.sales = sales;
@@ -1790,7 +1798,7 @@ function renderFrei(frei, auftr) {
   frei = frei || []; auftr = auftr || [];
   const open = frei.filter(f => f.status === "offen");
   $("freiList").innerHTML = open.length ? open.map(f => `<div class="frei" data-id="${f.id}">
-      <div class="frei-h">${pill(f.bot, "")}${pill(f.typ, "")}${f.bezug ? pill(f.bezug, "") : ""}<span class="frei-t">${fmtDT(f.erstellt_at)}</span></div>
+      <div class="frei-h">${pill(f.bot, "")}${pill(f.typ, "")}${f.bezug ? pill(f.bezug, "") : ""}<span class="frei-t">${fmtDT(f.erstellt_at)}</span>${freiDetBtn(f)}</div>
       <div class="frei-ti">${esc(f.titel)}</div>${f.details ? `<div class="frei-d">${esc(f.details)}</div>` : ""}
       <label class="frei-k">${T("Notiz an den Bot (optional)")}<input type="text" maxlength="500"></label>
       <div class="frei-a"><button type="button" class="primary" data-dec="freigegeben">${T("Freigeben")}</button><button type="button" data-dec="abgelehnt">${T("Ablehnen")}</button><span class="frei-m" role="status"></span></div>
@@ -1808,9 +1816,10 @@ function renderFrei(frei, auftr) {
     if (error) { msg.textContent = T("Nicht gespeichert: ") + (error.message || error); box.querySelectorAll("button").forEach(x => x.disabled = false); return; }
     msg.textContent = T(dec === "freigegeben" ? "Freigegeben." : "Abgelehnt."); load();
   });
-  table("tblFreiDone", [{ t: T("Bot") }, { t: T("Anfrage") }, { t: T("Entscheidung") }, { t: T("Wann"), r: 1 }, { t: T("Notiz / Ergebnis") }],
-    frei.filter(f => f.status !== "offen").slice(0, 60).map(f => [esc(f.bot), `<b>${esc(f.titel)}</b>${f.bezug ? " · " + esc(f.bezug) : ""}`, pill(T((FREI_ST[f.status] || [f.status, ""])[0]), (FREI_ST[f.status] || ["", ""])[1]), fmtDT(f.ausgefuehrt_at || f.entschieden_at), esc([f.kommentar, f.ergebnis].filter(Boolean).join(" · "))]),
+  table("tblFreiDone", [{ t: T("Bot") }, { t: T("Anfrage") }, { t: T("Entscheidung") }, { t: T("Wann"), r: 1 }, { t: T("Notiz / Ergebnis") }, { t: "" }],
+    frei.filter(f => f.status !== "offen").slice(0, 60).map(f => [esc(f.bot), `<b>${esc(f.titel)}</b>${f.bezug ? " · " + esc(f.bezug) : ""}`, pill(T((FREI_ST[f.status] || [f.status, ""])[0]), (FREI_ST[f.status] || ["", ""])[1]), fmtDT(f.ausgefuehrt_at || f.entschieden_at), esc([f.kommentar, f.ergebnis].filter(Boolean).join(" · ")), freiDetBtn(f)]),
     errTxt("frei", T("Noch keine Entscheidungen.")));
+  [$("freiList"), $("tblFreiDone")].forEach(root => root.querySelectorAll("button[data-det]").forEach(b => b.onclick = () => showFreiDetail(frei.find(x => x.id === Number(b.dataset.det)))));
   table("tblAuftr", [{ t: T("Bot") }, { t: T("Auftrag") }, { t: T("Prio") }, { t: T("Fällig"), r: 1 }, { t: T("Status") }, { t: T("Antwort") }, { t: "" }],
     auftr.slice(0, 80).map(a => ({ hl: a.status === "offen" && a.prioritaet === "hoch", c: [esc(a.bot), esc(a.auftrag), T(PRIO_T[a.prioritaet] || a.prioritaet), a.faellig ? fmtD(a.faellig) : "–", pill(T((AUF_ST[a.status] || [a.status, ""])[0]), (AUF_ST[a.status] || ["", ""])[1]), esc(a.antwort || ""), fotoLink(a.bilder) + aufActions(a)] })),
     errTxt("auftr", T("Noch keine Aufträge.")));
@@ -1827,6 +1836,53 @@ function renderFrei(frei, auftr) {
     if (error) { $("aufMsg").textContent = T("Nicht gelöscht: ") + (error.message || error); b.disabled = false; return; }
     if (aufEditId === Number(b.dataset.del)) aufEditEnd();
     $("aufMsg").textContent = T("Gelöscht."); load();
+  });
+}
+// Freigabe-Details: alles lesen, Anhänge (Bilder, Excel, Rechnung, beliebige Dateien) ansehen/herunterladen, Auftrag dazu schreiben.
+const IMG_EXT = /\.(jpe?g|png|webp|gif|heic|heif|avif|bmp)$/i;
+function freiDetBtn(f) {
+  const n = (f.anhaenge || []).length;
+  return `<button type="button" class="exp-btn" data-det="${f.id}">${esc(T("Öffnen"))}${n ? " · 📎" + n : ""}</button>`;
+}
+function fileName(p) { return String(p).split("/").pop().replace(/^\d{10,}-[a-z0-9]{4,8}-/i, "") || String(p).split("/").pop(); }
+function closeDet() { if (detOverlay) { detOverlay.remove(); detOverlay = null; } }
+let detOverlay = null;
+async function showFreiDetail(f) {
+  if (!f) return;
+  closeDet();
+  const st = FREI_ST[f.status] || [f.status, ""];
+  const row = (k, v) => v ? `<div class="det-r"><span>${esc(T(k))}</span><div>${esc(v)}</div></div>` : "";
+  detOverlay = document.createElement("div"); detOverlay.className = "foto-overlay";
+  detOverlay.innerHTML = `<div class="foto-overlay-bar"><span>${esc(f.bot)} · ${esc(f.typ)}${f.bezug ? " · " + esc(f.bezug) : ""}</span><button type="button" class="foto-overlay-x" aria-label="${esc(T("Schließen"))}">×</button></div>
+    <div class="det-card"><div class="det-t">${esc(f.titel)}</div><div class="det-p">${pill(T(st[0]), st[1])} <span class="frei-t">${esc(fmtDT(f.erstellt_at))}</span></div>
+      ${row("Details", f.details)}${row("Notiz an den Bot", f.kommentar)}${row("Ergebnis", f.ergebnis)}
+      <div class="det-r" id="detAtt"></div>
+      <div class="det-a"><button type="button" class="primary" id="detAuf">${esc(T("Auftrag an diesen Bot schreiben"))}</button></div></div>`;
+  detOverlay.querySelector(".foto-overlay-x").onclick = closeDet;
+  detOverlay.onclick = (e) => { if (e.target === detOverlay) closeDet(); };
+  document.addEventListener("keydown", function esc2(e) { if (e.key === "Escape") { closeDet(); document.removeEventListener("keydown", esc2); } });
+  detOverlay.querySelector("#detAuf").onclick = () => {
+    closeDet(); if (typeof aufEditEnd === "function") aufEditEnd();
+    $("aufBot").value = f.bot; $("aufText").value = `Zu „${f.titel}“${f.bezug ? " (" + f.bezug + ")" : ""}: `;
+    $("card-auftrag").scrollIntoView({ behavior: "smooth", block: "start" }); $("aufText").focus();
+  };
+  document.body.appendChild(detOverlay);
+  const paths = f.anhaenge || [], box = detOverlay.querySelector("#detAtt");
+  if (!paths.length) { box.remove(); return; }
+  box.innerHTML = `<span>${esc(T("Anhänge"))}</span><div class="det-files">${esc(T("Lädt …"))}</div>`;
+  const { data, error } = await sb.storage.from("freigabe-anhaenge").createSignedUrls(paths, 600);
+  if (!detOverlay) return;
+  const files = box.querySelector(".det-files");
+  if (error) { files.textContent = T("Anhänge konnten nicht geladen werden: ") + (error.message || error); return; }
+  files.innerHTML = paths.map((p, i) => {
+    const u = data && data[i] && data[i].signedUrl, nm = fileName(p), img = IMG_EXT.test(p);
+    return `<div class="det-f">${img && u ? `<img src="${esc(u)}" alt="">` : `<span class="foto-ph">${esc((p.split(".").pop() || "Datei").slice(0, 5).toUpperCase())}</span>`}<div class="det-fn">${esc(nm)}</div><div class="det-fb">${u ? `<a class="exp-btn" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(T("Ansehen"))}</a><button type="button" class="exp-btn" data-dl="${i}">${esc(T("Herunterladen"))}</button>` : ""}</div></div>`;
+  }).join("");
+  files.querySelectorAll("img").forEach((im, i) => im.onerror = () => fotoPlatzhalter(im, (paths[i] || "").split(".").pop() || "Foto"));
+  files.querySelectorAll("button[data-dl]").forEach(b => b.onclick = async () => {
+    const p = paths[Number(b.dataset.dl)], { data: d, error: e } = await sb.storage.from("freigabe-anhaenge").createSignedUrl(p, 120, { download: fileName(p) });
+    if (e || !d) { b.textContent = T("Fehler"); return; }
+    const a = document.createElement("a"); a.href = d.signedUrl; a.download = fileName(p); document.body.appendChild(a); a.click(); a.remove();
   });
 }
 // Auftrag ändern/löschen: Ändern nur solange der Bot ihn nicht begonnen hat (Status offen), Löschen immer.
