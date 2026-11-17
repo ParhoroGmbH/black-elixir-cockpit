@@ -461,7 +461,6 @@ html[data-theme=dark]{
   --bad:#FF7A70;--warn:#FFB84D;--ok:#5FD68A;--bad-bg:rgba(255,122,112,.16);--warn-bg:rgba(255,184,77,.15);
   --wolken:radial-gradient(60vw 50vh at 12% 8%,rgba(150,92,56,.42),transparent 62%),radial-gradient(55vw 55vh at 88% 14%,rgba(84,70,170,.4),transparent 62%),radial-gradient(60vw 60vh at 70% 92%,rgba(40,92,140,.38),transparent 62%),radial-gradient(50vw 50vh at 18% 88%,rgba(120,96,40,.32),transparent 62%)}
 html body{background:var(--wolken) fixed,var(--bg)}
-#stars{display:none}
 /* Schrift: Überschriften mit Serife (ruhig, elegant), Zahlen und Bedienung in Systemschrift */
 .greet .hi,#areaTitle,.sec-h h2,.sec-h h2.metal,.usum .t{font-family:var(--serifd)!important;font-weight:400!important;letter-spacing:-.005em!important}
 .greet .hi{font-size:clamp(30px,3.4vw,42px);line-height:1.1;margin-bottom:8px}
@@ -831,7 +830,6 @@ body::after{display:none}
 html,body{background:#05040a}
 [data-theme=light] html,[data-theme=light] body{background:#f2f0f8}
 body::before{background:var(--space)!important;filter:none!important;inset:0!important}
-#stars{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none}
 /* Glas auf Weltraum: im Dunkeln etwas dunkler, damit Text ruhig bleibt */
 [data-theme=dark]{--glass-bg:rgba(28,26,40,.52);--glass-bg2:rgba(255,255,255,.06);--barbg:rgba(14,12,22,.55)}
 [data-theme=light]{--glass-bg:rgba(255,255,255,.6);--glow:rgba(255,255,255,.85)}
@@ -889,7 +887,47 @@ body::before{background:var(--space)!important;filter:none!important;inset:0!imp
 @media (prefers-reduced-motion:reduce){.side button .np{animation:none}}
 @media (hover:none){.hb-x{opacity:.6}}
 @media (prefers-reduced-motion:reduce){.hb-heart.beat{animation:none}.hb-n{transition:none;opacity:1}}
-@media(max-width:620px){.hb canvas{height:76px}.hb-bpm b{font-size:30px}.hb-state{letter-spacing:.1em}}
+@media(max-width:620px){.hb{padding:10px 0 4px}.hb canvas{height:56px;margin:4px 0 0}.hb-bpm b{font-size:28px}.hb-state{font-size:11px;letter-spacing:.06em}.hb-go{padding:6px 8px}.hb-x{width:34px;height:34px}.hb-notes{margin-top:2px}}
+</style>
+<style id="luxus">
+/* =====================================================================
+   BLACK ELIXIR · „Luxus" (17.11.2026) – letzte Ebene, nur Optik.
+   Warmes Schwarz bzw. Elfenbein, Champagner-Gold statt Apple-Blau, feine Goldlinien,
+   Serifen für Titel, ruhige Karten (keine Neigung, keine Spiegelung, kein Glanz).
+   Alle Farben nur über Variablen; Warn-/Fehler-/Okay-Farben bleiben unverändert.
+   ===================================================================== */
+html:root,html[data-theme=light]{
+  --bg:#F6F1E7;--acc:#8d6b2a;--mut:#5d5444;
+  --g-bg:rgba(255,253,248,.74);--g-bg2:rgba(255,253,248,.55);--g-strong:rgba(255,253,248,.92);--g-edge:rgba(141,107,42,.22);--g-hi:inset 0 1px 0 rgba(255,255,255,.9);
+  --g-sh:0 1px 2px rgba(60,45,20,.05),0 20px 38px -26px rgba(60,45,20,.28);
+  --wolken:radial-gradient(75vw 55vh at 50% -14%,rgba(217,192,138,.32),transparent 66%),radial-gradient(60vw 60vh at 100% 105%,rgba(217,192,138,.16),transparent 62%)}
+html[data-theme=dark]{
+  --bg:#0d0b09;--acc:#d9c08a;--mut:#b3a998;
+  --g-bg:rgba(255,248,236,.04);--g-bg2:rgba(255,248,236,.03);--g-strong:rgba(217,192,138,.12);--g-edge:rgba(217,192,138,.2);--g-hi:inset 0 1px 0 rgba(217,192,138,.07);
+  --g-sh:0 1px 2px rgba(0,0,0,.4),0 22px 42px -28px rgba(0,0,0,.85);
+  --wolken:radial-gradient(75vw 52vh at 50% -16%,rgba(217,192,138,.15),transparent 66%),radial-gradient(60vw 60vh at 100% 108%,rgba(217,192,138,.07),transparent 62%)}
+html body ::selection{background:color-mix(in srgb,var(--acc) 35%,transparent)}
+html body::before,html body::after{display:none!important} /* der bunte Nebel-Hintergrund entfällt; es bleibt der ruhige Goldschimmer aus --wolken */
+/* Karten: ruhig, feine Goldkante, kleinerer Radius */
+html body .card{border-radius:16px!important;transform:translateY(var(--lift,0px))!important}
+html body .card:hover,html body .chip:hover{--lift:-2px}
+html body .card::before,html body .chip::before{display:none!important}
+html body #kpis>.card,html body .hero h1{-webkit-box-reflect:none!important}
+html,html[data-theme]{background:var(--bg)!important}
+html body{background:var(--wolken) fixed,var(--bg)!important}
+html[data-theme=dark] body #kpis>.card:first-child{background:var(--g-bg)!important;border-color:var(--g-edge)!important}
+html body .card h3{font-family:var(--serifd)!important;font-weight:400!important;font-size:19px!important;letter-spacing:0!important}
+html body .kpi .l,html body .tbl th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+html[dir=rtl] body .kpi .l,html[dir=rtl] body .tbl th{letter-spacing:0;text-transform:none;font-size:12px}
+html body .sec-h .rule{height:1px!important;background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 55%,transparent),transparent)!important}
+html body .tbl td,html body .tbl th{border-color:color-mix(in srgb,var(--acc) 14%,transparent)!important}
+/* Navigation und Knöpfe: Gold statt Blau */
+html body .side button[aria-current=true]{box-shadow:inset 2px 0 0 var(--acc)!important}
+html[dir=rtl] body .side button[aria-current=true]{box-shadow:inset -2px 0 0 var(--acc)!important}
+html body button.primary{background:var(--acc)!important;color:#fff!important;border:0}
+html[data-theme=dark] body button.primary{color:#1a1408!important}
+html body button.primary:hover{background:color-mix(in srgb,var(--acc) 88%,#000)!important}
+html body .top{border-bottom:1px solid color-mix(in srgb,var(--acc) 26%,transparent)!important}
 </style>
 <style>
 /* =====================================================================
@@ -1044,7 +1082,6 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
 .mp-links a.exp-btn{text-decoration:none;min-height:34px}
 </style>
 <body class="bx intro">
-<canvas id="stars" aria-hidden="true"></canvas>
 
 <!-- LOGIN -->
 <section id="loginView" class="login hidden">
@@ -2141,7 +2178,7 @@ function renderHeart() {
   $("hbState").innerHTML = lvl === "green" ? `<b>${T("Alles ruhig")}</b>` :
     `<b>${T(lvl === "red" ? "Alarm" : "Unruhig")}</b>${part(nR, "dringend", "--hbr")}${part(nY, "beachten", "--hba")}`;
   // Meldungen unter dem Puls: Rot zuerst, höchstens 6 Zeilen
-  const cap = matchMedia("(max-width:620px)").matches ? 3 : 6, shown = items.slice(0, cap), more = items.length - shown.length;
+  const cap = matchMedia("(max-width:620px)").matches ? 2 : 6, shown = items.slice(0, cap), more = items.length - shown.length;
   $("hbNotes").innerHTML = shown.map(it => `<div class="hb-n ${it.lvl}"><button type="button" class="hb-go"><span class="ico" aria-hidden="true">${it.ico}</span><span class="n">${num(it.n)}</span><span class="l">${esc(it.label)}</span></button><button type="button" class="hb-x" title="${esc(T("Ausblenden"))}" aria-label="${esc(T("Ausblenden"))}: ${esc(it.label)}">✓</button></div>`).join("") +
     (more > 0 ? `<div class="hb-n more"><button type="button" class="hb-go"><span class="n">+${more}</span><span class="l">${T("weitere")}</span></button></div>` : "");
   [...$("hbNotes").querySelectorAll(".hb-n")].forEach((row, i) => {
@@ -2173,62 +2210,6 @@ function renderHeart() {
   if (heart.syncPause) heart.syncPause();
   heartStart();
 }
-// Milchstraße: einmal gerendert (Nebel, Staub, Sternfeld), darüber funkelnde Sterne, Sternschnuppen, leichte Tiefe zur Maus
-(function sky() {
-  const cv = $("stars"); if (!cv) return; const cx = cv.getContext("2d");
-  let off = null, B = [], w = 0, h = 0, raf = 0, last = 0, mx = 0, my = 0, tx = 0, ty = 0, shoot = null, nextShoot = 0;
-  const PAD = 24, dark = () => document.documentElement.getAttribute("data-theme") === "dark";
-  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
-  function build() {
-    const dpr = Math.min(1.5, devicePixelRatio || 1); w = innerWidth; h = innerHeight;
-    cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const W = w + PAD * 2, H = h + PAD * 2; off = document.createElement("canvas"); off.width = W; off.height = H; const o = off.getContext("2d");
-    const D = dark(), diag = Math.hypot(W, H), ax = -.05 * W, ay = .92 * H, bx = 1.05 * W, by = .08 * H; // Band diagonal
-    const along = (t, s) => { const x = ax + (bx - ax) * t, y = ay + (by - ay) * t, nx = -(by - ay) / diag, ny = (bx - ax) / diag; return [x + nx * s, y + ny * s]; };
-    // Nebelwolken
-    o.globalCompositeOperation = D ? "lighter" : "source-over";
-    const pal = D ? [[110, 70, 200], [50, 100, 220], [235, 120, 80], [255, 205, 160], [200, 90, 170]] : [[190, 160, 255], [150, 200, 255], [255, 190, 170], [255, 225, 200], [230, 170, 230]];
-    for (let i = 0; i < 170; i++) { const t = Math.random(), [x, y] = along(t, gauss() * diag * .06), r = 40 + Math.random() * 200, c = pal[Math.floor(Math.random() * pal.length)];
-      const g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${c},${(D ? .05 : .09) + Math.random() * .05})`); g.addColorStop(1, `rgba(${c},0)`); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); }
-    // Kern der Galaxie (helle Wolke)
-    { const [x, y] = along(.62, 0), r = diag * .22, g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, D ? "rgba(255,225,190,.20)" : "rgba(255,240,225,.5)"); g.addColorStop(1, "rgba(255,225,190,0)"); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); }
-    // Staubbänder (nur Nacht)
-    if (D) { o.globalCompositeOperation = "source-over"; for (let i = 0; i < 90; i++) { const t = Math.random(), [x, y] = along(t, gauss() * diag * .012 + diag * .006), r = 18 + Math.random() * 70;
-      const g = o.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(4,3,10,${.18 + Math.random() * .2})`); g.addColorStop(1, "rgba(4,3,10,0)"); o.fillStyle = g; o.fillRect(x - r, y - r, r * 2, r * 2); } }
-    // Sternfeld: dichter im Band
-    o.globalCompositeOperation = "source-over"; const rgb = D ? "255,255,255" : "110,90,170", N = Math.round(W * H / (D ? 260 : 520));
-    for (let i = 0; i < N; i++) { const inBand = Math.random() < .6, [x, y] = inBand ? along(Math.random(), gauss() * diag * .07) : [Math.random() * W, Math.random() * H];
-      const r = Math.random() < .015 ? 1 + Math.random() * .8 : .25 + Math.random() * .55, a = (inBand ? .25 : .15) + Math.random() * (D ? .55 : .35);
-      const tint = Math.random(); o.fillStyle = D && tint < .12 ? `rgba(180,200,255,${a})` : D && tint > .9 ? `rgba(255,220,180,${a})` : `rgba(${rgb},${a})`;
-      o.beginPath(); o.arc(x, y, r, 0, 6.283); o.fill(); }
-    // helle Sterne zum Funkeln
-    B = Array.from({ length: Math.round(w * h / 14000) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: .9 + Math.random() * 1.1, p: Math.random() * 6.3, s: .5 + Math.random() * 1.3 }));
-  }
-  function frame(t) {
-    raf = 0; if (document.hidden) return;
-    if (t - last < 33 && !reduceMotion) { raf = requestAnimationFrame(frame); return; } last = t; // ~30 fps reichen
-    tx += (mx - tx) * .05; ty += (my - ty) * .05; const ox = -PAD + tx * PAD * .6, oy = -PAD + ty * PAD * .6;
-    cx.clearRect(0, 0, w, h); cx.drawImage(off, ox, oy);
-    const D = dark(), rgb = D ? "255,255,255" : "120,95,190";
-    for (const s of B) { const a = reduceMotion ? .8 : .45 + .55 * (Math.sin(t / 1000 * s.s + s.p) + 1) / 2, x = s.x + ox, y = s.y + oy;
-      cx.fillStyle = `rgba(${rgb},${a.toFixed(2)})`; cx.beginPath(); cx.arc(x, y, s.r, 0, 6.283); cx.fill();
-      if (D && s.r > 1.6) { cx.strokeStyle = `rgba(${rgb},${(a * .35).toFixed(2)})`; cx.lineWidth = .6; cx.beginPath(); cx.moveTo(x - s.r * 4, y); cx.lineTo(x + s.r * 4, y); cx.moveTo(x, y - s.r * 4); cx.lineTo(x, y + s.r * 4); cx.stroke(); } }
-    // Sternschnuppe alle ~8–18 s
-    if (!reduceMotion) {
-      if (!shoot && t > nextShoot) { shoot = { x: Math.random() * w * .7 + w * .2, y: Math.random() * h * .35, vx: -(5 + Math.random() * 4), vy: 2 + Math.random() * 2, life: 0 }; nextShoot = t + 8000 + Math.random() * 10000; }
-      if (shoot) { shoot.life++; shoot.x += shoot.vx; shoot.y += shoot.vy; const L = 16, g = cx.createLinearGradient(shoot.x, shoot.y, shoot.x - shoot.vx * L, shoot.y - shoot.vy * L);
-        const fa = Math.min(1, shoot.life / 6) * Math.max(0, 1 - shoot.life / 50); g.addColorStop(0, `rgba(${rgb},${fa})`); g.addColorStop(1, `rgba(${rgb},0)`);
-        cx.strokeStyle = g; cx.lineWidth = 1.6; cx.beginPath(); cx.moveTo(shoot.x, shoot.y); cx.lineTo(shoot.x - shoot.vx * L, shoot.y - shoot.vy * L); cx.stroke(); if (shoot.life > 50) shoot = null; }
-      raf = requestAnimationFrame(frame);
-    }
-  }
-  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
-  build(); kick();
-  let rt = 0; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { build(); kick(); }, 150); });
-  addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth * 2 - 1; my = e.clientY / innerHeight * 2 - 1; if (reduceMotion) kick(); }, { passive: true });
-  document.addEventListener("visibilitychange", kick);
-  new MutationObserver(() => { build(); kick(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-})();
 
 function renderUrgent() {
   const U = state.U, c = { red: 0, yellow: 0, green: 0 };
