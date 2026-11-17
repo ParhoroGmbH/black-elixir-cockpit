@@ -496,7 +496,6 @@ html body{background:var(--wolken) fixed,var(--bg)}
 .sheet.is-home #banner{order:3}
 .sheet.is-home>main{order:4}
 .sheet.is-home #urgentWrap{order:5;margin-top:22px}
-.sheet.is-home .hb{order:2;margin:4px 0 14px}
 .sheet.is-home>main{display:contents}
 .sheet.is-home .dash{order:4}
 .sheet.is-home .foot{order:9}
@@ -841,34 +840,56 @@ body::before{background:var(--space)!important;filter:none!important;inset:0!imp
 .hero{padding:0 0 18px!important;text-align:center}
 .hero .eyebrow,.hero h1{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @keyframes spin{to{transform:rotate(360deg)}}
-/* ---------- Herzschlag (Puls des Betriebs) ---------- */
-.hb{position:relative;margin:2px auto 10px;max-width:980px;width:100%;padding:12px 16px 10px;border-radius:18px;border:1px solid var(--line,rgba(128,128,128,.22));background:var(--glass-bg,rgba(255,255,255,.06));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);text-align:start;transition:box-shadow .2s}
-.hb-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.hb-heart{width:26px;height:26px;color:var(--ok);display:grid;place-items:center;flex:none}
-.hb-heart svg{width:100%;height:100%;fill:currentColor;stroke:none}
-.hb.yellow .hb-heart{color:var(--warn)}.hb.red .hb-heart{color:var(--bad)}
-.hb-heart.beat{animation:hbbeat .32s ease-out}
-@keyframes hbbeat{0%{transform:scale(1)}30%{transform:scale(1.28)}100%{transform:scale(1)}}
-.hb-bpm{display:inline-flex;align-items:baseline;gap:5px;font-variant-numeric:tabular-nums}
-.hb-bpm b{font-size:26px;font-weight:650;letter-spacing:-.03em;color:var(--txt)}
-.hb-bpm small{font-size:11.5px;letter-spacing:.12em;color:var(--mut)}
-.hb-state{font-size:14px;color:var(--mut)}
-.hb-state b{color:var(--ok);font-weight:650}.hb.yellow .hb-state b{color:var(--warn)}.hb.red .hb-state b{color:var(--bad)}
-.hb canvas{display:block;width:100%;height:84px;margin-top:6px;border-radius:10px;background-image:linear-gradient(var(--line2,rgba(128,128,128,.14)) 1px,transparent 1px),linear-gradient(90deg,var(--line2,rgba(128,128,128,.14)) 1px,transparent 1px);background-size:22px 22px}
-.hb-notes{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+/* ---------- Herzschlag (Puls des Betriebs): volle Breite, klassisch ---------- */
+.hb{--hbg:#d9c08a;--hbc:var(--hbg);--hba:#e0a94a;--hbr:#e6604f;position:relative;width:100%;box-sizing:border-box;padding:14px 0 6px;border-block:1px solid color-mix(in srgb,var(--hbg) 32%,transparent);background:linear-gradient(180deg,rgba(12,10,9,.62),rgba(12,10,9,.38));transition:box-shadow .2s}
+[data-theme=light] .hb{--hbg:#8d6b2a;--hba:#8a5a0f;--hbr:#b8322f;background:linear-gradient(180deg,rgba(255,252,246,.82),rgba(255,252,246,.55))}
+.hb.yellow{--hbc:var(--hba)}
+.hb.red{--hbc:var(--hbr)}
+.hb-in{max-width:1240px;margin:0 auto;padding:0 clamp(14px,2vw,28px);box-sizing:border-box}
+.hb-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hb-heart{width:24px;height:24px;color:var(--hbc);display:grid;place-items:center;flex:none}
+.hb-heart svg{width:100%;height:100%;fill:color-mix(in srgb,var(--hbc) 18%,transparent);stroke:currentColor;stroke-width:1.4;stroke-linejoin:round}
+.hb-heart.beat{animation:hbbeat .34s ease-out}
+@keyframes hbbeat{0%{transform:scale(1)}30%{transform:scale(1.26)}100%{transform:scale(1)}}
+.hb-bpm{display:inline-flex;align-items:baseline;gap:8px;font-variant-numeric:tabular-nums}
+.hb-bpm b{font-family:var(--serifd);font-weight:400;font-size:36px;line-height:1;letter-spacing:0;color:var(--txt)}
+.hb-bpm small{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
+.hb-state{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.hb-state b{color:var(--hbc);font-weight:600}
+.hb canvas{display:block;width:100%;height:96px;margin:6px 0 2px}
+.hb-notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));column-gap:28px;margin-top:6px}
 .hb-notes:empty{display:none}
-.hb-n{display:flex;align-items:center;gap:10px;width:100%;text-align:start;padding:8px 12px;border-radius:12px;border:1px solid var(--line,rgba(128,128,128,.25));background:transparent;color:var(--txt);font:inherit;font-size:14px;cursor:pointer;opacity:.6;transition:opacity .2s,box-shadow .2s,background .2s,transform .2s}
-.hb-n .ico{width:18px;height:18px;flex:none;color:var(--c)}
-.hb-n .ico svg{width:100%;height:100%}
-.hb-n .n{font-weight:650;min-width:26px;color:var(--c);font-variant-numeric:tabular-nums}
-.hb-n .l{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hb-n.red{--c:var(--bad)}.hb-n.yellow{--c:var(--warn)}.hb-n.more{--c:var(--mut)}
-.hb-n.lit{opacity:1;background:color-mix(in srgb,var(--c) 14%,transparent);border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent),0 0 22px -4px var(--c);transform:translateX(4px)}
-[dir=rtl] .hb-n.lit{transform:translateX(-4px)}
-.hb-n:focus-visible{outline:2px solid var(--acc,#0a84ff);outline-offset:2px;opacity:1}
-.hb.red.flash{box-shadow:0 0 0 1px var(--bad),0 0 30px -8px var(--bad)}
-@media (prefers-reduced-motion:reduce){.hb-heart.beat{animation:none}.hb-n{transition:none;opacity:1}.hb-n.lit{transform:none}}
-@media(max-width:620px){.hb{padding:10px 12px}.hb canvas{height:70px}.hb-bpm b{font-size:22px}}
+.hb-n{--c:var(--hbr);display:flex;align-items:center;border-bottom:1px solid color-mix(in srgb,var(--txt) 9%,transparent);border-inline-start:2px solid transparent;transition:background .25s,border-color .25s}
+.hb-n.yellow{--c:var(--hba)}
+.hb-n.more{--c:var(--mut)}
+.hb-go{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:9px 10px;background:none;border:0;color:var(--txt);font:inherit;font-size:14px;text-align:start;cursor:pointer}
+.hb-go .ico{width:16px;height:16px;flex:none;color:var(--c)}
+.hb-go .ico svg{width:100%;height:100%}
+.hb-go .n{font-family:var(--serifd);font-size:20px;line-height:1;min-width:30px;color:var(--c);font-variant-numeric:tabular-nums}
+.hb-go .l{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb-x{flex:none;width:40px;height:40px;border:0;background:none;color:var(--mut);cursor:pointer;border-radius:50%;opacity:.45;font-size:15px;transition:opacity .2s}
+.hb-n:hover .hb-x,.hb-x:focus-visible{opacity:.9}
+.hb-n.lit{opacity:1;border-inline-start-color:var(--c);background:linear-gradient(90deg,color-mix(in srgb,var(--c) 14%,transparent),transparent 70%)}
+[dir=rtl] .hb-n.lit{background:linear-gradient(270deg,color-mix(in srgb,var(--c) 14%,transparent),transparent 70%)}
+.hb-go:focus-visible,.hb-x:focus-visible,.hb-un:focus-visible{outline:2px solid var(--hbg);outline-offset:-2px}
+.hb-hid:empty{display:none}
+.hb-un{background:none;border:0;color:var(--mut);font:inherit;font-size:12.5px;padding:8px 10px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.hb-pause{margin-inline-start:auto;width:30px;height:30px;border-radius:50%;border:1px solid color-mix(in srgb,var(--txt) 18%,transparent);background:none;color:var(--mut);font-size:10px;line-height:1;cursor:pointer;letter-spacing:-1px}
+.hb-pause:focus-visible{outline:2px solid var(--hbg);outline-offset:2px}
+.hb-paused .side button .np{animation:none}
+[dir=rtl] .hb-area,[dir=rtl] .hb-bpm small,[dir=rtl] .hb-state{letter-spacing:0;text-transform:none}
+.hb-area{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--mut);padding-inline-end:16px;border-inline-end:1px solid color-mix(in srgb,var(--txt) 14%,transparent)}
+.side button .np{display:inline-grid;width:12px;height:12px;flex:none;margin-inline-start:2px;color:#d9c08a;opacity:.9;animation:npbeat var(--npd,1s) ease-in-out infinite}
+.side button .np svg{width:100%;height:100%;fill:currentColor;stroke:none}
+.side button .np.yellow{color:#e0a94a}
+.side button .np.red{color:#e6604f}
+.side button .np.green{opacity:.5}
+[data-theme=light] .side button .np{color:#8d6b2a}[data-theme=light] .side button .np.yellow{color:#b7791f}[data-theme=light] .side button .np.red{color:#b8322f}
+@keyframes npbeat{0%,56%,100%{transform:scale(1)}14%{transform:scale(1.38)}28%{transform:scale(1)}42%{transform:scale(1.22)}}
+@media (prefers-reduced-motion:reduce){.side button .np{animation:none}}
+@media (hover:none){.hb-x{opacity:.6}}
+@media (prefers-reduced-motion:reduce){.hb-heart.beat{animation:none}.hb-n{transition:none;opacity:1}}
+@media(max-width:620px){.hb canvas{height:76px}.hb-bpm b{font-size:30px}.hb-state{letter-spacing:.1em}}
 </style>
 <style>
 /* =====================================================================
@@ -1072,6 +1093,7 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
     </div>
   </div>
 
+  <div class="hb" id="hb" role="group" aria-label="Systempuls"><div class="hb-in"><div class="hb-top"><span class="hb-area" id="hbArea"></span><span class="hb-heart" id="hbHeart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.2-4.5-9.2-9C1.6 8.4 3.3 5 6.6 5c2 0 3.5 1 5.4 2.9C13.9 6 15.4 5 17.4 5c3.3 0 5 3.4 3.8 6.5-2 4.5-9.2 9-9.2 9z"/></svg></span><span class="hb-bpm"><b id="hbBpm" dir="ltr">58</b><small>BPM</small></span><span class="hb-state" id="hbState" role="status"></span><button type="button" class="hb-pause" id="hbPause" aria-pressed="false">&#10074;&#10074;</button></div></div><canvas id="hbCv" aria-hidden="true"></canvas><div class="hb-in"><div class="hb-notes" id="hbNotes"></div><div class="hb-hid" id="hbHid"></div></div></div>
   <div class="shell">
   <button type="button" id="navToggle" aria-expanded="false" aria-controls="secNav">
     <svg class="ico-burger" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -1095,7 +1117,7 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
     <button type="button" data-area-go="verbindungen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 01-12 0zM12 18v4"/></svg><span class="nl">Verbindungen</span></button>
   </nav>
   <div class="sheet">
-  <header class="hero" id="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><div class="hb" id="hb" role="group" aria-label="Systempuls"><div class="hb-top"><span class="hb-heart" id="hbHeart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3 5 6.5 5c2 0 3.6 1.1 5.5 3 1.9-1.9 3.5-3 5.5-3 3.5 0 5.3 3.6 4 6.8C19.5 16.4 12 21 12 21z"/></svg></span><span class="hb-bpm"><b id="hbBpm" dir="ltr">58</b><small>BPM</small></span><span class="hb-state" id="hbState"></span></div><canvas id="hbCv" aria-hidden="true"></canvas><div class="hb-notes" id="hbNotes"></div></div><p class="greet" id="greet" aria-live="polite"></p></header>
+  <header class="hero" id="hero"><div class="eyebrow">Parhoro GmbH · Black Elixir Maison de Parfum</div><h1>Black Elixir Cockpit</h1><p class="greet" id="greet" aria-live="polite"></p></header>
   <!-- DRINGEND: rot / gelb / grün -->
   <div class="urgent" id="urgentWrap">
     <div class="usum"><span class="t">Was ist dringend?</span><span id="usum" class="small"></span><span id="standM" class="small muted"></span></div>
@@ -1173,7 +1195,7 @@ html[dir=rtl] .auf-foto-item button{right:auto;left:2px}
 
     <div class="sec-h t-sales" id="sec-prod"><h2 class="metal">Produkte · 30 Tage</h2><span class="rule"></span></div>
     <div class="card s6"><h3>Top 10 nach Nettoumsatz</h3><div class="scroll"><table class="tbl" id="tblTop"></table></div></div>
-    <div class="card s6" id="card-flop"><h3>Flop 10 · Lagerwert ohne Verkauf (30 T)</h3><div class="scroll"><table class="tbl" id="tblFlop"></table></div></div>
+    <div class="card s6" id="card-flop"><h3>Flop 10 · Lagerwert ohne Verkauf (30 T) <span class="exp" id="expFlop"></span></h3><div class="scroll"><table class="tbl" id="tblFlop"></table></div></div>
 
     <div class="sec-h t-mkt" id="sec-social"><h2 class="metal">Social</h2><span class="rule"></span><span class="fresh" id="fr-social"></span></div>
     <div class="card s12"><div class="scroll"><table class="tbl" id="tblSocial"></table></div></div>
@@ -1240,7 +1262,7 @@ const I18N = {
     "Übersicht": "Overview", "Freigaben": "Approvals", "Freigaben & Aufträge": "Approvals & tasks", "Verkauf": "Sales", "Rechnungen": "Invoices",
     "Versand & Retouren": "Shipping & returns", "Marktplätze": "Marketplaces", "Lager": "Inventory", "Aufgaben & Postfach": "Tasks & inbox",
     "Wachstum": "Growth", "Verbindungen": "Connections", "Geschäft": "Business", "Betrieb": "Operations", "System": "System", "Offene Bestellungen": "Open orders", "Dringend (rot)": "Urgent (red)", "Wartet auf Freigabe": "Awaiting approval", "Bestseller ausverkauft": "Bestsellers sold out", "älteste": "oldest", "Tg.": "days", "zum Beachten": "to watch", "Anfragen der Bots": "requests from bots", "mit Reichweite < 14 T": "with cover < 14 d",
-    "Alarm": "Alarm", "Unruhig": "Restless", "Alles ruhig": "All calm", "weitere": "more", "Was ist dringend?": "What's urgent?","dringend": "urgent", "beachten": "to watch", "ok": "ok",
+    "Alarm": "Alarm", "Systempuls": "System pulse", "Pause": "Pause", "Fortsetzen": "Resume", "Unruhig": "Restless", "Alles ruhig": "All calm", "weitere": "more", "Ausblenden": "Hide", "ausgeblendet": "hidden", "Alle zeigen": "Show all", "Was ist dringend?": "What's urgent?","dringend": "urgent", "beachten": "to watch", "ok": "ok",
     "Mehr anzeigen": "Show more", "zum Beachten": "to watch", "Weniger anzeigen": "Show less", "Ansehen": "View",
     "Umsatz netto": "Net sales", "Rechnungen & Zahlungserinnerungen": "Invoices & payment reminders", "Offene Bestellungen": "Open orders",
     "Retouren, Zahlung, Versand": "Returns, payment, shipping", "Marktplätze · Kontozustand": "Marketplaces · account health",
@@ -1289,7 +1311,7 @@ const I18N = {
     "Übersicht": "نظرة عامة", "Freigaben": "الموافقات", "Freigaben & Aufträge": "الموافقات والمهام", "Verkauf": "المبيعات", "Rechnungen": "الفواتير",
     "Versand & Retouren": "الشحن والمرتجعات", "Marktplätze": "المنصات", "Lager": "المخزون", "Aufgaben & Postfach": "المهام والبريد",
     "Wachstum": "النمو", "Verbindungen": "الاتصالات", "Geschäft": "العمل", "Betrieb": "التشغيل", "System": "النظام", "Offene Bestellungen": "طلبات مفتوحة", "Dringend (rot)": "عاجل (أحمر)", "Wartet auf Freigabe": "بانتظار الموافقة", "Bestseller ausverkauft": "الأكثر مبيعاً نفد", "älteste": "الأقدم", "Tg.": "يوم", "zum Beachten": "للمتابعة", "Anfragen der Bots": "طلبات من البوتات", "mit Reichweite < 14 T": "يكفي أقل من 14 يوماً",
-    "Alarm": "إنذار", "Unruhig": "غير هادئ", "Alles ruhig": "كل شيء هادئ", "weitere": "أخرى", "Was ist dringend?": "ما المستعجل؟","dringend": "مستعجل", "beachten": "للمتابعة", "ok": "سليم",
+    "Alarm": "إنذار", "Systempuls": "نبض النظام", "Pause": "إيقاف مؤقت", "Fortsetzen": "استئناف", "Unruhig": "غير هادئ", "Alles ruhig": "كل شيء هادئ", "weitere": "أخرى", "Ausblenden": "إخفاء", "ausgeblendet": "مخفي", "Alle zeigen": "إظهار الكل", "Was ist dringend?": "ما المستعجل؟","dringend": "مستعجل", "beachten": "للمتابعة", "ok": "سليم",
     "Mehr anzeigen": "عرض المزيد", "zum Beachten": "للمتابعة", "Weniger anzeigen": "عرض أقل", "Ansehen": "عرض",
     "Umsatz netto": "صافي المبيعات", "Rechnungen & Zahlungserinnerungen": "الفواتير وتذكيرات الدفع", "Offene Bestellungen": "الطلبات المفتوحة",
     "Retouren, Zahlung, Versand": "المرتجعات والدفع والشحن", "Marktplätze · Kontozustand": "المنصات · حالة الحسابات",
@@ -2027,23 +2049,28 @@ function renderGreet(U, red) {
 }
 // ---------- Herzschlag: Puls des Betriebs ----------
 // Ruhig ≈ 58 Schläge/min. Jede offene Sache treibt den Puls hoch (Rot stärker als Gelb). Bei jedem Schlag leuchtet die nächste Meldung darunter auf.
-const heart = { bpm: 58, target: 58, lvl: "green", phase: 0, buf: [], acc: 0, last: 0, raf: 0, visible: true, built: false, idx: 0, W: 0, H: 0, dpr: 1, col: null, colAt: 0, litT: 0 };
-const HB_SPEED = 110; // Pixel pro Sekunde
+// Erledigtes kann per Haken ausgeblendet werden (nur diese Ansicht, im Browser gemerkt); steigt die Zahl wieder, erscheint die Meldung neu.
+const heart = { bpm: 58, target: 58, lvl: "green", phase: 0, buf: [], acc: 0, last: 0, raf: 0, visible: true, built: false, idx: 0, W: 0, H: 0, dpr: 1, col: null, colAt: 0, litT: 0, paused: false };
+const heartSpeed = () => Math.max(110, heart.bpm * 1.9); // Pixel pro Sekunde; wächst mit dem Puls, damit die Schläge gleich weit auseinander bleiben
 const HB_R = .32;     // Lage der R-Zacke im Herzschlag (0..1)
+let hbMem = {};
+const hbSeenGet = () => { try { const o = JSON.parse(localStorage.getItem("hbSeen") || "null"); if (o && typeof o === "object" && !Array.isArray(o)) { hbMem = o; return o; } } catch (_) {} return hbMem; };
+const hbSeenSet = (o) => { hbMem = o; try { localStorage.setItem("hbSeen", JSON.stringify(o)); } catch (_) {} };
 function ecg(p) {
   const g = (c, w) => Math.exp(-(((p - c) / w) ** 2));
   return .12 * g(.16, .035) - .10 * g(.295, .012) + g(HB_R, .010) - .22 * g(.345, .012) + .26 * g(.56, .055);
 }
 function heartColor() {
   const now = performance.now(); if (heart.col && now - heart.colAt < 1000) return heart.col;
-  const v = getComputedStyle(document.documentElement).getPropertyValue(heart.lvl === "red" ? "--bad" : heart.lvl === "yellow" ? "--warn" : "--ok").trim();
-  heart.col = v || "#4cc38a"; heart.colAt = now; return heart.col;
+  const hb = $("hb"), v = hb ? getComputedStyle(hb).getPropertyValue("--hbc").trim() : "";
+  heart.col = v || "#d9c08a"; heart.colAt = now; return heart.col;
 }
 function heartFeed(cols, fire) {
   if (!heart.W) return;
   for (let i = 0; i < cols; i++) {
-    const prev = heart.phase; heart.phase += (1 / HB_SPEED) * heart.bpm / 60; if (heart.phase >= 1) heart.phase -= 1;
-    heart.buf.push(ecg(heart.phase) + (Math.random() - .5) * .012); if (heart.buf.length > heart.W) heart.buf.shift();
+    const prev = heart.phase, dp = (1 / heartSpeed()) * heart.bpm / 60; heart.phase += dp; if (heart.phase >= 1) heart.phase -= 1;
+    let v = 0; for (let q = 1; q <= 4; q++) { const s = ecg((prev + dp * q / 4) % 1); if (Math.abs(s) > Math.abs(v)) v = s; } // Zacken nicht verschlucken, auch bei hohem Puls
+    heart.buf.push(v + (Math.random() - .5) * .012); if (heart.buf.length > heart.W) heart.buf.shift();
     if (fire && prev < HB_R && heart.phase >= HB_R) heartBeat();
   }
 }
@@ -2052,70 +2079,98 @@ function heartDraw() {
   const x = cv.getContext("2d"), W = heart.W, H = heart.H, B = heart.buf; if (B.length < 2) return;
   x.setTransform(heart.dpr, 0, 0, heart.dpr, 0, 0); x.clearRect(0, 0, W, H);
   const base = H * .66, amp = H * .56, col = heartColor(), x0 = W - B.length;
-  x.lineJoin = "round"; x.lineCap = "round"; x.lineWidth = 2.2; x.strokeStyle = col; x.shadowColor = col; x.shadowBlur = 8;
+  x.shadowBlur = 0; x.globalAlpha = .18; x.lineWidth = 1; x.strokeStyle = col; x.beginPath(); x.moveTo(0, base); x.lineTo(W, base); x.stroke(); x.globalAlpha = 1;
+  x.lineJoin = "round"; x.lineCap = "round"; x.lineWidth = 1.6; x.strokeStyle = col;
   x.beginPath(); B.forEach((v, i) => { const px = x0 + i, py = base - v * amp; i ? x.lineTo(px, py) : x.moveTo(px, py); }); x.stroke();
-  x.shadowBlur = 0; x.fillStyle = col; x.beginPath(); x.arc(W - 1, base - B[B.length - 1] * amp, 3, 0, 6.283); x.fill();
-  x.globalCompositeOperation = "destination-out"; const g = x.createLinearGradient(0, 0, W * .35, 0);
-  g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, W * .35, H); x.globalCompositeOperation = "source-over";
+  x.shadowBlur = 0; x.fillStyle = col; x.beginPath(); x.arc(W - 1, base - B[B.length - 1] * amp, 2.6, 0, 6.283); x.fill();
+  x.globalCompositeOperation = "destination-out";
+  const g = x.createLinearGradient(0, 0, W * .3, 0); g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, W * .3, H);
+  x.globalCompositeOperation = "source-over";
 }
 function heartSize() {
   const cv = $("hbCv"); if (!cv) return; const r = cv.getBoundingClientRect(); if (!r.width) return;
   heart.dpr = Math.min(2, devicePixelRatio || 1); heart.W = Math.round(r.width); heart.H = Math.round(r.height);
   cv.width = heart.W * heart.dpr; cv.height = heart.H * heart.dpr;
   if (heart.buf.length > heart.W) heart.buf.splice(0, heart.buf.length - heart.W);
-  else if (heart.buf.length < heart.W) { const keep = heart.buf; heart.buf = []; heart.phase = 0; heartFeed(heart.W - keep.length, false); heart.buf = heart.buf.concat(keep); }
+  else if (heart.buf.length < heart.W) { const keep = heart.buf, ph = heart.phase; heart.buf = []; heart.phase = 0; heartFeed(heart.W - keep.length, false); heart.buf = heart.buf.concat(keep); heart.phase = ph; }
   heartDraw();
 }
 function heartBeat() {
-  const ic = $("hbHeart"), hb = $("hb");
+  const ic = $("hbHeart");
   if (ic) { ic.classList.remove("beat"); void ic.offsetWidth; ic.classList.add("beat"); }
-  if (hb && heart.lvl === "red") { hb.classList.add("flash"); setTimeout(() => hb.classList.remove("flash"), 140); }
+  
   const rows = [...$("hbNotes").querySelectorAll(".hb-n:not(.more)")]; if (!rows.length) return;
   rows.forEach(r => r.classList.remove("lit"));
   const r = rows[heart.idx++ % rows.length]; r.classList.add("lit");
   clearTimeout(heart.litT); heart.litT = setTimeout(() => r.classList.remove("lit"), Math.min(520, 60000 / heart.bpm * .85));
 }
 function heartStart() {
-  if (reduceMotion || heart.raf || !heart.built) return;
+  if (reduceMotion || heart.raf || !heart.built || heart.paused) return;
   const step = (ts) => {
-    if (!heart.visible || document.hidden) { heart.raf = 0; heart.last = 0; return; }
+    if (!heart.visible || document.hidden || heart.paused) { heart.raf = 0; heart.last = 0; return; }
+    heart.raf = requestAnimationFrame(step); // zuerst einplanen: auch bei einem Fehler im Rest läuft der Takt weiter
+    if (heart.last && ts - heart.last < 32) return; // ~30 Bilder/s reichen
     const dt = heart.last ? Math.min(.1, (ts - heart.last) / 1000) : 0; heart.last = ts;
     heart.bpm += (heart.target - heart.bpm) * Math.min(1, dt * 1.5);
-    heart.acc += dt * HB_SPEED; const cols = Math.floor(heart.acc); heart.acc -= cols;
+    heart.acc += dt * heartSpeed(); const cols = Math.floor(heart.acc); heart.acc -= cols;
     if (cols) { heartFeed(cols, true); heartDraw(); const b = Math.round(heart.bpm), e = $("hbBpm"); if (e && e.textContent != b) e.textContent = b; }
-    heart.raf = requestAnimationFrame(step);
   };
   heart.raf = requestAnimationFrame(step);
 }
+const HEART_PATH = "M12 20.5s-7.2-4.5-9.2-9C1.6 8.4 3.3 5 6.6 5c2 0 3.5 1 5.4 2.9C13.9 6 15.4 5 17.4 5c3.3 0 5 3.4 3.8 6.5-2 4.5-9.2 9-9.2 9z";
+const hbStat = (list) => { const nR = list.filter(i => i.lvl === "red").length, nY = list.length - nR; return { nR, nY, lvl: nR ? "red" : nY ? "yellow" : "green", bpm: Math.min(120, 58 + nY * 2 + nR * 8) }; };
 function renderHeart() {
-  const hb = $("hb"); if (!hb) return;
+  const hb = $("hb"); if (!hb) return; heart.col = null;
   const U = (state.U || []).filter(u => !u.empty && u.n > 0 && u.lvl !== "green");
-  const red = U.filter(u => u.lvl === "red"), yel = U.filter(u => u.lvl === "yellow");
   const fo = ((state.d && state.d.frei) || []).filter(f => f.status === "offen").length;
-  renderGreet(U, red.length);
-  const lvl = red.length ? "red" : (yel.length || fo) ? "yellow" : "green";
-  heart.target = Math.min(150, 58 + yel.length * 3 + red.length * 12 + Math.min(fo, 5) * 2);
+  renderGreet(U, U.filter(u => u.lvl === "red").length); // die Begrüßung zeigt immer die volle Wahrheit
+  const ck = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON.check}</svg>`;
+  const areaOf = (u) => { const el = $(u.sec); return el ? areaOfEl(el) : "home"; };
+  const all = U.slice().sort((a, b) => (a.lvl === "red" ? 0 : 1) - (b.lvl === "red" ? 0 : 1)).map(u => ({ key: u.id, area: areaOf(u), lvl: u.lvl, n: u.n, label: u.label, ico: chipIcon(u), go: () => focusRule(u.id) }));
+  if (fo) all.push({ key: "frei", area: "freigaben", lvl: "yellow", n: fo, label: T("Wartet auf Freigabe"), ico: ck, go: () => showArea("freigaben") });
+  const seen = hbSeenGet(), vis = (it) => !(seen[it.key] >= it.n);
+  { let dirty = false; for (const k in seen) { const it = all.find(i => i.key === k); if (!it) { delete seen[k]; dirty = true; } else if (it.n < seen[k]) { seen[k] = it.n; dirty = true; } } if (dirty) hbSeenSet(seen); } // Ausgeblendetes, das sich erledigt hat oder gesunken ist, kommt bei neuem Anstieg wieder
+  // jeder Bereich hat seinen eigenen Puls: Übersicht = alles, sonst nur die Meldungen dieses Bereichs
+  const scopeAll = area === "home" ? all : all.filter(i => i.area === area), items = scopeAll.filter(vis), hidden = scopeAll.length - items.length;
+  const S = hbStat(scopeAll), nR = S.nR, nY = S.nY, lvl = S.lvl;
+  heart.target = S.bpm;
   if (lvl !== heart.lvl) { heart.lvl = lvl; heart.col = null; }
-  hb.className = "hb " + lvl + (hb.classList.contains("flash") ? " flash" : "");
-  const part = (n, k, c) => n ? ` · <b style="color:var(${c})">${n}</b> ${T(k)}` : "";
+  hb.className = "hb " + lvl; hb.setAttribute("aria-label", T("Systempuls"));
+  const A = AREAS.find(a => a.k === area) || AREAS[0]; $("hbArea").textContent = T(A.name);
+  const part = (n, k, c) => n ? ` · <b style="color:var(${c})"><bdi dir="ltr">${n}</bdi></b> ${T(k)}` : "";
   $("hbState").innerHTML = lvl === "green" ? `<b>${T("Alles ruhig")}</b>` :
-    `<b>${T(lvl === "red" ? "Alarm" : "Unruhig")}</b>${part(red.length, "dringend", "--bad")}${part(yel.length + (fo ? 1 : 0), "beachten", "--warn")}`;
-  // Meldungen unter dem Puls: Rot zuerst, höchstens 5 Zeilen
-  const items = [...red, ...yel].map(u => ({ lvl: u.lvl, n: u.n, label: u.label, ico: chipIcon(u), go: () => focusRule(u.id) }));
-  if (fo) items.push({ lvl: "yellow", n: fo, label: T("Wartet auf Freigabe"), ico: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON.check}</svg>`, go: () => showArea("freigaben") });
-  const shown = items.slice(0, 5), more = items.length - shown.length;
-  $("hbNotes").innerHTML = shown.map(it => `<button type="button" class="hb-n ${it.lvl}"><span class="ico" aria-hidden="true">${it.ico}</span><span class="n">${num(it.n)}</span><span class="l">${esc(it.label)}</span></button>`).join("") +
-    (more > 0 ? `<button type="button" class="hb-n more"><span class="n">+${more}</span><span class="l">${T("weitere")}</span></button>` : "");
-  const btns = [...$("hbNotes").querySelectorAll(".hb-n")];
-  btns.forEach((b, i) => b.onclick = shown[i] ? shown[i].go : () => goTo("urgentWrap"));
+    `<b>${T(lvl === "red" ? "Alarm" : "Unruhig")}</b>${part(nR, "dringend", "--hbr")}${part(nY, "beachten", "--hba")}`;
+  // Meldungen unter dem Puls: Rot zuerst, höchstens 6 Zeilen
+  const cap = matchMedia("(max-width:620px)").matches ? 3 : 6, shown = items.slice(0, cap), more = items.length - shown.length;
+  $("hbNotes").innerHTML = shown.map(it => `<div class="hb-n ${it.lvl}"><button type="button" class="hb-go"><span class="ico" aria-hidden="true">${it.ico}</span><span class="n">${num(it.n)}</span><span class="l">${esc(it.label)}</span></button><button type="button" class="hb-x" title="${esc(T("Ausblenden"))}" aria-label="${esc(T("Ausblenden"))}: ${esc(it.label)}">✓</button></div>`).join("") +
+    (more > 0 ? `<div class="hb-n more"><button type="button" class="hb-go"><span class="n">+${more}</span><span class="l">${T("weitere")}</span></button></div>` : "");
+  [...$("hbNotes").querySelectorAll(".hb-n")].forEach((row, i) => {
+    row.querySelector(".hb-go").onclick = shown[i] ? shown[i].go : () => goTo("urgentWrap");
+    const x = row.querySelector(".hb-x"); if (x) x.onclick = () => { const s = hbSeenGet(); s[shown[i].key] = shown[i].n; hbSeenSet(s); renderHeart(); const nb = $("hbNotes").querySelectorAll(".hb-go"), nx = nb[Math.min(i, nb.length - 1)] || $("hbHid").querySelector("button"); if (nx) nx.focus(); };
+  });
+  $("hbHid").innerHTML = hidden ? `<button type="button" class="hb-un">${hidden} ${T("ausgeblendet")} · ${T("Alle zeigen")}</button>` : "";
+  const un = $("hbHid").querySelector(".hb-un"); if (un) un.onclick = () => { hbSeenSet({}); renderHeart(); };
+  // kleines Herz in der Seitenleiste: schlägt je Bereich so schnell, wie es dort brennt
+  document.querySelectorAll("#secNav [data-area-go]").forEach(b => {
+    const k = b.dataset.areaGo; if (k === "home") return;
+    const s = hbStat(all.filter(i => i.area === k && vis(i)));
+    let p = b.querySelector(".np");
+    if (!p) { p = document.createElement("span"); p.setAttribute("aria-hidden", "true"); p.innerHTML = `<svg viewBox="0 0 24 24"><path d="${HEART_PATH}"/></svg>`; const nl = b.querySelector(".nl"); nl ? nl.after(p) : b.appendChild(p); }
+    p.className = "np " + s.lvl; p.style.setProperty("--npd", (60 / s.bpm).toFixed(2) + "s");
+  });
   if (!heart.built) {
     heart.built = true; heart.bpm = heart.target;
-    new ResizeObserver(heartSize).observe($("hbCv"));
-    new IntersectionObserver(e => { heart.visible = e[0].isIntersecting; if (heart.visible) heartStart(); }).observe(hb);
+    try { heart.paused = localStorage.getItem("hbPause") === "1"; } catch (_) {}
+    const pb = $("hbPause"), sync = () => { pb.setAttribute("aria-pressed", String(heart.paused)); pb.innerHTML = heart.paused ? "&#9654;" : "&#10074;&#10074;"; pb.title = pb.ariaLabel = T(heart.paused ? "Fortsetzen" : "Pause"); document.documentElement.classList.toggle("hb-paused", heart.paused); };
+    pb.onclick = () => { heart.paused = !heart.paused; try { localStorage.setItem("hbPause", heart.paused ? "1" : "0"); } catch (_) {} if (heart.paused) $("hbNotes").querySelectorAll(".lit").forEach(r => r.classList.remove("lit")); sync(); heartStart(); };
+    heart.syncPause = sync;
+    new ResizeObserver(heartSize).observe($("hbCv")); addEventListener("resize", heartSize); // auch bei Wechsel des Bildschirms (andere Pixeldichte)
+    new IntersectionObserver(e => { heart.visible = e[e.length - 1].isIntersecting; if (heart.visible) heartStart(); }).observe(hb);
     document.addEventListener("visibilitychange", () => { if (!document.hidden) heartStart(); });
   }
   if (reduceMotion) { heart.bpm = heart.target; heart.buf = []; heartSize(); }
   $("hbBpm").textContent = Math.round(heart.bpm);
+  if (heart.syncPause) heart.syncPause();
   heartStart();
 }
 // Milchstraße: einmal gerendert (Nebel, Staub, Sternfeld), darüber funkelnde Sterne, Sternschnuppen, leichte Tiefe zur Maus
@@ -2472,9 +2527,15 @@ function renderProducts(prod, inv) {
   table("tblTop", [{ t: "Produkt" }, { t: "Netto", r: 1 }, { t: "Best.", r: 1 }],
     top.map(([p, v]) => [`<div class="name">${esc(p)}</div><div class="small" style="display:flex;gap:6px;align-items:center;margin-top:3px">${[...v.ch].map(c => `<i class="sw" style="--pc:${pc(c)};width:8px;height:8px;box-shadow:none" title="${esc(c)}"></i>`).join("")}<span class="muted">${esc([...v.ch].join(", "))}</span></div><div class="barbg" style="margin-top:5px;height:3px"><div class="bar" style="height:3px;width:${Math.round(v.n / mx * 100)}%"></div></div>`, eur(v.n), num(v.o)]),
     errTxt("prod", "Noch keine Produktumsätze."));
-  const flop = inv.filter(r => r.stock > 0 && Number(r.sold_30d) === 0).sort((a, b) => Number(b.stock_value || 0) - Number(a.stock_value || 0)).slice(0, 10);
+  const flopAll = inv.filter(r => r.stock > 0 && Number(r.sold_30d) === 0).sort((a, b) => Number(b.stock_value || 0) - Number(a.stock_value || 0)), flop = flopAll.slice(0, 10);
   table("tblFlop", [{ t: "Produkt" }, { t: "Bestand", r: 1 }, { t: "Lagerwert", r: 1 }],
-    flop.map(r => [`<div class="name">${esc(r.title || r.product)}</div>`, num(r.stock), eur(r.stock_value)]), errTxt("inv", "Keine Ladenhüter."));
+    flop.map(r => [`<div class="name">${esc(r.title || r.product)}</div><div class="small muted">${esc(T("Art.-Nr."))} ${esc(r.sku || r.product || "–")} · EAN ${esc(r.ean || "–")}</div>`, num(r.stock), eur(r.stock_value)]), errTxt("inv", "Keine Ladenhüter."));
+  // Excel (CSV) und PDF enthalten ALLE Artikel mit Bestand und ohne Verkauf in 30 Tagen, nicht nur die zehn sichtbaren
+  exportButtons("expFlop", "lager-ohne-verkauf-30-tage", "Lagerbestand ohne Verkauf in den letzten 30 Tagen", () => ({
+    headers: ["Produkt", "Artikelnummer (SKU)", "EAN", "Bestand", "Einkaufspreis EK", "Lagerwert (EK)", "Anteil am Lagerwert"],
+    rows: (() => { const tot = flopAll.reduce((a, r) => a + Number(r.stock_value || 0), 0);
+      return flopAll.map(r => [r.title || r.product, r.sku || r.product || "", r.ean || "", num(r.stock), r.unit_cost != null ? eur(r.unit_cost, 2) : "", eur(r.stock_value, 2), tot ? (Number(r.stock_value || 0) / tot * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " %" : ""]); })(),
+  }));
 }
 
 // Verkäufe je Artikel und Plattform: Abgleich über den Produktnamen oder eine im Namen stehende Amazon-SKU (BE…); nicht gefundene Artikel zeigen „–“.
