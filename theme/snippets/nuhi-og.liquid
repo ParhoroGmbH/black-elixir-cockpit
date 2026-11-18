@@ -1,0 +1,21 @@
+{%- comment -%} Nuhi: Vorschau beim Teilen des Links (Open Graph / Twitter), nur auf der Seite mit Vorlage nuhi. Bild = echtes Foto von Schachtel und Flakon. Claude 18.11.2026. {%- endcomment -%}
+{%- if template.suffix == 'nuhi' -%}
+{%- assign nu_l = request.locale.iso_code | slice: 0, 2 -%}
+{%- capture nu_t -%}Nuhi Paris – {% case nu_l %}{% when 'en' %}Trojan Horse, Oud, Nuhi and Intense{% when 'fr' %}Trojan Horse, Oud, Nuhi et Intense{% when 'it' %}Trojan Horse, Oud, Nuhi e Intense{% when 'da' %}Trojan Horse, Oud, Nuhi og Intense{% when 'ar' %}Trojan Horse وOud وNuhi وIntense{% when 'he' %}Trojan Horse, Oud, Nuhi ו-Intense{% else %}Trojan Horse, Oud, Nuhi und Intense{% endcase %} | BLACK ELIXIR{%- endcapture -%}
+{%- capture nu_d -%}{% case nu_l %}{% when 'en' %}Nuhi Paris at BLACK ELIXIR: Trojan Horse, Oud, Nuhi Eau de Toilette and Nuhi Intense – four fragrances from the house of fashion designer Fehmi Nouhi, with top, heart and base notes.{% when 'fr' %}Nuhi Paris chez BLACK ELIXIR : Trojan Horse, Oud, Nuhi Eau de Toilette et Nuhi Intense – quatre parfums de la maison du créateur de mode Fehmi Nouhi, avec notes de tête, de cœur et de fond.{% when 'it' %}Nuhi Paris da BLACK ELIXIR: Trojan Horse, Oud, Nuhi Eau de Toilette e Nuhi Intense – quattro profumi della maison dello stilista Fehmi Nouhi, con note di testa, di cuore e di fondo.{% when 'da' %}Nuhi Paris hos BLACK ELIXIR: Trojan Horse, Oud, Nuhi Eau de Toilette og Nuhi Intense – fire dufte fra modedesigneren Fehmi Nouhis hus, med top-, hjerte- og basisnoter.{% when 'ar' %}Nuhi Paris لدى BLACK ELIXIR: Trojan Horse وOud وNuhi Eau de Toilette وNuhi Intense – أربعة عطور من دار مصمّم الأزياء فهمي نوهي، مع نوتات المقدمة والقلب والقاعدة.{% when 'he' %}Nuhi Paris ב-BLACK ELIXIR: Trojan Horse, Oud, Nuhi Eau de Toilette ו-Nuhi Intense – ארבעה בשמים מבית מעצב האופנה פהמי נוהי, עם תווים עליונים, תווי לב ותווי בסיס.{% else %}Nuhi Paris bei BLACK ELIXIR: Trojan Horse, Oud, Nuhi Eau de Toilette und Nuhi Intense – vier Düfte aus dem Haus des Modedesigners Fehmi Nouhi, mit Kopf-, Herz- und Basisnoten.{% endcase %}{%- endcapture -%}
+{%- assign nu_i = 'nuhi-og.jpg' | asset_url -%}
+<meta property="og:site_name" content="BLACK ELIXIR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ nu_t | escape }}">
+<meta property="og:description" content="{{ nu_d | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:image" content="https:{{ nu_i }}">
+<meta property="og:image:secure_url" content="https:{{ nu_i }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nuhi Paris Trojan Horse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ nu_t | escape }}">
+<meta name="twitter:description" content="{{ nu_d | escape }}">
+<meta name="twitter:image" content="https:{{ nu_i }}">
+{%- endif -%}

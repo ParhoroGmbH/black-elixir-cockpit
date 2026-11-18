@@ -1,0 +1,19 @@
+{%- comment -%} 18.11.2026 (Claude): Inhalt unveraendert in snippets/predictive-search-base.liquid. Hier werden nur die Treffer der Kollektionen "nicheend" und "nuhi" auf ihre Landingpages /pages/nicheend und /pages/nuhi umgeleitet. {%- endcomment -%}
+{%- capture ps_out -%}{% include 'predictive-search-base' %}{%- endcapture -%}
+{%- assign ne_pg = pages['nicheend'] -%}
+{%- if ne_pg != empty and ne_pg.url != blank -%}
+  {%- assign ne_from = 'href="' | append: routes.collections_url | append: '/nicheend?' -%}
+  {%- assign ne_to = 'href="' | append: ne_pg.url | append: '?' -%}
+  {%- assign ne_from2 = 'href="' | append: routes.collections_url | append: '/nicheend"' -%}
+  {%- assign ne_to2 = 'href="' | append: ne_pg.url | append: '"' -%}
+  {%- assign ps_out = ps_out | replace: ne_from, ne_to | replace: ne_from2, ne_to2 -%}
+{%- endif -%}
+{%- assign nu_pg = pages['nuhi'] -%}
+{%- if nu_pg != empty and nu_pg.url != blank -%}
+  {%- assign nu_from = 'href="' | append: routes.collections_url | append: '/nuhi?' -%}
+  {%- assign nu_to = 'href="' | append: nu_pg.url | append: '?' -%}
+  {%- assign nu_from2 = 'href="' | append: routes.collections_url | append: '/nuhi"' -%}
+  {%- assign nu_to2 = 'href="' | append: nu_pg.url | append: '"' -%}
+  {%- assign ps_out = ps_out | replace: nu_from, nu_to | replace: nu_from2, nu_to2 -%}
+{%- endif -%}
+{{ ps_out }}

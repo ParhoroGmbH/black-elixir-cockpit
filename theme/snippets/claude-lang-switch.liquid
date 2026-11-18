@@ -1,0 +1,11 @@
+{%- comment -%} Sprachwahl fuer Landingpages ohne Theme-Layout (page.nuhi, page.nicheend). Zeigt alle veroeffentlichten Shop-Sprachen; Shopify leitet auf dieselbe Seite in der gewaehlten Sprache. pos = CSS fuer die Position. Claude 18.11.2026. {%- endcomment -%}
+{%- if localization.available_languages.size > 1 -%}
+<style>.cl-lang{position:fixed;z-index:60;margin:0}.cl-lang select{-webkit-appearance:none;appearance:none;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.08em;color:#e9e3d6;padding:10px 26px 10px 14px;border:1px solid #ffffff33;border-radius:999px;cursor:pointer;background:#05060bb3 url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23e9e3d6'/%3E%3C/svg%3E") no-repeat right 11px center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.cl-lang select:focus-visible{outline:1px solid #c9954f;outline-offset:3px}.cl-lang option{background:#0b0b0e;color:#e9e3d6}</style>
+{%- form 'localization', class: 'cl-lang', style: pos -%}
+<select name="locale_code" aria-label="Sprache" onchange="this.form.submit()">
+{%- for l in localization.available_languages -%}
+<option value="{{ l.iso_code }}" lang="{{ l.iso_code }}"{% if l.iso_code == localization.language.iso_code %} selected{% endif %}>{{ l.endonym_name | capitalize }}</option>
+{%- endfor -%}
+</select>
+{%- endform -%}
+{%- endif -%}
