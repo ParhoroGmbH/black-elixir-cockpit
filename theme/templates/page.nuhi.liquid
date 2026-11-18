@@ -158,6 +158,22 @@ footer span{display:block;margin-top:8px;font:400 11.5px/1 var(--sans);letter-sp
 .nu-rtl .cap__in,.nu-rtl .maison__copy{text-align:right}
 .nu-rtl .cap p,.nu-rtl .maison p{margin-inline-start:0}
 .nu-ar .eyebrow em{display:none}
+/* ---------- phone: whole picture visible, caption below it ---------- */
+@media (max-width:900px){
+  .stage{--pt:calc(108px + env(safe-area-inset-top,0px))}
+  .layer::before{content:"";position:absolute;inset:-48px;background:#000 var(--bg,none) center/cover no-repeat;filter:blur(30px) brightness(.35)}
+  .layer>video,.layer>img{inset:auto;top:var(--pt);left:0;width:100%;height:56.25vw;object-fit:contain;transform:none}
+  .layer::after,.layer.l::after,.layer.r::after{inset:auto;top:var(--pt);left:0;right:0;height:56.25vw;background:linear-gradient(180deg,#00000073 0,#0000 12%,#0000 84%,#0000008c 100%)}
+  .dust{inset:auto;top:var(--pt);left:0;height:56.25vw}
+  .cap,.cap.top{align-items:start}
+  .cap__in,.cap.r .cap__in,.cap.top .cap__in{padding-top:calc(var(--pt) + 56.25vw + 20px)!important;padding-bottom:0}
+  .cap h1{margin:16px 0 4px}
+  .cap h2{margin:16px 0 2px}
+  .price{margin:18px 0 18px;padding-block:14px}
+  .nu-home{min-height:40px;display:inline-flex;align-items:center}
+  .acts{top:calc(58px + env(safe-area-inset-top,0px))}
+  .acts a{padding-block:14px 12px}
+}
 </style>
 </head>
 <body>
@@ -166,28 +182,28 @@ footer span{display:block;margin-top:8px;font:400 11.5px/1 var(--sans);letter-sp
 <div class="film" data-film style="--n:19">
   <div class="stage">
     <!-- ACT I · TROJAN HORSE -->
-    <div class="layer l" data-at="0" style="--pos:58% 50%;--mpos:56% 42%"><video muted loop playsinline preload="metadata" poster="{{ 'nuhi-horse2.webp' | asset_url }}" data-v="{{ 'nuhi-horse2.mp4' | asset_url }}"></video></div>
-    <div class="layer l" data-at="1" style="--pos:62% 50%;--mpos:58% 50%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-hatch.webp' | asset_url }}" data-v="{{ 'nuhi-hatch.mp4' | asset_url }}"></video></div>
-    <div class="layer r" data-at="2" style="--pos:36% 50%;--mpos:30% 42%"><img src="{{ 'nuhi-c-horse.webp' | asset_url }}" alt="Nuhi Paris Trojan Horse Flakon im Inneren des hölzernen Pferdes" width="1600" height="892" loading="lazy" decoding="async"><canvas class="dust" data-dust></canvas></div>
-    <div class="layer l" data-at="3" style="--pos:76% 50%;--mpos:72% 40%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-frucht.webp' | asset_url }}" data-v="{{ 'nuhi-frucht.mp4' | asset_url }}"></video></div>
-    <div class="layer r" data-at="4" style="--pos:20% 50%;--mpos:24% 40%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-bluete.webp' | asset_url }}" data-v="{{ 'nuhi-bluete.mp4' | asset_url }}"></video></div>
-    <div class="layer l" data-at="5" style="--pos:66% 50%;--mpos:66% 40%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-head.webp' | asset_url }}" data-v="{{ 'nuhi-head.mp4' | asset_url }}"></video></div>
-    <div class="layer l" data-at="6" style="--pos:66% 50%;--mpos:64% 40%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-bloom.webp' | asset_url }}" data-v="{{ 'nuhi-bloom.mp4' | asset_url }}"></video></div>
-    <div class="layer l" data-at="7" style="--pos:58% 50%;--mpos:60% 42%"><img src="{{ 'nuhi-c-box2.webp' | asset_url }}" alt="Trojan Horse Flakon vor seiner schwarzen Schachtel mit goldenem Pferde-Emblem" width="1600" height="893" loading="lazy" decoding="async"></div>
+    <div class="layer l" data-at="0" style="--pos:58% 50%;--mpos:56% 42%" data-bg="{{ 'nuhi-horse2.webp' | asset_url }}"><video muted loop playsinline preload="metadata" poster="{{ 'nuhi-horse2.webp' | asset_url }}" data-v="{{ 'nuhi-horse2.mp4' | asset_url }}"></video></div>
+    <div class="layer l" data-at="1" style="--pos:62% 50%;--mpos:58% 50%" data-bg="{{ 'nuhi-hatch.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-hatch.webp' | asset_url }}" data-v="{{ 'nuhi-hatch.mp4' | asset_url }}"></video></div>
+    <div class="layer r" data-at="2" style="--pos:36% 50%;--mpos:30% 42%" data-bg="{{ 'nuhi-c-horse.webp' | asset_url }}"><img src="{{ 'nuhi-c-horse.webp' | asset_url }}" alt="Nuhi Paris Trojan Horse Flakon im Inneren des hölzernen Pferdes" width="1600" height="892" loading="lazy" decoding="async"><canvas class="dust" data-dust></canvas></div>
+    <div class="layer l" data-at="3" style="--pos:76% 50%;--mpos:72% 40%" data-bg="{{ 'nuhi-frucht.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-frucht.webp' | asset_url }}" data-v="{{ 'nuhi-frucht.mp4' | asset_url }}"></video></div>
+    <div class="layer r" data-at="4" style="--pos:20% 50%;--mpos:24% 40%" data-bg="{{ 'nuhi-bluete.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-bluete.webp' | asset_url }}" data-v="{{ 'nuhi-bluete.mp4' | asset_url }}"></video></div>
+    <div class="layer l" data-at="5" style="--pos:66% 50%;--mpos:66% 40%" data-bg="{{ 'nuhi-head.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-head.webp' | asset_url }}" data-v="{{ 'nuhi-head.mp4' | asset_url }}"></video></div>
+    <div class="layer l" data-at="6" style="--pos:66% 50%;--mpos:64% 40%" data-bg="{{ 'nuhi-bloom.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-bloom.webp' | asset_url }}" data-v="{{ 'nuhi-bloom.mp4' | asset_url }}"></video></div>
+    <div class="layer l" data-at="7" style="--pos:58% 50%;--mpos:60% 42%" data-bg="{{ 'nuhi-c-box2.webp' | asset_url }}"><img src="{{ 'nuhi-c-box2.webp' | asset_url }}" alt="Trojan Horse Flakon vor seiner schwarzen Schachtel mit goldenem Pferde-Emblem" width="1600" height="893" loading="lazy" decoding="async"></div>
     <!-- ACT II · OUD -->
-    <div class="layer l" data-at="8" style="--pos:66% 60%;--mpos:66% 60%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-o1.webp' | asset_url }}" data-v="{{ 'nuhi-o1.mp4' | asset_url }}"></video></div>
-    <div class="layer l" data-at="9" style="--pos:70% 50%;--mpos:72% 42%"><img src="{{ 'nuhi-p-oud-a.webp' | asset_url }}" alt="Nuhi Paris Oud Flakon auf verkohltem Holz neben Glut" width="1600" height="893" loading="lazy" decoding="async"></div>
-    <div class="layer l" data-at="10" style="--pos:66% 50%;--mpos:64% 42%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-o2.webp' | asset_url }}" data-v="{{ 'nuhi-o2.mp4' | asset_url }}"></video></div>
-    <div class="layer r" data-at="11" style="--pos:32% 50%;--mpos:36% 42%"><img src="{{ 'nuhi-o3.webp' | asset_url }}" alt="" width="1600" height="895" loading="lazy" decoding="async"></div>
-    <div class="layer r" data-at="12" style="--pos:30% 50%;--mpos:28% 42%"><img src="{{ 'nuhi-p-oud-b.webp' | asset_url }}" alt="Nuhi Paris Oud Flakon mit Kardamom und Lavendel" width="1600" height="893" loading="lazy" decoding="async"></div>
+    <div class="layer l" data-at="8" style="--pos:66% 60%;--mpos:66% 60%" data-bg="{{ 'nuhi-o1.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-o1.webp' | asset_url }}" data-v="{{ 'nuhi-o1.mp4' | asset_url }}"></video></div>
+    <div class="layer l" data-at="9" style="--pos:70% 50%;--mpos:72% 42%" data-bg="{{ 'nuhi-p-oud-a.webp' | asset_url }}"><img src="{{ 'nuhi-p-oud-a.webp' | asset_url }}" alt="Nuhi Paris Oud Flakon auf verkohltem Holz neben Glut" width="1600" height="893" loading="lazy" decoding="async"></div>
+    <div class="layer l" data-at="10" style="--pos:66% 50%;--mpos:64% 42%" data-bg="{{ 'nuhi-o2.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-o2.webp' | asset_url }}" data-v="{{ 'nuhi-o2.mp4' | asset_url }}"></video></div>
+    <div class="layer r" data-at="11" style="--pos:32% 50%;--mpos:36% 42%" data-bg="{{ 'nuhi-o3.webp' | asset_url }}"><img src="{{ 'nuhi-o3.webp' | asset_url }}" alt="" width="1600" height="895" loading="lazy" decoding="async"></div>
+    <div class="layer r" data-at="12" style="--pos:30% 50%;--mpos:28% 42%" data-bg="{{ 'nuhi-p-oud-b.webp' | asset_url }}"><img src="{{ 'nuhi-p-oud-b.webp' | asset_url }}" alt="Nuhi Paris Oud Flakon mit Kardamom und Lavendel" width="1600" height="893" loading="lazy" decoding="async"></div>
     <!-- ACT III · NUHI -->
-    <div class="layer l" data-at="13" style="--pos:50% 60%;--mpos:8% 60%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-n1.webp' | asset_url }}" data-v="{{ 'nuhi-n1.mp4' | asset_url }}"></video></div>
-    <div class="layer l" data-at="14" style="--pos:70% 50%;--mpos:72% 42%"><img src="{{ 'nuhi-p-edt-a.webp' | asset_url }}" alt="Nuhi Eau de Toilette Flakon auf nassem Schiefer im Morgenlicht" width="1600" height="893" loading="lazy" decoding="async"></div>
-    <div class="layer l" data-at="15" style="--pos:70% 55%;--mpos:68% 45%"><video muted loop playsinline preload="none" poster="{{ 'nuhi-n2.webp' | asset_url }}" data-v="{{ 'nuhi-n2.mp4' | asset_url }}"></video></div>
-    <div class="layer l" data-at="16" style="--pos:66% 50%;--mpos:64% 42%"><img src="{{ 'nuhi-n4.webp' | asset_url }}" alt="" width="1600" height="895" loading="lazy" decoding="async"></div>
-    <div class="layer r" data-at="17" style="--pos:30% 50%;--mpos:28% 42%"><img src="{{ 'nuhi-p-edt-b.webp' | asset_url }}" alt="Nuhi Eau de Toilette Flakon auf Zedernholz mit Minze" width="1600" height="893" loading="lazy" decoding="async"></div>
+    <div class="layer l" data-at="13" style="--pos:50% 60%;--mpos:8% 60%" data-bg="{{ 'nuhi-n1.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-n1.webp' | asset_url }}" data-v="{{ 'nuhi-n1.mp4' | asset_url }}"></video></div>
+    <div class="layer l" data-at="14" style="--pos:70% 50%;--mpos:72% 42%" data-bg="{{ 'nuhi-p-edt-a.webp' | asset_url }}"><img src="{{ 'nuhi-p-edt-a.webp' | asset_url }}" alt="Nuhi Eau de Toilette Flakon auf nassem Schiefer im Morgenlicht" width="1600" height="893" loading="lazy" decoding="async"></div>
+    <div class="layer l" data-at="15" style="--pos:70% 55%;--mpos:68% 45%" data-bg="{{ 'nuhi-n2.webp' | asset_url }}"><video muted loop playsinline preload="none" poster="{{ 'nuhi-n2.webp' | asset_url }}" data-v="{{ 'nuhi-n2.mp4' | asset_url }}"></video></div>
+    <div class="layer l" data-at="16" style="--pos:66% 50%;--mpos:64% 42%" data-bg="{{ 'nuhi-n4.webp' | asset_url }}"><img src="{{ 'nuhi-n4.webp' | asset_url }}" alt="" width="1600" height="895" loading="lazy" decoding="async"></div>
+    <div class="layer r" data-at="17" style="--pos:30% 50%;--mpos:28% 42%" data-bg="{{ 'nuhi-p-edt-b.webp' | asset_url }}"><img src="{{ 'nuhi-p-edt-b.webp' | asset_url }}" alt="Nuhi Eau de Toilette Flakon auf Zedernholz mit Minze" width="1600" height="893" loading="lazy" decoding="async"></div>
     <!-- CODA · INTENSE -->
-    <div class="layer l" data-at="18" style="--pos:22% 50%;--mpos:50% 30%"><img src="{{ 'nuhi-p-trio.webp' | asset_url }}" alt="Nuhi Intense, drei Flakons zu 11 ml" width="1600" height="893" loading="lazy" decoding="async"></div>
+    <div class="layer l" data-at="18" style="--pos:22% 50%;--mpos:50% 30%" data-bg="{{ 'nuhi-p-trio.webp' | asset_url }}"><img src="{{ 'nuhi-p-trio.webp' | asset_url }}" alt="Nuhi Intense, drei Flakons zu 11 ml" width="1600" height="893" loading="lazy" decoding="async"></div>
 
     <div class="mark">Nuhi Paris</div>
     <nav class="acts" aria-label="Düfte">
@@ -415,6 +431,7 @@ footer span{display:block;margin-top:8px;font:400 11.5px/1 var(--sans);letter-sp
       var show=o>0&&!covered;
       l.style.visibility=show?'visible':'hidden';
       if(show){l.style.opacity=o.toFixed(3);l.style.setProperty('--z',(1.08-clamp((p-i+.72)/1.5)*.08).toFixed(4))}
+      if(Math.abs(p-i)<1.6&&!l._bg){l._bg=1;l.style.setProperty('--bg','url("'+l.dataset.bg+'")')}
       var v=l.querySelector('video');
       if(v){
         var near=Math.abs(p-i)<1.6, live=Math.abs(p-i)<.95;
