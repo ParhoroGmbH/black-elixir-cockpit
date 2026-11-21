@@ -331,7 +331,7 @@ var SR={{ sr_json }};
   var L=$('layers'),C=$('copies'),P=$('prog');
   N.forEach(function(n,i){
     var s=IMG[n[0]];
-    L.insertAdjacentHTML('beforeend','<div class="layer '+(n[4]==='r'?'r':'')+'"><img class="bg" src="'+s.s+'" alt="" aria-hidden="true" loading="lazy"><img class="ph" srcset="'+s.m+' 900w, '+s.d+' 1600w" sizes="100vw" src="'+s.d+'" alt=""'+(i>1?' loading="lazy"':' fetchpriority="'+(i?'auto':'high')+'"')+' decoding="async" width="1600" height="1063"></div>');
+    L.insertAdjacentHTML('beforeend','<div class="layer '+(n[4]==='r'?'r':'')+'"><img class="bg" src="'+s.s+'" alt="" aria-hidden="true" loading="lazy"><img class="ph" srcset="'+s.m+' 900w, '+s.d+' 1600w" sizes="100vw" src="'+s.d+'" alt=""'+(' fetchpriority="'+(i?'low':'high')+'"')+' decoding="async" width="1600" height="1063"></div>');
     C.insertAdjacentHTML('beforeend','<article class="copy '+n[4]+'"><div class="hour">'+hh(n[2])+'</div><span class="place"></span><h2>'+esc(n[1])+'</h2><div class="dir"></div><p class="line"></p><dl><dt></dt><dd></dd><dt></dt><dd></dd><dt></dt><dd></dd></dl><div class="buy"><span class="price">'+(pr(n[5]).p||'49,95 €')+'</span><a class="btn" tabindex="-1" href="'+SHOP+n[5]+'"></a></div></article>');
     P.insertAdjacentHTML('beforeend','<i></i>');
   });
