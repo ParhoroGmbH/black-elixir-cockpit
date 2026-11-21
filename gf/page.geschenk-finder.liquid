@@ -266,7 +266,7 @@ async function pick(){
 }
 function why(p){
   var W=[],who=A.who;
-  W.push(A.kind==='duft'?q('why_from_'+who):A.kind==='set'?q('why_set_'+who):q('why_care_'+who));
+  if(A.kind!=='duft')W.push(A.kind==='set'?q('why_set_'+who):q('why_care_'+who));else if(has(p,G[who]))W.push(q('why_from_'+who));
   W.push(q('why_budget').replace('{b}',q('budget_labels')[+A.bud]));
   if(p.r<=12)W.push(q('why_best'));
   if(p.k==='nische')W.push(q('why_niche').replace('{v}',esc(p.v)));
