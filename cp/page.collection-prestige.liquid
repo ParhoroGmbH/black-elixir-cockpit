@@ -296,7 +296,7 @@ var CP={{ cp_json }};
     C.insertAdjacentHTML('beforeend','<article class="copy '+v[8]+'"><div class="no"><b>N°'+v[2]+'</b><span>'+esc(v[4])+'</span></div><h2>'+esc(v[3])+'</h2><div class="dir">'+esc(v[5])+'</div><p class="line">'+esc(v[6])+'</p>'+dl+'<div class="buy"><span class="price">'+price(r)+'</span>'+(r&&!r[7]?'<span class="price" style="font-size:14px;color:#d99">'+t.sold+'</span>':'')+'<a class="btn" tabindex="-1" href="'+SHOP+v[1]+'">'+t.buy+'</a></div></article>');
   });
   // dial ring: 40 positions, labels every 5
-  var ring='';for(var t=0;t<40;t++){var a=t*Math.PI/20,l=t%5?39:36;ring+='<line x1="'+(Math.sin(a)*l).toFixed(2)+'" y1="'+(-Math.cos(a)*l).toFixed(2)+'" x2="'+(Math.sin(a)*44).toFixed(2)+'" y2="'+(-Math.cos(a)*44).toFixed(2)+'" stroke="#b99252" stroke-width="'+(t%5?.6:1.1)+'"/>';if(!(t%5))ring+='<text x="'+(Math.sin(a)*30).toFixed(2)+'" y="'+(-Math.cos(a)*30+2.4).toFixed(2)+'" text-anchor="middle">'+t+'</text>'}
+  var ring='';for(var q=0;q<40;q++){var a=q*Math.PI/20,l=q%5?39:36;ring+='<line x1="'+(Math.sin(a)*l).toFixed(2)+'" y1="'+(-Math.cos(a)*l).toFixed(2)+'" x2="'+(Math.sin(a)*44).toFixed(2)+'" y2="'+(-Math.cos(a)*44).toFixed(2)+'" stroke="#b99252" stroke-width="'+(q%5?.6:1.1)+'"/>';if(!(q%5))ring+='<text x="'+(Math.sin(a)*30).toFixed(2)+'" y="'+(-Math.cos(a)*30+2.4).toFixed(2)+'" text-anchor="middle">'+q+'</text>'}
   $('ring').innerHTML=ring;
 
   function card(r){
@@ -310,7 +310,7 @@ var CP={{ cp_json }};
   /* the combination lock */
   var BYN={};PRD.forEach(function(r){if(r[1]==null||r[4]!=='p')return;var c=BYN[r[1]];if(!c||(!c[7]&&r[7])||(c[7]===r[7]&&r[3]==='Extrait de Parfum'))BYN[r[1]]=r});
   var num=9,ang=-num*9,bigring=$('bigring'),dialbig=$('dialbig'),box=$('box'),drag=null;
-  var bt='';for(var t=0;t<40;t++){var a2=t*Math.PI/20,n0=t||40;bt+='<line x1="'+(Math.sin(a2)*45).toFixed(2)+'" y1="'+(-Math.cos(a2)*45).toFixed(2)+'" x2="'+(Math.sin(a2)*49).toFixed(2)+'" y2="'+(-Math.cos(a2)*49).toFixed(2)+'" stroke="#3a2c14" stroke-width="'+(t%5?.5:1)+'"/>';if(!(t%5))bt+='<text x="'+(Math.sin(a2)*38).toFixed(2)+'" y="'+(-Math.cos(a2)*38+2).toFixed(2)+'" text-anchor="middle">'+n0+'</text>'}
+  var bt='';for(var q=0;q<40;q++){var a2=q*Math.PI/20,n0=q||40;bt+='<line x1="'+(Math.sin(a2)*45).toFixed(2)+'" y1="'+(-Math.cos(a2)*45).toFixed(2)+'" x2="'+(Math.sin(a2)*49).toFixed(2)+'" y2="'+(-Math.cos(a2)*49).toFixed(2)+'" stroke="#3a2c14" stroke-width="'+(q%5?.5:1)+'"/>';if(!(q%5))bt+='<text x="'+(Math.sin(a2)*38).toFixed(2)+'" y="'+(-Math.cos(a2)*38+2).toFixed(2)+'" text-anchor="middle">'+n0+'</text>'}
   $('bigticks').innerHTML=bt;
   function setNum(n,snap){num=((Math.round(n)-1)%40+40)%40+1;if(snap)ang=-num*9;bigring.setAttribute('transform','rotate('+ang+')');$('bign').textContent=num;$('doorn').textContent=num;dialbig.setAttribute('aria-valuenow',num);if(box.classList.contains('open'))box.classList.remove('open')}
   function angAt(e){var r=dialbig.getBoundingClientRect();return Math.atan2(e.clientX-r.left-r.width/2,-(e.clientY-r.top-r.height/2))*180/Math.PI}
