@@ -1,0 +1,455 @@
+{%- layout none -%}
+{%- comment -%} Signature Royale Landingpage "Une Nuit au Palais". Bilder in Dateien (sr-palais-*.png), Flakons und Preise live aus der Kollektion signature-royale. Texte: snippets/sr-palais-i18n. Claude 21.11.2026 {%- endcomment -%}
+{%- assign sr_l = request.locale.iso_code | slice: 0, 2 -%}
+{%- assign sr_col = collections['signature-royale'] -%}
+{%- assign sr_card = images['sr-palais-carte.png'] -%}
+{%- assign sr_og = all_products['signature-royale-sugar-milk-extrait-de-parfum'].featured_image -%}
+{%- if routes.root_url == '/' -%}{%- assign sr_shop = '/products/' -%}{%- else -%}{%- assign sr_shop = routes.root_url | append: '/products/' -%}{%- endif -%}
+{%- capture sr_t -%}{% case sr_l %}{% when 'en' %}Signature Royale – Une Nuit au Palais | Extrait de Parfum at Black Elixir{% when 'fr' %}Signature Royale – Une Nuit au Palais | Extrait de Parfum chez Black Elixir{% when 'it' %}Signature Royale – Une Nuit au Palais | Extrait de Parfum da Black Elixir{% when 'da' %}Signature Royale – Une Nuit au Palais | Extrait de Parfum hos Black Elixir{% when 'ar' %}سيجنتشر رويال – ليلة في القصر | إكستريه دو بارفان لدى بلاك إليكسير{% when 'he' %}סיגנצ׳ר רויאל – לילה בארמון | אקסטרה דה פרפיום ב-Black Elixir{% else %}Signature Royale – Une Nuit au Palais | Extrait de Parfum bei Black Elixir{% endcase %}{%- endcapture -%}
+{%- capture sr_d -%}{% case sr_l %}{% when 'en' %}Signature Royale Extrait de Parfum, 50 ml for €49.95: one night in a palace told in eight scents, from Sunset Vibes to Sugar Milk. Discover them at Black Elixir.{% when 'fr' %}Signature Royale Extrait de Parfum, 50 ml à 49,95 € : une nuit au palais en huit parfums, de Sunset Vibes à Sugar Milk. À découvrir chez Black Elixir.{% when 'it' %}Signature Royale Extrait de Parfum, 50 ml a 49,95 €: una notte a palazzo in otto fragranze, da Sunset Vibes a Sugar Milk. Scoprile da Black Elixir.{% when 'da' %}Signature Royale Extrait de Parfum, 50 ml til 49,95 €: en nat på slottet fortalt i otte dufte, fra Sunset Vibes til Sugar Milk. Oplev dem hos Black Elixir.{% when 'ar' %}عطور سيجنتشر رويال إكستريه دو بارفان، 50 مل بسعر 49,95 €: ليلة في القصر في ثمانية عطور، من Sunset Vibes إلى Sugar Milk. اكتشفها لدى بلاك إليكسير.{% when 'he' %}סיגנצ׳ר רויאל אקסטרה דה פרפיום, 50 מ״ל ב-49,95 €: לילה בארמון בשמונה ניחוחות, מ-Sunset Vibes ועד Sugar Milk. גלו אותם ב-Black Elixir.{% else %}Signature Royale Extrait de Parfum, 50 ml für 49,95 €: eine Nacht im Palast in acht Düften, von Sunset Vibes bis Sugar Milk. Jetzt bei Black Elixir entdecken.{% endcase %}{%- endcapture -%}
+{%- capture sr_json -%}{"lang":{{ sr_l | json }},"shop":{{ sr_shop | json }},
+"card":{"d":{{ sr_card | image_url: width: 1600 | json }}},
+"img":{"sunset-vibes":{"d":{{ images['sr-palais-sunset-vibes.png'] | image_url: width: 1600 | json }},"m":{{ images['sr-palais-sunset-vibes.png'] | image_url: width: 900 | json }},"s":{{ images['sr-palais-sunset-vibes.png'] | image_url: width: 120 | json }}},"sweet-cherry":{"d":{{ images['sr-palais-sweet-cherry.png'] | image_url: width: 1600 | json }},"m":{{ images['sr-palais-sweet-cherry.png'] | image_url: width: 900 | json }},"s":{{ images['sr-palais-sweet-cherry.png'] | image_url: width: 120 | json }}},"souffle-de-safran":{"d":{{ images['sr-palais-souffle-de-safran.png'] | image_url: width: 1600 | json }},"m":{{ images['sr-palais-souffle-de-safran.png'] | image_url: width: 900 | json }},"s":{{ images['sr-palais-souffle-de-safran.png'] | image_url: width: 120 | json }}},"vertigo":{"d":{{ images['sr-palais-vertigo.png'] | image_url: width: 1600 | json }},"m":{{ images['sr-palais-vertigo.png'] | image_url: width: 900 | json }},"s":{{ images['sr-palais-vertigo.png'] | image_url: width: 120 | json }}},"tropical-crush":{"d":{{ images['sr-palais-tropical-crush.png'] | image_url: width: 1600 | json }},"m":{{ images['sr-palais-tropical-crush.png'] | image_url: width: 900 | json }},"s":{{ images['sr-palais-tropical-crush.png'] | image_url: width: 120 | json }}},"skin-on-fire":{"d":{{ images['sr-palais-skin-on-fire.png'] | image_url: width: 1600 | json }},"m":{{ images['sr-palais-skin-on-fire.png'] | image_url: width: 900 | json }},"s":{{ images['sr-palais-skin-on-fire.png'] | image_url: width: 120 | json }}},"sunset-pop":{"d":{{ images['sr-palais-sunset-pop.png'] | image_url: width: 1600 | json }},"m":{{ images['sr-palais-sunset-pop.png'] | image_url: width: 900 | json }},"s":{{ images['sr-palais-sunset-pop.png'] | image_url: width: 120 | json }}},"sugar-milk":{"d":{{ images['sr-palais-sugar-milk.png'] | image_url: width: 1600 | json }},"m":{{ images['sr-palais-sugar-milk.png'] | image_url: width: 900 | json }},"s":{{ images['sr-palais-sugar-milk.png'] | image_url: width: 120 | json }}}},
+"lurl":{ {%- for l in localization.available_languages -%}{%- assign lr = l.root_url -%}{%- if lr == '/' -%}{%- assign lr = '' -%}{%- endif -%}{{ l.iso_code | slice: 0, 2 | json }}:{{ lr | append: page.url | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%} },
+"prd":{ {%- for p in sr_col.products limit: 50 -%}{{ p.handle | json }}:{"p":{{ p.price | money_without_currency | append: ' €' | json }},"a":{{ p.available | json }},"i":{{ p.featured_image | image_url: width: 360, height: 360, crop: 'center' | json }},"c":{{ p.featured_image | image_url: width: 700, height: 700, crop: 'center' | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%} }}{%- endcapture -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}"{% if sr_l == 'ar' or sr_l == 'he' %} dir="rtl"{% endif %}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{ sr_t }}</title>
+<meta name="description" content="{{ sr_d | escape }}">
+<link rel="canonical" href="{{ canonical_url }}">
+{%- for l in localization.available_languages -%}{%- assign lr = l.root_url -%}{%- if lr == '/' -%}{%- assign lr = '' -%}{%- endif %}
+<link rel="alternate" hreflang="{{ l.iso_code }}" href="{{ request.origin }}{{ lr }}{{ page.url }}">
+{%- endfor %}
+<link rel="alternate" hreflang="x-default" href="{{ request.origin }}{{ page.url }}">
+<link rel="icon" href="{{ settings.favicon | image_url: width: 64 }}">
+<meta property="og:site_name" content="BLACK ELIXIR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ sr_t | escape }}">
+<meta property="og:description" content="{{ sr_d | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+{%- if sr_og %}
+<meta property="og:image" content="https:{{ sr_og | image_url: width: 1200, height: 630, crop: 'center' }}">
+<meta property="og:image:secure_url" content="https:{{ sr_og | image_url: width: 1200, height: 630, crop: 'center' }}">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Signature Royale Logo">
+<meta name="twitter:image" content="https:{{ sr_og | image_url: width: 1200, height: 630, crop: 'center' }}">
+{%- endif %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ sr_t | escape }}">
+<meta name="twitter:description" content="{{ sr_d | escape }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Mulish:wght@400;600&family=Pinyon+Script&display=swap">
+<link rel="preload" as="image" href="{{ images['sr-palais-sunset-vibes.png'] | image_url: width: 1600 }}" imagesrcset="{{ images['sr-palais-sunset-vibes.png'] | image_url: width: 900 }} 900w, {{ images['sr-palais-sunset-vibes.png'] | image_url: width: 1600 }} 1600w" imagesizes="100vw">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":{{ sr_t | json }},"description":{{ sr_d | json }},"url":{{ canonical_url | json }},"inLanguage":{{ request.locale.iso_code | json }},"isPartOf":{"@type":"WebSite","name":"BLACK ELIXIR – Maison de Parfum","url":{{ request.origin | json }}},"about":{"@type":"Brand","name":"Signature Royale"},"mainEntity":{"@type":"ItemList","numberOfItems":{{ sr_col.products_count | default: 28 }},"itemListElement":[{%- for p in sr_col.products limit: 50 -%}{"@type":"ListItem","position":{{ forloop.index }},"url":{{ request.origin | append: p.url | json }},"name":{{ p.title | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}}</script>
+{{ content_for_header }}
+<style>
+:root{
+  --night:#07060a; --gold:#c9a45c; --gold-l:#e6cf9a; --ivory:#f7f3ec; --ink:#141210; --mute:#6f675d;
+  --serif:'Bodoni Moda',Didot,'Times New Roman',serif; --sans:'Mulish','Helvetica Neue',Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{margin:0;background:var(--night);color:#f4eee4;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+[dir=rtl] body{font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+
+/* header */
+.top{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:flex-start;
+  padding:calc(14px + env(safe-area-inset-top,0px)) clamp(16px,4vw,44px) 22px;pointer-events:none;
+  background:linear-gradient(#07060acc,#07060a00)}
+.top > *{pointer-events:auto}
+.brand{display:flex;flex-direction:column;gap:12px}
+.brand > a{padding:6px 0;margin:-6px 0}
+.brand > a{text-decoration:none;font-size:12px;letter-spacing:.32em;text-transform:uppercase;font-weight:600;font-family:var(--sans)}
+.langs{display:flex;gap:2px;flex-wrap:wrap}
+.langs a{text-decoration:none;display:inline-block;background:none;border:0;padding:8px 7px;margin:-8px 0;min-width:30px;color:#f4eee499;font:600 10.5px/1 var(--sans);letter-spacing:.12em;cursor:pointer;border-bottom:1px solid transparent}
+.langs a[aria-current]{color:var(--gold-l);border-bottom-color:var(--gold)}
+.langs a:focus-visible{outline:1px solid var(--gold);outline-offset:2px}
+.top > span{font-family:var(--serif);letter-spacing:.12em;font-size:15px;color:var(--gold-l)}
+.top.day{background:linear-gradient(#f7f3ecee,#f7f3ec00);color:var(--ink)}
+.top.day > span{color:#8a6a2c}
+.top.day .langs a{text-decoration:none;display:inline-block;color:#14121099}
+.top.day .langs a[aria-current]{color:#8a6a2c}
+
+/* film */
+.film{position:relative;height:calc(var(--n) * 100svh)}
+.stage{position:sticky;top:0;height:100svh;overflow:hidden}
+.layer{position:absolute;inset:0;opacity:0;will-change:opacity}
+.layer .bg{display:none}
+.layer img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%;transform-origin:50% 25%;transform:scale(var(--z,1.03));will-change:transform}
+.layer::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--side,90deg),#07060ae6 0%,#07060a99 30%,#07060a00 58%)}
+.layer.r::after{--side:270deg}
+.intro{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:0 16px;z-index:3}
+.intro small{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold)}
+.intro h1{font-family:var(--serif);font-weight:400;font-size:clamp(46px,9vw,124px);line-height:.95;margin:.28em 0 .22em;letter-spacing:-.01em;text-wrap:balance}
+.intro h1 span{display:block;font-size:.26em;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-l);margin-bottom:.9em;font-family:var(--sans)}
+.intro p{max-width:30em;margin:0 auto;font-size:15px;line-height:1.7;color:#cfc6b8}
+.cue{margin-top:44px;font-size:11px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold)}
+.cue::after{content:"";display:block;width:1px;height:46px;margin:14px auto 0;background:linear-gradient(var(--gold),transparent)}
+.gate{position:absolute;inset:0;pointer-events:none;z-index:2}
+.gate i{position:absolute;top:0;bottom:0;width:50%;background:repeating-linear-gradient(90deg,#0d0b10 0 46px,#1a160f 46px 48px),#0d0b10;border-inline:1px solid #2b2417}
+.gate i:first-child{left:0;transform:translateX(calc(var(--g,0) * -100%))}
+.gate i:last-child{right:0;transform:translateX(calc(var(--g,0) * 100%))}
+
+.copy{position:absolute;z-index:4;top:50%;transform:translateY(-50%);width:min(430px,38vw);left:clamp(24px,6vw,96px);opacity:0}
+.copy.r{left:auto;right:clamp(24px,6vw,96px)}
+.hour{font-family:var(--serif);font-size:28px;color:var(--gold)}
+.place{display:block;margin-top:6px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#bdb3a4}
+[dir=rtl] .place,[dir=rtl] dt{letter-spacing:0}
+.copy h2{font-family:var(--serif);font-weight:400;font-size:clamp(38px,4.4vw,64px);line-height:1;margin:22px 0 10px;text-wrap:balance}
+.dir{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--gold-l)}
+.line{margin:18px 0 6px;font-size:15px;line-height:1.65;color:#e6ded2}
+dl{margin:18px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px;line-height:1.55}
+dt{color:var(--gold);letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;padding-top:3px}
+dd{margin:0;color:#d6cdbf}
+.buy{display:flex;align-items:center;gap:22px;margin-top:26px}
+.price{font-family:var(--serif);font-size:22px}
+.btn{display:inline-block;padding:13px 26px;border:1px solid var(--gold);color:#f7efe0;text-decoration:none;font-size:12px;letter-spacing:.24em;text-transform:uppercase;transition:background .25s,color .25s;background:none;cursor:pointer;font-family:var(--sans)}
+.btn:hover,.btn:focus-visible{background:var(--gold);color:#0b0906;outline:none}
+.clock{position:absolute;z-index:5;right:clamp(16px,3vw,40px);bottom:clamp(16px,3vw,36px);width:66px;height:66px;opacity:0}
+.clock svg{width:100%;height:100%;overflow:visible}
+.prog{position:absolute;z-index:5;left:clamp(16px,3vw,40px);bottom:clamp(20px,3vw,40px);display:flex;gap:8px;opacity:0}
+.prog i{width:18px;height:1px;background:#ffffff40}
+.prog i.on{background:var(--gold)}
+
+/* collection */
+.coll{background:var(--ivory);color:var(--ink);padding-block:clamp(72px,10vw,130px) 90px;padding-inline:clamp(16px,4vw,44px)}
+.head{max-width:1180px;margin:0 auto 46px;display:flex;flex-wrap:wrap;gap:14px 40px;align-items:end;justify-content:space-between}
+.kick{font-size:11px;letter-spacing:.36em;text-transform:uppercase;color:#8a6a2c}
+.coll h2,.sig h2{font-family:var(--serif);font-weight:400;font-size:clamp(36px,5vw,64px);margin:.2em 0 0;line-height:1}
+.head p{max-width:30em;margin:0;color:var(--mute);line-height:1.7;font-size:15px}
+.grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2px}
+.card{background:#fff;padding:26px 18px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;transition:background .25s}
+.card:hover,.card:focus-visible{background:#fbf8f2;outline:none}
+.card:focus-visible{box-shadow:inset 0 0 0 1px #8a6a2c}
+.card img{width:auto;height:190px;aspect-ratio:228/360;object-fit:contain;transition:transform .4s}
+.card:hover img{transform:translateY(-4px)}
+.card b{font-family:var(--serif);font-weight:400;font-size:20px;margin-top:16px}
+.card em{font-style:normal;font-size:12.5px;color:var(--mute);margin-top:6px;min-height:2.6em;line-height:1.35}
+.card span{margin-top:12px;font-size:14px;letter-spacing:.04em}
+.card .so{color:#9a3b2b;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+.card.out img{opacity:.55}
+
+/* signature */
+.sig{background:var(--night);padding-block:clamp(72px,9vw,120px);padding-inline:clamp(16px,4vw,44px)}
+.sig .in{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(28px,5vw,64px);align-items:center}
+.sig .kick{color:var(--gold)}
+.sig p{color:#cfc6b8;line-height:1.7;font-size:15px;max-width:34em;margin:18px 0 0}
+.sig label{display:block;margin-top:28px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+[dir=rtl] .sig label,[dir=rtl] .kick{letter-spacing:0}
+select{margin-top:10px;width:100%;max-width:340px;background:#14110d;color:#f4eee4;border:1px solid #5b4a2b;padding:12px 14px;font:400 17px var(--serif);border-radius:0;appearance:auto}
+select:focus-visible{outline:1px solid var(--gold);outline-offset:2px}
+.acts{display:flex;flex-wrap:wrap;gap:12px 16px;margin-top:26px;align-items:center}
+.ghost{background:none;border:0;color:#f4eee4cc;font:600 12px var(--sans);letter-spacing:.18em;text-transform:uppercase;cursor:pointer;padding:8px 0;text-decoration:underline;text-underline-offset:5px}
+.ghost:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+.ok{min-height:1.5em;margin-top:16px;font-family:var(--serif);font-style:italic;color:var(--gold-l);font-size:17px}
+.desk{position:relative;width:100%;aspect-ratio:1600/1195;overflow:hidden;box-shadow:0 40px 90px -40px #000}
+.paper{position:absolute;top:0;left:0;width:100%;aspect-ratio:1600/1195}
+.paper > img.ph{position:absolute;inset:0;width:100%;height:100%;display:block}
+.on-card{position:absolute;left:27.4%;top:5.6%;width:45.4%;height:88.4%;container-type:inline-size;text-align:center;color:#2a2219;pointer-events:none}
+.oc-brand{position:absolute;top:8%;left:0;right:0;font:400 5.6cqw/1 var(--serif);letter-spacing:.32em;text-transform:uppercase;color:#9b7a37;mix-blend-mode:multiply}
+.oc-rule{position:absolute;top:12.2%;left:42%;right:42%;height:1px;background:#9b7a37;opacity:.6}
+.oc-bottle{position:absolute;top:6.5%;left:50%;height:63%;transform:translateX(-50%);filter:drop-shadow(0 1.4cqw 1.6cqw #4a3a2244);mix-blend-mode:multiply}
+.oc-name{position:absolute;top:59%;left:0;right:0;font:italic 400 8.4cqw/1.05 var(--serif);color:#231c14;mix-blend-mode:multiply}
+.oc-dir{position:absolute;top:66.5%;left:0;right:0;font:400 3.1cqw/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:#7a6a55;mix-blend-mode:multiply}
+.oc-date{position:absolute;top:77%;left:14%;font:italic 400 3.4cqw/1 var(--serif);color:#5e5040;mix-blend-mode:multiply}
+.oc-line{position:absolute;top:86.5%;left:14%;right:14%;height:1px;background:#3b2f22;opacity:.45}
+.oc-under{position:absolute;top:88.4%;left:14%;font:400 2.7cqw/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:#7a6a55}
+.oc-hint{position:absolute;top:76%;left:0;right:0;font:400 9cqw/1 'Pinyon Script',cursive;color:#3b2f2233;transition:opacity .4s}
+.desk.inked .oc-hint{opacity:0}
+#pad{position:absolute;left:27.4%;top:5.6%;width:45.4%;height:88.4%;touch-action:none;cursor:crosshair}
+#pad:focus-visible{outline:1px dashed var(--gold);outline-offset:-6px}
+dialog{border:0;padding:0;background:none;max-width:min(92vw,460px);color:#f4eee4}
+dialog::backdrop{background:#000c}
+dialog img{display:block;width:100%;height:auto}
+dialog p{font-size:13px;color:#cfc6b8;margin:12px 0}
+footer{background:var(--night);color:#8f877b;text-align:center;padding:0 16px 46px;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+footer a{color:#f4eee4;text-decoration:none;font-weight:600}
+
+@media (max-width:900px){
+  .layer .bg{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(26px) brightness(.35);transform:scale(1.2)}
+  .layer img.ph{inset:auto;top:calc(74px + env(safe-area-inset-top,0px));left:0;width:100%;height:auto;aspect-ratio:1600/1063;object-fit:contain;transform:none}
+  .layer::after{background:linear-gradient(#07060a00 0,#07060a00 60%,#07060acc 100%)}
+  .copy,.copy.r{left:16px;right:16px;width:auto;top:calc(74px + env(safe-area-inset-top,0px) + 66.5vw + 16px);transform:none}
+  .copy h2{font-size:34px;margin:10px 0 4px}
+  .hour{font-size:22px}
+  .line{display:none}
+  dl{margin-top:12px;font-size:12.5px;gap:4px 12px}
+  .buy{margin-top:16px}
+  .clock{width:48px;height:48px;top:calc(74px + env(safe-area-inset-top,0px) + 66.5vw - 60px);bottom:auto;right:12px}
+  .prog{display:none}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .card{padding:20px 10px 18px}
+  .card img{height:150px}
+  .card b{font-size:17px}
+  .sig .in{grid-template-columns:1fr}
+  .desk{aspect-ratio:1000/1195}
+  .paper{width:160%;left:-30%}
+  select{max-width:none}
+}
+@media (max-width:600px){ .top > span{display:none} }
+@media (max-width:900px) and (max-height:700px){ dl dd:nth-of-type(3),dl dt:nth-of-type(3){display:none} }
+@media (prefers-reduced-motion:reduce){ .layer img{transform:none!important} }
+</style>
+</head>
+<body>
+
+<header class="top" id="top">
+  <div class="brand">
+    <a href="{{ routes.root_url }}">Black Elixir</a>
+    <nav class="langs" id="langs" aria-label="Sprache"></nav>
+  </div>
+  <span>Signature Royale</span>
+</header>
+
+<main>
+  <section class="film" id="film" aria-label="Une Nuit au Palais">
+    <div class="stage">
+      <div id="layers"></div>
+      <div class="gate" id="gate" aria-hidden="true"><i></i><i></i></div>
+      <div class="intro" id="intro">
+        <small data-t="kick"></small>
+        <h1><span>Signature Royale</span>Une Nuit<br>au Palais</h1>
+        <p data-t="intro"></p>
+        <div class="cue" data-t="cue"></div>
+      </div>
+      <div id="copies"></div>
+      <div class="clock" id="clock" aria-hidden="true">
+        <svg viewBox="-50 -50 100 100">
+          <circle r="47" fill="#07060a88" stroke="#c9a45c" stroke-width="1"/>
+          <g stroke="#c9a45c" stroke-width="1.2" id="ticks"></g>
+          <line id="hh" y2="-24" stroke="#e6cf9a" stroke-width="2.6" stroke-linecap="round"/>
+          <line id="mh" y2="-36" stroke="#e6cf9a" stroke-width="1.4" stroke-linecap="round"/>
+          <circle r="2.6" fill="#c9a45c"/>
+        </svg>
+      </div>
+      <div class="prog" id="prog" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section class="coll" id="collection">
+    <div class="head">
+      <div><span class="kick" data-t="morning"></span><h2>La Collection</h2></div>
+      <p data-t="collP"></p>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="sig" id="signature">
+    <div class="in">
+      <div>
+        <span class="kick" data-t="sigK"></span>
+        <h2 data-t="sigH"></h2>
+        <p data-t="sigP"></p>
+        <label for="pick" data-t="pick"></label>
+        <select id="pick"></select>
+        <div class="acts">
+          <a class="btn" id="sbuy" href="#" data-t="buy"></a>
+          <button class="ghost" id="again" type="button" data-t="again"></button>
+          <button class="ghost" id="save" type="button" data-t="save"></button>
+        </div>
+        <div class="ok" id="ok" aria-live="polite"></div>
+      </div>
+      <div class="desk" id="desk">
+        <div class="paper">
+          <img class="ph" src="{{ sr_card | image_url: width: 1600 }}" srcset="{{ sr_card | image_url: width: 900 }} 900w, {{ sr_card | image_url: width: 1600 }} 1600w" sizes="(max-width:900px) 160vw, 60vw" alt="" loading="lazy" decoding="async" width="1600" height="1195">
+          <div class="on-card" aria-hidden="true">
+            <div class="oc-brand">Signature Royale</div><div class="oc-rule"></div>
+            <img class="oc-bottle" id="cbottle" alt="" loading="lazy" crossorigin="anonymous">
+            <div class="oc-name" id="cname"></div>
+            <div class="oc-dir" id="cdir"></div>
+            <div class="oc-date" id="cdate"></div>
+            <div class="oc-hint" data-t="here"></div>
+            <div class="oc-line"></div>
+            <div class="oc-under">Signature</div>
+          </div>
+          <canvas id="pad" tabindex="0"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><span data-t="foot"></span> <a href="{{ routes.root_url }}">Black Elixir</a> · Maison de Parfum</footer>
+<dialog id="dlg"><img id="dimg" alt=""><p data-t="saveHelp"></p><button class="btn" id="dclose" type="button" data-t="close"></button></dialog>
+
+<script>
+{% render 'sr-palais-i18n' %}
+var SR={{ sr_json }};
+(function(){
+  var SHOP=SR.shop, IMG=SR.img, PRD=SR.prd;
+  function pr(h){return PRD[h]||{}}
+  // [slug, name, handle, family(de), sold out]
+  var D=[
+   ['african-legend','African Legend','signature-royale-african-legend-extrait-de-parfum','Orientalisch-Vanille · Gourmand'],
+   ['after-hours','After Hours','signature-royale-after-hours-extrait-de-parfum','Würzig-holzig · Gourmand',1],
+   ['al-andaluz','Al Andaluz','signature-royale-al-andaluz-extrait-de-parfum','Chypre-fruchtig'],
+   ['albi','Albi','signature-royale-albi-extrait-de-parfum','Weißblumig-pudrig',1],
+   ['caramel-sugar','Caramel Sugar','signature-royale-caramel-sugar-extrait-de-parfum','Orientalisch-süß'],
+   ['creamy-love','Creamy Love','signature-royale-creamy-love-extrait-de-parfum','Gourmand-nussig'],
+   ['dragee-blanc','Dragée Blanc','signature-royale-dragee-blanc-extrait-de-parfum','Amber-Vanille'],
+   ['eclat-d-amande','Eclat d’Amande','signature-royale-eclat-d-amande-extrait-de-parfum','Pudrig-Moschus'],
+   ['electric-nectar','Electric Nectar','signature-royale-electric-nectar-extrait-de-parfum','Fruchtig-Gourmand'],
+   ['ghost-oud','Ghost Oud','signature-royale-ghost-oud-extrait-de-parfum','Chypre-blumig'],
+   ['golden-smoothie','Golden Smoothie','signature-royale-golden-smoothie-extrait-de-parfum','Orientalisch-blumig'],
+   ['grey-london','Grey London','signature-royale-grey-london-extrait-de-parfum','Tropisch-Gourmand'],
+   ['iris-imperial','Iris Impérial','signature-royale-iris-imperial-extrait-de-parfum','Holzig'],
+   ['jardin-d-orient','Jardin d’Orient','signature-royale-jardin-d-orient-extrait-de-parfum','Blumig-fruchtig'],
+   ['layana-rose','Layana Rose','signature-royale-tropical-crush-078-extrait-de-parfum','Orientalisch-Vanille'],
+   ['mylan','Mylan','signature-royale-mylan-extrait-de-parfum','Aromatisch-zitrisch'],
+   ['mythologia','Mythologia','signature-royale-mythology-extrait-de-parfum','Blumig-fruchtig',1],
+   ['oud-envoutant','Oud Envoûtant','signature-royale-oud-envoutant-extrait-de-parfum','Orientalisch-holzig · Gourmand'],
+   ['poudre-blanche','Poudre Blanche','signature-royale-poudre-blanche-extrait-de-parfum','Vanille-pudrig'],
+   ['renaissance','Renaissance','signature-royale-renaissance-extrait-de-parfum','Chypre-fruchtig']
+  ];
+  // the night: [slug, name, hour, family(de), text side, handle]
+  var N=[
+   ['sunset-vibes','Sunset Vibes',19,'Amber-blumig','r'],
+   ['sweet-cherry','Sweet Cherry',20,'Amber-fruchtig','l'],
+   ['souffle-de-safran','Souffle de Safran',21,'Blumig-Gourmand','r'],
+   ['vertigo','Vertigo',22,'Blumig-Gourmand','r'],
+   ['tropical-crush','Tropical Crush',23,'Fruchtig','l','signature-royale-tropical-crush-504-extrait-de-parfum'],
+   ['skin-on-fire','Skin on Fire',24,'Amber-Gourmand','l'],
+   ['sunset-pop','Sunset Pop',25,'Fruchtig-blumig','r'],
+   ['sugar-milk','Sugar Milk',30,'Fruchtig-Gourmand','l']
+  ];
+  N.forEach(function(n){n[5]=n[5]||'signature-royale-'+n[0]+'-extrait-de-parfum'});
+  var ALL=N.map(function(n){return [n[0],n[1],n[5],n[3]]}).concat(D);
+  D.forEach(function(d){if(PRD[d[2]])d[4]=PRD[d[2]].a?0:1});
+  var K=N.length, INTRO=1, lang='de';
+  var $=function(i){return document.getElementById(i)};
+  $('film').style.setProperty('--n',K+INTRO+1);
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function hh(h){var x=h%24;return (x<10?'0':'')+x+':00'}
+  function fam(f){return lang==='de'?f:(FAM[f]&&FAM[f][lang])||f}
+
+  /* build scenes */
+  var L=$('layers'),C=$('copies'),P=$('prog');
+  N.forEach(function(n,i){
+    var s=IMG[n[0]];
+    L.insertAdjacentHTML('beforeend','<div class="layer '+(n[4]==='r'?'r':'')+'"><img class="bg" src="'+s.s+'" alt="" aria-hidden="true" loading="lazy"><img class="ph" srcset="'+s.m+' 900w, '+s.d+' 1600w" sizes="100vw" src="'+s.d+'" alt=""'+(i>1?' loading="lazy"':' fetchpriority="'+(i?'auto':'high')+'"')+' decoding="async" width="1600" height="1063"></div>');
+    C.insertAdjacentHTML('beforeend','<article class="copy '+n[4]+'"><div class="hour">'+hh(n[2])+'</div><span class="place"></span><h2>'+esc(n[1])+'</h2><div class="dir"></div><p class="line"></p><dl><dt></dt><dd></dd><dt></dt><dd></dd><dt></dt><dd></dd></dl><div class="buy"><span class="price">'+(pr(n[5]).p||'49,95 €')+'</span><a class="btn" tabindex="-1" href="'+SHOP+n[5]+'"></a></div></article>');
+    P.insertAdjacentHTML('beforeend','<i></i>');
+  });
+  var ticks='';for(var t=0;t<12;t++){var a=t*Math.PI/6;ticks+='<line x1="'+(Math.sin(a)*40).toFixed(1)+'" y1="'+(-Math.cos(a)*40).toFixed(1)+'" x2="'+(Math.sin(a)*44).toFixed(1)+'" y2="'+(-Math.cos(a)*44).toFixed(1)+'"/>'}
+  $('ticks').innerHTML=ticks;
+
+  /* language */
+  var LB=$('langs');
+  LANGS.forEach(function(l){if(!SR.lurl[l[0]])return;var b=document.createElement('a');b.href=SR.lurl[l[0]];b.lang=l[0];b.hreflang=l[0];b.textContent=l[1];LB.appendChild(b)});
+  function setLang(l){
+    lang=T[l]?l:'de'; var t=T[lang];
+    document.documentElement.lang=lang; document.documentElement.dir=(lang==='ar'||lang==='he')?'rtl':'ltr';
+    [].forEach.call(LB.children,function(b){if(b.lang===lang)b.setAttribute('aria-current','true')});
+    [].forEach.call(document.querySelectorAll('[data-t]'),function(e){e.textContent=t[e.getAttribute('data-t')]});
+    [].forEach.call(C.children,function(c,i){
+      c.querySelector('.place').textContent=t.rooms[i];c.querySelector('.dir').textContent=fam(N[i][3]);c.querySelector('.line').textContent=t.lines[i];
+      var dt=c.querySelectorAll('dt'),dd=c.querySelectorAll('dd');[t.top,t.heart,t.base].forEach(function(h,k){dt[k].textContent=h;dd[k].textContent=t.notes[i][k]});
+      c.querySelector('.btn').textContent=t.buy;
+      L.children[i].lastChild.alt=t.alt.replace('{n}',N[i][1]).replace('{p}',t.rooms[i]);
+    });
+    $('grid').innerHTML=D.map(function(d){
+      return '<a class="card'+(d[4]?' out':'')+'" href="'+SHOP+d[2]+'"><img src="'+(pr(d[2]).i||'')+'" alt="'+esc(t.alt.replace('{n}',d[1]).replace(', {p}',''))+'" loading="lazy" decoding="async" width="360" height="360"><b>'+esc(d[1])+'</b><em>'+esc(fam(d[3]))+'</em>'+(d[4]?'<span class="so">'+esc(t.sold)+'</span>':'<span>'+(pr(d[2]).p||'49,95 €')+'</span>')+'</a>';
+    }).join('');
+    var sel=$('pick'),cur=sel.value||'sugar-milk';
+    sel.innerHTML='<optgroup label="'+esc(t.gNight)+'">'+N.map(function(n){return '<option value="'+n[0]+'">'+esc(n[1])+'</option>'}).join('')+'</optgroup><optgroup label="'+esc(t.gColl)+'">'+D.filter(function(d){return !d[4]}).map(function(d){return '<option value="'+d[0]+'">'+esc(d[1])+'</option>'}).join('')+'</optgroup>';
+    sel.value=cur; $('pad').setAttribute('aria-label',t.here); $('ok').textContent=signed?t.signed:'';
+    showPick(); frame();
+  }
+
+  /* signature card */
+  var signed=false;
+  function cur(){var v=$('pick').value;for(var i=0;i<ALL.length;i++)if(ALL[i][0]===v)return ALL[i];return ALL[0]}
+  function showPick(){
+    var d=cur(); $('cbottle').src=pr(d[2]).c||pr(d[2]).i||''; $('cname').textContent=d[1]; $('cdir').textContent=fam(d[3]);
+    $('cdate').textContent='Paris, '+new Date().toLocaleDateString(lang==='ar'?'ar-EG':lang,{day:'numeric',month:'long',year:'numeric'});
+    $('sbuy').href=SHOP+d[2]; $('dimg').alt=T[lang].cardAlt.replace('{n}',d[1]);
+  }
+  $('pick').addEventListener('change',showPick);
+  var cv=$('pad'),cx=cv.getContext('2d'),dpr=Math.min(devicePixelRatio||1,2),strokes=[],cs=null,idle=0;
+  function size(){var r=cv.getBoundingClientRect();if(!r.width)return;cv.width=r.width*dpr;cv.height=r.height*dpr;cx.setTransform(dpr,0,0,dpr,0,0);redraw()}
+  function pt(e){var r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height,t:performance.now()}}
+  function ink(c,w,h,ox,oy){c.lineCap='round';c.lineJoin='round';c.strokeStyle='#1b2236';
+    strokes.forEach(function(s){for(var i=1;i<s.length;i++){var a=s[i-1],b=s[i],v=Math.hypot((b.x-a.x)*w,(b.y-a.y)*h)/Math.max(1,b.t-a.t);
+      c.lineWidth=Math.max(.9,2.8-v*1.3)*w/420;c.beginPath();c.moveTo(ox+a.x*w,oy+a.y*h);c.lineTo(ox+b.x*w,oy+b.y*h);c.stroke()}})}
+  function redraw(){var r=cv.getBoundingClientRect();cx.clearRect(0,0,r.width,r.height);ink(cx,r.width,r.height,0,0)}
+  cv.addEventListener('pointerdown',function(e){cv.setPointerCapture(e.pointerId);clearTimeout(idle);cs=[pt(e)];strokes.push(cs);$('desk').classList.add('inked')});
+  cv.addEventListener('pointermove',function(e){if(!cs)return;var p=pt(e),q=cs[cs.length-1];if(Math.abs(p.x-q.x)+Math.abs(p.y-q.y)<.003)return;cs.push(p);redraw()});
+  function up(){if(!cs)return;cs=null;clearTimeout(idle);idle=setTimeout(function(){signed=true;$('ok').textContent=T[lang].signed},900)}
+  cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+  $('again').onclick=function(){strokes=[];signed=false;$('ok').textContent='';$('desk').classList.remove('inked');redraw()};
+  addEventListener('resize',size);
+  if('ResizeObserver' in window)new ResizeObserver(size).observe(cv);
+
+  /* save: compose the card at full size, cropped to the card */
+  function loadImg(s){return new Promise(function(ok,no){var i=new Image();i.crossOrigin='anonymous';i.onload=function(){ok(i)};i.onerror=no;i.src=s})}
+  $('save').onclick=function(){
+    var d=cur();
+    Promise.all([loadImg(SR.card.d),loadImg(pr(d[2]).c||pr(d[2]).i),document.fonts?document.fonts.ready:0]).then(function(r){
+      var W=1600,H=1195,cxL=W*.274,cyT=H*.056,cw=W*.454,ch=H*.884;
+      var o=document.createElement('canvas');o.width=Math.round(W*.52);o.height=Math.round(H*.96);
+      var g=o.getContext('2d'),ox=-(W*.24),oy=-(H*.02);
+      g.drawImage(r[0],ox,oy,W,H);
+      g.save();g.globalCompositeOperation='multiply';g.textAlign='center';
+      var X=ox+cxL+cw/2,u=cw/100;
+      g.fillStyle='#9b7a37';g.font='400 '+(5.6*u)+'px "Bodoni Moda", serif';
+      if(g.letterSpacing!==undefined)g.letterSpacing=(1.8*u)+'px';
+      g.fillText('SIGNATURE ROYALE',X,oy+cyT+ch*.08+5*u);
+      if(g.letterSpacing!==undefined)g.letterSpacing='0px';
+      g.save();g.globalCompositeOperation='multiply';var bh=ch*.63,bw=bh*r[1].width/r[1].height;g.drawImage(r[1],X-bw/2,oy+cyT+ch*.065,bw,bh);g.restore();g.save();g.globalCompositeOperation='multiply';g.textAlign='center';
+      g.fillStyle='#231c14';g.font='italic 400 '+(8.4*u)+'px "Bodoni Moda", serif';g.fillText(d[1],X,oy+cyT+ch*.59+7.4*u);
+      g.fillStyle='#7a6a55';g.font='400 '+(3.1*u)+'px Mulish, sans-serif';g.fillText(fam(d[3]).toUpperCase(),X,oy+cyT+ch*.665+3*u);
+      g.textAlign='left';g.fillStyle='#5e5040';g.font='italic 400 '+(3.4*u)+'px "Bodoni Moda", serif';g.fillText($('cdate').textContent,ox+cxL+cw*.14,oy+cyT+ch*.77+3*u);
+      g.restore();
+      g.fillStyle='#3b2f2273';g.fillRect(ox+cxL+cw*.14,oy+cyT+ch*.865,cw*.72,1.5);
+      ink(g,cw,ch,ox+cxL,oy+cyT);
+      var url=o.toDataURL('image/jpeg',.9);$('dimg').src=url;
+      try{var a=document.createElement('a');a.href=url;a.download='carte-royale-'+d[0]+'.jpg';document.body.appendChild(a);a.click();a.remove()}catch(e){}
+      try{$('dlg').showModal()}catch(e){$('dlg').setAttribute('open','')}
+    });
+  };
+  $('dclose').onclick=function(){$('dlg').close()};
+
+  /* scroll film */
+  var film=$('film'),layers=L.children,copies=C.children,dots=P.children,intro=$('intro'),gate=$('gate'),clock=$('clock'),hhEl=$('hh'),mhEl=$('mh'),top=$('top'),coll=$('collection');
+  var clamp=function(v,a,b){return v<a?a:v>b?b:v},ease=function(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+  function frame(){
+    var r=film.getBoundingClientRect(),span=r.height-innerHeight;
+    var cr=coll.getBoundingClientRect();top.classList.toggle('day',cr.top<60&&cr.bottom>60);
+    if(r.bottom<0)return;
+    var p=clamp(-r.top/span,0,1)*(K+INTRO-1+.6);
+    gate.style.setProperty('--g',ease(clamp(p,0,1)));
+    intro.style.opacity=clamp(1-p*1.8,0,1); intro.style.transform='translateY('+(-p*40)+'px)';
+    var s=clamp(p-INTRO,-1,K-1);
+    for(var i=0;i<K;i++){
+      var d=s-i,o;
+      if(i===0)o=clamp(1+d,0,1)*(d>0?1-clamp((d-.62)/.38,0,1):1);
+      else o=d<0?clamp((d+.38)/.38,0,1):1-clamp((d-.62)/.38,0,1);
+      if(i===K-1&&d>0)o=1;
+      o=ease(o);layers[i].style.opacity=o;layers[i].style.visibility=o>0?'visible':'hidden';
+      layers[i].lastChild.style.setProperty('--z',(1.035-.035*clamp((d+1)/2,0,1)).toFixed(4));
+      var co=d<-.15?clamp((d+.3)/.15,0,1):1-clamp((d-.5)/.18,0,1);
+      if(i===K-1&&d>.5)co=1;
+      copies[i].style.opacity=co;copies[i].style.pointerEvents=co>.6?'auto':'none';
+      copies[i].querySelector('.btn').tabIndex=co>.6?0:-1;
+      dots[i].className=Math.round(clamp(s,0,K-1))===i&&s>-.5?'on':'';
+    }
+    var vis=clamp(p-.6,0,1);clock.style.opacity=vis;P.style.opacity=vis;
+    var si=clamp(s,0,K-1),a=Math.floor(si),f=si-a,b=Math.min(a+1,K-1),k=clamp((f-.62)/.38,0,1),hour=N[a][2]+(N[b][2]-N[a][2])*ease(k);
+    hhEl.setAttribute('transform','rotate('+(hour*30)+')');mhEl.setAttribute('transform','rotate('+(hour*360)+')');
+  }
+  var ticking=false;
+  addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(function(){ticking=false;frame()})}},{passive:true});
+  addEventListener('resize',frame);
+
+  var start=SR.lang;
+  setLang(start); size();
+})();
+</script>
+
+</body>
+</html>
