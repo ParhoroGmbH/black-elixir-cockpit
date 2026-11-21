@@ -18,9 +18,9 @@
   </div>
 </section>
 <style>
-.wb{--wb-paper:url({{ images['gf-paper.webp'] | image_url: width: 900 }});background:linear-gradient(rgba(10,20,16,.5),rgba(10,20,16,.72)),url({{ images['gf-bg.jpg'] | image_url: width: 1920 }}) center/cover,#0f1c18;color:#f4ede0;padding:clamp(56px,8vw,110px) 16px}
-.wb-in{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,6vw,80px);align-items:center}
-.wb-paper{position:relative;isolation:isolate;background:var(--wb-paper) center/100% 100% no-repeat;aspect-ratio:1100/1505;max-height:560px;width:100%;max-width:420px;justify-self:center;transform:rotate(-1.4deg);padding:16% 13%}
+.wb{--wb-paper:url({{ images['gf-paper.webp'] | image_url: width: 900 }});background:linear-gradient(rgba(10,20,16,.5),rgba(10,20,16,.72)),url({{ images['gf-bg.jpg'] | image_url: width: 1920 }}) center/cover,#0f1c18;color:#f4ede0;padding:clamp(40px,5vw,64px) 16px}
+.wb-in{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,5vw,64px);align-items:center}
+.wb-paper{position:relative;isolation:isolate;background:var(--wb-paper) center/100% 100% no-repeat;aspect-ratio:4/3;width:100%;max-width:380px;justify-self:center;transform:rotate(-1.4deg);padding:11% 10%}
 .wb-paper::after{content:"";position:absolute;inset:5% 4% 4% 4%;z-index:-1;box-shadow:0 26px 44px rgba(0,0,0,.55)}
 .wb-script{margin:0;font:400 clamp(22px,2.1vw,30px)/1.45 'Pinyon Script',cursive;color:#1d2436;display:grid}
 [dir=rtl] .wb-script{font-family:'Aref Ruqaa',serif;font-size:clamp(24px,2.2vw,30px)}
@@ -31,7 +31,7 @@
 [dir=rtl] .wb-seal{right:auto;left:8%}
 .wb-kick{font:500 11px/1 Jost,'Helvetica Neue',Arial,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#bf9a55}
 [dir=rtl] .wb-kick{letter-spacing:0}
-.wb h2{font:400 clamp(40px,5vw,66px)/1.02 'Cormorant Garamond',Didot,serif;margin:.35em 0 .3em;color:#f4ede0}
+.wb h2{font:400 clamp(34px,3.6vw,50px)/1.05 'Cormorant Garamond',Didot,serif;margin:.35em 0 .3em;color:#f4ede0}
 .wb h2 i{color:#e2c88f}
 .wb-lead{max-width:30em;color:#d9d2c4;font-size:16px;line-height:1.6;margin:0 0 26px}
 .wb-btns{display:flex;flex-wrap:wrap;gap:12px}
@@ -42,6 +42,7 @@
 @media (max-width:760px){.wb-in{grid-template-columns:1fr}.wb-paper{max-width:360px;aspect-ratio:4/3;padding:11% 10%;order:-1}.wb-seal{width:22%;bottom:8%}.wb-btn{flex:1 1 90px;padding:0 12px;letter-spacing:.08em;white-space:nowrap}}
 @media (prefers-reduced-motion:reduce){.wb-script span:last-child{animation:none;width:auto}}
 </style>
+<script>(function(){var w=document.currentScript.previousElementSibling;while(w&&!(w.classList&&w.classList.contains('wb')))w=w.previousElementSibling;var m=document.querySelector('.ch .ch-marq');if(w&&m&&m.parentNode){var box=w.closest('.shopify-section')||w;m.parentNode.insertBefore(w,m.nextSibling);if(box!==w&&!box.textContent.trim())box.style.display='none'}})();</script>
 {% schema %}
 {"name":"Wunschbrief Teaser","settings":[],"presets":[{"name":"Wunschbrief Teaser"}]}
 {% endschema %}
