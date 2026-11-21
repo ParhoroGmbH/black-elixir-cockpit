@@ -75,7 +75,7 @@ h2{font:400 clamp(30px,3.4vw,44px)/1.1 var(--serif);margin:0 0 20px;text-wrap:ba
 .letter{position:relative;color:#1f2433;padding:clamp(44px,6vw,72px) clamp(40px,6vw,74px) clamp(70px,8vw,96px);min-height:600px;
   background:url({{ images['gf-paper.webp'] | image_url: width: 1100 }}) center/100% 100% no-repeat;isolation:isolate;transform:rotate(.8deg)}
 .letter .ink{color:#1d2436}
-.letter::after{content:"";position:absolute;inset:3% 2.5% 2% 2.5%;z-index:-1;box-shadow:0 28px 46px rgba(0,0,0,.55),0 4px 8px rgba(0,0,0,.35)}
+.letter::after{content:"";position:absolute;inset:5% 4% 4% 4%;z-index:-1;box-shadow:0 28px 46px rgba(0,0,0,.55),0 4px 8px rgba(0,0,0,.35)}
 .lhead{display:flex;justify-content:space-between;align-items:flex-start;font:500 10.5px/1.4 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:#7a6f5f;margin-bottom:26px}
 .lhead span:last-child{text-align:right}
 .lines{font:400 clamp(27px,2.7vw,36px)/46px var(--script);color:#1d2436;margin:0;padding:0;list-style:none;min-height:276px;text-shadow:0 0 .4px rgba(29,36,54,.6)}
@@ -207,7 +207,7 @@ html[lang=he] body,html[lang=he] h1,html[lang=he] h2,html[lang=he] h3,html[lang=
     </div>
     <div class="sharebox">
       <button type="button" class="go" id="share">{% case gf_l -%}{%- when 'en' -%}Share my wish letter{%- when 'fr' -%}Partager ma lettre{%- when 'it' -%}Condividi la lettera{%- when 'da' -%}Del ønskebrevet{%- when 'ar' -%}شارك رسالة أمنياتك{%- when 'he' -%}לשתף את מכתב המשאלות{%- else -%}Wunschbrief teilen{%- endcase %}</button>
-      <div class="sharealt" id="sharealt" hidden>
+      <div class="sharealt" id="sharealt">
         <span>{% case gf_l -%}{%- when 'en' -%}Share via{%- when 'fr' -%}Partager via{%- when 'it' -%}Condividi con{%- when 'da' -%}Del via{%- when 'ar' -%}مشاركة عبر{%- when 'he' -%}לשתף דרך{%- else -%}Teilen über{%- endcase %}</span>
         <a id="wa" href="#" target="_blank" rel="noopener">WhatsApp</a>
         <button type="button" id="copy">{% case gf_l -%}{%- when 'en' -%}Copy link{%- when 'fr' -%}Copier le lien{%- when 'it' -%}Copia link{%- when 'da' -%}Kopiér link{%- when 'ar' -%}نسخ الرابط{%- when 'he' -%}להעתיק קישור{%- else -%}Link kopieren{%- endcase %}</button>
@@ -324,6 +324,7 @@ function showRes(R){
   var col={klassik:G[A.who],nische:'nischenduefte',orient:'arabische-duefte',set:'parfum-geschenksets',pflege:A.who==='ihn'?'herren-koerperpflege':'koerperpflege-fuer-damen'};
   var c=col[A.kind==='duft'?A.char:A.kind],hi=[50,100,200,0][+A.bud];
   $('all').href=ROOT+'/collections/'+c+'?filter.v.availability=1'+(hi?'&filter.v.price.lte='+hi:'')+'&sort_by=best-selling';
+  $('wa').href='https://wa.me/?text='+encodeURIComponent(q('share_text')+' '+shareURL());$('copy').textContent=q('copy');
   $('res').hidden=false;requestAnimationFrame(function(){$('res').classList.add('open')});
   $('q').querySelector('h2').textContent=q('sealed_h');
   $('res').scrollIntoView({behavior:rm?'auto':'smooth',block:'start'});
