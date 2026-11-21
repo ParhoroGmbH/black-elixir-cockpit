@@ -143,6 +143,7 @@ h2{font:400 clamp(30px,3.4vw,44px)/1.1 var(--serif);margin:0 0 20px;text-wrap:ba
 }
 .brandrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .brand img{display:block;width:clamp(130px,14vw,170px);height:auto}
+html.emb header.top,html.emb .foot{display:none}html.emb .wrap{padding-top:18px}
 .topr{display:flex;align-items:center;gap:18px}
 .cart{position:relative;display:inline-grid;place-items:center;width:44px;height:44px;color:var(--paper)}
 .cart i{position:absolute;top:4px;right:2px;min-width:17px;height:17px;border-radius:9px;background:var(--gold);color:#17120a;font:500 10px/17px var(--sans);text-align:center;font-style:normal}
@@ -330,6 +331,7 @@ function showRes(R){
   $('res').scrollIntoView({behavior:rm?'auto':'smooth',block:'start'});
 }
 $('again').onclick=reset;
+if(/[?&]embed=1/.test(location.search)){document.documentElement.classList.add('emb');document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(a&&!/^(#|javascript)/.test(a.getAttribute('href'))&&a.id!=='wa')a.target='_top'},true)}
 /* share */
 var IMGS={paper:{{ images['gf-paper.webp'] | image_url: width: 1100 | json }},seal:{{ images['gf-seal.webp'] | image_url: width: 300 | json }},bg:{{ images['gf-bg.jpg'] | image_url: width: 1200 | json }},logo:{{ images['BLACK_ELIXIR_LOGO_Transp._White_2.png'] | image_url: width: 600 | json }}};
 function code(){var S=steps();return S.map(function(x){return A[x.id]}).join('-')}
