@@ -63,6 +63,9 @@ a{color:inherit}
 .langs{display:flex;gap:2px}
 .langs a{padding:8px 6px;font-size:11px!important;letter-spacing:.1em!important;color:var(--sand2);font-weight:400!important;border-bottom:1px solid transparent}
 .langs a[aria-current]{color:var(--sand);border-bottom-color:var(--henna)}
+.top{transition:background .3s,color .3s}
+.top.day{background:linear-gradient(rgba(246,239,226,.96),rgba(246,239,226,0));color:var(--paper-ink)}
+.top.day .dot,.top.day .langs a{color:#7a6a55}.top.day .langs a[aria-current]{color:var(--paper-ink)}
 
 /* hero */
 .hero{min-height:88vh;display:grid;place-items:center;text-align:center;padding:120px 20px 60px;position:relative;overflow:hidden}
@@ -305,7 +308,7 @@ function render(){
 /* Schreiben beim Scrollen */
 var secs=[];
 function tick(){
-  var vh=innerHeight;
+  var vh=innerHeight,sh=$('shop').getBoundingClientRect();document.querySelector('.top').classList.toggle('day',sh.top<60&&sh.bottom>60);
   secs.forEach(function(s){
     var r=s.getBoundingClientRect(),w=s.querySelector('.word text'),p;
     if(r.bottom<-vh||r.top>vh*2)return;
