@@ -1,0 +1,47 @@
+{%- comment -%} Startseite: Teaser für den Geschenk-Finder „Der Wunschbrief“. Claude 21.11.2026 {%- endcomment -%}
+{%- assign wb_l = request.locale.iso_code | slice: 0, 2 -%}
+{%- assign wb_root = routes.root_url -%}{%- if wb_root == '/' -%}{%- assign wb_root = '' -%}{%- endif -%}
+{%- assign wb_url = wb_root | append: '/pages/geschenk-finder' -%}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script{% if wb_l == 'ar' %}&family=Aref+Ruqaa{% endif %}{% if wb_l == 'he' %}&family=Playpen+Sans+Hebrew{% endif %}&display=swap">
+<section class="wb" {% if wb_l == 'ar' or wb_l == 'he' %}dir="rtl"{% endif %} aria-labelledby="wb-h">
+  <div class="wb-in">
+    <div class="wb-paper">
+      <p class="wb-script"><span>{% case wb_l -%}{%- when 'en' -%}Dear Perfumers,{%- when 'fr' -%}Chers parfumeurs,{%- when 'it' -%}Cari profumieri,{%- when 'da' -%}Kære parfumører,{%- when 'ar' -%}أعزّائي صانعي العطور،{%- when 'he' -%}יוצרי הבשמים היקרים,{%- else -%}Liebe Parfumeure,{%- endcase %}</span><span>{% case wb_l -%}{%- when 'en' -%}I'm looking for a gift for …{%- when 'fr' -%}je cherche un cadeau pour …{%- when 'it' -%}cerco un regalo per …{%- when 'da' -%}jeg leder efter en gave til …{%- when 'ar' -%}أبحث عن هدية لـ …{%- when 'he' -%}אשמח למתנה עבור …{%- else -%}ich suche ein Geschenk für …{%- endcase %}</span></p>
+      <img class="wb-seal" src="{{ images['gf-seal.webp'] | image_url: width: 260 }}" alt="" width="130" height="134" loading="lazy">
+    </div>
+    <div class="wb-copy">
+      <span class="wb-kick">{% case wb_l -%}{%- when 'en' -%}Gift Finder{%- when 'fr' -%}Guide cadeaux{%- when 'it' -%}Trova regalo{%- when 'da' -%}Gavefinder{%- when 'ar' -%}دليل الهدايا{%- when 'he' -%}מוצא המתנות{%- else -%}Geschenk-Finder{%- endcase %}</span>
+      <h2 id="wb-h">{% case wb_l -%}{%- when 'en' -%}The{%- when 'fr' -%}La{%- when 'it' -%}La{%- when 'da' -%}Dit{%- when 'ar' -%}رسالة{%- when 'he' -%}מכתב{%- else -%}Der{%- endcase %} <i>{% case wb_l -%}{%- when 'en' -%}Wish Letter{%- when 'fr' -%}Lettre de vœux{%- when 'it' -%}Lettera dei desideri{%- when 'da' -%}Ønskebrev{%- when 'ar' -%}الأمنيات{%- when 'he' -%}המשאלות{%- else -%}Wunschbrief{%- endcase %}</i></h2>
+      <p class="wb-lead">{% case wb_l -%}{%- when 'en' -%}Five short questions, one handwritten letter and three suggestions from our collection.{%- when 'fr' -%}Cinq petites questions, une lettre manuscrite et trois suggestions de notre sélection.{%- when 'it' -%}Cinque brevi domande, una lettera scritta a mano e tre proposte dal nostro assortimento.{%- when 'da' -%}Fem korte spørgsmål, ét håndskrevet brev og tre forslag fra vores sortiment.{%- when 'ar' -%}خمسة أسئلة قصيرة، ورسالة بخط اليد، وثلاثة اقتراحات من تشكيلتنا.{%- when 'he' -%}חמש שאלות קצרות, מכתב בכתב יד ושלוש הצעות מהמבחר שלנו.{%- else -%}Fünf kurze Fragen, ein handgeschriebener Brief und drei Vorschläge aus unserem Sortiment.{%- endcase %}</p>
+      <div class="wb-btns"><a class="wb-btn" href="{{ wb_url }}?start=sie">{% case wb_l -%}{%- when 'en' -%}For her{%- when 'fr' -%}Pour elle{%- when 'it' -%}Per lei{%- when 'da' -%}Til hende{%- when 'ar' -%}لها{%- when 'he' -%}בשבילה{%- else -%}Für sie{%- endcase %}</a><a class="wb-btn" href="{{ wb_url }}?start=ihn">{% case wb_l -%}{%- when 'en' -%}For him{%- when 'fr' -%}Pour lui{%- when 'it' -%}Per lui{%- when 'da' -%}Til ham{%- when 'ar' -%}له{%- when 'he' -%}בשבילו{%- else -%}Für ihn{%- endcase %}</a><a class="wb-btn" href="{{ wb_url }}?start=alle">{% case wb_l -%}{%- when 'en' -%}For everyone{%- when 'fr' -%}Pour tous{%- when 'it' -%}Per tutti{%- when 'da' -%}Til alle{%- when 'ar' -%}للجميع{%- when 'he' -%}לכולם{%- else -%}Für alle{%- endcase %}</a></div>
+    </div>
+  </div>
+</section>
+<style>
+.wb{--wb-paper:url({{ images['gf-paper.webp'] | image_url: width: 900 }});background:linear-gradient(rgba(10,20,16,.5),rgba(10,20,16,.72)),url({{ images['gf-bg.jpg'] | image_url: width: 1920 }}) center/cover,#0f1c18;color:#f4ede0;padding:clamp(56px,8vw,110px) 16px}
+.wb-in{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,6vw,80px);align-items:center}
+.wb-paper{position:relative;isolation:isolate;background:var(--wb-paper) center/100% 100% no-repeat;aspect-ratio:1100/1505;max-height:560px;width:100%;max-width:420px;justify-self:center;transform:rotate(-1.4deg);padding:16% 13%}
+.wb-paper::after{content:"";position:absolute;inset:5% 4% 4% 4%;z-index:-1;box-shadow:0 26px 44px rgba(0,0,0,.55)}
+.wb-script{margin:0;font:400 clamp(26px,2.6vw,34px)/1.45 'Pinyon Script',cursive;color:#1d2436;display:grid}
+[dir=rtl] .wb-script{font-family:'Aref Ruqaa',serif;font-size:clamp(24px,2.2vw,30px)}
+.wb[dir=rtl] .wb-script{font-family:{% if wb_l == 'he' %}'Playpen Sans Hebrew',{% endif %}'Aref Ruqaa',serif}
+.wb-script span:last-child{white-space:nowrap;overflow:hidden;width:0;animation:wbw 2.4s steps(30,end) .6s forwards}
+@keyframes wbw{to{width:100%}}
+.wb-seal{position:absolute;right:8%;bottom:6%;width:26%;height:auto;filter:none}
+[dir=rtl] .wb-seal{right:auto;left:8%}
+.wb-kick{font:500 11px/1 Jost,'Helvetica Neue',Arial,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#bf9a55}
+[dir=rtl] .wb-kick{letter-spacing:0}
+.wb h2{font:400 clamp(40px,5vw,66px)/1.02 'Cormorant Garamond',Didot,serif;margin:.35em 0 .3em;color:#f4ede0}
+.wb h2 i{color:#e2c88f}
+.wb-lead{max-width:30em;color:#d9d2c4;font-size:16px;line-height:1.6;margin:0 0 26px}
+.wb-btns{display:flex;flex-wrap:wrap;gap:12px}
+.wb-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border:1px solid #bf9a55;color:#f4ede0;text-decoration:none;font:500 13px/1 Jost,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;transition:background .2s,color .2s}
+.wb-btn:first-child{background:#bf9a55;color:#17120a}
+.wb-btn:hover{background:#e2c88f;color:#17120a}
+.wb-btn:focus-visible{outline:2px solid #f4ede0;outline-offset:3px}
+@media (max-width:760px){.wb-in{grid-template-columns:1fr}.wb-paper{max-width:330px;order:-1}.wb-btn{flex:1 1 100px}}
+@media (prefers-reduced-motion:reduce){.wb-script span:last-child{animation:none;width:auto}}
+</style>
+{% schema %}
+{"name":"Wunschbrief Teaser","settings":[],"presets":[{"name":"Wunschbrief Teaser"}]}
+{% endschema %}
