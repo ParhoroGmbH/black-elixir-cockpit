@@ -364,7 +364,7 @@ $('share').onclick=async function(){
 $('copy').onclick=function(){var u=shareURL(),b=this;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){b.textContent=q('copied')}).catch(function(){prompt('',u)})};
 $('saveimg').onclick=async function(){var b=window._gfBlob||await cardBlob(),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='wunschbrief-black-elixir.jpg';document.body.appendChild(a);a.click();a.remove()};
 /* deep link: ?w=sie-1-duft-orient-abend */
-(function(){var w=new URLSearchParams(location.search).get('w');if(!w)return;var p=w.split('-'),ok=true;
+(function(){var sp=new URLSearchParams(location.search),st=sp.get('start');if(st&&G[st]){A.who=st;step=1;drawLines();renderQ();return}var w=sp.get('w');if(!w)return;var p=w.split('-'),ok=true;
   var kind=p[2],i=0;Q.forEach(function(x){if(x.only&&kind!==x.only)return;var v=p[i++];if(!x.o.some(function(o){return o[0]===v}))ok=false;else A[x.id]=v});
   if(!ok){A={};return}step=steps().length;drawLines();$('lines').querySelectorAll('li').forEach(function(l){l.className='done'});finish()})();
 $('start').onclick=function(){renderQ();var f=document.querySelector('.opt');f&&f.focus()};
