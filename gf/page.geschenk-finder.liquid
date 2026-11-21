@@ -1,0 +1,310 @@
+{%- layout none -%}
+{%- comment -%} Geschenk-Finder "Der Wunschbrief". Daten live über collection.gf (?view=gf). Bilder: gf-paper.webp, gf-seal.webp, gf-box.jpg, gf-bg.jpg. Claude 21.11.2026 {%- endcomment -%}
+{%- assign gf_l = request.locale.iso_code | slice: 0, 2 -%}
+{%- assign gf_root = routes.root_url -%}{%- if gf_root == '/' -%}{%- assign gf_root = '' -%}{%- endif -%}
+{%- capture gf_t -%}{%- case gf_l -%}{%- when 'en' -%}Gift Finder: The Wish Letter | Black Elixir{%- when 'fr' -%}Guide cadeaux : La Lettre de vœux | Black Elixir{%- when 'it' -%}Trova regalo: La Lettera dei desideri | Black Elixir{%- when 'da' -%}Gavefinder: Ønskebrevet | Black Elixir{%- when 'ar' -%}دليل الهدايا: رسالة الأمنيات | Black Elixir{%- when 'he' -%}מוצא המתנות: מכתב המשאלות | Black Elixir{%- else -%}Geschenk-Finder: Der Wunschbrief | Black Elixir{%- endcase -%}{%- endcapture -%}
+{%- capture gf_d -%}{%- case gf_l -%}{%- when 'en' -%}Find the right perfume gift in five quick questions: for her, for him or for everyone, within your budget. Three suggestions from the Black Elixir range.{%- when 'fr' -%}Trouve le parfum à offrir en cinq petites questions : pour elle, pour lui ou pour tous, selon ton budget. Trois suggestions issues de la sélection Black Elixir.{%- when 'it' -%}Trova il profumo giusto da regalare in cinque brevi domande: per lei, per lui o per tutti, nel tuo budget. Tre proposte dall'assortimento di Black Elixir.{%- when 'da' -%}Find den rette parfumegave med fem korte spørgsmål: til hende, til ham eller til alle, inden for dit budget. Tre forslag fra Black Elixirs sortiment.{%- when 'ar' -%}اعثر على هدية العطر المناسبة في خمسة أسئلة قصيرة: لها أو له أو للجميع، وضمن ميزانيتك. ثلاثة اقتراحات من تشكيلة Black Elixir.{%- when 'he' -%}חמש שאלות קצרות ותמצא את מתנת הבושם המתאימה: בשבילה, בשבילו או לכולם, בתקציב שלך. שלוש הצעות מהמבחר של Black Elixir.{%- else -%}Finde in fünf kurzen Fragen das passende Parfum-Geschenk: für sie, für ihn oder für alle, in deinem Budget. Drei Vorschläge aus dem Sortiment von Black Elixir.{%- endcase -%}{%- endcapture -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}"{% if gf_l == 'ar' or gf_l == 'he' %} dir="rtl"{% endif %}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{ gf_t }}</title>
+<meta name="description" content="{{ gf_d }}">
+<link rel="canonical" href="{{ canonical_url }}">
+{%- for l in localization.available_languages -%}{%- assign lr = l.root_url -%}{%- if lr == '/' -%}{%- assign lr = '' -%}{%- endif %}
+<link rel="alternate" hreflang="{{ l.iso_code }}" href="{{ request.origin }}{{ lr }}{{ page.url }}">
+{%- endfor %}
+<link rel="alternate" hreflang="x-default" href="{{ request.origin }}{{ page.url }}">
+<link rel="icon" href="{{ settings.favicon | image_url: width: 64 }}">
+<meta property="og:site_name" content="BLACK ELIXIR"><meta property="og:type" content="website">
+<meta property="og:title" content="{{ gf_t }}"><meta property="og:description" content="{{ gf_d }}"><meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:image" content="https:{{ images['gf-box.jpg'] | image_url: width: 1200, height: 630, crop: 'center' }}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&family=Jost:wght@400;500&display=swap">
+{%- if gf_l == 'ar' %}<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Amiri:wght@400;700&display=swap">{% endif -%}
+{%- if gf_l == 'he' %}<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Hebrew&family=Frank+Ruhl+Libre:wght@400;500&display=swap">{% endif %}
+<link rel="preload" as="image" href="{{ images['gf-paper.webp'] | image_url: width: 1100 }}">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":{{ gf_t | json }},"description":{{ gf_d | json }},"url":{{ canonical_url | json }},"inLanguage":{{ request.locale.iso_code | json }},"isPartOf":{"@type":"WebSite","name":"BLACK ELIXIR – Maison de Parfum","url":{{ request.origin | json }}}}</script>
+{{ content_for_header }}
+<style>
+:root{
+  --night:#0f1c18; --night2:#16261f; --paper:#f4ede0; --paper2:#ebe1cf; --ink:#24201a; --mute:#6f675b;
+  --wax:#8d1e24; --wax2:#b5333a; --gold:#bf9a55; --gold2:#e2c88f; --mist:#a6b4ad; --line:rgba(244,237,224,.16);
+  --serif:'Cormorant Garamond',Didot,'Times New Roman',serif; --script:'Pinyon Script','Snell Roundhand',cursive; --sans:'Jost','Helvetica Neue',Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--night);margin:0}
+html{overflow-x:clip}
+.letter{overflow:visible}
+.seal{transform-origin:70% 70%}
+body{color:var(--paper);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;padding-inline:16px;min-height:100vh;
+  background:linear-gradient(rgba(10,20,16,.55),rgba(10,20,16,.78)),url({{ images['gf-bg.jpg'] | image_url: width: 1920 }}) center top/cover fixed,var(--night)}
+@media (max-width:860px){body{background-attachment:scroll,scroll,scroll}}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding-block:28px 64px}
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.brand{font:500 12px/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;text-decoration:none}
+.skip{font-size:13px;color:var(--mist);text-decoration:underline;text-underline-offset:3px}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(24px,5vw,64px);align-items:start;margin-top:clamp(24px,4vw,48px)}
+
+/* question side */
+.q{position:relative}
+.kick{font:500 11px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+h1{font:400 clamp(40px,5.6vw,72px)/1 var(--serif);margin:.35em 0 .3em;text-wrap:balance}
+h1 i{color:var(--gold2)}
+.lead{color:#d9d2c4;max-width:30em;margin:0 0 28px}
+.prog{display:flex;align-items:center;gap:14px;margin-bottom:18px;font-size:13px;color:var(--mist);font-variant-numeric:tabular-nums}
+.bar{flex:1;height:2px;background:var(--line);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--gold);transition:width .5s}
+h2{font:400 clamp(30px,3.4vw,44px)/1.1 var(--serif);margin:0 0 20px;text-wrap:balance}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:16px;width:100%;text-align:left;cursor:pointer;background:rgba(244,237,224,.04);border:1px solid var(--line);
+  padding:15px 18px;border-radius:2px;transition:background .2s,border-color .2s}
+.opt:hover{background:rgba(244,237,224,.08);border-color:rgba(191,154,85,.6)}
+.opt:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.opt b{font:500 17px/1.25 var(--sans);display:block}
+.opt small{display:block;color:var(--mist);font-size:13.5px;margin-top:2px}
+.opt .k{flex:none;width:30px;height:30px;border:1px solid rgba(191,154,85,.55);border-radius:50%;display:grid;place-items:center;font:italic 400 17px/1 var(--serif);color:var(--gold2)}
+.nav{display:flex;gap:18px;margin-top:20px;font-size:14px;color:var(--mist)}
+.nav button{background:none;border:0;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.go{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:#17120a;border:0;padding:15px 28px;font:500 13px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+.go:hover{background:var(--gold2)}
+.go:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
+
+/* the letter */
+.letter{position:relative;color:#1f2433;padding:clamp(44px,6vw,72px) clamp(40px,6vw,74px) clamp(70px,8vw,96px);min-height:600px;
+  background:url({{ images['gf-paper.webp'] | image_url: width: 1100 }}) center/100% 100% no-repeat;filter:drop-shadow(0 30px 40px rgba(0,0,0,.55)) drop-shadow(0 4px 6px rgba(0,0,0,.35));transform:rotate(.8deg)}
+.letter .ink{color:#1d2436}
+.lhead{display:flex;justify-content:space-between;align-items:flex-start;font:500 10.5px/1.4 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:#7a6f5f;margin-bottom:26px}
+.lhead span:last-child{text-align:right}
+.lines{font:400 clamp(27px,2.7vw,36px)/46px var(--script);color:#1d2436;margin:0;padding:0;list-style:none;min-height:276px;text-shadow:0 0 .4px rgba(29,36,54,.6)}
+.lines li{white-space:nowrap;overflow:hidden;width:0;animation:write 1.1s steps(40,end) forwards}
+.lines li.done{width:auto;animation:none;white-space:normal}
+@keyframes write{to{width:100%}}
+.sig{font:400 clamp(27px,2.7vw,36px)/46px var(--script);color:#1d2436;margin-top:8px;opacity:0;transition:opacity .6s}
+.sig.on{opacity:1}
+.seal{position:absolute;right:clamp(26px,5vw,60px);bottom:-30px;width:clamp(96px,11vw,132px);height:auto;opacity:0;transform:scale(1.35) rotate(-18deg);filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+.seal.on{animation:stamp .55s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes stamp{to{opacity:1;transform:scale(1) rotate(-8deg)}}
+
+/* results */
+.res{margin-top:clamp(40px,6vw,80px)}
+.res[hidden]{display:none}
+.res h2{font-size:clamp(34px,4vw,54px)}
+.boxpic{margin:0 0 28px;overflow:hidden;aspect-ratio:21/8;box-shadow:0 30px 60px -30px #000}
+.boxpic img{width:100%;height:100%;object-fit:cover;object-position:50% 55%;display:block;transform:scale(1.06);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.res.open .boxpic img{transform:scale(1)}
+@media (max-width:860px){.boxpic{aspect-ratio:3/2}}
+.box{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(18px,3vw,36px);align-items:stretch}
+.main{background:var(--paper);color:var(--ink);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;padding:28px;align-items:center;position:relative;overflow:hidden}
+.main .ribbon{position:absolute;top:0;bottom:0;left:50%;width:18px;background:linear-gradient(90deg,#6f151a,var(--wax2),#6f151a);opacity:.0}
+.main img{width:100%;aspect-ratio:1;object-fit:contain;background:#fff;box-shadow:0 0 0 10px #fff}
+.tag{font:500 10.5px/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--wax)}
+.main h3{font:500 clamp(26px,2.6vw,34px)/1.1 var(--serif);margin:.35em 0 .15em}
+.vend{font:500 12px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.price{font:500 22px var(--serif);margin:12px 0 4px;font-variant-numeric:tabular-nums}
+.why{margin:14px 0 18px;padding:0;list-style:none;font-size:14.5px;line-height:1.5;color:#3d372e;display:grid;gap:6px}
+.why li{padding-left:18px;position:relative}
+.why li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1px;background:var(--gold)}
+.alts{display:grid;gap:14px;align-content:start}
+.alt{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;align-items:center;background:rgba(244,237,224,.06);border:1px solid var(--line);padding:14px;text-decoration:none}
+.alt:hover{border-color:rgba(191,154,85,.6)}
+.alt:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.alt img{width:110px;aspect-ratio:1;object-fit:contain;background:#fff}
+.alt .tag{color:var(--gold)}
+.alt b{display:block;font:500 19px/1.2 var(--serif);margin:.35em 0 .2em}
+.alt span{font-size:13.5px;color:var(--mist)}
+.alt .pr{color:var(--paper);font-variant-numeric:tabular-nums}
+.after{display:flex;flex-wrap:wrap;gap:12px 26px;align-items:center;margin-top:26px;font-size:14px;color:var(--mist)}
+.after a,.after button{background:none;border:0;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;color:var(--paper)}
+.gift{margin-top:22px;font-size:13.5px;color:var(--mist);border-top:1px solid var(--line);padding-top:16px}
+.gift b{color:var(--gold2);font-weight:500}
+.ghost{display:inline-block;padding:13px 22px;border:1px solid var(--wax);color:var(--wax);text-decoration:none;font:500 12px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+.ghost:hover{background:var(--wax);color:var(--paper)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+@media (max-width:860px){
+  .stage{grid-template-columns:1fr}
+  .letter{order:-1;min-height:0;transform:none;padding-bottom:48px}
+  .lines{min-height:0;font-size:24px;line-height:34px}
+  .sig{font-size:24px;line-height:34px}
+  .letter{padding:40px 34px 62px;transform:rotate(.5deg)}
+  .box{grid-template-columns:1fr}
+  .main{grid-template-columns:1fr;padding:22px}
+  .main img{max-width:260px;margin:0 auto}
+  .seal{width:76px;height:76px;bottom:-28px}
+}
+@media (max-width:480px){.alt{grid-template-columns:84px minmax(0,1fr)}.alt img{width:84px}}
+@media (prefers-reduced-motion:reduce){
+  .lines li{animation:none;width:auto;white-space:normal}
+  .seal.on{animation:none;opacity:1;transform:rotate(-8deg)}
+  .bar i{transition:none}
+}
+.brandrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.langs{display:flex;gap:2px;flex-wrap:wrap}
+.langs a{padding:8px 6px;font:400 11px/1 var(--sans);letter-spacing:.1em;color:var(--mist);text-decoration:none;border-bottom:1px solid transparent}
+.langs a[aria-current]{color:var(--paper);border-bottom-color:var(--gold)}
+.langs a[lang=ar],.langs a[lang=he]{letter-spacing:0;font-size:13px}
+.empty{grid-column:1/-1;color:var(--paper);font:400 20px/1.4 var(--serif)}
+[dir=rtl] .opt{text-align:right}
+[dir=rtl] .why li{padding-left:0;padding-right:18px}[dir=rtl] .why li::before{left:auto;right:0}
+[dir=rtl] .seal{right:auto;left:clamp(26px,5vw,60px)}
+html[lang=ar] .lines,html[lang=ar] .sig{font-family:'Aref Ruqaa',serif;font-size:clamp(24px,2.4vw,30px)}
+html[lang=he] .lines,html[lang=he] .sig{font-family:'Playpen Sans Hebrew','Frank Ruhl Libre',serif;font-size:clamp(20px,2vw,26px)}
+html[lang=ar] body,html[lang=ar] h1,html[lang=ar] h2,html[lang=ar] h3,html[lang=ar] .alt b{font-family:Amiri,'Noto Naskh Arabic',serif}
+html[lang=he] body,html[lang=he] h1,html[lang=he] h2,html[lang=he] h3,html[lang=he] .alt b{font-family:'Frank Ruhl Libre',serif}
+[dir=rtl] .kick,[dir=rtl] .tag,[dir=rtl] .vend,[dir=rtl] .lhead,[dir=rtl] .go,[dir=rtl] .ghost{letter-spacing:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brandrow"><a class="brand" href="{{ routes.root_url }}">Black Elixir · Maison de Parfum</a><nav class="langs" aria-label="Language">{%- for l in localization.available_languages -%}{%- assign lc = l.iso_code | slice: 0, 2 -%}{%- assign lr = l.root_url -%}{%- if lr == '/' -%}{%- assign lr = '' -%}{%- endif -%}<a href="{{ lr }}{{ page.url }}" lang="{{ lc }}" hreflang="{{ l.iso_code }}"{% if lc == gf_l %} aria-current="true"{% endif %}>{%- case lc -%}{%- when 'de' -%}DE{%- when 'en' -%}EN{%- when 'fr' -%}FR{%- when 'it' -%}IT{%- when 'da' -%}DA{%- when 'ar' -%}عربي{%- when 'he' -%}עברית{%- else -%}{{ lc | upcase }}{%- endcase -%}</a>{%- endfor -%}</nav></div>
+    <a class="skip" id="skip" href="{{ gf_root }}/collections/geschenk-bis-zu-100">{%- case gf_l -%}{%- when 'en' -%}Skip to all gifts{%- when 'fr' -%}Aller directement à tous les cadeaux{%- when 'it' -%}Vai direttamente a tutti i regali{%- when 'da' -%}Gå direkte til alle gaver{%- when 'ar' -%}انتقل مباشرةً إلى كل الهدايا{%- when 'he' -%}ישר לכל המתנות{%- else -%}Direkt zu allen Geschenken{%- endcase -%}</a>
+  </header>
+
+  <div class="stage">
+    <section class="q" id="q" aria-live="polite">
+      <span class="kick">{%- case gf_l -%}{%- when 'en' -%}Gift Finder{%- when 'fr' -%}Guide cadeaux{%- when 'it' -%}Trova regalo{%- when 'da' -%}Gavefinder{%- when 'ar' -%}دليل الهدايا{%- when 'he' -%}מוצא המתנות{%- else -%}Geschenk-Finder{%- endcase -%}</span>
+      <h1>{%- case gf_l -%}{%- when 'en' -%}The{%- when 'fr' -%}La{%- when 'it' -%}La{%- when 'da' -%}Dit{%- when 'ar' -%}رسالة{%- when 'he' -%}מכתב{%- else -%}Der{%- endcase -%} <i>{%- case gf_l -%}{%- when 'en' -%}Wish Letter{%- when 'fr' -%}Lettre de vœux{%- when 'it' -%}Lettera dei desideri{%- when 'da' -%}Ønskebrev{%- when 'ar' -%}الأمنيات{%- when 'he' -%}המשאלות{%- else -%}Wunschbrief{%- endcase -%}</i></h1>
+      <p class="lead">{%- case gf_l -%}{%- when 'en' -%}Answer up to five quick questions. With every answer, your letter to our perfumers writes itself a little further, and at the end we open the box with three suggestions from our range.{%- when 'fr' -%}Réponds à cinq petites questions au plus. À chaque réponse, ta lettre à nos parfumeurs s'écrit un peu plus, et à la fin nous ouvrons la boîte avec trois suggestions de notre sélection.{%- when 'it' -%}Rispondi a un massimo di cinque brevi domande. A ogni risposta la tua lettera ai nostri profumieri si scrive un po' di più, e alla fine apriamo la scatola con tre proposte dal nostro assortimento.{%- when 'da' -%}Besvar op til fem korte spørgsmål. Med hvert svar skriver dit brev til vores parfumører sig lidt videre, og til sidst åbner vi æsken med tre forslag fra vores sortiment.{%- when 'ar' -%}أجب عن خمسة أسئلة قصيرة على الأكثر. مع كل إجابة تكتمل رسالتك إلى صانعي العطور لدينا سطرًا بعد سطر، وفي النهاية نفتح العلبة على ثلاثة اقتراحات من تشكيلتنا.{%- when 'he' -%}ענה על עד חמש שאלות קצרות. כל תשובה מוסיפה שורה למכתב שלך אל יוצרי הבשמים שלנו, ובסוף נפתח את הקופסה עם שלוש הצעות מהמבחר שלנו.{%- else -%}Beantworte bis zu fünf kurze Fragen. Mit jeder Antwort schreibt sich dein Brief an unsere Parfumeure weiter, und am Ende öffnen wir die Schachtel mit drei Vorschlägen aus unserem Sortiment.{%- endcase -%}</p>
+      <button class="go" id="start" type="button">{%- case gf_l -%}{%- when 'en' -%}Start the letter{%- when 'fr' -%}Commencer la lettre{%- when 'it' -%}Inizia la lettera{%- when 'da' -%}Begynd brevet{%- when 'ar' -%}ابدأ الرسالة{%- when 'he' -%}להתחיל את המכתב{%- else -%}Brief beginnen{%- endcase -%}</button>
+    </section>
+
+    <article class="letter" aria-label="{%- case gf_l -%}{%- when 'en' -%}Your wish letter{%- when 'fr' -%}Ta lettre de vœux{%- when 'it' -%}La tua lettera dei desideri{%- when 'da' -%}Dit ønskebrev{%- when 'ar' -%}رسالة أمنياتك{%- when 'he' -%}מכתב המשאלות שלך{%- else -%}Dein Wunschbrief{%- endcase -%}">
+      <div class="lhead"><span>{%- case gf_l -%}{%- when 'en' -%}To the perfumers of Black Elixir{%- when 'fr' -%}Aux parfumeurs de Black Elixir{%- when 'it' -%}Ai profumieri di Black Elixir{%- when 'da' -%}Til parfumørerne hos Black Elixir{%- when 'ar' -%}إلى صانعي العطور في Black Elixir{%- when 'he' -%}אל יוצרי הבשמים של Black Elixir{%- else -%}An die Parfumeure von Black Elixir{%- endcase -%}</span><span>{%- case gf_l -%}{%- when 'en' -%}Christmas 2026{%- when 'fr' -%}Noël 2026{%- when 'it' -%}Natale 2026{%- when 'da' -%}Jul 2026{%- when 'ar' -%}عيد الميلاد 2026{%- when 'he' -%}חג המולד 2026{%- else -%}Weihnachten 2026{%- endcase -%}</span></div>
+      <ul class="lines" id="lines"><li class="done">{%- case gf_l -%}{%- when 'en' -%}Dear Perfumers,{%- when 'fr' -%}Chers parfumeurs,{%- when 'it' -%}Cari profumieri,{%- when 'da' -%}Kære parfumører,{%- when 'ar' -%}أعزّائي صانعي العطور،{%- when 'he' -%}יוצרי הבשמים היקרים,{%- else -%}Liebe Parfumeure,{%- endcase -%}</li></ul>
+      <div class="sig" id="sig">{%- case gf_l -%}{%- when 'en' -%}… and beautifully wrapped, please.{%- when 'fr' -%}… et joliment emballé, s'il vous plaît.{%- when 'it' -%}… e incartato con cura, per favore.{%- when 'da' -%}… og gerne smukt indpakket.{%- when 'ar' -%}… وأرجو أن تكون مغلّفة بعناية.{%- when 'he' -%}… ובבקשה, עטופה יפה.{%- else -%}… und bitte schön verpackt.{%- endcase -%}</div>
+      <img class="seal" id="seal" src="{{ images['gf-seal.webp'] | image_url: width: 300 }}" alt="" width="300" height="309">
+    </article>
+  </div>
+
+  <section class="res" id="res" hidden aria-live="polite">
+    <figure class="boxpic"><img src="{{ images['gf-box.jpg'] | image_url: width: 1500 }}" srcset="{{ images['gf-box.jpg'] | image_url: width: 800 }} 800w, {{ images['gf-box.jpg'] | image_url: width: 1500 }} 1500w" sizes="(max-width:1200px) 100vw, 1160px" alt="" width="1500" height="996" loading="lazy"></figure>
+    <span class="kick">{%- case gf_l -%}{%- when 'en' -%}The box is open{%- when 'fr' -%}La boîte est ouverte{%- when 'it' -%}La scatola è aperta{%- when 'da' -%}Æsken er åben{%- when 'ar' -%}العلبة مفتوحة{%- when 'he' -%}הקופסה פתוחה{%- else -%}Die Schachtel ist offen{%- endcase -%}</span>
+    <h2>{%- case gf_l -%}{%- when 'en' -%}Our suggestion for your wish letter{%- when 'fr' -%}Notre suggestion pour ta lettre de vœux{%- when 'it' -%}La nostra proposta per la tua lettera dei desideri{%- when 'da' -%}Vores forslag til dit ønskebrev{%- when 'ar' -%}اقتراحنا لرسالة أمنياتك{%- when 'he' -%}ההצעה שלנו למכתב המשאלות שלך{%- else -%}Unser Vorschlag für deinen Wunschbrief{%- endcase -%}</h2>
+    <div class="box" id="box"></div>
+    <div class="after">
+      <a id="all" href="#">{%- case gf_l -%}{%- when 'en' -%}See all matching gifts{%- when 'fr' -%}Voir tous les cadeaux correspondants{%- when 'it' -%}Vedi tutti i regali adatti{%- when 'da' -%}Se alle passende gaver{%- when 'ar' -%}عرض كل الهدايا المناسبة{%- when 'he' -%}לכל המתנות המתאימות{%- else -%}Alle passenden Geschenke ansehen{%- endcase -%}</a>
+      <button type="button" id="again">{%- case gf_l -%}{%- when 'en' -%}Write a new letter{%- when 'fr' -%}Écrire une nouvelle lettre{%- when 'it' -%}Scrivi una nuova lettera{%- when 'da' -%}Skriv et nyt brev{%- when 'ar' -%}اكتب رسالة جديدة{%- when 'he' -%}לכתוב מכתב חדש{%- else -%}Neuen Brief schreiben{%- endcase -%}</button>
+    </div>
+    <p class="gift"><b>{%- case gf_l -%}{%- when 'en' -%}A gift instead of a discount:{%- when 'fr' -%}Un cadeau plutôt qu'une remise :{%- when 'it' -%}Un regalo invece di uno sconto:{%- when 'da' -%}En gave i stedet for rabat:{%- when 'ar' -%}هدية بدلًا من الخصم:{%- when 'he' -%}מתנה במקום הנחה:{%- else -%}Ein Geschenk statt Rabatt:{%- endcase -%}</b> {%- case gf_l -%}{%- when 'en' -%}from €59 we add a soap, from €99 two soaps and a fragrance sample. While stocks last.{%- when 'fr' -%}dès 59 €, nous ajoutons un savon, dès 99 €, deux savons et un échantillon de parfum. Dans la limite des stocks disponibles.{%- when 'it' -%}da 59 € aggiungiamo un sapone, da 99 € due saponi e un campioncino di profumo. Fino a esaurimento scorte.{%- when 'da' -%}fra 59 € lægger vi en sæbe med, fra 99 € to sæber og en dufteprøve. Så længe lager haves.{%- when 'ar' -%}ابتداءً من 59 € نضيف قطعة صابون، ومن 99 € قطعتي صابون وعيّنة عطر. حتى نفاد الكمية.{%- when 'he' -%}מ־59 € נצרף סבון, ומ־99 € שני סבונים ודוגמית בושם. עד גמר המלאי.{%- else -%}ab 59 € legen wir eine Seife bei, ab 99 € zwei Seifen und eine Duftprobe. Solange der Vorrat reicht.{%- endcase -%}</p>
+  </section>
+</div>
+
+<script>
+var T={%- case gf_l -%}{%- when 'en' -%}{"title": "Gift Finder: The Wish Letter | Black Elixir", "desc": "Find the right perfume gift in five quick questions: for her, for him or for everyone, within your budget. Three suggestions from the Black Elixir range.", "skip": "Skip to all gifts", "kick": "Gift Finder", "h1a": "The", "h1b": "Wish Letter", "lead": "Answer up to five quick questions. With every answer, your letter to our perfumers writes itself a little further, and at the end we open the box with three suggestions from our range.", "start": "Start the letter", "progress": "Question {n} of {m}", "back": "Back", "reset": "Start over", "letterAria": "Your wish letter", "lheadL": "To the perfumers of Black Elixir", "lheadR": "Christmas 2026", "greeting": "Dear Perfumers,", "closing": "… and beautifully wrapped, please.", "q_who": "Who is the gift for?", "o_who_sie": ["For her", "Women's fragrances"], "o_who_ihn": ["For him", "Men's fragrances"], "o_who_alle": ["For everyone", "Unisex, suits anyone"], "l_who_sie": "I'm looking for a gift for her,", "l_who_ihn": "I'm looking for a gift for him,", "l_who_alle": "I'm looking for a gift that suits anyone,", "q_bud": "How much would you like to spend?", "o_bud": ["Up to €50", "Up to €100", "Up to €200", "It can be more"], "l_bud": ["with a budget of up to €50,", "with a budget of up to €100,", "with a budget of up to €200,", "and price is no object this time,"], "q_kind": "What should be under the tree?", "o_kind_duft": ["A perfume", "The classic among gifts"], "o_kind_set": ["A fragrance set", "Already put together"], "o_kind_pflege": ["A moment of care", "Shower care, body care, soaps"], "l_kind_duft": "ideally a perfume,", "l_kind_set": "ideally a beautiful fragrance set,", "l_kind_pflege": "ideally something to pamper,", "q_char": "What suits this person?", "o_char_klassik": ["Loves a sure thing", "A fragrance many people love"], "o_char_nische": ["Loves the unusual", "Niche fragrances not everyone knows"], "o_char_orient": ["Likes it opulent", "From Arabian perfume houses such as Lattafa and French Avenue"], "l_char_klassik": "a proven favourite that's sure to please,", "l_char_nische": "something special that not everyone wears,", "l_char_orient": "something opulent from an Arabian house,", "q_when": "When will the fragrance be worn?", "o_when_tag": ["Every day", "Rather Eau de Toilette, lighter"], "o_when_abend": ["On special evenings", "Rather Eau de Parfum or Extrait, more intense"], "l_when_tag": "for every day.", "l_when_abend": "for special evenings.", "sealing_kick": "Letter complete", "sealing_h": "We're sealing your letter …", "sealed_h": "Your letter is sealed.", "change_last": "Change last answer", "res_kick": "The box is open", "res_h": "Our suggestion for your wish letter", "tag_main": "Our recommendation", "tag_cheaper": "A little less expensive", "tag_also": "Also a great choice", "tag_more": "One more idea", "cta_product": "View fragrance", "cta_all": "See all matching gifts", "cta_again": "Write a new letter", "gift_b": "A gift instead of a discount:", "gift_t": "from €59 we add a soap, from €99 two soaps and a fragrance sample. While stocks last.", "why_from_sie": "From our women's fragrances", "why_from_ihn": "From our men's fragrances", "why_from_alle": "From our unisex fragrances", "why_set_sie": "A ready-made fragrance set for her", "why_set_ihn": "A ready-made fragrance set for him", "why_set_alle": "A ready-made fragrance set for anyone", "why_care_sie": "Care for her", "why_care_ihn": "Care for him", "why_care_alle": "Care for anyone", "why_budget": "Fits your budget ({b})", "budget_labels": ["up to €50", "up to €100", "up to €200", "no price limit"], "why_best": "One of our best sellers in this category", "why_niche": "A niche fragrance by {v}", "why_orient": "From the Arabian perfume house {v}", "why_fallback": "Alternative suggestion: the choice within your budget was limited", "why_evening": "More intense than Eau de Toilette, ideal for evenings", "why_day": "Eau de Toilette, lighter for every day", "empty": "We have nothing in stock for this selection right now. Feel free to browse all gifts."}{%- when 'fr' -%}{"title": "Guide cadeaux : La Lettre de vœux | Black Elixir", "desc": "Trouve le parfum à offrir en cinq petites questions : pour elle, pour lui ou pour tous, selon ton budget. Trois suggestions issues de la sélection Black Elixir.", "skip": "Aller directement à tous les cadeaux", "kick": "Guide cadeaux", "h1a": "La", "h1b": "Lettre de vœux", "lead": "Réponds à cinq petites questions au plus. À chaque réponse, ta lettre à nos parfumeurs s'écrit un peu plus, et à la fin nous ouvrons la boîte avec trois suggestions de notre sélection.", "start": "Commencer la lettre", "progress": "Question {n} sur {m}", "back": "Retour", "reset": "Recommencer", "letterAria": "Ta lettre de vœux", "lheadL": "Aux parfumeurs de Black Elixir", "lheadR": "Noël 2026", "greeting": "Chers parfumeurs,", "closing": "… et joliment emballé, s'il vous plaît.", "q_who": "Pour qui est ce cadeau ?", "o_who_sie": ["Pour elle", "Parfums pour femme"], "o_who_ihn": ["Pour lui", "Parfums pour homme"], "o_who_alle": ["Pour tous", "Unisexe, convient à chacun"], "l_who_sie": "je cherche un cadeau pour elle,", "l_who_ihn": "je cherche un cadeau pour lui,", "l_who_alle": "je cherche un cadeau qui plaise à chacun,", "q_bud": "Combien veux-tu dépenser ?", "o_bud": ["Jusqu'à 50 €", "Jusqu'à 100 €", "Jusqu'à 200 €", "Plus, c'est possible"], "l_bud": ["pour un budget de 50 € maximum,", "pour un budget de 100 € maximum,", "pour un budget de 200 € maximum,", "le prix importe peu cette fois,"], "q_kind": "Que mettre sous le sapin ?", "o_kind_duft": ["Un parfum", "Le grand classique des cadeaux"], "o_kind_set": ["Un coffret parfum", "Déjà composé"], "o_kind_pflege": ["Un moment de soin", "Soin douche, soin du corps, savons"], "l_kind_duft": "de préférence un parfum,", "l_kind_set": "de préférence un joli coffret parfum,", "l_kind_pflege": "de préférence de quoi se faire dorloter,", "q_char": "Qu'est-ce qui correspond à cette personne ?", "o_char_klassik": ["Aime les valeurs sûres", "Un parfum que beaucoup adorent"], "o_char_nische": ["Aime ce qui sort de l'ordinaire", "Des parfums de niche que peu de gens connaissent"], "o_char_orient": ["Aime l'opulence", "De maisons de parfum arabes comme Lattafa et French Avenue"], "l_char_klassik": "une valeur sûre qui plaît à coup sûr,", "l_char_nische": "quelque chose de rare, que tout le monde ne porte pas,", "l_char_orient": "quelque chose d'opulent, signé d'une maison arabe,", "q_when": "Quand ce parfum sera-t-il porté ?", "o_when_tag": ["Tous les jours", "Plutôt Eau de Toilette, plus légère"], "o_when_abend": ["Lors de soirées spéciales", "Plutôt Eau de Parfum ou Extrait, plus intense"], "l_when_tag": "pour tous les jours.", "l_when_abend": "pour les soirées d'exception.", "sealing_kick": "Lettre terminée", "sealing_h": "Nous scellons ta lettre …", "sealed_h": "Ta lettre est scellée.", "change_last": "Modifier la dernière réponse", "res_kick": "La boîte est ouverte", "res_h": "Notre suggestion pour ta lettre de vœux", "tag_main": "Notre recommandation", "tag_cheaper": "Un peu moins cher", "tag_also": "Un autre bon choix", "tag_more": "Encore une idée", "cta_product": "Voir le parfum", "cta_all": "Voir tous les cadeaux correspondants", "cta_again": "Écrire une nouvelle lettre", "gift_b": "Un cadeau plutôt qu'une remise :", "gift_t": "dès 59 €, nous ajoutons un savon, dès 99 €, deux savons et un échantillon de parfum. Dans la limite des stocks disponibles.", "why_from_sie": "Parmi nos parfums pour femme", "why_from_ihn": "Parmi nos parfums pour homme", "why_from_alle": "Parmi nos parfums unisexes", "why_set_sie": "Un coffret parfum prêt à offrir, pour elle", "why_set_ihn": "Un coffret parfum prêt à offrir, pour lui", "why_set_alle": "Un coffret parfum prêt à offrir, pour chacun", "why_care_sie": "Des soins pour elle", "why_care_ihn": "Des soins pour lui", "why_care_alle": "Des soins pour chacun", "why_budget": "Dans ton budget ({b})", "budget_labels": ["jusqu'à 50 €", "jusqu'à 100 €", "jusqu'à 200 €", "sans limite de prix"], "why_best": "Parmi nos meilleures ventes dans cette catégorie", "why_niche": "Un parfum de niche signé {v}", "why_orient": "De la maison de parfum arabe {v}", "why_fallback": "Suggestion alternative : le choix était limité dans ton budget", "why_evening": "Plus intense qu'une Eau de Toilette, idéal pour le soir", "why_day": "Eau de Toilette, plus légère pour tous les jours", "empty": "Nous n'avons rien en stock pour cette sélection en ce moment. N'hésite pas à découvrir tous les cadeaux."}{%- when 'it' -%}{"title": "Trova regalo: La Lettera dei desideri | Black Elixir", "desc": "Trova il profumo giusto da regalare in cinque brevi domande: per lei, per lui o per tutti, nel tuo budget. Tre proposte dall'assortimento di Black Elixir.", "skip": "Vai direttamente a tutti i regali", "kick": "Trova regalo", "h1a": "La", "h1b": "Lettera dei desideri", "lead": "Rispondi a un massimo di cinque brevi domande. A ogni risposta la tua lettera ai nostri profumieri si scrive un po' di più, e alla fine apriamo la scatola con tre proposte dal nostro assortimento.", "start": "Inizia la lettera", "progress": "Domanda {n} di {m}", "back": "Indietro", "reset": "Ricomincia", "letterAria": "La tua lettera dei desideri", "lheadL": "Ai profumieri di Black Elixir", "lheadR": "Natale 2026", "greeting": "Cari profumieri,", "closing": "… e incartato con cura, per favore.", "q_who": "Per chi è il regalo?", "o_who_sie": ["Per lei", "Profumi da donna"], "o_who_ihn": ["Per lui", "Profumi da uomo"], "o_who_alle": ["Per tutti", "Unisex, adatto a chiunque"], "l_who_sie": "cerco un regalo per lei,", "l_who_ihn": "cerco un regalo per lui,", "l_who_alle": "cerco un regalo adatto a chiunque,", "q_bud": "Quanto vuoi spendere?", "o_bud": ["Fino a 50 €", "Fino a 100 €", "Fino a 200 €", "Anche di più"], "l_bud": ["con un budget fino a 50 €,", "con un budget fino a 100 €,", "con un budget fino a 200 €,", "questa volta il prezzo non conta,"], "q_kind": "Cosa mettiamo sotto l'albero?", "o_kind_duft": ["Un profumo", "Il classico tra i regali"], "o_kind_set": ["Un cofanetto profumo", "Già pronto e composto"], "o_kind_pflege": ["Un momento di cura", "Doccia, cura del corpo, saponi"], "l_kind_duft": "possibilmente un profumo,", "l_kind_set": "possibilmente un bel cofanetto profumo,", "l_kind_pflege": "possibilmente qualcosa per coccolarsi,", "q_char": "Cosa si addice a questa persona?", "o_char_klassik": ["Ama l'intramontabile", "Un profumo amato da molti"], "o_char_nische": ["Ama ciò che è speciale", "Profumi di nicchia che non tutti conoscono"], "o_char_orient": ["Ama l'opulenza", "Da maison arabe come Lattafa e French Avenue"], "l_char_klassik": "un classico che piace di sicuro,", "l_char_nische": "qualcosa di speciale che non indossano tutti,", "l_char_orient": "qualcosa di opulento da una maison araba,", "q_when": "Quando verrà indossato il profumo?", "o_when_tag": ["Tutti i giorni", "Meglio Eau de Toilette, più leggera"], "o_when_abend": ["Nelle serate speciali", "Meglio Eau de Parfum o Extrait, più intensa"], "l_when_tag": "per tutti i giorni.", "l_when_abend": "per le serate speciali.", "sealing_kick": "Lettera pronta", "sealing_h": "Sigilliamo la tua lettera …", "sealed_h": "La tua lettera è sigillata.", "change_last": "Modifica l'ultima risposta", "res_kick": "La scatola è aperta", "res_h": "La nostra proposta per la tua lettera dei desideri", "tag_main": "Il nostro consiglio", "tag_cheaper": "Un po' più conveniente", "tag_also": "Anche questa è un'ottima scelta", "tag_more": "Un'altra idea", "cta_product": "Scopri il profumo", "cta_all": "Vedi tutti i regali adatti", "cta_again": "Scrivi una nuova lettera", "gift_b": "Un regalo invece di uno sconto:", "gift_t": "da 59 € aggiungiamo un sapone, da 99 € due saponi e un campioncino di profumo. Fino a esaurimento scorte.", "why_from_sie": "Dai nostri profumi da donna", "why_from_ihn": "Dai nostri profumi da uomo", "why_from_alle": "Dai nostri profumi unisex", "why_set_sie": "Un cofanetto profumo già pronto per lei", "why_set_ihn": "Un cofanetto profumo già pronto per lui", "why_set_alle": "Un cofanetto profumo già pronto per chiunque", "why_care_sie": "Cura per lei", "why_care_ihn": "Cura per lui", "why_care_alle": "Cura per chiunque", "why_budget": "Rientra nel tuo budget ({b})", "budget_labels": ["fino a 50 €", "fino a 100 €", "fino a 200 €", "senza limiti di prezzo"], "why_best": "Tra i più acquistati da noi in questa categoria", "why_niche": "Un profumo di nicchia di {v}", "why_orient": "Dalla maison di profumi araba {v}", "why_fallback": "Proposta alternativa: nel tuo budget la scelta era limitata", "why_evening": "Più intenso di un'Eau de Toilette, ideale per la sera", "why_day": "Eau de Toilette, più leggera per tutti i giorni", "empty": "Al momento non abbiamo nulla disponibile per questa selezione. Dai pure un'occhiata a tutti i regali."}{%- when 'da' -%}{"title": "Gavefinder: Ønskebrevet | Black Elixir", "desc": "Find den rette parfumegave med fem korte spørgsmål: til hende, til ham eller til alle, inden for dit budget. Tre forslag fra Black Elixirs sortiment.", "skip": "Gå direkte til alle gaver", "kick": "Gavefinder", "h1a": "Dit", "h1b": "Ønskebrev", "lead": "Besvar op til fem korte spørgsmål. Med hvert svar skriver dit brev til vores parfumører sig lidt videre, og til sidst åbner vi æsken med tre forslag fra vores sortiment.", "start": "Begynd brevet", "progress": "Spørgsmål {n} af {m}", "back": "Tilbage", "reset": "Forfra", "letterAria": "Dit ønskebrev", "lheadL": "Til parfumørerne hos Black Elixir", "lheadR": "Jul 2026", "greeting": "Kære parfumører,", "closing": "… og gerne smukt indpakket.", "q_who": "Hvem er gaven til?", "o_who_sie": ["Til hende", "Dameparfumer"], "o_who_ihn": ["Til ham", "Herreparfumer"], "o_who_alle": ["Til alle", "Unisex, passer til alle"], "l_who_sie": "jeg leder efter en gave til hende,", "l_who_ihn": "jeg leder efter en gave til ham,", "l_who_alle": "jeg leder efter en gave, der passer til alle,", "q_bud": "Hvor meget vil du bruge?", "o_bud": ["Op til 50 €", "Op til 100 €", "Op til 200 €", "Gerne mere"], "l_bud": ["den må koste op til 50 €,", "den må koste op til 100 €,", "den må koste op til 200 €,", "prisen er underordnet denne gang,"], "q_kind": "Hvad skal ligge under træet?", "o_kind_duft": ["En parfume", "Gavernes klassiker"], "o_kind_set": ["Et duftsæt", "Færdigsammensat"], "o_kind_pflege": ["Et øjebliks forkælelse", "Brusepleje, kropspleje, sæber"], "l_kind_duft": "helst en parfume,", "l_kind_set": "helst et smukt duftsæt,", "l_kind_pflege": "helst noget til forkælelse,", "q_char": "Hvad passer til personen?", "o_char_klassik": ["Holder af det velkendte", "En duft, som mange elsker"], "o_char_nische": ["Elsker det særlige", "Nichedufte, som ikke alle kender"], "o_char_orient": ["Kan lide det overdådige", "Fra arabiske parfumehuse som Lattafa og French Avenue"], "l_char_klassik": "noget velkendt, der helt sikkert falder i god jord,", "l_char_nische": "noget særligt, som ikke alle bærer,", "l_char_orient": "noget overdådigt fra et arabisk parfumehus,", "q_when": "Hvornår skal duften bæres?", "o_when_tag": ["Hver dag", "Hellere Eau de Toilette, lettere"], "o_when_abend": ["Til særlige aftener", "Hellere Eau de Parfum eller Extrait, mere intens"], "l_when_tag": "til hverdag.", "l_when_abend": "til særlige aftener.", "sealing_kick": "Brevet er færdigt", "sealing_h": "Vi forsegler dit brev …", "sealed_h": "Dit brev er forseglet.", "change_last": "Ret sidste svar", "res_kick": "Æsken er åben", "res_h": "Vores forslag til dit ønskebrev", "tag_main": "Vores anbefaling", "tag_cheaper": "Lidt billigere", "tag_also": "Også et godt valg", "tag_more": "Endnu en idé", "cta_product": "Se duften", "cta_all": "Se alle passende gaver", "cta_again": "Skriv et nyt brev", "gift_b": "En gave i stedet for rabat:", "gift_t": "fra 59 € lægger vi en sæbe med, fra 99 € to sæber og en dufteprøve. Så længe lager haves.", "why_from_sie": "Fra vores dameparfumer", "why_from_ihn": "Fra vores herreparfumer", "why_from_alle": "Fra vores unisex-dufte", "why_set_sie": "Et færdigt duftsæt til hende", "why_set_ihn": "Et færdigt duftsæt til ham", "why_set_alle": "Et færdigt duftsæt til alle", "why_care_sie": "Pleje til hende", "why_care_ihn": "Pleje til ham", "why_care_alle": "Pleje til alle", "why_budget": "Passer til dit budget ({b})", "budget_labels": ["op til 50 €", "op til 100 €", "op til 200 €", "ingen prisgrænse"], "why_best": "Blandt vores mest købte i denne kategori", "why_niche": "En nicheduft fra {v}", "why_orient": "Fra det arabiske parfumehus {v}", "why_fallback": "Alternativt forslag: udvalget inden for dit budget var begrænset", "why_evening": "Mere intens end Eau de Toilette, god til aftener", "why_day": "Eau de Toilette, lettere til hverdag", "empty": "Vi har ikke noget på lager til dette valg lige nu. Se gerne alle gaver."}{%- when 'ar' -%}{"title": "دليل الهدايا: رسالة الأمنيات | Black Elixir", "desc": "اعثر على هدية العطر المناسبة في خمسة أسئلة قصيرة: لها أو له أو للجميع، وضمن ميزانيتك. ثلاثة اقتراحات من تشكيلة Black Elixir.", "skip": "انتقل مباشرةً إلى كل الهدايا", "kick": "دليل الهدايا", "h1a": "رسالة", "h1b": "الأمنيات", "lead": "أجب عن خمسة أسئلة قصيرة على الأكثر. مع كل إجابة تكتمل رسالتك إلى صانعي العطور لدينا سطرًا بعد سطر، وفي النهاية نفتح العلبة على ثلاثة اقتراحات من تشكيلتنا.", "start": "ابدأ الرسالة", "progress": "السؤال {n} من {m}", "back": "رجوع", "reset": "من البداية", "letterAria": "رسالة أمنياتك", "lheadL": "إلى صانعي العطور في Black Elixir", "lheadR": "عيد الميلاد 2026", "greeting": "أعزّائي صانعي العطور،", "closing": "… وأرجو أن تكون مغلّفة بعناية.", "q_who": "لمن الهدية؟", "o_who_sie": ["لها", "عطور نسائية"], "o_who_ihn": ["له", "عطور رجالية"], "o_who_alle": ["للجميع", "للجنسين، تناسب الكل"], "l_who_sie": "أبحث عن هدية لها،", "l_who_ihn": "أبحث عن هدية له،", "l_who_alle": "أبحث عن هدية تناسب الجميع،", "q_bud": "كم تودّ أن تنفق؟", "o_bud": ["حتى 50 €", "حتى 100 €", "حتى 200 €", "لا مانع من أكثر"], "l_bud": ["على ألّا يتجاوز سعرها 50 €،", "على ألّا يتجاوز سعرها 100 €،", "على ألّا يتجاوز سعرها 200 €،", "ولا يهمّ السعر هذه المرة،"], "q_kind": "ماذا تريد أن تضع تحت الشجرة؟", "o_kind_duft": ["عطر", "الهدية الكلاسيكية بامتياز"], "o_kind_set": ["مجموعة عطور", "منسّقة وجاهزة مسبقًا"], "o_kind_pflege": ["لحظة عناية", "عناية بالاستحمام والجسم، وصابون"], "l_kind_duft": "وأفضّل أن تكون عطرًا،", "l_kind_set": "وأفضّل أن تكون مجموعة عطور أنيقة،", "l_kind_pflege": "وأفضّل أن تكون شيئًا للدلال والعناية،", "q_char": "ما الذي يناسب هذا الشخص؟", "o_char_klassik": ["يفضّل المضمون", "عطر يحبّه كثيرون"], "o_char_nische": ["يعشق التميّز", "عطور نيش لا يعرفها الجميع"], "o_char_orient": ["يحبّ الفخامة", "من دور عطور عربية مثل Lattafa و French Avenue"], "l_char_klassik": "عطرًا مجرّبًا ينال الإعجاب حتمًا،", "l_char_nische": "عطرًا مميّزًا لا يضعه الجميع،", "l_char_orient": "عطرًا فخمًا من دار عطور عربية،", "q_when": "متى سيُستعمل العطر؟", "o_when_tag": ["كل يوم", "يُفضَّل Eau de Toilette، أخفّ"], "o_when_abend": ["في الأمسيات الخاصة", "يُفضَّل Eau de Parfum أو Extrait، أكثر تركيزًا"], "l_when_tag": "للاستعمال اليومي.", "l_when_abend": "للأمسيات الخاصة.", "sealing_kick": "اكتملت الرسالة", "sealing_h": "نختم رسالتك …", "sealed_h": "رسالتك مختومة.", "change_last": "تغيير الإجابة الأخيرة", "res_kick": "العلبة مفتوحة", "res_h": "اقتراحنا لرسالة أمنياتك", "tag_main": "توصيتنا", "tag_cheaper": "أوفر قليلًا", "tag_also": "خيار جيد أيضًا", "tag_more": "فكرة أخرى", "cta_product": "إلى العطر", "cta_all": "عرض كل الهدايا المناسبة", "cta_again": "اكتب رسالة جديدة", "gift_b": "هدية بدلًا من الخصم:", "gift_t": "ابتداءً من 59 € نضيف قطعة صابون، ومن 99 € قطعتي صابون وعيّنة عطر. حتى نفاد الكمية.", "why_from_sie": "من عطورنا النسائية", "why_from_ihn": "من عطورنا الرجالية", "why_from_alle": "من عطورنا للجنسين", "why_set_sie": "مجموعة عطور جاهزة لها", "why_set_ihn": "مجموعة عطور جاهزة له", "why_set_alle": "مجموعة عطور جاهزة للجميع", "why_care_sie": "عناية لها", "why_care_ihn": "عناية له", "why_care_alle": "عناية للجميع", "why_budget": "ضمن ميزانيتك ({b})", "budget_labels": ["حتى 50 €", "حتى 100 €", "حتى 200 €", "بلا حدّ للسعر"], "why_best": "من الأكثر مبيعًا لدينا في هذه الفئة", "why_niche": "عطر نيش من {v}", "why_orient": "من دار العطور العربية {v}", "why_fallback": "اقتراح بديل: كانت الخيارات ضمن ميزانيتك محدودة", "why_evening": "أكثر تركيزًا من Eau de Toilette، مثالي للأمسيات", "why_day": "Eau de Toilette، أخفّ للاستعمال اليومي", "empty": "لا يتوفّر لدينا حاليًا ما يناسب هذا الاختيار في المخزون. يمكنك تصفّح كل الهدايا."}{%- when 'he' -%}{"title": "מוצא המתנות: מכתב המשאלות | Black Elixir", "desc": "חמש שאלות קצרות ותמצא את מתנת הבושם המתאימה: בשבילה, בשבילו או לכולם, בתקציב שלך. שלוש הצעות מהמבחר של Black Elixir.", "skip": "ישר לכל המתנות", "kick": "מוצא המתנות", "h1a": "מכתב", "h1b": "המשאלות", "lead": "ענה על עד חמש שאלות קצרות. כל תשובה מוסיפה שורה למכתב שלך אל יוצרי הבשמים שלנו, ובסוף נפתח את הקופסה עם שלוש הצעות מהמבחר שלנו.", "start": "להתחיל את המכתב", "progress": "שאלה {n} מתוך {m}", "back": "חזרה", "reset": "מההתחלה", "letterAria": "מכתב המשאלות שלך", "lheadL": "אל יוצרי הבשמים של Black Elixir", "lheadR": "חג המולד 2026", "greeting": "יוצרי הבשמים היקרים,", "closing": "… ובבקשה, עטופה יפה.", "q_who": "למי המתנה?", "o_who_sie": ["בשבילה", "בשמים לנשים"], "o_who_ihn": ["בשבילו", "בשמים לגברים"], "o_who_alle": ["לכולם", "יוניסקס, מתאים לכל אחד"], "l_who_sie": "אשמח למתנה בשבילה,", "l_who_ihn": "אשמח למתנה בשבילו,", "l_who_alle": "אשמח למתנה שמתאימה לכולם,", "q_bud": "כמה תרצה להוציא?", "o_bud": ["עד 50 €", "עד 100 €", "עד 200 €", "אפשר גם יותר"], "l_bud": ["בתקציב של עד 50 €,", "בתקציב של עד 100 €,", "בתקציב של עד 200 €,", "הפעם המחיר פחות חשוב,"], "q_kind": "מה יחכה מתחת לעץ?", "o_kind_duft": ["בושם", "המתנה הקלאסית"], "o_kind_set": ["מארז בשמים", "מורכב ומוכן מראש"], "o_kind_pflege": ["רגע של פינוק", "טיפוח למקלחת ולגוף, סבונים"], "l_kind_duft": "ורצוי בושם,", "l_kind_set": "ורצוי מארז בשמים יפה,", "l_kind_pflege": "ורצוי משהו לפינוק,", "q_char": "מה מתאים לאדם הזה?", "o_char_klassik": ["קלאסיקה בטוחה", "ניחוח שרבים אוהבים"], "o_char_nische": ["משהו מיוחד", "בשמי נישה שלא כולם מכירים"], "o_char_orient": ["עשיר ומפואר", "מבתי בשמים ערביים כמו Lattafa ו־French Avenue"], "l_char_klassik": "משהו מוכח שבטוח ימצא חן,", "l_char_nische": "משהו מיוחד שלא כולם מתבשמים בו,", "l_char_orient": "משהו עשיר ומפואר מבית בשמים ערבי,", "q_when": "מתי ישתמשו בבושם?", "o_when_tag": ["כל יום", "בעיקר Eau de Toilette, קליל יותר"], "o_when_abend": ["בערבים מיוחדים", "בעיקר Eau de Parfum או Extrait, עוצמתי יותר"], "l_when_tag": "ליום־יום.", "l_when_abend": "לערבים מיוחדים.", "sealing_kick": "המכתב מוכן", "sealing_h": "חותמים את המכתב שלך …", "sealed_h": "המכתב שלך נחתם.", "change_last": "לשנות את התשובה האחרונה", "res_kick": "הקופסה פתוחה", "res_h": "ההצעה שלנו למכתב המשאלות שלך", "tag_main": "ההמלצה שלנו", "tag_cheaper": "קצת יותר משתלם", "tag_also": "גם בחירה טובה", "tag_more": "עוד רעיון", "cta_product": "לבושם", "cta_all": "לכל המתנות המתאימות", "cta_again": "לכתוב מכתב חדש", "gift_b": "מתנה במקום הנחה:", "gift_t": "מ־59 € נצרף סבון, ומ־99 € שני סבונים ודוגמית בושם. עד גמר המלאי.", "why_from_sie": "מבשמי הנשים שלנו", "why_from_ihn": "מבשמי הגברים שלנו", "why_from_alle": "מבשמי היוניסקס שלנו", "why_set_sie": "מארז בשמים מוכן בשבילה", "why_set_ihn": "מארז בשמים מוכן בשבילו", "why_set_alle": "מארז בשמים מוכן לכל אחד", "why_care_sie": "טיפוח בשבילה", "why_care_ihn": "טיפוח בשבילו", "why_care_alle": "טיפוח לכל אחד", "why_budget": "מתאים לתקציב שלך ({b})", "budget_labels": ["עד 50 €", "עד 100 €", "עד 200 €", "ללא הגבלת מחיר"], "why_best": "מהנמכרים ביותר אצלנו בקטגוריה הזו", "why_niche": "בושם נישה של {v}", "why_orient": "מבית הבשמים הערבי {v}", "why_fallback": "הצעה חלופית: המבחר בתקציב שלך היה מצומצם", "why_evening": "עוצמתי יותר מ־Eau de Toilette, מתאים לערבים", "why_day": "Eau de Toilette, קליל יותר ליום־יום", "empty": "כרגע אין לנו מלאי לבחירה הזו. אפשר להציץ בכל המתנות."}{%- else -%}{"title": "Geschenk-Finder: Der Wunschbrief | Black Elixir", "desc": "Finde in fünf kurzen Fragen das passende Parfum-Geschenk: für sie, für ihn oder für alle, in deinem Budget. Drei Vorschläge aus dem Sortiment von Black Elixir.", "skip": "Direkt zu allen Geschenken", "kick": "Geschenk-Finder", "h1a": "Der", "h1b": "Wunschbrief", "lead": "Beantworte bis zu fünf kurze Fragen. Mit jeder Antwort schreibt sich dein Brief an unsere Parfumeure weiter, und am Ende öffnen wir die Schachtel mit drei Vorschlägen aus unserem Sortiment.", "start": "Brief beginnen", "progress": "Frage {n} von {m}", "back": "Zurück", "reset": "Von vorn", "letterAria": "Dein Wunschbrief", "lheadL": "An die Parfumeure von Black Elixir", "lheadR": "Weihnachten 2026", "greeting": "Liebe Parfumeure,", "closing": "… und bitte schön verpackt.", "q_who": "Für wen ist das Geschenk?", "o_who_sie": ["Für sie", "Damendüfte"], "o_who_ihn": ["Für ihn", "Herrendüfte"], "o_who_alle": ["Für alle", "Unisex, passt jedem"], "l_who_sie": "ich suche ein Geschenk für sie,", "l_who_ihn": "ich suche ein Geschenk für ihn,", "l_who_alle": "ich suche ein Geschenk, das jedem passt,", "q_bud": "Wie viel möchtest du ausgeben?", "o_bud": ["Bis 50 €", "Bis 100 €", "Bis 200 €", "Darf auch mehr sein"], "l_bud": ["es darf bis zu 50 € kosten,", "es darf bis zu 100 € kosten,", "es darf bis zu 200 € kosten,", "der Preis ist diesmal Nebensache,"], "q_kind": "Was soll unter dem Baum liegen?", "o_kind_duft": ["Ein Parfum", "Der Klassiker unter den Geschenken"], "o_kind_set": ["Ein Duftset", "Schon fertig zusammengestellt"], "o_kind_pflege": ["Ein Pflegemoment", "Duschpflege, Körperpflege, Seifen"], "l_kind_duft": "am liebsten ein Parfum,", "l_kind_set": "am liebsten ein schönes Duftset,", "l_kind_pflege": "am liebsten etwas zum Verwöhnen,", "q_char": "Was passt zu der Person?", "o_char_klassik": ["Mag Bewährtes", "Ein Duft, den viele lieben"], "o_char_nische": ["Liebt das Besondere", "Nischendüfte, die nicht jeder kennt"], "o_char_orient": ["Mag es opulent", "Aus arabischen Parfumhäusern wie Lattafa und French Avenue"], "l_char_klassik": "etwas Bewährtes, das sicher gefällt,", "l_char_nische": "etwas Besonderes, das nicht jeder trägt,", "l_char_orient": "etwas Opulentes aus einem arabischen Haus,", "q_when": "Wann wird der Duft getragen?", "o_when_tag": ["Jeden Tag", "Eher Eau de Toilette, leichter"], "o_when_abend": ["An besonderen Abenden", "Eher Eau de Parfum oder Extrait, intensiver"], "l_when_tag": "für jeden Tag.", "l_when_abend": "für besondere Abende.", "sealing_kick": "Brief fertig", "sealing_h": "Wir versiegeln deinen Brief …", "sealed_h": "Dein Brief ist versiegelt.", "change_last": "Letzte Antwort ändern", "res_kick": "Die Schachtel ist offen", "res_h": "Unser Vorschlag für deinen Wunschbrief", "tag_main": "Unsere Empfehlung", "tag_cheaper": "Etwas günstiger", "tag_also": "Ebenfalls eine gute Wahl", "tag_more": "Noch eine Idee", "cta_product": "Zum Duft", "cta_all": "Alle passenden Geschenke ansehen", "cta_again": "Neuen Brief schreiben", "gift_b": "Ein Geschenk statt Rabatt:", "gift_t": "ab 59 € legen wir eine Seife bei, ab 99 € zwei Seifen und eine Duftprobe. Solange der Vorrat reicht.", "why_from_sie": "Aus unseren Damendüften", "why_from_ihn": "Aus unseren Herrendüften", "why_from_alle": "Aus unseren Unisex-Düften", "why_set_sie": "Ein fertiges Duftset für sie", "why_set_ihn": "Ein fertiges Duftset für ihn", "why_set_alle": "Ein fertiges Duftset für jeden", "why_care_sie": "Pflege für sie", "why_care_ihn": "Pflege für ihn", "why_care_alle": "Pflege für jeden", "why_budget": "Passt in dein Budget ({b})", "budget_labels": ["bis 50 €", "bis 100 €", "bis 200 €", "ohne Preisgrenze"], "why_best": "Gehört bei uns zu den meistgekauften in dieser Kategorie", "why_niche": "Ein Nischenduft von {v}", "why_orient": "Aus dem arabischen Parfumhaus {v}", "why_fallback": "Ersatzvorschlag: in deinem Budget war die Auswahl knapp", "why_evening": "Intensiver als Eau de Toilette, gut für Abende", "why_day": "Eau de Toilette, leichter für jeden Tag", "empty": "Für diese Auswahl haben wir gerade nichts auf Lager. Schau dir gern alle Geschenke an."}{%- endcase -%};
+var ROOT={{ gf_root | json }};
+var A={},step=0;
+var CUR={{ cart.currency.iso_code | default: 'EUR' | json }};
+function q(k){return T[k]}
+var Q=[
+ {id:'who',t:q('q_who'),o:[['sie',q('o_who_sie')],['ihn',q('o_who_ihn')],['alle',q('o_who_alle')]],line:{sie:q('l_who_sie'),ihn:q('l_who_ihn'),alle:q('l_who_alle')}},
+ {id:'bud',t:q('q_bud'),o:[0,1,2,3].map(function(i){return [String(i),[q('o_bud')[i],'']]}),line:{0:q('l_bud')[0],1:q('l_bud')[1],2:q('l_bud')[2],3:q('l_bud')[3]}},
+ {id:'kind',t:q('q_kind'),o:[['duft',q('o_kind_duft')],['set',q('o_kind_set')],['pflege',q('o_kind_pflege')]],line:{duft:q('l_kind_duft'),set:q('l_kind_set'),pflege:q('l_kind_pflege')}},
+ {id:'char',only:'duft',t:q('q_char'),o:[['klassik',q('o_char_klassik')],['nische',q('o_char_nische')],['orient',q('o_char_orient')]],line:{klassik:q('l_char_klassik'),nische:q('l_char_nische'),orient:q('l_char_orient')}},
+ {id:'when',only:'duft',t:q('q_when'),o:[['tag',q('o_when_tag')],['abend',q('o_when_abend')]],line:{tag:q('l_when_tag'),abend:q('l_when_abend')}}
+];
+var $=function(i){return document.getElementById(i)};
+function steps(){return Q.filter(function(x){return !x.only||A.kind===x.only})}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var NF;try{NF=new Intl.NumberFormat(document.documentElement.lang||'de',{style:'currency',currency:CUR})}catch(e){}
+function eur(n){return NF?NF.format(n):n.toFixed(2).replace('.',',')+' €'}
+var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function renderQ(){
+  var S=steps(),x=S[step],box=$('q'),n=S.length;
+  box.innerHTML='<div class="prog"><span>'+q('progress').replace('{n}',step+1).replace('{m}',n)+'</span><span class="bar"><i style="width:'+(step/n*100)+'%"></i></span></div><h2>'+esc(x.t)+'</h2><div class="opts" role="group" aria-label="'+esc(x.t)+'">'+
+    x.o.map(function(o,i){return '<button class="opt" type="button" data-v="'+o[0]+'"><span class="k">'+'abcd'[i]+'</span><span><b>'+esc(o[1][0])+'</b>'+(o[1][1]?'<small>'+esc(o[1][1])+'</small>':'')+'</span></button>'}).join('')+
+    '</div><div class="nav">'+(step>0?'<button type="button" id="back">'+esc(q('back'))+'</button>':'')+'<button type="button" id="reset">'+esc(q('reset'))+'</button></div>';
+  [].forEach.call(box.querySelectorAll('.opt'),function(b){b.onclick=function(){answer(x,b.getAttribute('data-v'))}});
+  if($('back'))$('back').onclick=function(){step--;drawLines();renderQ()};
+  $('reset').onclick=reset;
+}
+function drawLines(anim){
+  var S=steps(),L=['<li class="done">'+esc(q('greeting'))+'</li>'];
+  S.forEach(function(x,i){if(A[x.id]!=null&&(i<step||anim===x.id)){var t=x.line[A[x.id]];if(t)L.push('<li'+(anim===x.id&&!rm?'':' class="done"')+'>'+esc(t)+'</li>')}});
+  $('lines').innerHTML=L.join('');
+}
+function answer(x,v){
+  A[x.id]=v;if(x.id==='kind'&&v!=='duft'){delete A.char;delete A.when}
+  drawLines(x.id);step++;
+  if(step>=steps().length)finish();else{renderQ();var f=document.querySelector('.opt');f&&f.focus({preventScroll:true})}
+}
+function reset(){A={};step=0;$('res').hidden=true;$('res').classList.remove('open');$('sig').classList.remove('on');$('seal').classList.remove('on');drawLines();renderQ();scrollTo({top:0,behavior:rm?'auto':'smooth'})}
+
+/* live data */
+var G={sie:'damenduefte',ihn:'herrenduefte',alle:'unisex-parfums'},BANDS=[[0,50],[50,100],[100,200],[200,100000]],cache={};
+function list(coll,b){var k=coll+'|'+b;if(cache[k])return cache[k];var r=BANDS[b];
+  var u=ROOT+'/collections/'+coll+'?view=gf&sort_by=best-selling&filter.v.availability=1&filter.v.price.gte='+r[0]+'&filter.v.price.lte='+r[1];
+  return cache[k]=fetch(u,{credentials:'same-origin'}).then(function(x){return x.json()}).then(function(j){return (j.items||[]).filter(function(p){return !/adventskalender/i.test(p.t)})}).catch(function(){return []})}
+function has(p,c){return p.c.indexOf(c)>-1}
+function pool(kind,who,b){
+  var g=G[who];
+  if(kind==='klassik')return list(g,b).then(function(l){return l.filter(function(p){return !has(p,'nischenduefte')&&!has(p,'arabische-duefte')})});
+  if(kind==='nische')return list('nischenduefte',b).then(function(l){return who==='alle'?l:l.filter(function(p){return has(p,g)})});
+  if(kind==='orient')return list('arabische-duefte',b).then(function(l){return who==='alle'?l:l.filter(function(p){return has(p,g)||!(has(p,'damenduefte')||has(p,'herrenduefte'))})});
+  if(kind==='set'){if(who==='sie')return Promise.all([list('duftsets-damen',b),list('parfum-geschenksets',b)]).then(function(r){return r[0].concat(r[1].filter(function(p){return has(p,'damenduefte')}))});
+    return list('parfum-geschenksets',b).then(function(l){return who==='ihn'?l.filter(function(p){return !has(p,'duftsets-damen')&&!has(p,'damenduefte')}):l})}
+  if(kind==='pflege'){if(who==='alle')return Promise.all([list('koerperpflege-fuer-damen',b),list('herren-koerperpflege',b)]).then(function(r){return r[0].concat(r[1])});
+    return list(who==='sie'?'koerperpflege-fuer-damen':'herren-koerperpflege',b)}
+  return Promise.resolve([]);
+}
+async function pick(){
+  var who=A.who,b=+A.bud,k=A.kind==='duft'?A.char:A.kind,kinds=[k];if(k!=='klassik')kinds.push('klassik');
+  var out=[],seen={};
+  for(var ki=0;ki<kinds.length;ki++){for(var bb=b;bb>=0;bb--){var l=await pool(kinds[ki],who,bb);l.forEach(function(p){if(!seen[p.h]){seen[p.h]=1;p.k=kinds[ki];out.push(p)}});if(out.filter(function(p){return p.k===k}).length>=8)break}if(out.length>=3)break}
+  if(A.when){var want=A.when==='abend'?/(eau de parfum|extrait|parfum$)/i:/eau de toilette|cologne/i;var head=out.slice(0,10);head.sort(function(x,y){return (want.test(y.t)?1:0)-(want.test(x.t)?1:0)});out=head.concat(out.slice(10))}
+  var res=[],vs={},own=out.filter(function(p){return p.k===k});
+  own.forEach(function(p){if(res.length<3&&!vs[p.v]){vs[p.v]=1;res.push(p)}});
+  own.concat(out).forEach(function(p){if(res.length<3&&res.indexOf(p)<0)res.push(p)});
+  return res;
+}
+function why(p){
+  var W=[],who=A.who;
+  W.push(A.kind==='duft'?q('why_from_'+who):A.kind==='set'?q('why_set_'+who):q('why_care_'+who));
+  W.push(q('why_budget').replace('{b}',q('budget_labels')[+A.bud]));
+  if(p.r<=12)W.push(q('why_best'));
+  if(p.k==='nische')W.push(q('why_niche').replace('{v}',esc(p.v)));
+  if(p.k==='orient')W.push(q('why_orient').replace('{v}',esc(p.v)));
+  if(A.kind==='duft'&&p.k!==A.char)W.push(q('why_fallback'));
+  if(A.when==='abend'&&/(eau de parfum|extrait)/i.test(p.t))W.push(q('why_evening'));
+  if(A.when==='tag'&&/eau de toilette/i.test(p.t))W.push(q('why_day'));
+  return W;
+}
+function img(u,w){return u?u.replace(/width=\d+/,'width='+w):''}
+function finish(){
+  $('q').innerHTML='<span class="kick">'+esc(q('sealing_kick'))+'</span><h2>'+esc(q('sealing_h'))+'</h2><div class="nav"><button type="button" id="back2">'+esc(q('change_last'))+'</button><button type="button" id="reset2">'+esc(q('reset'))+'</button></div>';
+  $('back2').onclick=function(){step--;drawLines();$('res').hidden=true;$('res').classList.remove('open');$('sig').classList.remove('on');$('seal').classList.remove('on');renderQ()};
+  $('reset2').onclick=reset;
+  var P=pick();
+  setTimeout(function(){$('sig').classList.add('on')},rm?0:900);
+  setTimeout(function(){$('seal').classList.add('on')},rm?0:1500);
+  var wait=new Promise(function(r){setTimeout(r,rm?0:2200)});
+  Promise.all([P,wait]).then(function(r){showRes(r[0])});
+}
+function showRes(R){
+  var box=$('box');
+  if(!R.length){box.innerHTML='<p class="empty">'+esc(q('empty'))+'</p>'}else{
+  var m=R[0],rest=R.slice(1).sort(function(a,b){return a.p-b.p});
+  var labels=rest.length===2?(rest[0].p<m.p?[q('tag_cheaper'),q('tag_also')]:[q('tag_also'),q('tag_more')]):[q('tag_also')];
+  box.innerHTML='<div class="main"><img src="'+img(m.i,520)+'" alt="'+esc(m.t)+'" width="260" height="260"><div><span class="tag">'+esc(q('tag_main'))+'</span><h3>'+esc(m.t)+'</h3><span class="vend">'+esc(m.v)+'</span><div class="price">'+eur(m.p)+'</div><ul class="why">'+why(m).map(function(w){return '<li>'+w+'</li>'}).join('')+'</ul><a class="ghost" href="'+ROOT+'/products/'+m.h+'">'+esc(q('cta_product'))+'</a></div></div>'+
+    '<div class="alts">'+rest.map(function(p,i){return '<a class="alt" href="'+ROOT+'/products/'+p.h+'"><img src="'+img(p.i,260)+'" alt="" width="110" height="110" loading="lazy"><div><span class="tag">'+esc(labels[i])+'</span><b>'+esc(p.t)+'</b><span>'+esc(p.v)+' · <span class="pr">'+eur(p.p)+'</span></span></div></a>'}).join('')+'</div>';}
+  var col={klassik:G[A.who],nische:'nischenduefte',orient:'arabische-duefte',set:'parfum-geschenksets',pflege:A.who==='ihn'?'herren-koerperpflege':'koerperpflege-fuer-damen'};
+  var c=col[A.kind==='duft'?A.char:A.kind],hi=[50,100,200,0][+A.bud];
+  $('all').href=ROOT+'/collections/'+c+'?filter.v.availability=1'+(hi?'&filter.v.price.lte='+hi:'')+'&sort_by=best-selling';
+  $('res').hidden=false;requestAnimationFrame(function(){$('res').classList.add('open')});
+  $('q').querySelector('h2').textContent=q('sealed_h');
+  $('res').scrollIntoView({behavior:rm?'auto':'smooth',block:'start'});
+}
+$('again').onclick=reset;
+$('start').onclick=function(){renderQ();var f=document.querySelector('.opt');f&&f.focus()};
+/* warm the cache for the common first step */
+</script>
+
+</body>
+</html>
