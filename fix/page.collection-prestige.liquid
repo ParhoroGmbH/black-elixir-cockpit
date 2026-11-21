@@ -1,0 +1,375 @@
+{%- layout none -%}
+{%- comment -%} Collection Prestige Landingpage "La Salle des Coffres". Szenen: Dateien cp-salle-*.png, Flakon-Vorschauen cp-t-<handle>.webp (gleich groß), Preise/Verfügbarkeit live aus der Kollektion collection-prestige-absoluta. Texte: snippets/cp-salle-i18n. Claude 21.11.2026 {%- endcomment -%}
+{%- assign cp_l = request.locale.iso_code | slice: 0, 2 -%}
+{%- assign cp_col = collections['collection-prestige-absoluta'] -%}
+{%- assign cp_salle = images['cp-salle-salle.png'] -%}
+{%- assign cp_og = all_products['collection-prestige-no-9-sultan-eau-de-parfum'].featured_image -%}
+{%- if routes.root_url == '/' -%}{%- assign cp_shop = '/products/' -%}{%- else -%}{%- assign cp_shop = routes.root_url | append: '/products/' -%}{%- endif -%}
+{%- capture cp_t -%}{% case cp_l %}{% when 'en' %}Collection Prestige Absoluta – La Salle des Coffres | Black Elixir{% when 'fr' %}Collection Prestige Absoluta – La Salle des Coffres | Black Elixir{% when 'it' %}Collection Prestige Absoluta – La Salle des Coffres | Black Elixir{% when 'da' %}Collection Prestige Absoluta – La Salle des Coffres | Black Elixir{% when 'ar' %}كوليكشن برستيج أبسولوتا – غرفة الخزائن | بلاك إليكسير{% when 'he' %}קולקשן פרסטיז׳ אבסולוטה – חדר הכספות | Black Elixir{% else %}Collection Prestige Absoluta – La Salle des Coffres | Black Elixir{% endcase %}{%- endcapture -%}
+{%- capture cp_d -%}{% case cp_l %}{% when 'en' %}Collection Prestige Absoluta: forty numbered fragrances from Paris, kept like jewels. Saphir, Perla, Diamant Absolu, Sultan and more at Black Elixir.{% when 'fr' %}Collection Prestige Absoluta : quarante parfums numérotés de Paris, gardés comme des bijoux. Saphir, Perla, Diamant Absolu, Sultan et plus chez Black Elixir.{% when 'it' %}Collection Prestige Absoluta: quaranta fragranze numerate da Parigi, custodite come gioielli. Saphir, Perla, Diamant Absolu, Sultan e altre da Black Elixir.{% when 'da' %}Collection Prestige Absoluta: fyrre nummererede dufte fra Paris, opbevaret som juveler. Saphir, Perla, Diamant Absolu, Sultan og flere hos Black Elixir.{% when 'ar' %}كوليكشن برستيج أبسولوتا: أربعون عطراً مرقّماً من باريس، محفوظة كالجواهر. Saphir وPerla وDiamant Absolu وSultan وغيرها لدى بلاك إليكسير.{% when 'he' %}קולקשן פרסטיז׳ אבסולוטה: ארבעים בשמים ממוספרים מפריז, שמורים כמו תכשיטים. Saphir, Perla, Diamant Absolu, Sultan ועוד ב-Black Elixir.{% else %}Collection Prestige Absoluta: vierzig nummerierte Düfte aus Paris, verwahrt wie Juwelen. Saphir, Perla, Diamant Absolu, Sultan und mehr bei Black Elixir.{% endcase %}{%- endcapture -%}
+{%- paginate cp_col.products by 100 -%}
+{%- capture cp_ld -%}{%- for p in cp_col.products -%}{"@type":"ListItem","position":{{ forloop.index }},"url":{{ request.origin | append: p.url | json }},"name":{{ p.title | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}{%- endcapture -%}
+{%- capture cp_json -%}{"lang":{{ cp_l | json }},"shop":{{ cp_shop | json }},"img":{"saphir":{"d":{{ images['cp-salle-saphir.png'] | image_url: width: 1600 | json }},"m":{{ images['cp-salle-saphir.png'] | image_url: width: 900 | json }}},"perla":{"d":{{ images['cp-salle-perla.png'] | image_url: width: 1600 | json }},"m":{{ images['cp-salle-perla.png'] | image_url: width: 900 | json }}},"diamant-absolu":{"d":{{ images['cp-salle-diamant-absolu.png'] | image_url: width: 1600 | json }},"m":{{ images['cp-salle-diamant-absolu.png'] | image_url: width: 900 | json }}},"cristal-rouge":{"d":{{ images['cp-salle-cristal-rouge.png'] | image_url: width: 1600 | json }},"m":{{ images['cp-salle-cristal-rouge.png'] | image_url: width: 900 | json }}},"or-malaki":{"d":{{ images['cp-salle-or-malaki.png'] | image_url: width: 1600 | json }},"m":{{ images['cp-salle-or-malaki.png'] | image_url: width: 900 | json }}},"onyx-noir":{"d":{{ images['cp-salle-onyx-noir.png'] | image_url: width: 1600 | json }},"m":{{ images['cp-salle-onyx-noir.png'] | image_url: width: 900 | json }}},"sultan":{"d":{{ images['cp-salle-sultan.png'] | image_url: width: 1600 | json }},"m":{{ images['cp-salle-sultan.png'] | image_url: width: 900 | json }}},"bonaparte":{"d":{{ images['cp-salle-bonaparte.png'] | image_url: width: 1600 | json }},"m":{{ images['cp-salle-bonaparte.png'] | image_url: width: 900 | json }}}},
+"lurl":{ {%- for l in localization.available_languages -%}{%- assign lr = l.root_url -%}{%- if lr == '/' -%}{%- assign lr = '' -%}{%- endif -%}{{ l.iso_code | slice: 0, 2 | json }}:{{ lr | append: page.url | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%} },
+"prd":[ {%- for p in cp_col.products -%}{%- assign cp_tn = 'cp-t-' | append: p.handle | append: '.webp' -%}{%- assign cp_ti = images[cp_tn] -%}{%- if cp_ti == blank -%}{%- assign cp_ti = p.featured_image -%}{%- endif -%}[{{ p.handle | json }},{{ p.title | json }},{{ p.price_min | divided_by: 100.0 | json }},{{ p.price_max | divided_by: 100.0 | json }},{{ p.available | json }},{%- if cp_ti -%}{{ cp_ti | image_url: width: 300 | json }}{%- else -%}""{%- endif -%}]{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%} ]}{%- endcapture -%}
+{%- endpaginate -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}"{% if cp_l == 'ar' or cp_l == 'he' %} dir="rtl"{% endif %}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{ cp_t }}</title>
+<meta name="description" content="{{ cp_d | escape }}">
+<link rel="canonical" href="{{ canonical_url }}">
+{%- for l in localization.available_languages -%}{%- assign lr = l.root_url -%}{%- if lr == '/' -%}{%- assign lr = '' -%}{%- endif %}
+<link rel="alternate" hreflang="{{ l.iso_code }}" href="{{ request.origin }}{{ lr }}{{ page.url }}">
+{%- endfor %}
+<link rel="alternate" hreflang="x-default" href="{{ request.origin }}{{ page.url }}">
+<link rel="icon" href="{{ settings.favicon | image_url: width: 64 }}">
+<meta property="og:site_name" content="BLACK ELIXIR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ cp_t | escape }}">
+<meta property="og:description" content="{{ cp_d | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+{%- if cp_og %}
+<meta property="og:image" content="https:{{ cp_og | image_url: width: 1200, height: 630, crop: 'center' }}">
+<meta property="og:image:secure_url" content="https:{{ cp_og | image_url: width: 1200, height: 630, crop: 'center' }}">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Collection Prestige">
+<meta name="twitter:image" content="https:{{ cp_og | image_url: width: 1200, height: 630, crop: 'center' }}">
+{%- endif %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ cp_t | escape }}">
+<meta name="twitter:description" content="{{ cp_d | escape }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@400;500&display=swap">
+<link rel="preload" as="image" href="{{ cp_salle | image_url: width: 1600 }}" imagesrcset="{{ cp_salle | image_url: width: 900 }} 900w, {{ cp_salle | image_url: width: 1600 }} 1600w" imagesizes="100vw">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":{{ cp_t | json }},"description":{{ cp_d | json }},"url":{{ canonical_url | json }},"inLanguage":{{ request.locale.iso_code | json }},"isPartOf":{"@type":"WebSite","name":"BLACK ELIXIR – Maison de Parfum","url":{{ request.origin | json }}},"about":{"@type":"Brand","name":"Collection Prestige"},"mainEntity":{"@type":"ItemList","numberOfItems":{{ cp_col.products_count | default: 0 }},"itemListElement":[{{ cp_ld }}]}}</script>
+{{ content_for_header }}
+<style>
+:root{
+  --vault:#0b0c0d; --steel:#1a1c1e; --brass:#b99252; --brass-l:#e3c98f; --ivory:#f6f2ea; --ink:#16130f; --mute:#6d655a;
+  --serif:'Cormorant Garamond',Didot,'Times New Roman',serif; --sans:'Jost','Helvetica Neue',Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--vault)}
+body{margin:0;background:var(--vault);color:#efe9df;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.top{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;
+  padding:calc(14px + env(safe-area-inset-top,0px)) clamp(16px,4vw,44px) 18px;pointer-events:none;background:linear-gradient(#0b0c0dcc,#0b0c0d00)}
+.top > *{pointer-events:auto}
+.top a{text-decoration:none;font:500 12px/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;padding:8px 0}
+.top span{font:italic 400 17px/1 var(--serif);color:var(--brass-l);letter-spacing:.04em}
+.top.day{background:linear-gradient(#f6f2eaee,#f6f2ea00);color:var(--ink)}
+.top.day span{color:#8a6a2c}
+
+.film{position:relative;height:calc(var(--n) * 100svh)}
+.stage{position:sticky;top:0;height:100svh;overflow:hidden}
+.layer{position:absolute;inset:0;opacity:0}
+.layer .bg{display:none}
+.layer img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%;transform-origin:50% 30%;transform:scale(var(--z,1.03))}
+.layer::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(var(--side,90deg),#0b0c0de6 0%,#0b0c0d99 30%,#0b0c0d00 58%)}
+.layer.r::after{--side:270deg}
+.intro{position:absolute;inset:0;z-index:2;overflow:hidden}
+.intro img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform-origin:50% 48%;transform:scale(var(--iz,1))}
+.intro::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,#0b0c0d55 0,#0b0c0dd9 70%)}
+.intro .t{position:absolute;inset:0;z-index:1;display:grid;place-content:center;text-align:center;padding:0 16px}
+.intro small{font:500 11px/1 var(--sans);letter-spacing:.42em;text-transform:uppercase;color:var(--brass)}
+.intro h1{font:400 clamp(52px,9vw,128px)/.92 var(--serif);margin:.3em 0 .25em;letter-spacing:-.01em;text-wrap:balance}
+.intro h1 i{display:block;font-size:.42em;letter-spacing:.06em;color:var(--brass-l)}
+.intro p{max-width:30em;margin:0 auto;font-size:15px;line-height:1.7;color:#d7cfc2}
+.cue{margin-top:40px;font:500 11px/1 var(--sans);letter-spacing:.36em;text-transform:uppercase;color:var(--brass)}
+.cue::after{content:"";display:block;width:1px;height:44px;margin:14px auto 0;background:linear-gradient(var(--brass),transparent)}
+
+.copy{position:absolute;z-index:4;top:50%;transform:translateY(-50%);width:min(430px,38vw);left:clamp(24px,6vw,96px);opacity:0}
+.copy.r{left:auto;right:clamp(24px,6vw,96px)}
+.no{display:flex;align-items:baseline;gap:14px}
+.no b{font:400 64px/.8 var(--serif);color:var(--brass-l)}
+.no span{font:500 10.5px/1.3 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:#bdb4a6}
+.copy h2{font:400 clamp(40px,4.6vw,66px)/1 var(--serif);margin:18px 0 8px;text-wrap:balance}
+.dir{font:italic 400 19px/1.3 var(--serif);color:var(--brass-l)}
+.line{margin:16px 0 0;font-size:15px;line-height:1.65;color:#e3dbcf}
+dl{margin:16px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px;line-height:1.55}
+dt{color:var(--brass);letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;padding-top:3px}
+dd{margin:0;color:#d6cec1}
+.buy{display:flex;align-items:center;gap:22px;margin-top:24px}
+.price{font:400 24px var(--serif)}
+.btn{display:inline-block;padding:13px 26px;border:1px solid var(--brass);color:#f3ecdf;text-decoration:none;font:500 12px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;transition:background .25s,color .25s}
+.btn:hover,.btn:focus-visible{background:var(--brass);color:#0b0906;outline:none}
+
+/* combination dial */
+.dial{position:absolute;z-index:5;right:clamp(16px,3vw,40px);bottom:clamp(16px,3vw,36px);width:92px;height:92px;opacity:0}
+.dial svg{width:100%;height:100%;overflow:visible}
+.dial text{font:500 7px var(--sans);fill:#e3c98f}
+
+/* collection */
+.coll{background:var(--ivory);color:var(--ink);padding-block:clamp(72px,10vw,130px) 80px;padding-inline:clamp(16px,4vw,44px)}
+.head{max-width:1200px;margin:0 auto 44px;display:flex;flex-wrap:wrap;gap:14px 40px;align-items:end;justify-content:space-between}
+.kick{font:500 11px/1 var(--sans);letter-spacing:.36em;text-transform:uppercase;color:#8a6a2c}
+.coll h2{font:400 clamp(38px,5vw,66px)/1 var(--serif);margin:.25em 0 0}
+.head p{max-width:32em;margin:0;color:var(--mute);line-height:1.7;font-size:15px}
+.grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:2px}
+.card{position:relative;overflow:hidden;background:#fff;padding:22px 16px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;transition:background .25s}
+.card:hover,.card:focus-visible{background:#fbf8f2;outline:none}
+.card:focus-visible{box-shadow:inset 0 0 0 1px #8a6a2c}
+.card .n{position:absolute;z-index:1;top:14px;left:16px;font:400 22px/1 var(--serif);color:#8a6a2c}
+.card img{width:210px;max-width:100%;aspect-ratio:1;object-fit:contain;transition:transform .4s}
+.card:hover img{transform:translateY(-3px)}
+.card b{font:500 21px/1.1 var(--serif);margin-top:12px}
+.card em{font-style:normal;font-size:12px;color:var(--mute);margin-top:6px;letter-spacing:.04em}
+.card span{margin-top:10px;font-size:14px}
+.card .so{color:#9a3b2b;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+.card.out img{opacity:.5}
+.ph{width:170px;aspect-ratio:1;display:grid;place-content:center;font:400 40px var(--serif);color:#c9bfae}
+.more{margin-top:clamp(64px,8vw,110px)}
+footer{background:var(--ivory);color:var(--mute);text-align:center;padding:0 16px 46px;font:500 12px/1.6 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+footer a{color:var(--ink);text-decoration:none}
+
+/* the lock */
+.lock{background:radial-gradient(80% 70% at 70% 50%,#1d1a15 0,var(--vault) 70%);padding-block:clamp(72px,9vw,120px);padding-inline:clamp(16px,4vw,44px)}
+.lock .in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(28px,5vw,72px);align-items:center}
+.lock h2{font:400 clamp(40px,5vw,68px)/1 var(--serif);margin:.25em 0 0}
+.lock .kick{color:var(--brass)}
+.lock p{color:#d7cfc2;line-height:1.7;font-size:15px;max-width:34em;margin:18px 0 0}
+.bday{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;margin-top:26px}
+.bday label{font:500 11px/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--brass)}
+.bday input{width:84px;background:#14120f;color:#f3ecdf;border:1px solid #5b4a2b;padding:10px 12px;font:400 20px var(--serif);border-radius:0}
+.bday input:focus-visible,.step:focus-visible,#open:focus-visible{outline:1px solid var(--brass);outline-offset:2px}
+.safe{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,36px);align-items:center}
+.dialbig{position:relative;aspect-ratio:1;touch-action:none;cursor:grab;user-select:none}
+.dialbig:active{cursor:grabbing}
+.dialbig svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 24px 30px #000a)}
+.dialbig text{font:500 6px var(--sans);fill:#3a2c14}
+.ctrl{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:14px}
+.step{width:44px;height:44px;border-radius:50%;border:1px solid #5b4a2b;background:#14120f;color:var(--brass-l);font:400 22px/1 var(--serif);cursor:pointer}
+#open{margin-top:0}
+.box{position:relative;aspect-ratio:3/4;perspective:1200px;background:linear-gradient(#2a1e14,#140e09);box-shadow:inset 0 0 0 10px #3a2e20,inset 0 0 40px #000,0 30px 60px -30px #000}
+.box .inside{position:absolute;inset:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;background:radial-gradient(circle at 50% 40%,#5a1620 0,#2a070c 75%)}
+.box .inside img{width:66%;aspect-ratio:1;object-fit:contain;background:#fff;border-radius:2px;box-shadow:0 14px 26px -10px #000}
+.box .inside b{font:400 30px/1 var(--serif);margin-top:14px;color:#f6efe2}
+.box .inside em{font:italic 400 15px var(--serif);color:var(--brass-l);margin-top:4px}
+.box .inside .btn{margin-top:14px;padding:10px 18px;font-size:11px}
+.box .inside .empty{font:italic 400 19px/1.4 var(--serif);color:#d7cfc2;max-width:14em}
+.door{position:absolute;inset:0;transform-origin:100% 50%;backface-visibility:hidden;transition:transform 1.4s cubic-bezier(.3,.1,.2,1);background:
+  radial-gradient(circle at 22% 50%,#c9a45c 0 7px,#5b4a2b 8px,transparent 9px),
+  linear-gradient(135deg,#3b3f43,#1d2023 55%,#2c3034);box-shadow:inset 0 0 0 1px #5d636a,inset 0 0 0 9px #26292c,inset 0 0 0 10px #4b5157;display:grid;place-content:center;z-index:2}
+.door span{font:400 64px/1 var(--serif);color:#c9a45c;text-shadow:0 1px 0 #000}
+.box.open .door{transform:rotateY(108deg)}
+@media (max-width:900px){.lock .in{grid-template-columns:1fr}.safe{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.safe{grid-template-columns:1fr}.box{max-width:300px;margin:0 auto;width:100%}.dialbig{max-width:300px;margin:0 auto;width:100%}}
+@media (prefers-reduced-motion:reduce){.door{transition:none}}
+
+@media (max-width:900px){
+  .layer .bg{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(26px) brightness(.32);transform:scale(1.2)}
+  .layer img.ph2{inset:auto;top:calc(56px + env(safe-area-inset-top,0px));left:0;width:100%;height:auto;aspect-ratio:1600/1063;object-fit:contain;transform:none}
+  .layer::after{background:linear-gradient(#0b0c0d00 0,#0b0c0d00 60%,#0b0c0dcc 100%)}
+  .copy,.copy.r{left:16px;right:16px;width:auto;top:calc(56px + env(safe-area-inset-top,0px) + 66.5vw + 16px);transform:none}
+  .no b{font-size:46px}
+  .copy h2{font-size:38px;margin:10px 0 4px}
+  .line{font-size:14px;margin-top:10px}
+  .dial{width:58px;height:58px;top:calc(56px + env(safe-area-inset-top,0px) + 66.5vw - 70px);bottom:auto;right:12px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .card{padding:18px 10px 16px}
+  .card img,.ph{width:100%}
+  .card b{font-size:18px}
+}
+@media (max-width:900px) and (max-height:700px){ .line{display:none} }
+@media (prefers-reduced-motion:reduce){ .layer img,.intro img{transform:none!important} }
+
+.brand{display:flex;flex-direction:column;gap:10px}
+.langs{display:flex;gap:2px;flex-wrap:wrap}
+.langs a{padding:8px 7px!important;margin:-8px 0;min-width:30px;color:#efe9df99;font:500 10.5px/1 var(--sans)!important;letter-spacing:.12em!important;text-decoration:none;border-bottom:1px solid transparent}
+.langs a[aria-current]{color:var(--brass-l);border-bottom-color:var(--brass)}
+.top.day .langs a{color:#16130f99}
+.langs a[lang=ar],.langs a[lang=he]{letter-spacing:0!important;font-size:13px!important}.top.day .langs a[aria-current]{color:#8a6a2c}
+.top{align-items:flex-start}
+[dir=rtl] .kick,[dir=rtl] .no span,[dir=rtl] dt,[dir=rtl] .bday label{letter-spacing:0}
+@media (max-width:600px){.top > span{display:none}}
+@media (max-width:900px){.layer img.ph2{top:calc(76px + env(safe-area-inset-top,0px))}.copy,.copy.r{top:calc(76px + env(safe-area-inset-top,0px) + 66.5vw + 16px)}.dial{top:calc(76px + env(safe-area-inset-top,0px) + 66.5vw - 70px)}}
+</style>
+</head>
+<body>
+
+<header class="top" id="top"><div class="brand"><a href="{{ routes.root_url }}">Black Elixir</a><nav class="langs" id="langs" aria-label="Language"></nav></div><span>Collection Prestige</span></header>
+
+<main>
+  <section class="film" id="film" aria-label="La Salle des Coffres">
+    <div class="stage">
+      <div id="layers"></div>
+      <div class="intro" id="intro">
+        <img src="{{ cp_salle | image_url: width: 1600 }}" srcset="{{ cp_salle | image_url: width: 900 }} 900w, {{ cp_salle | image_url: width: 1600 }} 1600w" sizes="100vw" alt="" id="introimg" fetchpriority="high" width="1600" height="1063">
+        <div class="t">
+          <small>Collection Prestige · Absoluta · Paris</small>
+          <h1><i>La Salle</i>des Coffres</h1>
+          <p data-t="intro"></p>
+          <div class="cue" data-t="cue"></div>
+        </div>
+      </div>
+      <div id="copies"></div>
+      <div class="dial" id="dial" aria-hidden="true">
+        <svg viewBox="-50 -50 100 100">
+          <circle r="47" fill="#0b0c0d99" stroke="#b99252" stroke-width="1"/>
+          <g id="ring"></g>
+          <circle r="24" fill="#16181a" stroke="#b99252" stroke-width=".8"/>
+          <path d="M-3 -49 L3 -49 L0 -43 Z" fill="#e3c98f"/>
+          <text id="dn" text-anchor="middle" y="4" style="font:400 15px 'Cormorant Garamond',serif;fill:#e3c98f">0</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="lock" id="lock">
+    <div class="in">
+      <div>
+        <span class="kick" data-t="lockK"></span>
+        <h2 data-t="lockH"></h2>
+        <p data-t="lockP"></p>
+        <div class="bday"><label for="day" data-t="bday"></label><input id="day" type="number" min="1" max="31" inputmode="numeric" placeholder="1–31"></div>
+      </div>
+      <div class="safe">
+        <div>
+          <div class="dialbig" id="dialbig" role="slider" tabindex="0" data-a="dial" aria-valuemin="1" aria-valuemax="40" aria-valuenow="9">
+            <svg viewBox="-60 -60 120 120">
+              <defs><radialGradient id="br" cx="40%" cy="35%"><stop offset="0" stop-color="#f1d79c"/><stop offset=".55" stop-color="#b99252"/><stop offset="1" stop-color="#6b5228"/></radialGradient></defs>
+              <circle r="56" fill="#1a1c1e" stroke="#4b5157" stroke-width="2"/>
+              <g id="bigring"><circle r="50" fill="url(#br)"/><g id="bigticks"></g></g>
+              <circle r="24" fill="#2a2d30" stroke="#6b5228" stroke-width="1.2"/>
+              <text id="bign" y="7" text-anchor="middle" style="font:400 22px 'Cormorant Garamond',serif;fill:#e3c98f">9</text>
+              <path d="M-4 -60 L4 -60 L0 -51 Z" fill="#e3c98f"/>
+            </svg>
+          </div>
+          <div class="ctrl"><button class="step" id="minus" type="button" data-a="prev">−</button><a class="btn" id="open" href="#lock" role="button" data-t="open"></a><button class="step" id="plus" type="button" data-a="next">+</button></div>
+        </div>
+        <div class="box" id="box" aria-live="polite"><div class="inside" id="inside"></div><div class="door" aria-hidden="true"><span id="doorn">9</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="coll" id="collection">
+    <div class="head">
+      <div><span class="kick" data-t="collK"></span><h2 data-t="collH"></h2></div>
+      <p data-t="collP"></p>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="head more">
+      <div><span class="kick" data-t="moreK"></span><h2 data-t="moreH"></h2></div>
+      <p data-t="moreP"></p>
+    </div>
+    <div class="grid" id="grid2"></div>
+  </section>
+</main>
+<footer><span data-t="foot"></span> <a href="{{ routes.root_url }}">Black Elixir</a> · Maison de Parfum</footer>
+
+<script>
+{% render 'cp-salle-i18n' %}
+var CP={{ cp_json }};
+(function(){
+  var SHOP=CP.shop,lang=T[CP.lang]?CP.lang:'de',t=T[lang];
+  var PRD=CP.prd.map(function(p){var h=p[0],ti=String(p[1]).replace(/^Collection Prestige( Absoluta)?\s*/i,''),m=h.match(/no-(\d+)-/),n=m?+m[1]:null;ti=ti.replace(/^No\.?\s*\d+\s*/i,'');var ty=(ti.match(/(Extrait de Parfum|Eau de Parfum)$/i)||[''])[0];var nm=ty?ti.slice(0,-ty.length).trim():ti;if(nm===nm.toUpperCase())nm=nm.charAt(0)+nm.slice(1).toLowerCase();var cat=/home-spray|raumspray|parfuemnebel|duftanhaenger|discovery-set/.test(h)?'h':'p';return [h,n,nm,ty,cat,p[2],p[3],p[4],p[5]]}).sort(function(a,b){return (a[4]>b[4])-(a[4]<b[4])||((a[1]==null?999:a[1])-(b[1]==null?999:b[1]))||(a[2]>b[2]?1:-1)});
+  // [slug, product handle, number, name, room, direction, line, notes|null, text side]
+  var V=[
+   ['saphir','collection-prestige-no-25-saphir-eau-de-parfum',25,'Saphir','Die Werkbank des Juweliers','Extrait de Parfum · Herrenduft','Unter der Lupe, zwischen geschliffenen Saphiren auf blauem Samt, liegt die Nummer 25.',null,'r'],
+   ['perla','collection-prestige-no-26-perla-eau-de-parfum',26,'Perla','Das Perlenkästchen','Extrait de Parfum · Unisex','Zwischen Perlmutt und einer offenen Perlenkette, hell und still: Nummer 26.',null,'l'],
+   ['diamant-absolu','collection-prestige-no-34-diamant-absolu-eau-de-parfum',34,'Diamant Absolu','Die Vitrine','Eau de Parfum · Damen und Herren','Fruchtig und klar im Auftakt, warm und leuchtend im Verlauf. Ein Lichtstrahl, ein Diamant, die Nummer 34.',null,'r'],
+   ['cristal-rouge','collection-no-3-cristal-rouge-eau-de-parfum',3,'Cristal Rouge','Die rote Schublade','Extrait de Parfum · Damenduft','Rotes Leder, geschliffenes Kristall und das Licht, das sich darin bricht.',null,'r'],
+   ['or-malaki','collection-prestige-no-33-or-malakicool-eau-de-parfum',33,'OR Malakicool','Die Goldkammer','Eau de Parfum · orientalisch-holzig','Goldene Wärme vor einer Wand aus Barren. Warm, orientalisch, holzig.',null,'l'],
+   ['onyx-noir','collection-prestige-no-35-onyx-noir-eau-de-parfum',35,'Onyx Noir','Hinter der Tresortür','Eau de Parfum · dunkel und holzig','Die schwere Tür steht offen. Dunkel, warm und geheimnisvoll, auf schwarzem Onyx.',null,'l'],
+   ['sultan','collection-prestige-no-9-sultan-eau-de-parfum',9,'Sultan','Die Schatzkammer des Sultans','Extrait de Parfum · holzig, aromatisch, sanft süß','Die meistgewählte Nummer der Sammlung. Hell und leicht herb zu Beginn, dann trockene Hölzer und eine sanft süße Basis.',['Bergamotte · Geranie','Trockener Holzakkord · Moschus','Zedernholz · Gourmand-Akkord'],'r'],
+   ['bonaparte','collection-prestige-no-7-bonaparte-eau-de-parfum',7,'Bonaparte','Das kaiserliche Kabinett','Extrait de Parfum · Herrenduft','Grünes Leder, ein Lorbeerkranz, ein Siegel. Das letzte Fach gehört dem Kaiser.',null,'l']
+  ];
+  [].forEach.call(document.querySelectorAll('[data-t]'),function(e){e.textContent=t[e.getAttribute('data-t')]});
+  [].forEach.call(document.querySelectorAll('[data-a]'),function(e){e.setAttribute('aria-label',t[e.getAttribute('data-a')])});
+  document.getElementById('introimg').alt=t.introAlt;
+  var LB=document.getElementById('langs');LANGS.forEach(function(l){if(!CP.lurl[l[0]])return;var a=document.createElement('a');a.href=CP.lurl[l[0]];a.lang=l[0];a.hreflang=l[0];a.textContent=l[1];if(l[0]===lang)a.setAttribute('aria-current','true');LB.appendChild(a)});
+  var PX={};PRD.forEach(function(r){PX[r[0]]=r});
+  var K=V.length,INTRO=1,$=function(i){return document.getElementById(i)};
+  $('film').style.setProperty('--n',K+INTRO+1);
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function eur(n){return n.toFixed(2).replace('.',',')+' €'}
+  function price(r){return r?(r[5]!==r[6]?t.from+' ':'')+eur(r[5]):''}
+  var L=$('layers'),C=$('copies');
+  V.forEach(function(v,i){
+    var s=CP.img[v[0]],r=PX[v[1]];v[4]=t.rooms[i];v[5]=t.dirs[i];v[6]=t.lines[i];if(v[7])v[7]=t.sultan;
+    L.insertAdjacentHTML('beforeend','<div class="layer '+(v[8]==='r'?'r':'')+'"><img class="bg" src="'+s.m+'" alt="" aria-hidden="true"><img class="ph2" srcset="'+s.m+' 900w, '+s.d+' 1600w" sizes="100vw" src="'+s.d+'" alt="Collection Prestige Absoluta No.'+v[2]+' '+esc(v[3])+', '+esc(v[4])+'" fetchpriority="'+(i?'low':'high')+'" decoding="async" width="1600" height="1063"></div>');
+    var dl=v[7]?'<dl><dt>'+t.top+'</dt><dd>'+v[7][0]+'</dd><dt>'+t.heart+'</dt><dd>'+v[7][1]+'</dd><dt>'+t.base+'</dt><dd>'+v[7][2]+'</dd></dl>':'';
+    C.insertAdjacentHTML('beforeend','<article class="copy '+v[8]+'"><div class="no"><b>N°'+v[2]+'</b><span>'+esc(v[4])+'</span></div><h2>'+esc(v[3])+'</h2><div class="dir">'+esc(v[5])+'</div><p class="line">'+esc(v[6])+'</p>'+dl+'<div class="buy"><span class="price">'+price(r)+'</span>'+(r&&!r[7]?'<span class="price" style="font-size:14px;color:#d99">'+t.sold+'</span>':'')+'<a class="btn" tabindex="-1" href="'+SHOP+v[1]+'">'+t.buy+'</a></div></article>');
+  });
+  // dial ring: 40 positions, labels every 5
+  var ring='';for(var q=0;q<40;q++){var a=q*Math.PI/20,l=q%5?39:36;ring+='<line x1="'+(Math.sin(a)*l).toFixed(2)+'" y1="'+(-Math.cos(a)*l).toFixed(2)+'" x2="'+(Math.sin(a)*44).toFixed(2)+'" y2="'+(-Math.cos(a)*44).toFixed(2)+'" stroke="#b99252" stroke-width="'+(q%5?.6:1.1)+'"/>';if(!(q%5))ring+='<text x="'+(Math.sin(a)*30).toFixed(2)+'" y="'+(-Math.cos(a)*30+2.4).toFixed(2)+'" text-anchor="middle">'+q+'</text>'}
+  $('ring').innerHTML=ring;
+
+  function card(r){
+    var n=r[1]!=null?'<span class="n">'+r[1]+'</span>':'';
+    var im=r[8]?'<img src="'+r[8]+'" alt="'+esc('Collection Prestige Absoluta '+(r[1]!=null?'No.'+r[1]+' ':'')+r[2])+'" loading="lazy" decoding="async" width="300" height="300">':'<div class="ph">'+(r[1]!=null?r[1]:'·')+'</div>';
+    return '<a class="card'+(r[7]?'':' out')+'" href="'+SHOP+r[0]+'">'+n+im+'<b>'+esc(r[2])+'</b><em>'+esc(r[3]||' ')+'</em>'+(r[7]?'<span>'+price(r)+'</span>':'<span class="so">'+t.sold+'</span>')+'</a>';
+  }
+  $('grid').innerHTML=PRD.filter(function(r){return r[4]==='p'}).map(card).join('');
+  $('grid2').innerHTML=PRD.filter(function(r){return r[4]==='h'}).map(card).join('');
+
+  /* the combination lock */
+  var BYN={};PRD.forEach(function(r){if(r[1]==null||r[4]!=='p')return;var c=BYN[r[1]];if(!c||(!c[7]&&r[7])||(c[7]===r[7]&&r[3]==='Extrait de Parfum'))BYN[r[1]]=r});
+  var num=9,ang=-num*9,bigring=$('bigring'),dialbig=$('dialbig'),box=$('box'),drag=null;
+  var bt='';for(var q=0;q<40;q++){var a2=q*Math.PI/20,n0=q||40;bt+='<line x1="'+(Math.sin(a2)*45).toFixed(2)+'" y1="'+(-Math.cos(a2)*45).toFixed(2)+'" x2="'+(Math.sin(a2)*49).toFixed(2)+'" y2="'+(-Math.cos(a2)*49).toFixed(2)+'" stroke="#3a2c14" stroke-width="'+(q%5?.5:1)+'"/>';if(!(q%5))bt+='<text x="'+(Math.sin(a2)*38).toFixed(2)+'" y="'+(-Math.cos(a2)*38+2).toFixed(2)+'" text-anchor="middle">'+n0+'</text>'}
+  $('bigticks').innerHTML=bt;
+  function setNum(n,snap){num=((Math.round(n)-1)%40+40)%40+1;if(snap)ang=-num*9;bigring.setAttribute('transform','rotate('+ang+')');$('bign').textContent=num;$('doorn').textContent=num;dialbig.setAttribute('aria-valuenow',num);if(box.classList.contains('open'))box.classList.remove('open')}
+  function angAt(e){var r=dialbig.getBoundingClientRect();return Math.atan2(e.clientX-r.left-r.width/2,-(e.clientY-r.top-r.height/2))*180/Math.PI}
+  dialbig.addEventListener('pointerdown',function(e){dialbig.setPointerCapture(e.pointerId);drag={a:angAt(e),g:ang}});
+  dialbig.addEventListener('pointermove',function(e){if(!drag)return;var d=angAt(e)-drag.a;if(d>180)d-=360;if(d<-180)d+=360;ang=drag.g+d;setNum(-ang/9)});
+  function end(){if(!drag)return;drag=null;setNum(num,true)}
+  dialbig.addEventListener('pointerup',end);dialbig.addEventListener('pointercancel',end);
+  dialbig.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowUp'){setNum(num+1,true);e.preventDefault()}else if(e.key==='ArrowLeft'||e.key==='ArrowDown'){setNum(num-1,true);e.preventDefault()}else if(e.key==='Enter'){openBox()}});
+  $('plus').onclick=function(){setNum(num+1,true)};$('minus').onclick=function(){setNum(num-1,true)};
+  $('day').addEventListener('input',function(){var d=parseInt(this.value,10);if(d>=1&&d<=31){setNum(d,true);setTimeout(openBox,350)}});
+  function nearest(n){for(var k=1;k<40;k++){var a=BYN[((n+k-1)%40)+1];if(a&&a[7])return a}return null}
+  function openBox(){
+    var r=BYN[num],h;
+    if(r&&r[7])h=(r[8]?'<img src="'+r[8]+'" alt="">':'')+'<b>N°'+num+' '+esc(r[2])+'</b><em>'+esc(r[3])+' · '+price(r)+'</em><a class="btn" href="'+SHOP+r[0]+'">'+t.buy+'</a>';
+    else{var n=nearest(num);h='<p class="empty">'+(r?t.emptySold.replace('{n}',num).replace('{x}',esc(r[2])):t.emptyNone.replace('{n}',num))+'</p>'+(n?'<a class="btn" href="'+SHOP+n[0]+'">'+t.see.replace('{x}','N°'+n[1]+' '+esc(n[2]))+'</a>':'')}
+    $('inside').innerHTML=h;box.classList.remove('open');void box.offsetWidth;box.classList.add('open');
+  }
+  $('open').addEventListener('click',function(e){e.preventDefault();openBox()});
+  setNum(9,true);
+
+  var film=$('film'),layers=L.children,copies=C.children,intro=$('intro'),introImg=intro.querySelector('img'),introT=intro.querySelector('.t'),dial=$('dial'),ring=$('ring'),dn=$('dn'),top=$('top'),coll=$('collection');
+  var clamp=function(v,a,b){return v<a?a:v>b?b:v},ease=function(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+  function frame(){
+    var r=film.getBoundingClientRect(),span=r.height-innerHeight,cr=coll.getBoundingClientRect();
+    top.classList.toggle('day',cr.top<60&&cr.bottom>60);
+    if(r.bottom<0)return;
+    var p=clamp(-r.top/span,0,1)*(K+INTRO-1+.6);
+    // intro: fly into the open box, then fade
+    var g=clamp(p,0,1);
+    introImg.style.setProperty('--iz',(1+ease(g)*1.6).toFixed(3));
+    introT.style.opacity=clamp(1-p*2.2,0,1);
+    intro.style.opacity=1-ease(clamp((p-.45)/.55,0,1));
+    intro.style.visibility=p>=1?'hidden':'visible';
+    var s=clamp(p-INTRO,-1,K-1);
+    for(var i=0;i<K;i++){
+      var d=s-i,o;
+      if(i===0)o=clamp(1+d,0,1)*(d>0?1-clamp((d-.62)/.38,0,1):1);
+      else o=d<0?clamp((d+.38)/.38,0,1):1-clamp((d-.62)/.38,0,1);
+      if(i===K-1&&d>0)o=1;
+      o=ease(o);layers[i].style.opacity=o;layers[i].style.visibility=o>0?'visible':'hidden';
+      layers[i].lastChild.style.setProperty('--z',(1.035-.035*clamp((d+1)/2,0,1)).toFixed(4));
+      var co=d<-.15?clamp((d+.3)/.15,0,1):1-clamp((d-.5)/.18,0,1);
+      if(i===K-1&&d>.5)co=1;
+      copies[i].style.opacity=co;copies[i].style.pointerEvents=co>.6?'auto':'none';
+      copies[i].querySelector('.btn').tabIndex=co>.6?0:-1;
+    }
+    dial.style.opacity=clamp(p-.7,0,1);
+    var si=clamp(s,0,K-1),a=Math.floor(si),f=si-a,b=Math.min(a+1,K-1),k=ease(clamp((f-.62)/.38,0,1));
+    var na=V[a][2],nb=V[b][2],diff=((nb-na)%40+40)%40;if(diff>20)diff-=40;
+    var num=na+diff*k;
+    ring.setAttribute('transform','rotate('+(-num*9)+')');
+    dn.textContent=Math.round(k>.5?nb:na);
+  }
+  var ticking=false;
+  addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(function(){ticking=false;frame()})}},{passive:true});
+  addEventListener('resize',frame);frame();
+})();
+</script>
+
+</body>
+</html>
