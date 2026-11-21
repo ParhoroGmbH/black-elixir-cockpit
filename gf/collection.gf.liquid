@@ -3,11 +3,10 @@
 {%- paginate collection.products by 48 -%}
 {"items":[
 {%- for p in collection.products -%}
-{%- assign mp = nil -%}
-{%- for v in p.variants -%}{%- if v.available -%}{%- if mp == nil or v.price < mp -%}{%- assign mp = v.price -%}{%- endif -%}{%- endif -%}{%- endfor -%}
-{%- if mp != nil -%}
+{%- assign av = p.variants | where: 'available' -%}
+{%- if av.size > 0 -%}
 {%- unless first_done == nil -%},{%- endunless -%}{%- assign first_done = true -%}
-{"h":{{ p.handle | json }},"t":{{ p.title | json }},"v":{{ p.vendor | json }},"p":{{ mp | divided_by: 100.0 | json }},"i":{%- if p.featured_image -%}{{ p.featured_image | image_url: width: 520 | json }}{%- else -%}""{%- endif -%},"u":{{ p.url | json }},"c":{{ p.collections | map: 'handle' | json }},"r":{{ forloop.index }}}
+{"h":{{ p.handle | json }},"t":{{ p.title | json }},"v":{{ p.vendor | json }},"i":{%- if p.featured_image -%}{{ p.featured_image | image_url: width: 520 | json }}{%- else -%}""{%- endif -%},"c":{{ p.collections | map: 'handle' | json }},"r":{{ forloop.index }},"x":[{%- for v in av -%}[{{ v.id }},{{ v.price | divided_by: 100.0 }},{{ v.title | json }}]{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}
 {%- endif -%}
 {%- endfor -%}
 ]}
