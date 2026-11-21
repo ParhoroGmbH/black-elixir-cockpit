@@ -54,8 +54,7 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--ink);color:var(--sand);font:300 17px/1.6 Spectral,Georgia,serif;-webkit-font-smoothing:antialiased}
 html[lang=ar] body{font-family:Amiri,"Noto Naskh Arabic",serif}
 html[lang=he] body{font-family:"Frank Ruhl Libre",serif}
-[dir=rtl] .txt{left:auto;right:clamp(20px,6vw,90px)}
-[dir=rtl] .stage .veil{transform:scaleX(-1)}
+[dir=rtl] .txt{direction:rtl}
 a{color:inherit}
 .top{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 20px 14px;background:linear-gradient(var(--ink),rgba(21,19,15,0));pointer-events:none}
 .top a{pointer-events:auto;text-decoration:none;letter-spacing:.18em;font-size:12px;font-weight:600}
