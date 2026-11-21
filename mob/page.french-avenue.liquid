@@ -132,7 +132,7 @@ html[lang=he] .shop h2,html[lang=he] .hero h1,html[lang=he] .place{font-family:"
 }
 </style>
 
-<style>/* Handy: kleinere Produktbilder, 3 Spalten (21.11.2026) */.card img{height:auto!important;object-fit:contain}@media (max-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px 10px!important}.card .n{font-size:12.5px!important}.card .p{font-size:12px!important}}</style>
+<style>/* Handy: Produktbilder 2 Spalten, gleich gross (21.11.2026) */.card img{height:auto!important;object-fit:contain}@media (max-width:600px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:22px 14px!important}}</style>
 </head>
 <body>
 {% case fa_l %}{% when "en" %}<header class="top"><div class="brand"><a href="{{ routes.root_url }}">BLACK ELIXIR</a><nav class="langs" id="langs" aria-label="Language">{%- for l in localization.available_languages -%}{%- assign lc = l.iso_code | slice: 0, 2 -%}{%- assign lr = l.root_url -%}{%- if lr == "/" -%}{%- assign lr = "" -%}{%- endif -%}<a href="{{ lr }}{{ page.url }}" lang="{{ lc }}" hreflang="{{ lc }}"{% if lc == fa_l %} aria-current="true"{% endif %}>{% case lc %}{% when "de" %}DE{% when "en" %}EN{% when "fr" %}FR{% when "it" %}IT{% when "da" %}DA{% when "ar" %}عربي{% when "he" %}עברית{% else %}{{ lc | upcase }}{% endcase %}</a>{%- endfor -%}</nav></div><span class="dot">Maison de Parfum</span></header>
